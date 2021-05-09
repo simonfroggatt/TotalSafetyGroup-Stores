@@ -1,0 +1,11 @@
+header {
+    padding-top: 10px;
+    background-color: #303030;
+}
+
+
+
+footer li{margin:4px 0;}
+footer li a{position:relative; padding-left:12px; color: #999;}
+footer li a:after{font-family:"FontAwesome"; font-weight:normal; font-variant:normal;text-transform:none; text-decoration:none; font-size:14px; left:0; text-indent:0;text-transform:none; text-align:center; content:'  '; position:absolute;}
+footer li a:hover{color:#fff; text-decoration:underline;}

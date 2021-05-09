@@ -11,10 +11,14 @@
 
 namespace Symfony\Component\Validator\Constraints;
 
+use ArrayAccess;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Traversable;
+use function count;
+use function is_array;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -34,7 +38,7 @@ class CollectionValidator extends ConstraintValidator
             return;
         }
 
-        if (!\is_array($value) && !($value instanceof \Traversable && $value instanceof \ArrayAccess)) {
+        if (!is_array($value) && !($value instanceof Traversable && $value instanceof ArrayAccess)) {
             throw new UnexpectedTypeException($value, 'array or Traversable and ArrayAccess');
         }
 
@@ -51,11 +55,11 @@ class CollectionValidator extends ConstraintValidator
 
         foreach ($constraint->fields as $field => $fieldConstraint) {
             // bug fix issue #2779
-            $existsInArray = \is_array($value) && array_key_exists($field, $value);
-            $existsInArrayAccess = $value instanceof \ArrayAccess && $value->offsetExists($field);
+            $existsInArray = is_array($value) && array_key_exists($field, $value);
+            $existsInArrayAccess = $value instanceof ArrayAccess && $value->offsetExists($field);
 
             if ($existsInArray || $existsInArrayAccess) {
-                if (\count($fieldConstraint->constraints) > 0) {
+                if (count($fieldConstraint->constraints) > 0) {
                     if ($context instanceof ExecutionContextInterface) {
                         $context->getValidator()
                             ->inContext($context)

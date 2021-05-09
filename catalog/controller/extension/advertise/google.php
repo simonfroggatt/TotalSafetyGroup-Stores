@@ -363,7 +363,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
             if (count($this->googleshopping->getTargets($this->store_id)) === 0) {
                 return false;
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return false;
         }
 

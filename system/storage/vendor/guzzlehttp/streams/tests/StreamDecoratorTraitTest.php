@@ -1,9 +1,14 @@
 <?php
 namespace GuzzleHttp\Tests\Stream;
 
+use BadMethodCallException;
+use Exception;
+use GuzzleHttp\Stream\Exception\CannotAttachException;
 use GuzzleHttp\Stream\StreamInterface;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\StreamDecoratorTrait;
+use PHPUnit_Framework_TestCase;
+use UnexpectedValueException;
 
 class Str implements StreamInterface
 {
@@ -13,7 +18,7 @@ class Str implements StreamInterface
 /**
  * @covers GuzzleHttp\Stream\StreamDecoratorTrait
  */
-class StreamDecoratorTraitTest extends \PHPUnit_Framework_TestCase
+class StreamDecoratorTraitTest extends PHPUnit_Framework_TestCase
 {
     private $a;
     private $b;
@@ -35,7 +40,7 @@ class StreamDecoratorTraitTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
         $s->expects($this->once())
             ->method('read')
-            ->will($this->throwException(new \Exception('foo')));
+            ->will($this->throwException(new Exception('foo')));
         $msg = '';
         set_error_handler(function ($errNo, $str) use (&$msg) { $msg = $str; });
         echo new Str($s);
@@ -101,7 +106,7 @@ class StreamDecoratorTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Stream\Exception\CannotAttachException
+     * @expectedException CannotAttachException
      */
     public function testCannotAttachByDefault()
     {
@@ -122,7 +127,7 @@ class StreamDecoratorTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \UnexpectedValueException
+     * @expectedException UnexpectedValueException
      */
     public function testThrowsWithInvalidGetter()
     {
@@ -130,7 +135,7 @@ class StreamDecoratorTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException BadMethodCallException
      */
     public function testThrowsWhenGetterNotImplemented()
     {

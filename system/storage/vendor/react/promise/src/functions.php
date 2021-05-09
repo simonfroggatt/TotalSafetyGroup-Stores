@@ -2,6 +2,17 @@
 
 namespace React\Promise;
 
+use Closure;
+use ReflectionFunction;
+use ReflectionMethod;
+use function array_reduce;
+use function array_shift;
+use function count;
+use function is_array;
+use function is_object;
+use function method_exists;
+use function sprintf;
+
 /**
  * Creates a promise for the supplied `$promiseOrValue`.
  *
@@ -24,10 +35,10 @@ function resolve($promiseOrValue = null)
 
     // Check is_object() first to avoid method_exists() triggering
     // class autoloaders if $promiseOrValue is a string.
-    if (\is_object($promiseOrValue) && \method_exists($promiseOrValue, 'then')) {
+    if (is_object($promiseOrValue) && method_exists($promiseOrValue, 'then')) {
         $canceller = null;
 
-        if (\method_exists($promiseOrValue, 'cancel')) {
+        if (method_exists($promiseOrValue, 'cancel')) {
             $canceller = [$promiseOrValue, 'cancel'];
         }
 
@@ -133,7 +144,7 @@ function any($promisesOrValues)
 {
     return some($promisesOrValues, 1)
         ->then(function ($val) {
-            return \array_shift($val);
+            return array_shift($val);
         });
 }
 
@@ -163,16 +174,16 @@ function some($promisesOrValues, $howMany)
     return new Promise(function ($resolve, $reject, $notify) use ($promisesOrValues, $howMany, $cancellationQueue) {
         resolve($promisesOrValues)
             ->done(function ($array) use ($howMany, $cancellationQueue, $resolve, $reject, $notify) {
-                if (!\is_array($array) || $howMany < 1) {
+                if (!is_array($array) || $howMany < 1) {
                     $resolve([]);
                     return;
                 }
 
-                $len = \count($array);
+                $len = count($array);
 
                 if ($len < $howMany) {
                     throw new Exception\LengthException(
-                        \sprintf(
+                        sprintf(
                             'Input array must contain at least %d item%s but contains only %s item%s.',
                             $howMany,
                             1 === $howMany ? '' : 's',
@@ -240,12 +251,12 @@ function map($promisesOrValues, callable $mapFunc)
     return new Promise(function ($resolve, $reject, $notify) use ($promisesOrValues, $mapFunc, $cancellationQueue) {
         resolve($promisesOrValues)
             ->done(function ($array) use ($mapFunc, $cancellationQueue, $resolve, $reject, $notify) {
-                if (!\is_array($array) || !$array) {
+                if (!is_array($array) || !$array) {
                     $resolve([]);
                     return;
                 }
 
-                $toResolve = \count($array);
+                $toResolve = count($array);
                 $values    = [];
 
                 foreach ($array as $i => $promiseOrValue) {
@@ -289,11 +300,11 @@ function reduce($promisesOrValues, callable $reduceFunc, $initialValue = null)
     return new Promise(function ($resolve, $reject, $notify) use ($promisesOrValues, $reduceFunc, $initialValue, $cancellationQueue) {
         resolve($promisesOrValues)
             ->done(function ($array) use ($reduceFunc, $initialValue, $cancellationQueue, $resolve, $reject, $notify) {
-                if (!\is_array($array)) {
+                if (!is_array($array)) {
                     $array = [];
                 }
 
-                $total = \count($array);
+                $total = count($array);
                 $i = 0;
 
                 // Wrap the supplied $reduceFunc with one that handles promises and then
@@ -312,7 +323,7 @@ function reduce($promisesOrValues, callable $reduceFunc, $initialValue = null)
 
                 $cancellationQueue->enqueue($initialValue);
 
-                \array_reduce($array, $wrappedReduceFunc, resolve($initialValue))
+                array_reduce($array, $wrappedReduceFunc, resolve($initialValue))
                     ->done($resolve, $reject, $notify);
             }, $reject, $notify);
     }, $cancellationQueue);
@@ -323,16 +334,16 @@ function reduce($promisesOrValues, callable $reduceFunc, $initialValue = null)
  */
 function _checkTypehint(callable $callback, $object)
 {
-    if (!\is_object($object)) {
+    if (!is_object($object)) {
         return true;
     }
 
-    if (\is_array($callback)) {
-        $callbackReflection = new \ReflectionMethod($callback[0], $callback[1]);
-    } elseif (\is_object($callback) && !$callback instanceof \Closure) {
-        $callbackReflection = new \ReflectionMethod($callback, '__invoke');
+    if (is_array($callback)) {
+        $callbackReflection = new ReflectionMethod($callback[0], $callback[1]);
+    } elseif (is_object($callback) && !$callback instanceof Closure) {
+        $callbackReflection = new ReflectionMethod($callback, '__invoke');
     } else {
-        $callbackReflection = new \ReflectionFunction($callback);
+        $callbackReflection = new ReflectionFunction($callback);
     }
 
     $parameters = $callbackReflection->getParameters();

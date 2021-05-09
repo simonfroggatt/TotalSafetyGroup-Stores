@@ -1,5 +1,9 @@
 <?php
 namespace DB;
+use Exception;
+use mysqli_result;
+use stdClass;
+
 final class MySQLi {
 	private $connection;
 
@@ -7,7 +11,7 @@ final class MySQLi {
 		$this->connection = new \mysqli($hostname, $username, $password, $database, $port);
 
 		if ($this->connection->connect_error) {
-			throw new \Exception('Error: ' . $this->connection->connect_error . '<br />Error No: ' . $this->connection->connect_errno);
+			throw new Exception('Error: ' . $this->connection->connect_error . '<br />Error No: ' . $this->connection->connect_errno);
 		}
 
 		$this->connection->set_charset("utf8");
@@ -19,14 +23,14 @@ final class MySQLi {
 		$query = $this->connection->query($sql);
 
 		if (!$this->connection->errno) {
-			if ($query instanceof \mysqli_result) {
+			if ($query instanceof mysqli_result) {
 				$data = array();
 
 				while ($row = $query->fetch_assoc()) {
 					$data[] = $row;
 				}
 
-				$result = new \stdClass();
+				$result = new stdClass();
 				$result->num_rows = $query->num_rows;
 				$result->row = isset($data[0]) ? $data[0] : array();
 				$result->rows = $data;
@@ -38,7 +42,7 @@ final class MySQLi {
 				return true;
 			}
 		} else {
-			throw new \Exception('Error: ' . $this->connection->error  . '<br />Error No: ' . $this->connection->errno . '<br />' . $sql);
+			throw new Exception('Error: ' . $this->connection->error  . '<br />Error No: ' . $this->connection->errno . '<br />' . $sql);
 		}
 	}
 

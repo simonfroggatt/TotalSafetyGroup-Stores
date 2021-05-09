@@ -1,5 +1,7 @@
 <?php
 namespace Mail;
+use Exception;
+
 class Smtp {
 	public $smtp_hostname;
 	public $smtp_username;
@@ -88,7 +90,7 @@ class Smtp {
 		$handle = fsockopen($hostname, $this->smtp_port, $errno, $errstr, $this->smtp_timeout);
 
 		if (!$handle) {
-			throw new \Exception('Error: ' . $errstr . ' (' . $errno . ')');
+			throw new Exception('Error: ' . $errstr . ' (' . $errno . ')');
 		} else {
 			if (substr(PHP_OS, 0, 3) != 'WIN') {
 				socket_set_timeout($handle, $this->smtp_timeout, 0);
@@ -118,7 +120,7 @@ class Smtp {
 			}
 
 			if (substr($reply, 0, 3) != 250) {
-				throw new \Exception('Error: EHLO not accepted from server!');
+				throw new Exception('Error: EHLO not accepted from server!');
 			}
 
 			if (substr($this->smtp_hostname, 0, 3) == 'tls') {
@@ -166,7 +168,7 @@ class Smtp {
 				$reply = $this->handleReply($handle, false, 'RCPT TO [!array]');
 
 				if ((substr($reply, 0, 3) != 250) && (substr($reply, 0, 3) != 251)) {
-					throw new \Exception('Error: RCPT TO not accepted from server!');
+					throw new Exception('Error: RCPT TO not accepted from server!');
 				}
 			} else {
 				foreach ($this->to as $recipient) {
@@ -175,7 +177,7 @@ class Smtp {
 					$reply = $this->handleReply($handle, false, 'RCPT TO [array]');
 
 					if ((substr($reply, 0, 3) != 250) && (substr($reply, 0, 3) != 251)) {
-						throw new \Exception('Error: RCPT TO not accepted from server!');
+						throw new Exception('Error: RCPT TO not accepted from server!');
 					}
 				}
 			}
@@ -238,7 +240,7 @@ class Smtp {
 
 		if ($status_code) {
 			if (substr($reply, 0, 3) != $status_code) {
-				throw new \Exception($error_text);
+				throw new Exception($error_text);
 			}
 		}
 

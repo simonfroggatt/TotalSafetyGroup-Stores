@@ -1,8 +1,10 @@
 <?php
 namespace GuzzleHttp\Message;
 
+use GuzzleHttp\Collection;
 use GuzzleHttp\Event\HasEmitterInterface;
 use GuzzleHttp\Query;
+use InvalidArgumentException;
 
 /**
  * Generic HTTP request interface
@@ -17,7 +19,7 @@ interface RequestInterface extends MessageInterface, HasEmitterInterface
      *
      * @param string $url Request URL.
      *
-     * @throws \InvalidArgumentException If the URL is invalid.
+     * @throws InvalidArgumentException If the URL is invalid.
      */
     public function setUrl($url);
 
@@ -130,7 +132,7 @@ interface RequestInterface extends MessageInterface, HasEmitterInterface
     /**
      * Get the request's configuration options.
      *
-     * @return \GuzzleHttp\Collection
+     * @return Collection
      */
     public function getConfig();
 }

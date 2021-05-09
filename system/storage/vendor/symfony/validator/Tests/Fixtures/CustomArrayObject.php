@@ -11,11 +11,17 @@
 
 namespace Symfony\Component\Validator\Tests\Fixtures;
 
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
+use Serializable;
+use function count;
+
 /**
  * This class is a hand written simplified version of PHP native `ArrayObject`
  * class, to show that it behaves differently than the PHP native implementation.
  */
-class CustomArrayObject implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
+class CustomArrayObject implements ArrayAccess, IteratorAggregate, \Countable, Serializable
 {
     private $array;
 
@@ -50,12 +56,12 @@ class CustomArrayObject implements \ArrayAccess, \IteratorAggregate, \Countable,
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->array);
+        return new ArrayIterator($this->array);
     }
 
     public function count()
     {
-        return \count($this->array);
+        return count($this->array);
     }
 
     public function serialize()

@@ -11,7 +11,9 @@
 
 namespace Symfony\Component\Translation\Tests\Loader;
 
-abstract class LocalizedTestCase extends \PHPUnit_Framework_TestCase
+use PHPUnit_Framework_TestCase;
+
+abstract class LocalizedTestCase extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {

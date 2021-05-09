@@ -11,9 +11,11 @@
 
 namespace Symfony\Component\Validator\Tests\Validator;
 
+use ArrayIterator;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Exception\NoSuchMetadataException;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
@@ -71,13 +73,13 @@ abstract class AbstractLegacyApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\NoSuchMetadataException
+     * @expectedException NoSuchMetadataException
      */
     public function testTraversableTraverseDisabled()
     {
         $test = $this;
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array('key' => $entity));
+        $traversable = new ArrayIterator(array('key' => $entity));
 
         $callback = function () use ($test) {
             $test->fail('Should not be called');
@@ -92,14 +94,14 @@ abstract class AbstractLegacyApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\NoSuchMetadataException
+     * @expectedException NoSuchMetadataException
      */
     public function testRecursiveTraversableRecursiveTraversalDisabled()
     {
         $test = $this;
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array(
-            2 => new \ArrayIterator(array('key' => $entity)),
+        $traversable = new ArrayIterator(array(
+            2 => new ArrayIterator(array('key' => $entity)),
         ));
 
         $callback = function () use ($test) {

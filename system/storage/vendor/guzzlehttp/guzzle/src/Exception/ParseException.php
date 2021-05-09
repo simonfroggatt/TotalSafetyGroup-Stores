@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Exception;
 
+use Exception;
 use GuzzleHttp\Message\ResponseInterface;
 
 /**
@@ -14,7 +15,7 @@ class ParseException extends TransferException
     public function __construct(
         $message = '',
         ResponseInterface $response = null,
-        \Exception $previous = null
+        Exception $previous = null
     ) {
         parent::__construct($message, 0, $previous);
         $this->response = $response;

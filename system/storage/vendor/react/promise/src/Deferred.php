@@ -2,6 +2,8 @@
 
 namespace React\Promise;
 
+use function call_user_func;
+
 class Deferred implements PromisorInterface
 {
     private $promise;
@@ -33,14 +35,14 @@ class Deferred implements PromisorInterface
     {
         $this->promise();
 
-        \call_user_func($this->resolveCallback, $value);
+        call_user_func($this->resolveCallback, $value);
     }
 
     public function reject($reason = null)
     {
         $this->promise();
 
-        \call_user_func($this->rejectCallback, $reason);
+        call_user_func($this->rejectCallback, $reason);
     }
 
     /**
@@ -51,7 +53,7 @@ class Deferred implements PromisorInterface
     {
         $this->promise();
 
-        \call_user_func($this->notifyCallback, $update);
+        call_user_func($this->notifyCallback, $update);
     }
 
     /**

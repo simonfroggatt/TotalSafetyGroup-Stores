@@ -11,8 +11,10 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use stdClass;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\RegexValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class RegexValidatorTest extends AbstractConstraintValidatorTest
@@ -42,11 +44,11 @@ class RegexValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Regex(array('pattern' => '/^[0-9]+$/')));
+        $this->validator->validate(new stdClass(), new Regex(array('pattern' => '/^[0-9]+$/')));
     }
 
     /**

@@ -1,7 +1,9 @@
 <?php
 namespace GuzzleHttp\Stream;
 
+use Exception;
 use GuzzleHttp\Stream\Exception\CannotAttachException;
+use InvalidArgumentException;
 
 /**
  * Reads from multiple streams, one after the other.
@@ -34,7 +36,7 @@ class AppendStream implements StreamInterface
         try {
             $this->seek(0);
             return $this->getContents();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return '';
         }
     }
@@ -44,12 +46,12 @@ class AppendStream implements StreamInterface
      *
      * @param StreamInterface $stream Stream to append. Must be readable.
      *
-     * @throws \InvalidArgumentException if the stream is not readable
+     * @throws InvalidArgumentException if the stream is not readable
      */
     public function addStream(StreamInterface $stream)
     {
         if (!$stream->isReadable()) {
-            throw new \InvalidArgumentException('Each stream must be readable');
+            throw new InvalidArgumentException('Each stream must be readable');
         }
 
         // The stream is only seekable if all streams are seekable

@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp;
 
+use Exception;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 
@@ -41,7 +42,7 @@ class Transaction
      * intercepting a failed transaction, you MUST set this value to null in
      * order to prevent the exception from being thrown.
      *
-     * @var \Exception
+     * @var Exception
      */
     public $exception;
 

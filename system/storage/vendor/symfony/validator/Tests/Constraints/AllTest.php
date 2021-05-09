@@ -14,6 +14,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\Constraints\Valid;
 class AllTest extends TestCase
 {
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testRejectNonConstraints()
     {
@@ -31,7 +32,7 @@ class AllTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testRejectValidConstraint()
     {

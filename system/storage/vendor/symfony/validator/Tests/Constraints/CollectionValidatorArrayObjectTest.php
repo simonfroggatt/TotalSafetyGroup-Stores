@@ -11,10 +11,12 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use ArrayObject;
+
 class CollectionValidatorArrayObjectTest extends CollectionValidatorTest
 {
     public function prepareTestData(array $contents)
     {
-        return new \ArrayObject($contents);
+        return new ArrayObject($contents);
     }
 }

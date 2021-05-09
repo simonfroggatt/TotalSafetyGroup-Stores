@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Translation\Tests;
 
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Translation\PluralizationRules;
 
 /**
@@ -26,7 +27,7 @@ use Symfony\Component\Translation\PluralizationRules;
  *
  * @author Clemens Tolboom clemens@build2be.nl
  */
-class PluralizationRulesTest extends \PHPUnit_Framework_TestCase
+class PluralizationRulesTest extends PHPUnit_Framework_TestCase
 {
     /**
      * We test failed langcode here.

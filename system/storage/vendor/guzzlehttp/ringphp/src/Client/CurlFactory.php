@@ -6,6 +6,9 @@ use GuzzleHttp\Ring\Exception\ConnectException;
 use GuzzleHttp\Ring\Exception\RingException;
 use GuzzleHttp\Stream\LazyOpenStream;
 use GuzzleHttp\Stream\StreamInterface;
+use InvalidArgumentException;
+use Iterator;
+use RuntimeException;
 
 /**
  * Creates curl resources from a request
@@ -21,7 +24,7 @@ class CurlFactory
      *
      * @return array Returns an array of the curl handle, headers array, and
      *               response body handle.
-     * @throws \RuntimeException when an option cannot be applied
+     * @throws RuntimeException when an option cannot be applied
      */
     public function __invoke(array $request, $handle = null)
     {
@@ -274,7 +277,7 @@ class CurlFactory
             }
         } elseif (is_resource($body)) {
             $options[CURLOPT_INFILE] = $body;
-        } elseif ($body instanceof \Iterator) {
+        } elseif ($body instanceof Iterator) {
             $buf = '';
             $options[CURLOPT_READFUNCTION] = function ($ch, $fd, $length) use ($body, &$buf) {
                 if ($body->valid()) {
@@ -286,7 +289,7 @@ class CurlFactory
                 return $result;
             };
         } else {
-            throw new \InvalidArgumentException('Invalid request body provided');
+            throw new InvalidArgumentException('Invalid request body provided');
         }
     }
 
@@ -369,7 +372,7 @@ class CurlFactory
                 if (is_string($value)) {
                     $options[CURLOPT_CAINFO] = $value;
                     if (!file_exists($value)) {
-                        throw new \InvalidArgumentException(
+                        throw new InvalidArgumentException(
                             "SSL CA bundle not found: $value"
                         );
                     }
@@ -396,7 +399,7 @@ class CurlFactory
 
                 if (is_string($value)) {
                     if (!is_dir(dirname($value))) {
-                        throw new \RuntimeException(sprintf(
+                        throw new RuntimeException(sprintf(
                             'Directory %s does not exist for save_to value of %s',
                             dirname($value),
                             $value
@@ -413,7 +416,7 @@ class CurlFactory
                 } elseif (is_resource($value)) {
                     $options[CURLOPT_FILE] = $value;
                 } else {
-                    throw new \InvalidArgumentException('save_to must be a '
+                    throw new InvalidArgumentException('save_to must be a '
                         . 'GuzzleHttp\Stream\StreamInterface or resource');
                 }
                 break;
@@ -456,7 +459,7 @@ class CurlFactory
                 }
 
                 if (!file_exists($value)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         "SSL certificate not found: {$value}"
                     );
                 }
@@ -472,7 +475,7 @@ class CurlFactory
                 }
 
                 if (!file_exists($value)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         "SSL private key not found: {$value}"
                     );
                 }
@@ -483,7 +486,7 @@ class CurlFactory
             case 'progress':
 
                 if (!is_callable($value)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         'progress client option must be callable'
                     );
                 }

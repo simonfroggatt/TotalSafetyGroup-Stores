@@ -4,6 +4,7 @@ namespace GuzzleHttp\Post;
 use GuzzleHttp\Mimetypes;
 use GuzzleHttp\Stream\StreamInterface;
 use GuzzleHttp\Stream\Stream;
+use RuntimeException;
 
 /**
  * Post file upload
@@ -21,7 +22,7 @@ class PostFile implements PostFileInterface
      * @param string|null     $filename Filename content-disposition attribute
      * @param array           $headers  Array of headers to set on the file
      *                                  (can override any default headers)
-     * @throws \RuntimeException when filename is not passed or can't be determined
+     * @throws RuntimeException when filename is not passed or can't be determined
      */
     public function __construct(
         $name,

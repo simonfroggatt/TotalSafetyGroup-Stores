@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Translation\Loader;
 
+use RuntimeException;
+use SplFileObject;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 /**
@@ -32,12 +34,12 @@ class CsvFileLoader extends FileLoader
         $messages = array();
 
         try {
-            $file = new \SplFileObject($resource, 'rb');
-        } catch (\RuntimeException $e) {
+            $file = new SplFileObject($resource, 'rb');
+        } catch (RuntimeException $e) {
             throw new NotFoundResourceException(sprintf('Error opening file "%s".', $resource), 0, $e);
         }
 
-        $file->setFlags(\SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY);
+        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY);
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
 
         foreach ($file as $data) {

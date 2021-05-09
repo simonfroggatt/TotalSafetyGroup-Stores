@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Subscriber\Log;
 
+use Exception;
 use GuzzleHttp\Message\MessageInterface;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
@@ -59,7 +60,7 @@ class Formatter
      *
      * @param RequestInterface  $request    Request that was sent
      * @param ResponseInterface $response   Response that was received
-     * @param \Exception        $error      Exception that was received
+     * @param Exception        $error      Exception that was received
      * @param array             $customData Associative array of custom template data
      *
      * @return string
@@ -67,7 +68,7 @@ class Formatter
     public function format(
         RequestInterface $request,
         ResponseInterface $response = null,
-        \Exception $error = null,
+        Exception $error = null,
         array $customData = []
     ) {
         $cache = $customData;

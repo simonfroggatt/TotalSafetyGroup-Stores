@@ -20,6 +20,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\MetadataFactoryInterface;
 use Symfony\Component\Validator\ObjectInitializerInterface;
 use Symfony\Component\Validator\ValidatorInterface as LegacyValidatorInterface;
+use function count;
+use function func_num_args;
+use function is_array;
+use function is_object;
+use function is_string;
 
 /**
  * Recursive implementation of {@link ValidatorInterface}.
@@ -100,7 +105,7 @@ class RecursiveValidator implements ValidatorInterface, LegacyValidatorInterface
      */
     public function validate($value, $groups = null, $traverse = false, $deep = false)
     {
-        $numArgs = \func_num_args();
+        $numArgs = func_num_args();
 
         // Use new signature if constraints are given in the second argument
         if (self::testConstraints($groups) && ($numArgs < 3 || 3 === $numArgs && self::testGroups($traverse))) {
@@ -134,7 +139,7 @@ class RecursiveValidator implements ValidatorInterface, LegacyValidatorInterface
     public function validatePropertyValue($objectOrClass, $propertyName, $value, $groups = null)
     {
         // If a class name is passed, take $value as root
-        return $this->startContext(\is_object($objectOrClass) ? $objectOrClass : $value)
+        return $this->startContext(is_object($objectOrClass) ? $objectOrClass : $value)
             ->validatePropertyValue($objectOrClass, $propertyName, $value, $groups)
             ->getViolations();
     }
@@ -161,11 +166,11 @@ class RecursiveValidator implements ValidatorInterface, LegacyValidatorInterface
 
     private static function testConstraints($constraints)
     {
-        return null === $constraints || $constraints instanceof Constraint || (\is_array($constraints) && (0 === \count($constraints) || current($constraints) instanceof Constraint));
+        return null === $constraints || $constraints instanceof Constraint || (is_array($constraints) && (0 === count($constraints) || current($constraints) instanceof Constraint));
     }
 
     private static function testGroups($groups)
     {
-        return null === $groups || \is_string($groups) || $groups instanceof GroupSequence || (\is_array($groups) && (0 === \count($groups) || \is_string(current($groups)) || current($groups) instanceof GroupSequence));
+        return null === $groups || is_string($groups) || $groups instanceof GroupSequence || (is_array($groups) && (0 === count($groups) || is_string(current($groups)) || current($groups) instanceof GroupSequence));
     }
 }

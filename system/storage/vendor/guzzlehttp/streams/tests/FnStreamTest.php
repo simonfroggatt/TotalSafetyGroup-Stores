@@ -1,16 +1,18 @@
 <?php
 namespace GuzzleHttp\Tests\Stream;
 
+use BadMethodCallException;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\FnStream;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @covers GuzzleHttp\Stream\FnStream
  */
-class FnStreamTest extends \PHPUnit_Framework_TestCase
+class FnStreamTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException BadMethodCallException
      * @expectedExceptionMessage seek() is not implemented in the FnStream
      */
     public function testThrowsWhenNotImplemented()

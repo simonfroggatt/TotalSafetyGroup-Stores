@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Stream;
 
+use InvalidArgumentException;
+
 /**
  * Converts Guzzle streams into PHP stream resources.
  */
@@ -21,7 +23,7 @@ class GuzzleStreamWrapper
      * @param StreamInterface $stream The stream to get a resource for
      *
      * @return resource
-     * @throws \InvalidArgumentException if stream is not readable or writable
+     * @throws InvalidArgumentException if stream is not readable or writable
      */
     public static function getResource(StreamInterface $stream)
     {
@@ -32,7 +34,7 @@ class GuzzleStreamWrapper
         } elseif ($stream->isWritable()) {
             $mode = 'w';
         } else {
-            throw new \InvalidArgumentException('The stream must be readable, '
+            throw new InvalidArgumentException('The stream must be readable, '
                 . 'writable, or both.');
         }
 

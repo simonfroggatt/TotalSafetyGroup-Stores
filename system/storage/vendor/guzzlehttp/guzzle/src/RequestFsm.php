@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp;
 
+use Exception;
 use GuzzleHttp\Event\BeforeEvent;
 use GuzzleHttp\Event\ErrorEvent;
 use GuzzleHttp\Event\CompleteEvent;
@@ -36,7 +37,7 @@ class RequestFsm
      *
      * @param Transaction $trans      Transaction being transitioned.
      *
-     * @throws \Exception if a terminal state throws an exception.
+     * @throws Exception if a terminal state throws an exception.
      */
     public function __invoke(Transaction $trans)
     {
@@ -72,7 +73,7 @@ class RequestFsm
                 if ((bool) $trans->response) {
                     $trans->state = 'complete';
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $trans->state = 'error';
                 $trans->exception = $e;
             }
@@ -89,7 +90,7 @@ class RequestFsm
                 $trans->state = 'end';
                 $trans->response->setEffectiveUrl($trans->request->getUrl());
                 $trans->request->getEmitter()->emit('complete', new CompleteEvent($trans));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $trans->state = 'error';
                 $trans->exception = $e;
             }
@@ -108,7 +109,7 @@ class RequestFsm
                 if (!$trans->exception && $trans->state !== 'retry') {
                     $trans->state = 'complete';
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $trans->state = 'end';
                 $trans->exception = $e;
             }

@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Ring\Future;
 
+use ArrayIterator;
+
 /**
  * Represents a future array that has been completed successfully.
  */
@@ -38,6 +40,6 @@ class CompletedFutureArray extends CompletedFutureValue implements FutureArrayIn
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->result);
+        return new ArrayIterator($this->result);
     }
 }

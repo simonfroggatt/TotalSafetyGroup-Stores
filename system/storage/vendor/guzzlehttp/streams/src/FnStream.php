@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Stream;
 
+use BadMethodCallException;
+
 /**
  * Compose stream implementations based on a hash of functions.
  *
@@ -32,11 +34,11 @@ class FnStream implements StreamInterface
 
     /**
      * Lazily determine which methods are not implemented.
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function __get($name)
     {
-        throw new \BadMethodCallException(str_replace('_fn_', '', $name)
+        throw new BadMethodCallException(str_replace('_fn_', '', $name)
             . '() is not implemented in the FnStream');
     }
 

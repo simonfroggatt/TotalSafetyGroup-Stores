@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use DateTime;
+use stdClass;
 use Symfony\Component\Validator\Constraints\IsNull;
 use Symfony\Component\Validator\Constraints\IsNullValidator;
 use Symfony\Component\Validator\Validation;
@@ -59,8 +61,8 @@ class IsNullValidatorTest extends AbstractConstraintValidatorTest
             array(true, 'true'),
             array('', '""'),
             array('foo bar', '"foo bar"'),
-            array(new \DateTime(), 'object'),
-            array(new \stdClass(), 'object'),
+            array(new DateTime(), 'object'),
+            array(new stdClass(), 'object'),
             array(array(), 'array'),
         );
     }

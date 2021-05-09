@@ -6,11 +6,12 @@ use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Subscriber\Log\Formatter;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @covers GuzzleHttp\Subscriber\Log\Formatter
  */
-class FormatterTest extends \PHPUnit_Framework_TestCase
+class FormatterTest extends PHPUnit_Framework_TestCase
 {
     public function testCreatesWithClfByDefault()
     {

@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Translation\Dumper;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Translation\MessageCatalogue;
 
 /**
@@ -64,7 +66,7 @@ abstract class FileDumper implements DumperInterface
     public function dump(MessageCatalogue $messages, $options = array())
     {
         if (!array_key_exists('path', $options)) {
-            throw new \InvalidArgumentException('The file dumper needs a path option.');
+            throw new InvalidArgumentException('The file dumper needs a path option.');
         }
 
         // save a file for each domain
@@ -78,7 +80,7 @@ abstract class FileDumper implements DumperInterface
             } else {
                 $directory = dirname($fullpath);
                 if (!file_exists($directory) && !@mkdir($directory, 0777, true)) {
-                    throw new \RuntimeException(sprintf('Unable to create directory "%s".', $directory));
+                    throw new RuntimeException(sprintf('Unable to create directory "%s".', $directory));
                 }
             }
             // save file

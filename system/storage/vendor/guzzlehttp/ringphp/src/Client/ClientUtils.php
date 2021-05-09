@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Ring\Client;
 
+use RuntimeException;
+
 /**
  * Client specific utility functions.
  */
@@ -18,7 +20,7 @@ class ClientUtils
      * Note: the result of this function is cached for subsequent calls.
      *
      * @return string
-     * @throws \RuntimeException if no bundle can be found.
+     * @throws RuntimeException if no bundle can be found.
      */
     public static function getDefaultCaBundle()
     {
@@ -55,7 +57,7 @@ class ClientUtils
             }
         }
 
-        throw new \RuntimeException(self::CA_ERR);
+        throw new RuntimeException(self::CA_ERR);
     }
 
     const CA_ERR = "

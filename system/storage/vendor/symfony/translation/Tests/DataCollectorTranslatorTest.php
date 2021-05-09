@@ -11,11 +11,12 @@
 
 namespace Symfony\Component\Translation\Tests;
 
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\DataCollectorTranslator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
-class DataCollectorTranslatorTest extends \PHPUnit_Framework_TestCase
+class DataCollectorTranslatorTest extends PHPUnit_Framework_TestCase
 {
     public function testCollectMessages()
     {

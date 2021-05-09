@@ -522,7 +522,7 @@ PHP requests are now implemented throught the `GuzzleHttp\Adapter\StreamAdapter`
 - You can now enable E_USER_DEPRECATED warnings to see if you are using any deprecated methods.:
 
 ```php
-\Guzzle\Common\Version::$emitWarnings = true;
+use Guzzle\Common\Version;Version::$emitWarnings = true;
 ```
 
 The following APIs and options have been marked as deprecated:
@@ -707,7 +707,7 @@ $builder = Guzzle\Service\Builder\ServiceBuilder::factory('/path/to/config.json'
 $builder->addListener('service_builder.create_client', function ($event) use ($multi) {
     $event['client']->setCurlMulti($multi);
 }
-});
+})
 ```
 
 ### No default path
@@ -752,9 +752,9 @@ Change `\Guzzle\Service\Inspector::fromConfig` to `\Guzzle\Common\Collection::fr
 **Before**
 
 ```php
-use Guzzle\Service\Inspector;
+use Guzzle\Service\Client;use Guzzle\Service\Inspector;
 
-class YourClient extends \Guzzle\Service\Client
+class YourClient extends Client
 {
     public static function factory($config = array())
     {
@@ -778,9 +778,9 @@ class YourClient extends \Guzzle\Service\Client
 **After**
 
 ```php
-use Guzzle\Common\Collection;
+use Guzzle\Common\Collection;use Guzzle\Service\Client;
 
-class YourClient extends \Guzzle\Service\Client
+class YourClient extends Client
 {
     public static function factory($config = array())
     {
@@ -982,9 +982,9 @@ Now `Guzzle\Plugin\Log\LogPlugin` and `Guzzle\Log` respectively.
 
 ```php
 use Guzzle\Common\Log\ClosureLogAdapter;
-use Guzzle\Http\Plugin\LogPlugin;
+use Guzzle\Http\Client;use Guzzle\Http\Plugin\LogPlugin;
 
-/** @var \Guzzle\Http\Client */
+/** @var Client */
 $client;
 
 // $verbosity is an integer indicating desired message verbosity level
@@ -994,11 +994,11 @@ $client->addSubscriber(new LogPlugin(new ClosureLogAdapter(function($m) { echo $
 **After**
 
 ```php
-use Guzzle\Log\ClosureLogAdapter;
+use Guzzle\Http\Client;use Guzzle\Log\ClosureLogAdapter;
 use Guzzle\Log\MessageFormatter;
 use Guzzle\Plugin\Log\LogPlugin;
 
-/** @var \Guzzle\Http\Client */
+/** @var Client */
 $client;
 
 // $format is a string indicating desired message format -- @see MessageFormatter

@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Braintree CreditCard module
  * Creates and manages Braintree CreditCards
@@ -13,12 +15,12 @@ namespace Braintree;
  * @package    Braintree
  * @category   Resources
  *
- * @property-read \Braintree\Address $billingAddress
+ * @property-read Address $billingAddress
  * @property-read string $bin
  * @property-read string $cardType
  * @property-read string $cardholderName
  * @property-read string $commercial
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $customerId
  * @property-read string $customerLocation
  * @property-read string $debit
@@ -36,11 +38,11 @@ namespace Braintree;
  * @property-read string $payroll
  * @property-read string $prepaid
  * @property-read string $productId
- * @property-read \Braintree\Subscription[] $subscriptions
+ * @property-read Subscription[] $subscriptions
  * @property-read string $token
  * @property-read string $uniqueNumberIdentifier
- * @property-read \DateTime $updatedAt
- * @property-read \Braintree\CreditCardVerification|null $verification
+ * @property-read DateTime $updatedAt
+ * @property-read CreditCardVerification|null $verification
  */
 class CreditCard extends Base
 {

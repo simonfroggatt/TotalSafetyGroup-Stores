@@ -9,8 +9,12 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Post\PostBody;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
+use ReflectionClass;
+use RuntimeException;
 
-class Oauth1Test extends \PHPUnit_Framework_TestCase
+class Oauth1Test extends PHPUnit_Framework_TestCase
 {
     const TIMESTAMP = '1327274290';
     const NONCE = 'e7aa11195ca58349bec8b5ebe351d3497eb9e603';
@@ -41,7 +45,7 @@ class Oauth1Test extends \PHPUnit_Framework_TestCase
         $p = new Oauth1($this->config);
 
         // Access the config object
-        $class = new \ReflectionClass($p);
+        $class = new ReflectionClass($p);
         $property = $class->getProperty('config');
         $property->setAccessible(true);
         $config = $property->getValue($p);
@@ -138,7 +142,7 @@ class Oauth1Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testValidatesRequestMethod()
     {
@@ -154,7 +158,7 @@ class Oauth1Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testExceptionOnSignatureError()
     {

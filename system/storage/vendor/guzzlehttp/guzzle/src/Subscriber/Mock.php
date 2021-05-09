@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Subscriber;
 
+use Countable;
+use Exception;
 use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Event\BeforeEvent;
@@ -8,12 +10,14 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\MessageFactory;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Stream\StreamInterface;
+use InvalidArgumentException;
+use OutOfBoundsException;
 
 /**
  * Queues mock responses or exceptions and delivers mock responses or
  * exceptions in a fifo order.
  */
-class Mock implements SubscriberInterface, \Countable
+class Mock implements SubscriberInterface, Countable
 {
     /** @var array Array of mock responses / exceptions */
     private $queue = [];
@@ -43,12 +47,12 @@ class Mock implements SubscriberInterface, \Countable
     }
 
     /**
-     * @throws \OutOfBoundsException|\Exception
+     * @throws OutOfBoundsException|Exception
      */
     public function onBefore(BeforeEvent $event)
     {
         if (!$item = array_shift($this->queue)) {
-            throw new \OutOfBoundsException('Mock queue is empty');
+            throw new OutOfBoundsException('Mock queue is empty');
         } elseif ($item instanceof RequestException) {
             throw $item;
         }
@@ -89,7 +93,7 @@ class Mock implements SubscriberInterface, \Countable
      * @param string|ResponseInterface $response Response or path to response file
      *
      * @return self
-     * @throws \InvalidArgumentException if a string or Response is not passed
+     * @throws InvalidArgumentException if a string or Response is not passed
      */
     public function addResponse($response)
     {
@@ -98,7 +102,7 @@ class Mock implements SubscriberInterface, \Countable
                 ? $this->factory->fromMessage(file_get_contents($response))
                 : $this->factory->fromMessage($response);
         } elseif (!($response instanceof ResponseInterface)) {
-            throw new \InvalidArgumentException('Response must a message '
+            throw new InvalidArgumentException('Response must a message '
                 . 'string, response object, or path to a file');
         }
 

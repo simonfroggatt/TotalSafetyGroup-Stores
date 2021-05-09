@@ -12,8 +12,10 @@
 namespace Symfony\Component\Validator\Tests\Mapping;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Exception\GroupDefinitionException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintB;
@@ -226,7 +228,7 @@ class ClassMetadataTest extends TestCase
 
     public function testGetReflectionClass()
     {
-        $reflClass = new \ReflectionClass(self::CLASSNAME);
+        $reflClass = new ReflectionClass(self::CLASSNAME);
 
         $this->assertEquals($reflClass, $this->metadata->getReflectionClass());
     }
@@ -251,7 +253,7 @@ class ClassMetadataTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\GroupDefinitionException
+     * @expectedException GroupDefinitionException
      */
     public function testGroupSequencesFailIfNotContainingDefaultGroup()
     {
@@ -259,7 +261,7 @@ class ClassMetadataTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\GroupDefinitionException
+     * @expectedException GroupDefinitionException
      */
     public function testGroupSequencesFailIfContainingDefault()
     {
@@ -267,7 +269,7 @@ class ClassMetadataTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\GroupDefinitionException
+     * @expectedException GroupDefinitionException
      */
     public function testGroupSequenceFailsIfGroupSequenceProviderIsSet()
     {
@@ -277,7 +279,7 @@ class ClassMetadataTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\GroupDefinitionException
+     * @expectedException GroupDefinitionException
      */
     public function testGroupSequenceProviderFailsIfGroupSequenceIsSet()
     {
@@ -287,7 +289,7 @@ class ClassMetadataTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\GroupDefinitionException
+     * @expectedException GroupDefinitionException
      */
     public function testGroupSequenceProviderFailsIfDomainClassIsInvalid()
     {

@@ -2,8 +2,9 @@
 namespace GuzzleHttp\Tests\Ring\Client;
 
 use GuzzleHttp\Ring\Client\CurlMultiHandler;
+use PHPUnit_Framework_TestCase;
 
-class CurlMultiHandlerTest extends \PHPUnit_Framework_TestCase
+class CurlMultiHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function testSendsRequest()
     {

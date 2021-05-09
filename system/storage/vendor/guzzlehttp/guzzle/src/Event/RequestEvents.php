@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Event;
 
+use InvalidArgumentException;
+
 /**
  * Contains methods used to manage the request event lifecycle.
  */
@@ -27,7 +29,7 @@ final class RequestEvents
      * @param mixed $handler Event handler to utilize
      *
      * @return array
-     * @throws \InvalidArgumentException if the event config is invalid
+     * @throws InvalidArgumentException if the event config is invalid
      * @internal
      */
     public static function convertEventArray(
@@ -47,7 +49,7 @@ final class RequestEvents
                     $options[$name][] = $handler;
                 }
             } else {
-                throw new \InvalidArgumentException('Invalid event format');
+                throw new InvalidArgumentException('Invalid event format');
             }
         }
 

@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Mapping\Loader;
 
+use ReflectionClass;
 use Symfony\Component\Validator\Exception\MappingException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -38,7 +39,7 @@ class StaticMethodLoader implements LoaderInterface
      */
     public function loadClassMetadata(ClassMetadata $metadata)
     {
-        /** @var \ReflectionClass $reflClass */
+        /** @var ReflectionClass $reflClass */
         $reflClass = $metadata->getReflectionClass();
 
         if (!$reflClass->isInterface() && $reflClass->hasMethod($this->methodName)) {

@@ -12,6 +12,8 @@
 namespace Symfony\Component\Validator\Constraints;
 
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use function count;
+use function is_array;
 
 /**
  * @Annotation
@@ -41,7 +43,7 @@ class Collection extends Composite
     public function __construct($options = null)
     {
         // no known options set? $options is the fields array
-        if (\is_array($options)
+        if (is_array($options)
             && !array_intersect(array_keys($options), array('groups', 'fields', 'allowExtraFields', 'allowMissingFields', 'extraFieldsMessage', 'missingFieldsMessage'))) {
             $options = array('fields' => $options);
         }
@@ -56,14 +58,14 @@ class Collection extends Composite
     {
         parent::initializeNestedConstraints();
 
-        if (!\is_array($this->fields)) {
+        if (!is_array($this->fields)) {
             throw new ConstraintDefinitionException(sprintf('The option "fields" is expected to be an array in constraint %s', __CLASS__));
         }
 
         foreach ($this->fields as $fieldName => $field) {
             // the XmlFileLoader and YamlFileLoader pass the field Optional
             // and Required constraint as an array with exactly one element
-            if (\is_array($field) && 1 == \count($field)) {
+            if (is_array($field) && 1 == count($field)) {
                 $this->fields[$fieldName] = $field = $field[0];
             }
 

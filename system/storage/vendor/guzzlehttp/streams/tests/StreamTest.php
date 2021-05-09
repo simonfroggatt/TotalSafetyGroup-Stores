@@ -1,15 +1,19 @@
 <?php
 namespace GuzzleHttp\Tests\Stream;
 
+use ArrayIterator;
 use GuzzleHttp\Stream\Stream;
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
+use stdClass;
 
 /**
  * @covers GuzzleHttp\Stream\Stream
  */
-class StreamTest extends \PHPUnit_Framework_TestCase
+class StreamTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testConstructorThrowsExceptionOnInvalidArgument()
     {
@@ -207,11 +211,11 @@ class StreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testThrowsExceptionForUnknown()
     {
-        Stream::factory(new \stdClass());
+        Stream::factory(new stdClass());
     }
 
     public function testReturnsCustomMetadata()
@@ -229,7 +233,7 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 
     public function testCanCreateIteratorBasedStream()
     {
-        $a = new \ArrayIterator(['foo', 'bar', '123']);
+        $a = new ArrayIterator(['foo', 'bar', '123']);
         $p = Stream::factory($a);
         $this->assertInstanceOf('GuzzleHttp\Stream\PumpStream', $p);
         $this->assertEquals('foo', $p->read(3));

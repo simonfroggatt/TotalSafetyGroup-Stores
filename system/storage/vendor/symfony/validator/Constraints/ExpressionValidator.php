@@ -20,6 +20,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Exception\RuntimeException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use function is_object;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -58,7 +59,7 @@ class ExpressionValidator extends ConstraintValidator
             $root = $this->context->getRoot();
             $variables['value'] = $value;
 
-            if (\is_object($root)) {
+            if (is_object($root)) {
                 // Extract the object that the property belongs to from the object
                 // graph
                 $path = new PropertyPath($this->context->getPropertyPath());

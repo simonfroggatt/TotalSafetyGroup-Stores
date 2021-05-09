@@ -11,8 +11,10 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use stdClass;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Symfony\Component\Validator\Constraints\UuidValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 /**
@@ -45,7 +47,7 @@ class UuidValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsUuidConstraintCompatibleType()
     {
@@ -55,11 +57,11 @@ class UuidValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Uuid());
+        $this->validator->validate(new stdClass(), new Uuid());
     }
 
     /**

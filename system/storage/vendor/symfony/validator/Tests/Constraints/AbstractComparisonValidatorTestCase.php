@@ -11,8 +11,14 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use function extension_loaded;
+use const PHP_VERSION_ID;
 
 class ComparisonTest_Class
 {
@@ -36,7 +42,7 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
 {
     protected static function addPhp5Dot5Comparisons(array $comparisons)
     {
-        if (\PHP_VERSION_ID < 50500) {
+        if (PHP_VERSION_ID < 50500) {
             return $comparisons;
         }
 
@@ -48,8 +54,8 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
             $add = false;
 
             foreach ($comparison as $i => $value) {
-                if ($value instanceof \DateTime) {
-                    $comparison[$i] = new \DateTimeImmutable(
+                if ($value instanceof DateTime) {
+                    $comparison[$i] = new DateTimeImmutable(
                         $value->format('Y-m-d H:i:s.u e'),
                         $value->getTimezone()
                     );
@@ -78,7 +84,7 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
 
     /**
      * @dataProvider provideInvalidConstraintOptions
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testThrowsConstraintExceptionIfNoValueOrProperty($options)
     {
@@ -134,10 +140,10 @@ abstract class AbstractComparisonValidatorTestCase extends AbstractConstraintVal
     {
         // Conversion of dates to string differs between ICU versions
         // Make sure we have the correct version loaded
-        if ($dirtyValue instanceof \DateTime || $dirtyValue instanceof \DateTimeInterface) {
+        if ($dirtyValue instanceof DateTime || $dirtyValue instanceof DateTimeInterface) {
             IntlTestHelper::requireIntl($this, '57.1');
 
-            if (\PHP_VERSION_ID < 50304 && !(\extension_loaded('intl') && method_exists('IntlDateFormatter', 'setTimeZone'))) {
+            if (PHP_VERSION_ID < 50304 && !(extension_loaded('intl') && method_exists('IntlDateFormatter', 'setTimeZone'))) {
                 $this->markTestSkipped('Intl supports formatting DateTime objects since 5.3.4');
             }
         }

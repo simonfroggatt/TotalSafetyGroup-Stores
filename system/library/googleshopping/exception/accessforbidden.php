@@ -2,5 +2,7 @@
 
 namespace googleshopping\Exception;
 
-class AccessForbidden extends \RuntimeException {
+use RuntimeException;
+
+class AccessForbidden extends RuntimeException {
 }

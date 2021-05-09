@@ -13,6 +13,8 @@ namespace Symfony\Component\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use function get_class;
+use function is_array;
 
 /**
  * Used for the comparison of values.
@@ -34,8 +36,8 @@ abstract class AbstractComparison extends Constraint
             $options = array();
         }
 
-        if (\is_array($options) && !isset($options['value'])) {
-            throw new ConstraintDefinitionException(sprintf('The %s constraint requires the "value" option to be set.', \get_class($this)));
+        if (is_array($options) && !isset($options['value'])) {
+            throw new ConstraintDefinitionException(sprintf('The %s constraint requires the "value" option to be set.', get_class($this)));
         }
 
         parent::__construct($options);

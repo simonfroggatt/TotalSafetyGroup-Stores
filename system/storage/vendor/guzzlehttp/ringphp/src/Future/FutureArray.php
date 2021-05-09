@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Ring\Future;
 
+use ArrayIterator;
+
 /**
  * Represents a future array value that when dereferenced returns an array.
  */
@@ -35,6 +37,6 @@ class FutureArray implements FutureArrayInterface
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->_value);
+        return new ArrayIterator($this->_value);
     }
 }

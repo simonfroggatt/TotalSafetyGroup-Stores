@@ -1,9 +1,11 @@
 <?php
 namespace GuzzleHttp\Cookie;
 
+use ArrayIterator;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\ToArrayInterface;
+use RuntimeException;
 
 /**
  * Cookie jar that stores cookies an an array
@@ -132,7 +134,7 @@ class CookieJar implements CookieJarInterface, ToArrayInterface
         $result = $cookie->validate();
         if ($result !== true) {
             if ($this->strictMode) {
-                throw new \RuntimeException('Invalid cookie: ' . $result);
+                throw new RuntimeException('Invalid cookie: ' . $result);
             } else {
                 $this->removeCookieIfEmpty($cookie);
                 return false;
@@ -187,7 +189,7 @@ class CookieJar implements CookieJarInterface, ToArrayInterface
 
     public function getIterator()
     {
-        return new \ArrayIterator(array_values($this->cookies));
+        return new ArrayIterator(array_values($this->cookies));
     }
 
     public function extractCookies(

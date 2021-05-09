@@ -1,8 +1,10 @@
 <?php
 namespace GuzzleHttp\Cookie;
 
+use Countable;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
+use IteratorAggregate;
 
 /**
  * Stores HTTP cookies.
@@ -14,7 +16,7 @@ use GuzzleHttp\Message\ResponseInterface;
  *
  * @link http://docs.python.org/2/library/cookielib.html Inspiration
  */
-interface CookieJarInterface extends \Countable, \IteratorAggregate
+interface CookieJarInterface extends Countable, IteratorAggregate
 {
     /**
      * Add a Cookie header to a request.

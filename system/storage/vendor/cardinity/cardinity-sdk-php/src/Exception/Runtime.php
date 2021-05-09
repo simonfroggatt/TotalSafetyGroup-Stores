@@ -2,7 +2,9 @@
 
 namespace Cardinity\Exception;
 
-class Runtime extends \RuntimeException
+use RuntimeException;
+
+class Runtime extends RuntimeException
 {
 
 }

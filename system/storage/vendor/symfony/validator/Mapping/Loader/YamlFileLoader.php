@@ -11,9 +11,12 @@
 
 namespace Symfony\Component\Validator\Mapping\Loader;
 
+use InvalidArgumentException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
+use function count;
+use function is_array;
 
 /**
  * Loads validation metadata from a YAML file.
@@ -80,16 +83,16 @@ class YamlFileLoader extends FileLoader
         $values = array();
 
         foreach ($nodes as $name => $childNodes) {
-            if (is_numeric($name) && \is_array($childNodes) && 1 === \count($childNodes)) {
+            if (is_numeric($name) && is_array($childNodes) && 1 === count($childNodes)) {
                 $options = current($childNodes);
 
-                if (\is_array($options)) {
+                if (is_array($options)) {
                     $options = $this->parseNodes($options);
                 }
 
                 $values[] = $this->newConstraint(key($childNodes), $options);
             } else {
-                if (\is_array($childNodes)) {
+                if (is_array($childNodes)) {
                     $childNodes = $this->parseNodes($childNodes);
                 }
 
@@ -107,7 +110,7 @@ class YamlFileLoader extends FileLoader
      *
      * @return array The class descriptions
      *
-     * @throws \InvalidArgumentException If the file could not be loaded or did
+     * @throws InvalidArgumentException If the file could not be loaded or did
      *                                   not contain a YAML array
      */
     private function parseFile($path)
@@ -115,7 +118,7 @@ class YamlFileLoader extends FileLoader
         try {
             $classes = $this->yamlParser->parse(file_get_contents($path));
         } catch (ParseException $e) {
-            throw new \InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $path), 0, $e);
+            throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $path), 0, $e);
         }
 
         // empty file
@@ -124,8 +127,8 @@ class YamlFileLoader extends FileLoader
         }
 
         // not an array
-        if (!\is_array($classes)) {
-            throw new \InvalidArgumentException(sprintf('The file "%s" must contain a YAML array.', $this->file));
+        if (!is_array($classes)) {
+            throw new InvalidArgumentException(sprintf('The file "%s" must contain a YAML array.', $this->file));
         }
 
         return $classes;
@@ -149,13 +152,13 @@ class YamlFileLoader extends FileLoader
             $metadata->setGroupSequence($classDescription['group_sequence']);
         }
 
-        if (isset($classDescription['constraints']) && \is_array($classDescription['constraints'])) {
+        if (isset($classDescription['constraints']) && is_array($classDescription['constraints'])) {
             foreach ($this->parseNodes($classDescription['constraints']) as $constraint) {
                 $metadata->addConstraint($constraint);
             }
         }
 
-        if (isset($classDescription['properties']) && \is_array($classDescription['properties'])) {
+        if (isset($classDescription['properties']) && is_array($classDescription['properties'])) {
             foreach ($classDescription['properties'] as $property => $constraints) {
                 if (null !== $constraints) {
                     foreach ($this->parseNodes($constraints) as $constraint) {
@@ -165,7 +168,7 @@ class YamlFileLoader extends FileLoader
             }
         }
 
-        if (isset($classDescription['getters']) && \is_array($classDescription['getters'])) {
+        if (isset($classDescription['getters']) && is_array($classDescription['getters'])) {
             foreach ($classDescription['getters'] as $getter => $constraints) {
                 if (null !== $constraints) {
                     foreach ($this->parseNodes($constraints) as $constraint) {

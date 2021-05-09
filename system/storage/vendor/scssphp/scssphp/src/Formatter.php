@@ -13,6 +13,8 @@ namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
+use function count;
+use function strlen;
 
 /**
  * Base formatter
@@ -62,7 +64,7 @@ abstract class Formatter
     public $keepSemicolons;
 
     /**
-     * @var \ScssPhp\ScssPhp\Formatter\OutputBlock
+     * @var OutputBlock
      */
     protected $currentBlock;
 
@@ -77,7 +79,7 @@ abstract class Formatter
     protected $currentColumn;
 
     /**
-     * @var \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator
+     * @var SourceMapGenerator
      */
     protected $sourceMapGenerator;
 
@@ -137,7 +139,7 @@ abstract class Formatter
     /**
      * Output lines inside a block
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     * @param OutputBlock $block
      */
     protected function blockLines(OutputBlock $block)
     {
@@ -154,7 +156,7 @@ abstract class Formatter
     /**
      * Output block selectors
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     * @param OutputBlock $block
      */
     protected function blockSelectors(OutputBlock $block)
     {
@@ -168,7 +170,7 @@ abstract class Formatter
     /**
      * Output block children
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     * @param OutputBlock $block
      */
     protected function blockChildren(OutputBlock $block)
     {
@@ -180,7 +182,7 @@ abstract class Formatter
     /**
      * Output non-empty block
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     * @param OutputBlock $block
      */
     protected function block(OutputBlock $block)
     {
@@ -224,7 +226,7 @@ abstract class Formatter
     /**
      * Test and clean safely empty children
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     * @param OutputBlock $block
      *
      * @return boolean
      */
@@ -252,12 +254,12 @@ abstract class Formatter
     /**
      * Entry point to formatting a block
      *
-     * @api
-     *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock             $block              An abstract syntax tree
-     * @param \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator|null $sourceMapGenerator Optional source map generator
+     * @param OutputBlock $block              An abstract syntax tree
+     * @param SourceMapGenerator|null $sourceMapGenerator Optional source map generator
      *
      * @return string
+     *@api
+     *
      */
     public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null)
     {
@@ -318,12 +320,12 @@ abstract class Formatter
             );
 
             $lines = explode("\n", $str);
-            $lineCount = \count($lines);
+            $lineCount = count($lines);
             $this->currentLine += $lineCount-1;
 
             $lastLine = array_pop($lines);
 
-            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + \strlen($lastLine);
+            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
         }
 
         echo $str;

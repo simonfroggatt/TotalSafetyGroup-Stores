@@ -2,9 +2,11 @@
 
 namespace googleshopping\traits;
 
+use Config;
+
 trait StoreLoader {
     protected function loadStore($store_id) {
-        $this->registry->set('setting', new \Config());
+        $this->registry->set('setting', new Config());
 
         $this->load->model('setting/setting');
 

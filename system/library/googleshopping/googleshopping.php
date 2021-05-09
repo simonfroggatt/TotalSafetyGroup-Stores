@@ -2,9 +2,15 @@
 
 namespace googleshopping;
 
+use Cache;
+use Cart\Currency;
 use \googleshopping\traits\StoreLoader;
 use \googleshopping\exception\Connection as ConnectionException;
 use \googleshopping\exception\AccessForbidden as AccessForbiddenException;
+use Image;
+use Mail;
+use RuntimeException;
+use Url;
 
 class Googleshopping extends Library {
     use StoreLoader;
@@ -319,15 +325,15 @@ class Googleshopping extends Library {
                 if (!empty($row['image']) && is_file(DIR_IMAGE . $row['image']) && is_readable(DIR_IMAGE . $row['image'])) {
                     $image = $this->resize($row['image'], 250, 250);
                 } else {
-                    throw new \RuntimeException("Image does not exist or cannot be read.");
+                    throw new RuntimeException("Image does not exist or cannot be read.");
                 }
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->output(sprintf("Error for product %s: %s", $row['model'], $e->getMessage()));
 
                 $image = $this->resize('no_image.png', 250, 250);
             }
 
-            $url = new \Url($this->store_url, $this->store_url);
+            $url = new Url($this->store_url, $this->store_url);
 
             if ($this->config->get('config_seo_url')) {
                 $url->addRewrite($this);
@@ -604,7 +610,7 @@ class Googleshopping extends Library {
             $report[] = $this->output("Refreshing access token.");
 
             $this->isConnected();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $report[] = $this->output($e->getMessage());
         }
 
@@ -639,7 +645,7 @@ class Googleshopping extends Library {
                 $this->config->set("config_seo_url", $default_config_seo_url);
 
                 $report[] = $this->output("Uploaded count: " . $count);
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $report[] = $this->output($e->getMessage());
             }
         }
@@ -670,7 +676,7 @@ class Googleshopping extends Library {
                     }
                 }
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $report[] = $this->output($e->getMessage());
         }
 
@@ -708,7 +714,7 @@ class Googleshopping extends Library {
                         }
                     }
                 }
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $report[] = $this->output($e->getMessage());
             }
         } while (!empty($product_variation_target_specific_ids));
@@ -956,7 +962,7 @@ class Googleshopping extends Library {
         $subject = $this->language->get('text_cron_email_subject');
         $message = sprintf($this->language->get('text_cron_email_message'), implode('<br/>', $report));
 
-        $mail = new \Mail();
+        $mail = new Mail();
 
         $mail->protocol = $this->config->get('config_mail_protocol');
         $mail->parameter = $this->config->get('config_mail_parameter');
@@ -1002,7 +1008,7 @@ class Googleshopping extends Library {
 
     protected function resize($filename, $width, $height) {
         if (!is_file(DIR_IMAGE . $filename) || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE)) != str_replace('\\', '/', DIR_IMAGE)) {
-            throw new \RuntimeException("Invalid image filename: " . DIR_IMAGE . $filename);
+            throw new RuntimeException("Invalid image filename: " . DIR_IMAGE . $filename);
         }
 
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
@@ -1014,11 +1020,11 @@ class Googleshopping extends Library {
             list($width_orig, $height_orig, $image_type) = getimagesize(DIR_IMAGE . $image_old);
             
             if ($width_orig * $height_orig * 4 > $this->memoryLimitInBytes() * 0.4) {
-                throw new \RuntimeException("Image too large, skipping: " . $image_old);
+                throw new RuntimeException("Image too large, skipping: " . $image_old);
             }
 
             if (!in_array($image_type, array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF))) {
-                throw new \RuntimeException("Unexpected image type, skipping: " . $image_old);
+                throw new RuntimeException("Unexpected image type, skipping: " . $image_old);
             }
                         
             $path = '';
@@ -1034,7 +1040,7 @@ class Googleshopping extends Library {
             }
 
             if ($width_orig != $width || $height_orig != $height) {
-                $image = new \Image(DIR_IMAGE . $image_old);
+                $image = new Image(DIR_IMAGE . $image_old);
                 $image->resize($width, $height);
                 $image->save(DIR_IMAGE . $image_new);
             } else {
@@ -1089,7 +1095,7 @@ class Googleshopping extends Library {
 
             $message = 'PHP ' . $error . ':  ' . $message . ' in ' . $file . ' on line ' . $line;
 
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         });
     }
 
@@ -1136,7 +1142,7 @@ class Googleshopping extends Library {
     }
 
     public function convertAndFormat($price, $currency) {
-        $currency_converter = new \Cart\Currency($this->registry);
+        $currency_converter = new Currency($this->registry);
         $converted_price = $currency_converter->convert((float)$price, $this->config->get('config_currency'), $currency);
         return (float)number_format($converted_price, 2, '.', '');
     }
@@ -1203,7 +1209,7 @@ class Googleshopping extends Library {
         }
         $targets[] = 'Total';
 
-        $cache = new \Cache($this->config->get('cache_engine'), self::CACHE_CAMPAIGN_REPORT);
+        $cache = new Cache($this->config->get('cache_engine'), self::CACHE_CAMPAIGN_REPORT);
         $cache_key = 'advertise_google.' . $this->store_id . '.campaign_reports.' . md5(json_encode(array_keys($statuses)) . $this->setting->get('advertise_google_reporting_interval'));
 
         $cache_result = $cache->get($cache_key);
@@ -1312,7 +1318,7 @@ class Googleshopping extends Library {
     }
 
     public function getProductReports($product_ids) {
-        $cache = new \Cache($this->config->get('cache_engine'), self::CACHE_PRODUCT_REPORT);
+        $cache = new Cache($this->config->get('cache_engine'), self::CACHE_PRODUCT_REPORT);
         $cache_key = 'advertise_google.' . $this->store_id . '.product_reports.' . md5(json_encode($product_ids) . $this->setting->get('advertise_google_reporting_interval'));
 
         $cache_result = $cache->get($cache_key);
@@ -1454,7 +1460,7 @@ class Googleshopping extends Library {
             return $result['status'] === true;
         } catch (AccessForbiddenException $e) {
             throw $e;
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             // Do nothing
         }
 
@@ -1545,7 +1551,7 @@ class Googleshopping extends Library {
             $this->api($request);
 
             $this->deleteVerificationToken($token);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->deleteVerificationToken($token);
             
             throw $e;
@@ -1805,11 +1811,11 @@ class Googleshopping extends Library {
         $dir = dirname(DIR_SYSTEM);
 
         if (!is_dir($dir) || !is_writable($dir)) {
-            throw new \RuntimeException("Not a directory, or no permissions to write to: " . $dir);
+            throw new RuntimeException("Not a directory, or no permissions to write to: " . $dir);
         }
 
         if (!file_put_contents($dir . '/' . $token, 'google-site-verification: ' . $token)) {
-            throw new \RuntimeException("Could not write to: " . $dir . '/' . $token);
+            throw new RuntimeException("Could not write to: " . $dir . '/' . $token);
         }
     }
 
@@ -1817,7 +1823,7 @@ class Googleshopping extends Library {
         $dir = dirname(DIR_SYSTEM);
 
         if (!is_dir($dir) || !is_writable($dir)) {
-            throw new \RuntimeException("Not a directory, or no permissions to write to: " . $dir);
+            throw new RuntimeException("Not a directory, or no permissions to write to: " . $dir);
         }
 
         $file = $dir . '/' . $token;
@@ -1890,7 +1896,7 @@ class Googleshopping extends Library {
             $return = json_decode($result, true);
 
             if ($return['error']) {
-                throw new \RuntimeException($return['message']);
+                throw new RuntimeException($return['message']);
             } else {
                 return $return['result'];
             }
@@ -1898,7 +1904,7 @@ class Googleshopping extends Library {
             $return = json_decode($result, true);
 
             if ($info['http_code'] != 401 && $return['error']) {
-                throw new \RuntimeException($return['message']);
+                throw new RuntimeException($return['message']);
             } else {
                 throw new ConnectionException("Access unavailable. Please re-connect.");
             }
@@ -1913,7 +1919,7 @@ class Googleshopping extends Library {
         } else {
             $this->debugLog("CURL ERROR! CURL INFO: " . print_r($info, true));
 
-            throw new \RuntimeException("A temporary error was encountered. Please try again later.");
+            throw new RuntimeException("A temporary error was encountered. Please try again later.");
         }
     }
 }

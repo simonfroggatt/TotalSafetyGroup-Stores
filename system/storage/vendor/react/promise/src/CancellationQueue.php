@@ -2,6 +2,12 @@
 
 namespace React\Promise;
 
+use Exception;
+use Throwable;
+use function array_push;
+use function is_object;
+use function method_exists;
+
 class CancellationQueue
 {
     private $started = false;
@@ -19,11 +25,11 @@ class CancellationQueue
 
     public function enqueue($cancellable)
     {
-        if (!\is_object($cancellable) || !\method_exists($cancellable, 'then') || !\method_exists($cancellable, 'cancel')) {
+        if (!is_object($cancellable) || !method_exists($cancellable, 'then') || !method_exists($cancellable, 'cancel')) {
             return;
         }
 
-        $length = \array_push($this->queue, $cancellable);
+        $length = array_push($this->queue, $cancellable);
 
         if ($this->started && 1 === $length) {
             $this->drain();
@@ -39,8 +45,8 @@ class CancellationQueue
 
             try {
                 $cancellable->cancel();
-            } catch (\Throwable $exception) {
-            } catch (\Exception $exception) {
+            } catch (Throwable $exception) {
+            } catch (Exception $exception) {
             }
 
             unset($this->queue[$i]);

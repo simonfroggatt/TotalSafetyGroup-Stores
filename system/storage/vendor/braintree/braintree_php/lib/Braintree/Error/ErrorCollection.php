@@ -2,6 +2,7 @@
 namespace Braintree\Error;
 
 use Braintree\Util;
+use Countable;
 
 /**
  *
@@ -16,7 +17,7 @@ use Braintree\Util;
  *
  * @property-read object $errors
  */
-class ErrorCollection implements \Countable
+class ErrorCollection implements Countable
 {
     private $_errors;
 

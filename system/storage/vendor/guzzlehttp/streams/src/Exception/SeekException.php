@@ -2,11 +2,12 @@
 namespace GuzzleHttp\Stream\Exception;
 
 use GuzzleHttp\Stream\StreamInterface;
+use RuntimeException;
 
 /**
  * Exception thrown when a seek fails on a stream.
  */
-class SeekException extends \RuntimeException
+class SeekException extends RuntimeException
 {
     private $stream;
 

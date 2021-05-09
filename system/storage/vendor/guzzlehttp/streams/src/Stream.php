@@ -1,6 +1,9 @@
 <?php
 namespace GuzzleHttp\Stream;
 
+use InvalidArgumentException;
+use Iterator;
+
 /**
  * PHP stream implementation
  */
@@ -40,7 +43,7 @@ class Stream implements StreamInterface
      * @param array                           $options  Additional options
      *
      * @return Stream
-     * @throws \InvalidArgumentException if the $resource arg is not valid.
+     * @throws InvalidArgumentException if the $resource arg is not valid.
      */
     public static function factory($resource = '', array $options = [])
     {
@@ -71,7 +74,7 @@ class Stream implements StreamInterface
             return new PumpStream($resource, $options);
         }
 
-        if ($resource instanceof \Iterator) {
+        if ($resource instanceof Iterator) {
             return new PumpStream(function () use ($resource) {
                 if (!$resource->valid()) {
                     return false;
@@ -82,7 +85,7 @@ class Stream implements StreamInterface
             }, $options);
         }
 
-        throw new \InvalidArgumentException('Invalid resource type: ' . $type);
+        throw new InvalidArgumentException('Invalid resource type: ' . $type);
     }
 
     /**
@@ -97,12 +100,12 @@ class Stream implements StreamInterface
      * @param resource $stream  Stream resource to wrap.
      * @param array    $options Associative array of options.
      *
-     * @throws \InvalidArgumentException if the stream is not a stream resource
+     * @throws InvalidArgumentException if the stream is not a stream resource
      */
     public function __construct($stream, $options = [])
     {
         if (!is_resource($stream)) {
-            throw new \InvalidArgumentException('Stream must be a resource');
+            throw new InvalidArgumentException('Stream must be a resource');
         }
 
         if (isset($options['size'])) {

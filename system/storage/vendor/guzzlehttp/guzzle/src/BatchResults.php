@@ -1,6 +1,14 @@
 <?php
 namespace GuzzleHttp;
 
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use Exception;
+use IteratorAggregate;
+use RuntimeException;
+use SplObjectStorage;
+
 /**
  * Represents the result of a batch operation. This result container is
  * iterable, countable, and you can can get a result by value using the
@@ -11,14 +19,14 @@ namespace GuzzleHttp;
  *
  * @package GuzzleHttp
  */
-class BatchResults implements \Countable, \IteratorAggregate, \ArrayAccess
+class BatchResults implements Countable, IteratorAggregate, ArrayAccess
 {
     private $hash;
 
     /**
-     * @param \SplObjectStorage $hash Hash of key objects to result values.
+     * @param SplObjectStorage $hash Hash of key objects to result values.
      */
-    public function __construct(\SplObjectStorage $hash)
+    public function __construct(SplObjectStorage $hash)
     {
         $this->hash = $hash;
     }
@@ -55,7 +63,7 @@ class BatchResults implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         $results = [];
         foreach ($this->hash as $key) {
-            if (!($this->hash[$key] instanceof \Exception)) {
+            if (!($this->hash[$key] instanceof Exception)) {
                 $results[] = $this->hash[$key];
             }
         }
@@ -72,7 +80,7 @@ class BatchResults implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         $results = [];
         foreach ($this->hash as $key) {
-            if ($this->hash[$key] instanceof \Exception) {
+            if ($this->hash[$key] instanceof Exception) {
                 $results[] = $this->hash[$key];
             }
         }
@@ -83,7 +91,7 @@ class BatchResults implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * Allows iteration over all batch result values.
      *
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
@@ -92,7 +100,7 @@ class BatchResults implements \Countable, \IteratorAggregate, \ArrayAccess
             $results[] = $this->hash[$key];
         }
 
-        return new \ArrayIterator($results);
+        return new ArrayIterator($results);
     }
 
     /**
@@ -138,11 +146,11 @@ class BatchResults implements \Countable, \IteratorAggregate, \ArrayAccess
 
     public function offsetUnset($key)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     public function offsetSet($key, $value)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 }

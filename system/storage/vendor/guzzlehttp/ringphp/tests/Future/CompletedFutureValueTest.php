@@ -1,10 +1,12 @@
 <?php
 namespace GuzzleHttp\Tests\Ring\Future;
 
+use Exception;
 use GuzzleHttp\Ring\Exception\CancelledFutureAccessException;
 use GuzzleHttp\Ring\Future\CompletedFutureValue;
+use PHPUnit_Framework_TestCase;
 
-class CompletedFutureValueTest extends \PHPUnit_Framework_TestCase
+class CompletedFutureValueTest extends PHPUnit_Framework_TestCase
 {
     public function testReturnsValue()
     {
@@ -21,13 +23,13 @@ class CompletedFutureValueTest extends \PHPUnit_Framework_TestCase
 
     public function testThrows()
     {
-        $ex = new \Exception('foo');
+        $ex = new Exception('foo');
         $f = new CompletedFutureValue(null, $ex);
         $f->cancel();
         try {
             $f->wait();
             $this->fail('did not throw');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertSame($e, $ex);
         }
     }
@@ -39,7 +41,7 @@ class CompletedFutureValueTest extends \PHPUnit_Framework_TestCase
         try {
             $f->wait();
             $this->fail('did not throw');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertSame($e, $ex);
         }
     }

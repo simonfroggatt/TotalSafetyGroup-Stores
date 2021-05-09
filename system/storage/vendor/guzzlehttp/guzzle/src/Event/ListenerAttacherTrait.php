@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Event;
 
+use InvalidArgumentException;
+
 /**
  * Trait that provides methods for extract event listeners specified in an array
  * and attaching them to an emitter owned by the object or one of its direct
@@ -61,7 +63,7 @@ trait ListenerAttacherTrait
      * @param array|callable $data      Event listener data to prepare.
      * @param array          $listeners Array of listeners, passed by reference.
      *
-     * @throws \InvalidArgumentException if the event data is malformed.
+     * @throws InvalidArgumentException if the event data is malformed.
      */
     private function buildListener($name, $data, &$listeners)
     {
@@ -81,7 +83,7 @@ trait ListenerAttacherTrait
                 $this->buildListener($name, $listenerData, $listeners);
             }
         } else {
-            throw new \InvalidArgumentException('Each event listener must be a '
+            throw new InvalidArgumentException('Each event listener must be a '
                 . 'callable or an associative array containing a "fn" key.');
         }
     }

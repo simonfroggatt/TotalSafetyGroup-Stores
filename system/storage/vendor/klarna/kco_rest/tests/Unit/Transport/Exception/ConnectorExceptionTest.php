@@ -21,11 +21,12 @@ namespace Klarna\Rest\Tests\Unit\Transport\Exception;
 
 use GuzzleHttp\Exception\RequestException;
 use Klarna\Rest\Transport\Exception\ConnectorException;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit test cases for the ConnectorException.
  */
-class ConnectorExceptionTest extends \PHPUnit_Framework_TestCase
+class ConnectorExceptionTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Make sure the getters work as intended.

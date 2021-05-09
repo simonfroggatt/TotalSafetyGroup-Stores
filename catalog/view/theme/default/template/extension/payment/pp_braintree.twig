@@ -290,7 +290,7 @@
     }, function(error, payload) {
       if (error) {
         $('#submit-new').prop('disabled', false).button('reset');
-        return;
+
       } else {
         submitOrder(payload.nonce, vault_card_payment);
       }
@@ -311,7 +311,7 @@
       if (error) {
         console.log('3ds error: ' + error.code);
         $('#submit-vaulted').prop('disabled', false).button('reset');
-        return;
+
       } else {
         submitVaultOrder(false, payload.nonce);
       }
@@ -462,7 +462,7 @@
               console.error('Error!', tokenize_error);
           }
 
-          return;
+
         } else {
           submitOrder(payload.nonce, vault_paypal_payment);
         }
@@ -569,7 +569,7 @@
 
                 $('#submit-vaulted').prop('disabled', false).button('reset');
 
-                return;
+
             } else {
               submitVaultOrder(vaulted_payment_token, payload.nonce);
             }
@@ -590,7 +590,7 @@
             } else {
               console.log('Unable to get nonce from payment token');
               $('#submit-vaulted').prop('disabled', false).button('reset');
-              return;
+
             }
           },
           failure: function() {

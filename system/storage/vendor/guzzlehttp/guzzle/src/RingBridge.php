@@ -8,6 +8,7 @@ use GuzzleHttp\Message\Request;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Exception\RequestException;
+use InvalidArgumentException;
 
 /**
  * Provides the bridge between Guzzle requests and responses and Guzzle Ring.
@@ -122,7 +123,7 @@ class RingBridge
      * @param array $request Ring request
      *
      * @return Request
-     * @throws \InvalidArgumentException for incomplete requests.
+     * @throws InvalidArgumentException for incomplete requests.
      */
     public static function fromRingRequest(array $request)
     {
@@ -132,7 +133,7 @@ class RingBridge
         }
 
         if (!isset($request['http_method'])) {
-            throw new \InvalidArgumentException('No http_method');
+            throw new InvalidArgumentException('No http_method');
         }
 
         return new Request(

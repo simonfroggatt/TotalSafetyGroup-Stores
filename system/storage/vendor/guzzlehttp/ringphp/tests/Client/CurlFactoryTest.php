@@ -13,15 +13,20 @@ namespace GuzzleHttp\Ring\Client {
 
 namespace GuzzleHttp\Tests\Ring\Client {
 
-use GuzzleHttp\Ring\Client\CurlFactory;
+    use ArrayIterator;
+    use GuzzleHttp\Ring\Client\CurlFactory;
 use GuzzleHttp\Ring\Client\CurlMultiHandler;
 use GuzzleHttp\Ring\Client\MockHandler;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Stream\FnStream;
 use GuzzleHttp\Stream\NoSeekStream;
 use GuzzleHttp\Stream\Stream;
+    use InvalidArgumentException;
+    use PHPUnit_Framework_TestCase;
+    use ReflectionMethod;
+    use RuntimeException;
 
-class CurlFactoryTest extends \PHPUnit_Framework_TestCase
+    class CurlFactoryTest extends PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
@@ -126,7 +131,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage SSL CA bundle not found: /does/not/exist
      */
     public function testValidatesVerify()
@@ -203,7 +208,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage SSL private key not found: /does/not/exist
      */
     public function testValidatesSslKey()
@@ -240,7 +245,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage SSL certificate not found: /does/not/exist
      */
     public function testValidatesCert()
@@ -277,7 +282,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage progress client option must be callable
      */
     public function testValidatesProgress()
@@ -418,7 +423,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testValidatesSaveTo()
     {
@@ -484,7 +489,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testValidatesBody()
     {
@@ -520,7 +525,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAddsPayloadFromIterator()
     {
-        $iter = new \ArrayIterator(['f', 'o', 'o']);
+        $iter = new ArrayIterator(['f', 'o', 'o']);
         $this->addDecodeResponse();
         $handler = new CurlMultiHandler();
         $response = $handler([
@@ -720,7 +725,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreatesConnectException()
     {
-        $m = new \ReflectionMethod('GuzzleHttp\Ring\Client\CurlFactory', 'createErrorResponse');
+        $m = new ReflectionMethod('GuzzleHttp\Ring\Client\CurlFactory', 'createErrorResponse');
         $m->setAccessible(true);
         $response = $m->invoke(
             null,
@@ -802,7 +807,7 @@ class CurlFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Directory /path/to/does/not does not exist for save_to value of /path/to/does/not/exist.txt
      */
     public function testThrowsWhenDirNotFound()

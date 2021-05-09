@@ -19,23 +19,28 @@
 
 namespace Klarna\Rest\Tests\Unit;
 
+use GuzzleHttp\Message\RequestInterface;
+use GuzzleHttp\Message\ResponseInterface;
+use Klarna\Rest\Transport\Connector;
+use PHPUnit_Framework_TestCase;
+
 /**
  * Base unit test case class.
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \GuzzleHttp\Message\RequestInterface
+     * @var RequestInterface
      */
     protected $response;
 
     /**
-     * @var \GuzzleHttp\Message\ResponseInterface
+     * @var ResponseInterface
      */
     protected $request;
 
     /**
-     * @var \Klarna\Rest\Transport\Connector
+     * @var Connector
      */
     protected $connector;
 

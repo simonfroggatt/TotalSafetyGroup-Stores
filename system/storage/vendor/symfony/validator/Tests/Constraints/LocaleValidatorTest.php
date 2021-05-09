@@ -11,8 +11,10 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use stdClass;
 use Symfony\Component\Validator\Constraints\Locale;
 use Symfony\Component\Validator\Constraints\LocaleValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class LocaleValidatorTest extends AbstractConstraintValidatorTest
@@ -42,11 +44,11 @@ class LocaleValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Locale());
+        $this->validator->validate(new stdClass(), new Locale());
     }
 
     /**

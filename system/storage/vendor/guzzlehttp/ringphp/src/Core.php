@@ -1,9 +1,12 @@
 <?php
 namespace GuzzleHttp\Ring;
 
+use Generator;
 use GuzzleHttp\Stream\StreamInterface;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
 use GuzzleHttp\Ring\Future\FutureArray;
+use InvalidArgumentException;
+use Iterator;
 
 /**
  * Provides core functionality of Ring handlers and middleware.
@@ -187,7 +190,7 @@ class Core
      * @param array $request Request to get the URL from
      *
      * @return string Returns the request URL as a string.
-     * @throws \InvalidArgumentException if no Host header is present.
+     * @throws InvalidArgumentException if no Host header is present.
      */
     public static function url(array $request)
     {
@@ -201,7 +204,7 @@ class Core
         if ($host = self::header($request, 'host')) {
             $uri .= $host;
         } else {
-            throw new \InvalidArgumentException('No Host header was provided');
+            throw new InvalidArgumentException('No Host header was provided');
         }
 
         if (isset($request['uri'])) {
@@ -221,7 +224,7 @@ class Core
      * @param array|FutureArrayInterface $message Array containing a "body" key
      *
      * @return null|string Returns the body as a string or null if not set.
-     * @throws \InvalidArgumentException if a request body is invalid.
+     * @throws InvalidArgumentException if a request body is invalid.
      */
     public static function body($message)
     {
@@ -239,13 +242,13 @@ class Core
             case 'resource':
                 return stream_get_contents($message['body']);
             case 'object':
-                if ($message['body'] instanceof \Iterator) {
+                if ($message['body'] instanceof Iterator) {
                     return implode('', iterator_to_array($message['body']));
                 } elseif (method_exists($message['body'], '__toString')) {
                     return (string) $message['body'];
                 }
             default:
-                throw new \InvalidArgumentException('Invalid request body: '
+                throw new InvalidArgumentException('Invalid request body: '
                     . self::describeType($message['body']));
         }
     }
@@ -263,11 +266,11 @@ class Core
             return $message['body']->seek(0);
         }
 
-        if ($message['body'] instanceof \Generator) {
+        if ($message['body'] instanceof Generator) {
             return false;
         }
 
-        if ($message['body'] instanceof \Iterator) {
+        if ($message['body'] instanceof Iterator) {
             $message['body']->rewind();
             return true;
         }

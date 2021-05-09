@@ -14,6 +14,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\CallbackValidator;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Validation;
 
@@ -286,7 +287,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testExpectValidMethods()
     {
@@ -296,7 +297,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testExpectValidCallbacks()
     {
@@ -306,7 +307,7 @@ class CallbackValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      * @group legacy
      */
     public function testLegacyExpectEitherCallbackOrMethods()

@@ -1,11 +1,15 @@
 <?php
 namespace GuzzleHttp\Tests\Ring\Future;
 
+use Exception;
 use GuzzleHttp\Ring\Exception\CancelledFutureAccessException;
+use GuzzleHttp\Ring\Exception\RingException;
 use GuzzleHttp\Ring\Future\FutureValue;
+use OutOfBoundsException;
+use PHPUnit_Framework_TestCase;
 use React\Promise\Deferred;
 
-class FutureValueTest extends \PHPUnit_Framework_TestCase
+class FutureValueTest extends PHPUnit_Framework_TestCase
 {
     public function testDerefReturnsValue()
     {
@@ -29,7 +33,7 @@ class FutureValueTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Ring\Exception\CancelledFutureAccessException
+     * @expectedException CancelledFutureAccessException
      */
     public function testThrowsWhenAccessingCancelled()
     {
@@ -43,7 +47,7 @@ class FutureValueTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \OutOfBoundsException
+     * @expectedException OutOfBoundsException
      */
     public function testThrowsWhenDerefFailure()
     {
@@ -55,13 +59,13 @@ class FutureValueTest extends \PHPUnit_Framework_TestCase
                 $called = true;
             }
         );
-        $deferred->reject(new \OutOfBoundsException());
+        $deferred->reject(new OutOfBoundsException());
         $f->wait();
         $this->assertFalse($called);
     }
 
     /**
-     * @expectedException \GuzzleHttp\Ring\Exception\RingException
+     * @expectedException RingException
      * @expectedExceptionMessage Waiting did not resolve future
      */
     public function testThrowsWhenDerefDoesNotResolve()
@@ -92,7 +96,7 @@ class FutureValueTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException Exception
      * @expectedExceptionMessage foo
      */
     public function testThrowingExceptionInDerefMarksAsFailed()
@@ -101,7 +105,7 @@ class FutureValueTest extends \PHPUnit_Framework_TestCase
         $f = new FutureValue(
             $deferred->promise(),
             function () {
-                throw new \Exception('foo');
+                throw new Exception('foo');
             }
         );
         $f->wait();

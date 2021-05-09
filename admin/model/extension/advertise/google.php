@@ -116,7 +116,7 @@ class ModelExtensionAdvertiseGoogle extends Model {
                 $googleshopping = new Googleshopping($this->registry, (int)$result->row['store_id']);
 
                 return $googleshopping->isConnected();
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 return false;
             }
         }

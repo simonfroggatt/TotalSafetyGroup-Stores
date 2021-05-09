@@ -11,9 +11,12 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use Locale;
+use stdClass;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Constraints\CountryValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class CountryValidatorTest extends AbstractConstraintValidatorTest
@@ -43,11 +46,11 @@ class CountryValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Country());
+        $this->validator->validate(new stdClass(), new Country());
     }
 
     /**
@@ -99,7 +102,7 @@ class CountryValidatorTest extends AbstractConstraintValidatorTest
         // in order to test with "en_GB"
         IntlTestHelper::requireFullIntl($this, false);
 
-        \Locale::setDefault('en_GB');
+        Locale::setDefault('en_GB');
 
         $existingCountry = 'GB';
 

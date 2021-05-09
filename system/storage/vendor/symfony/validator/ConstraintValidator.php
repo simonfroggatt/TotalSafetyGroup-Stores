@@ -11,9 +11,19 @@
 
 namespace Symfony\Component\Validator;
 
+use DateTime;
+use DateTimeInterface;
+use IntlDateFormatter;
+use Locale;
 use Symfony\Component\Validator\Context\ExecutionContextInterface as ExecutionContextInterface2Dot5;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 use Symfony\Component\Validator\Violation\LegacyConstraintViolationBuilder;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function is_resource;
+use function is_string;
 
 /**
  * Base class for constraint validators.
@@ -105,7 +115,7 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      */
     protected function formatTypeOf($value)
     {
-        return \is_object($value) ? \get_class($value) : \gettype($value);
+        return is_object($value) ? get_class($value) : gettype($value);
     }
 
     /**
@@ -132,17 +142,17 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      */
     protected function formatValue($value, $format = 0)
     {
-        $isDateTime = $value instanceof \DateTime || $value instanceof \DateTimeInterface;
+        $isDateTime = $value instanceof DateTime || $value instanceof DateTimeInterface;
 
         if (($format & self::PRETTY_DATE) && $isDateTime) {
             if (class_exists('IntlDateFormatter')) {
-                $locale = \Locale::getDefault();
-                $formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT);
+                $locale = Locale::getDefault();
+                $formatter = new IntlDateFormatter($locale, IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT);
 
                 // neither the native nor the stub IntlDateFormatter support
                 // DateTimeImmutable as of yet
-                if (!$value instanceof \DateTime) {
-                    $value = new \DateTime(
+                if (!$value instanceof DateTime) {
+                    $value = new DateTime(
                         $value->format('Y-m-d H:i:s.u e'),
                         $value->getTimezone()
                     );
@@ -154,7 +164,7 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
             return $value->format('Y-m-d H:i:s');
         }
 
-        if (\is_object($value)) {
+        if (is_object($value)) {
             if (($format & self::OBJECT_TO_STRING) && method_exists($value, '__toString')) {
                 return $value->__toString();
             }
@@ -162,15 +172,15 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
             return 'object';
         }
 
-        if (\is_array($value)) {
+        if (is_array($value)) {
             return 'array';
         }
 
-        if (\is_string($value)) {
+        if (is_string($value)) {
             return '"'.$value.'"';
         }
 
-        if (\is_resource($value)) {
+        if (is_resource($value)) {
             return 'resource';
         }
 

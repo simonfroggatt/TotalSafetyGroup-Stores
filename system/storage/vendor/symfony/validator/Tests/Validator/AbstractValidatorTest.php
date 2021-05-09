@@ -11,17 +11,21 @@
 
 namespace Symfony\Component\Validator\Tests\Validator;
 
+use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GroupSequence;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Exception\NoSuchMetadataException;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
 use Symfony\Component\Validator\Tests\Fixtures\FakeMetadataFactory;
 use Symfony\Component\Validator\Tests\Fixtures\GroupSequenceProviderEntity;
 use Symfony\Component\Validator\Tests\Fixtures\Reference;
+use function get_class;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -301,7 +305,7 @@ abstract class AbstractValidatorTest extends TestCase
     {
         $test = $this;
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array('key' => $entity));
+        $traversable = new ArrayIterator(array('key' => $entity));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test, $entity, $traversable) {
             $test->assertSame($test::ENTITY_CLASS, $context->getClassName());
@@ -339,8 +343,8 @@ abstract class AbstractValidatorTest extends TestCase
     {
         $test = $this;
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array(
-            2 => new \ArrayIterator(array('key' => $entity)),
+        $traversable = new ArrayIterator(array(
+            2 => new ArrayIterator(array('key' => $entity)),
         ));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test, $entity, $traversable) {
@@ -512,7 +516,7 @@ abstract class AbstractValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\NoSuchMetadataException
+     * @expectedException NoSuchMetadataException
      */
     public function testFailOnScalarReferences()
     {
@@ -673,7 +677,7 @@ abstract class AbstractValidatorTest extends TestCase
     {
         $test = $this;
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator(array('key' => new Reference()));
+        $entity->reference = new ArrayIterator(array('key' => new Reference()));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test, $entity) {
             $test->assertSame($test::REFERENCE_CLASS, $context->getClassName());
@@ -711,7 +715,7 @@ abstract class AbstractValidatorTest extends TestCase
     public function testDisableTraversableTraversal()
     {
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator(array('key' => new Reference()));
+        $entity->reference = new ArrayIterator(array('key' => new Reference()));
 
         $callback = function ($value, ExecutionContextInterface $context) {
             $context->addViolation('Message %param%', array('%param%' => 'value'));
@@ -730,12 +734,12 @@ abstract class AbstractValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\NoSuchMetadataException
+     * @expectedException NoSuchMetadataException
      */
     public function testMetadataMustExistIfTraversalIsDisabled()
     {
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator();
+        $entity->reference = new ArrayIterator();
 
         $this->metadata->addPropertyConstraint('reference', new Valid(array(
             'traverse' => false,
@@ -748,8 +752,8 @@ abstract class AbstractValidatorTest extends TestCase
     {
         $test = $this;
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator(array(
-            2 => new \ArrayIterator(array('key' => new Reference())),
+        $entity->reference = new ArrayIterator(array(
+            2 => new ArrayIterator(array('key' => new Reference())),
         ));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test, $entity) {
@@ -839,7 +843,7 @@ abstract class AbstractValidatorTest extends TestCase
     /**
      * Cannot be UnsupportedMetadataException for BC with Symfony < 2.5.
      *
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
+     * @expectedException ValidatorException
      * @group legacy
      */
     public function testLegacyValidatePropertyFailsIfPropertiesNotSupported()
@@ -970,7 +974,7 @@ abstract class AbstractValidatorTest extends TestCase
     /**
      * Cannot be UnsupportedMetadataException for BC with Symfony < 2.5.
      *
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
+     * @expectedException ValidatorException
      * @group legacy
      */
     public function testLegacyValidatePropertyValueFailsIfPropertiesNotSupported()
@@ -1222,7 +1226,7 @@ abstract class AbstractValidatorTest extends TestCase
             $context->addViolation('Violation in Group 3');
         };
 
-        $metadata = new ClassMetadata(\get_class($entity));
+        $metadata = new ClassMetadata(get_class($entity));
         $metadata->addConstraint(new Callback(array(
             'callback' => function () {},
             'groups' => 'Group 1',
@@ -1258,7 +1262,7 @@ abstract class AbstractValidatorTest extends TestCase
             $context->addViolation('Violation in Group 3');
         };
 
-        $metadata = new ClassMetadata(\get_class($entity));
+        $metadata = new ClassMetadata(get_class($entity));
         $metadata->addConstraint(new Callback(array(
             'callback' => function () {},
             'groups' => 'Group 1',

@@ -11,8 +11,10 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use Locale;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
@@ -24,6 +26,9 @@ use Symfony\Component\Validator\ExecutionContextInterface as LegacyExecutionCont
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
 use Symfony\Component\Validator\Validation;
+use function count;
+use function get_class;
+use function is_object;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -66,7 +71,7 @@ abstract class AbstractConstraintValidatorTest extends TestCase
         $this->validator = $this->createValidator();
         $this->validator->initialize($this->context);
 
-        \Locale::setDefault('en');
+        Locale::setDefault('en');
 
         $this->setDefaultTimezone('UTC');
     }
@@ -118,7 +123,7 @@ abstract class AbstractConstraintValidatorTest extends TestCase
                 );
                 break;
             default:
-                throw new \RuntimeException('Invalid API version');
+                throw new RuntimeException('Invalid API version');
         }
 
         $context->setGroup($this->group);
@@ -169,8 +174,8 @@ abstract class AbstractConstraintValidatorTest extends TestCase
     protected function setObject($object)
     {
         $this->object = $object;
-        $this->metadata = \is_object($object)
-            ? new ClassMetadata(\get_class($object))
+        $this->metadata = is_object($object)
+            ? new ClassMetadata(get_class($object))
             : null;
 
         $this->context->setNode($this->value, $this->object, $this->metadata, $this->propertyPath);
@@ -179,8 +184,8 @@ abstract class AbstractConstraintValidatorTest extends TestCase
     protected function setProperty($object, $property)
     {
         $this->object = $object;
-        $this->metadata = \is_object($object)
-            ? new PropertyMetadata(\get_class($object), $property)
+        $this->metadata = is_object($object)
+            ? new PropertyMetadata(get_class($object), $property)
             : null;
 
         $this->context->setNode($this->value, $this->object, $this->metadata, $this->propertyPath);
@@ -240,7 +245,7 @@ abstract class AbstractConstraintValidatorTest extends TestCase
 
     protected function assertNoViolation()
     {
-        $this->assertSame(0, $violationsCount = \count($this->context->getViolations()), sprintf('0 violation expected. Got %u.', $violationsCount));
+        $this->assertSame(0, $violationsCount = count($this->context->getViolations()), sprintf('0 violation expected. Got %u.', $violationsCount));
     }
 
     /**
@@ -279,7 +284,7 @@ abstract class AbstractConstraintValidatorTest extends TestCase
 
         $violations = $this->context->getViolations();
 
-        $this->assertCount(\count($expected), $violations);
+        $this->assertCount(count($expected), $violations);
 
         $i = 0;
 
@@ -413,7 +418,7 @@ class ConstraintViolationAssertion
 
         $violations = iterator_to_array($this->context->getViolations());
 
-        Assert::assertSame($expectedCount = \count($expected), $violationsCount = \count($violations), sprintf('%u violation(s) expected. Got %u.', $expectedCount, $violationsCount));
+        Assert::assertSame($expectedCount = count($expected), $violationsCount = count($violations), sprintf('%u violation(s) expected. Got %u.', $expectedCount, $violationsCount));
 
         reset($violations);
 

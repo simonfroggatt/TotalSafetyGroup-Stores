@@ -5,6 +5,7 @@ use GuzzleHttp\Event\HasEmitterInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
+use LogicException;
 
 /**
  * Client interface for sending HTTP requests
@@ -111,8 +112,8 @@ interface ClientInterface extends HasEmitterInterface
      *
      * @param RequestInterface $request Request to send
      *
-     * @return \GuzzleHttp\Message\ResponseInterface
-     * @throws \LogicException When the handler does not populate a response
+     * @return ResponseInterface
+     * @throws LogicException When the handler does not populate a response
      * @throws RequestException When an error is encountered
      */
     public function send(RequestInterface $request);

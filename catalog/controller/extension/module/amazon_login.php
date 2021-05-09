@@ -92,7 +92,7 @@ class ControllerExtensionModuleAmazonLogin extends Controller {
             } else {
                 $this->model_extension_module_amazon_login->debugLog("EXCEPTION", $this->language->get('error_login'));
 
-                throw new \RuntimeException($this->language->get('error_login'));
+                throw new RuntimeException($this->language->get('error_login'));
             }
 
             // No issues found, and the Amazon profile has been fetched
@@ -128,7 +128,7 @@ class ControllerExtensionModuleAmazonLogin extends Controller {
 
                 $this->response->redirect($this->url->link('account/account', '', true));
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->session->data['apalwa']['login']['error'] = $e->getMessage();
 
             $this->response->redirect($this->url->link('extension/module/amazon_login/error', '', true));

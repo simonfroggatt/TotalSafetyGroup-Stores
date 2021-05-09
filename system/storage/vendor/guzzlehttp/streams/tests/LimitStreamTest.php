@@ -1,15 +1,17 @@
 <?php
 namespace GuzzleHttp\Tests\Http;
 
+use GuzzleHttp\Stream\Exception\SeekException;
 use GuzzleHttp\Stream\FnStream;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\LimitStream;
 use GuzzleHttp\Stream\NoSeekStream;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @covers GuzzleHttp\Stream\LimitStream
  */
-class LimitStreamTest extends \PHPUnit_Framework_TestCase
+class LimitStreamTest extends PHPUnit_Framework_TestCase
 {
     /** @var LimitStream */
     protected $body;
@@ -84,7 +86,7 @@ class LimitStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Stream\Exception\SeekException
+     * @expectedException SeekException
      * @expectedExceptionMessage Could not seek the stream to position 2
      */
     public function testThrowsWhenCurrentGreaterThanOffsetSeek()

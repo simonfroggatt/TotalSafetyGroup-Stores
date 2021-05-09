@@ -4,6 +4,7 @@ namespace Braintree\Result;
 use Braintree\RiskData;
 use Braintree\Util;
 use Braintree\UsBankAccount;
+use DateTime;
 
 /**
  * Braintree US Bank Account Verification Result
@@ -18,7 +19,7 @@ use Braintree\UsBankAccount;
  * @property-read string $id
  * @property-read string $status
  * @property-read string $verificationMethod
- * @property-read \DateTime $verificationDeterminedAt
+ * @property-read DateTime $verificationDeterminedAt
  * @property-read Braintree\UsBankAccount $usBankAccount
  *
  */

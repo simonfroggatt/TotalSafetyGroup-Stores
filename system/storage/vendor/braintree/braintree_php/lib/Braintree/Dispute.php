@@ -1,6 +1,11 @@
 <?php
 namespace Braintree;
 
+use Braintree\Dispute\EvidenceDetails;
+use Braintree\Dispute\StatusHistoryDetails;
+use Braintree\Dispute\TransactionDetails;
+use DateTime;
+
 /**
  * Creates an instance of Dispute as returned from a transaction
  *
@@ -8,10 +13,10 @@ namespace Braintree;
  * @package    Braintree
  *
  * @property-read string $amount
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $currencyIsoCode
  * @property-read string $disbursementDate
- * @property-read \Braintree\Dispute\EvidenceDetails $evidence
+ * @property-read EvidenceDetails $evidence
  * @property-read string $id
  * @property-read string $kind
  * @property-read string $merchantAccountId
@@ -20,14 +25,14 @@ namespace Braintree;
  * @property-read string $reason
  * @property-read string $reasonCode
  * @property-read string $reasonDescription
- * @property-read \DateTime $receivedDate
+ * @property-read DateTime $receivedDate
  * @property-read string $referenceNumber
- * @property-read \DateTime $replyByDate
+ * @property-read DateTime $replyByDate
  * @property-read string $status
- * @property-read \Braintree\Dispute\StatusHistoryDetails[] $statusHistory
- * @property-read \Braintree\Dispute\TransactionDetails $transaction
- * @property-read \Braintree\Dispute\TransactionDetails $transactionDetails
- * @property-read \DateTime $updatedAt
+ * @property-read StatusHistoryDetails[] $statusHistory
+ * @property-read TransactionDetails $transaction
+ * @property-read TransactionDetails $transactionDetails
+ * @property-read DateTime $updatedAt
  */
 class Dispute extends Base
 {

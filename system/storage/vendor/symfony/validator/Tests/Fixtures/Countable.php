@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Validator\Tests\Fixtures;
 
+use function count;
+
 class Countable implements \Countable
 {
     private $content;
@@ -22,6 +24,6 @@ class Countable implements \Countable
 
     public function count()
     {
-        return \count($this->content);
+        return count($this->content);
     }
 }

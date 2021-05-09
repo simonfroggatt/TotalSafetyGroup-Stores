@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Event;
 
+use Exception;
+
 /**
  * A terminal event that is emitted when a request transaction has ended.
  *
@@ -19,7 +21,7 @@ class EndEvent extends AbstractTransferEvent
      * This method should be used to check if the request was sent successfully
      * or if it encountered errors.
      *
-     * @return \Exception|null
+     * @return Exception|null
      */
     public function getException()
     {

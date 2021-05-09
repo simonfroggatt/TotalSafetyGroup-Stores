@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* default/template/common/cart.twig */
-class __TwigTemplate_b1a09315764269bdf97299e66b31a713b4cf42d76c0e6d16d97f80cf33d91195 extends \Twig\Template
+class __TwigTemplate_b1a09315764269bdf97299e66b31a713b4cf42d76c0e6d16d97f80cf33d91195 extends Template
 {
     private $source;
     private $macros = [];

@@ -2,6 +2,7 @@
 namespace Braintree\Dispute;
 
 use Braintree\Instance;
+use DateTime;
 
 /**
  * Evidence details for a dispute
@@ -10,9 +11,9 @@ use Braintree\Instance;
  *
  * @property-read string $category
  * @property-read string $comment
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $id
- * @property-read \DateTime $sentToProcessorAt
+ * @property-read DateTime $sentToProcessorAt
  * @property-read string $sequenceNumber
  * @property-read string $tag
  * @property-read string $url

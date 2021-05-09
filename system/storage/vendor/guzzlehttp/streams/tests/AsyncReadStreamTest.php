@@ -5,11 +5,13 @@ use GuzzleHttp\Stream\AsyncReadStream;
 use GuzzleHttp\Stream\BufferStream;
 use GuzzleHttp\Stream\FnStream;
 use GuzzleHttp\Stream\Stream;
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
 
-class AsyncReadStreamTest extends \PHPUnit_Framework_TestCase
+class AsyncReadStreamTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Buffer must be readable and writable
      */
     public function testValidatesReadableBuffer()
@@ -21,7 +23,7 @@ class AsyncReadStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Buffer must be readable and writable
      */
     public function testValidatesWritableBuffer()
@@ -41,7 +43,7 @@ class AsyncReadStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage pump must be callable
      */
     public function testValidatesPumpIsCallable()
@@ -50,7 +52,7 @@ class AsyncReadStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage drain must be callable
      */
     public function testValidatesDrainIsCallable()

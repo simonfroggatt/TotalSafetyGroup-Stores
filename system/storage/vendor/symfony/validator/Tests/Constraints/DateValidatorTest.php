@@ -11,8 +11,11 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use DateTime;
+use stdClass;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class DateValidatorTest extends AbstractConstraintValidatorTest
@@ -43,17 +46,17 @@ class DateValidatorTest extends AbstractConstraintValidatorTest
 
     public function testDateTimeClassIsValid()
     {
-        $this->validator->validate(new \DateTime(), new Date());
+        $this->validator->validate(new DateTime(), new Date());
 
         $this->assertNoViolation();
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Date());
+        $this->validator->validate(new stdClass(), new Date());
     }
 
     /**

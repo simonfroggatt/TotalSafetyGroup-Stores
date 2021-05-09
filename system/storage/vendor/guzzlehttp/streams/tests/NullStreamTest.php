@@ -1,9 +1,11 @@
 <?php
 namespace GuzzleHttp\Tests\Stream;
 
+use GuzzleHttp\Stream\Exception\CannotAttachException;
 use GuzzleHttp\Stream\NullStream;
+use PHPUnit_Framework_TestCase;
 
-class NullStreamTest extends \PHPUnit_Framework_TestCase
+class NullStreamTest extends PHPUnit_Framework_TestCase
 {
     public function testDoesNothing()
     {
@@ -29,7 +31,7 @@ class NullStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Stream\Exception\CannotAttachException
+     * @expectedException CannotAttachException
      */
     public function testCannotAttach()
     {

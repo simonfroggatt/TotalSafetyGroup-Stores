@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Creates an instance of AuthorizationAdjustment as returned from a transaction
  *
@@ -8,7 +10,7 @@ namespace Braintree;
  *
  * @property-read string $amount
  * @property-read boolean $success
- * @property-read \DateTime $timestamp
+ * @property-read DateTime $timestamp
  *
  */
 

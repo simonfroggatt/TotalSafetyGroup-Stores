@@ -2,6 +2,7 @@
 namespace Braintree\Transaction;
 
 use Braintree\Instance;
+use DateTime;
 
 /**
  * Status details from a transaction
@@ -11,7 +12,7 @@ use Braintree\Instance;
  *
  * @property-read string    $amount
  * @property-read string    $status
- * @property-read \DateTime $timestamp
+ * @property-read DateTime $timestamp
  * @property-read string    $transactionSource
  * @property-read string    $user
  */

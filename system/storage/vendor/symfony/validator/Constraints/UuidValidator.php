@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints\Deprecated\UuidValidator as Deprecat
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use function in_array;
+use function is_object;
 
 /**
  * Validates whether the value is a valid UUID (also known as GUID).
@@ -91,7 +93,7 @@ class UuidValidator extends ConstraintValidator
             return;
         }
 
-        if (!is_scalar($value) && !(\is_object($value) && method_exists($value, '__toString'))) {
+        if (!is_scalar($value) && !(is_object($value) && method_exists($value, '__toString'))) {
             throw new UnexpectedTypeException($value, 'string');
         }
 
@@ -315,7 +317,7 @@ class UuidValidator extends ConstraintValidator
         }
 
         // Check version
-        if (!\in_array($value[self::STRICT_VERSION_POSITION], $constraint->versions)) {
+        if (!in_array($value[self::STRICT_VERSION_POSITION], $constraint->versions)) {
             if ($this->context instanceof ExecutionContextInterface) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $this->formatValue($value))

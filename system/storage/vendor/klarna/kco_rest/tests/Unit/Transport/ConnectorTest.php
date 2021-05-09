@@ -19,10 +19,12 @@
 
 namespace Klarna\Rest\Tests\Unit\Transport;
 
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Klarna\Rest\Tests\Unit\TestCase;
 use Klarna\Rest\Transport\Connector;
 use Klarna\Rest\Transport\Exception\ConnectorException;
+use Klarna\Rest\Transport\UserAgentInterface;
 
 /**
  * Unit test cases for the connector class.
@@ -43,12 +45,12 @@ class ConnectorTest extends TestCase
     protected $object;
 
     /**
-     * @var \GuzzleHttp\ClientInterface
+     * @var ClientInterface
      */
     protected $client;
 
     /**
-     * @var \Klarna\Rest\Transport\UserAgentInterface
+     * @var UserAgentInterface
      */
     protected $userAgent;
 

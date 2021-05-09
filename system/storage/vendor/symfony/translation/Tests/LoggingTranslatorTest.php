@@ -11,11 +11,12 @@
 
 namespace Symfony\Component\Translation\Tests;
 
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\LoggingTranslator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
-class LoggingTranslatorTest extends \PHPUnit_Framework_TestCase
+class LoggingTranslatorTest extends PHPUnit_Framework_TestCase
 {
     public function testTransWithNoTranslationIsLogged()
     {

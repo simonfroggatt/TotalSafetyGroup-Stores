@@ -23,6 +23,8 @@ use GuzzleHttp\Exception\RequestException;
 use Klarna\Rest\Resource;
 use Klarna\Rest\Transport\Connector;
 use Klarna\Rest\Transport\Exception\ConnectorException;
+use LogicException;
+use RuntimeException;
 
 /**
  * Capture resource.
@@ -72,9 +74,9 @@ class Capture extends Resource
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws \RuntimeException  If the location header is missing
-     * @throws \RuntimeException  If the API replies with an unexpected response
-     * @throws \LogicException    When Guzzle cannot populate the response
+     * @throws RuntimeException  If the location header is missing
+     * @throws RuntimeException  If the API replies with an unexpected response
+     * @throws LogicException    When Guzzle cannot populate the response
      *
      * @return self
      */
@@ -96,8 +98,8 @@ class Capture extends Resource
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws \RuntimeException  If the API replies with an unexpected response
-     * @throws \LogicException    When Guzzle cannot populate the response
+     * @throws RuntimeException  If the API replies with an unexpected response
+     * @throws LogicException    When Guzzle cannot populate the response
      *
      * @return self
      */
@@ -116,8 +118,8 @@ class Capture extends Resource
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws \RuntimeException  If the API replies with an unexpected response
-     * @throws \LogicException    When Guzzle cannot populate the response
+     * @throws RuntimeException  If the API replies with an unexpected response
+     * @throws LogicException    When Guzzle cannot populate the response
      *
      * @return self
      */
@@ -134,8 +136,8 @@ class Capture extends Resource
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws \RuntimeException  If the API replies with an unexpected response
-     * @throws \LogicException    When Guzzle cannot populate the response
+     * @throws RuntimeException  If the API replies with an unexpected response
+     * @throws LogicException    When Guzzle cannot populate the response
      *
      * @return self
      */

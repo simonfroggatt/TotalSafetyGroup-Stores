@@ -3,6 +3,7 @@ namespace Test\Unit;
 
 require_once dirname(__DIR__) . '/Setup.php';
 
+use Exception;
 use Test\Setup;
 use Braintree;
 
@@ -27,7 +28,7 @@ class PaginatedCollectionTest extends Setup
             'object' => new Pager(function ($page) {
                 if ($page > 1)
                 {
-                    throw new \Exception('too many pages fetched');
+                    throw new Exception('too many pages fetched');
                 }
                 else
                 {
@@ -54,7 +55,7 @@ class PaginatedCollectionTest extends Setup
             'object' => new Pager(function ($page) {
                 if ($page > 1)
                 {
-                    throw new \Exception('too many pages fetched');
+                    throw new Exception('too many pages fetched');
                 }
                 else
                 {
@@ -82,7 +83,7 @@ class PaginatedCollectionTest extends Setup
             'object' => new Pager(function ($page) {
                 if ($page > 2)
                 {
-                    throw new \Exception('too many pages fetched');
+                    throw new Exception('too many pages fetched');
                 }
                 else
                 {

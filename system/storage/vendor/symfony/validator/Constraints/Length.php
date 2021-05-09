@@ -13,6 +13,7 @@ namespace Symfony\Component\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
+use function is_array;
 
 /**
  * @Annotation
@@ -42,7 +43,7 @@ class Length extends Constraint
 
     public function __construct($options = null)
     {
-        if (null !== $options && !\is_array($options)) {
+        if (null !== $options && !is_array($options)) {
             $options = array(
                 'min' => $options,
                 'max' => $options,

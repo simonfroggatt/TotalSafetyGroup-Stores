@@ -3,11 +3,14 @@ namespace GuzzleHttp\Tests\Stream;
 
 use GuzzleHttp\Stream\GuzzleStreamWrapper;
 use GuzzleHttp\Stream\Stream;
+use InvalidArgumentException;
+use PHPUnit_Framework_Error_Warning;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @covers GuzzleHttp\Stream\GuzzleStreamWrapper
  */
-class GuzzleStreamWrapperTest extends \PHPUnit_Framework_TestCase
+class GuzzleStreamWrapperTest extends PHPUnit_Framework_TestCase
 {
     public function testResource()
     {
@@ -57,7 +60,7 @@ class GuzzleStreamWrapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testValidatesStream()
     {
@@ -74,7 +77,7 @@ class GuzzleStreamWrapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * @expectedException PHPUnit_Framework_Error_Warning
      */
     public function testReturnsFalseWhenStreamDoesNotExist()
     {

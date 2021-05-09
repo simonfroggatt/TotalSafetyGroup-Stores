@@ -2,6 +2,9 @@
 
 namespace Psr\Log\Test;
 
+use DateTime;
+use LogicException;
+use Psr\Log\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use PHPUnit\Framework\TestCase;
@@ -66,7 +69,7 @@ abstract class LoggerInterfaceTest extends TestCase
     }
 
     /**
-     * @expectedException \Psr\Log\InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testThrowsOnInvalidLevel()
     {
@@ -112,7 +115,7 @@ abstract class LoggerInterfaceTest extends TestCase
             'int' => 0,
             'float' => 0.5,
             'nested' => array('with object' => new DummyTest),
-            'object' => new \DateTime,
+            'object' => new DateTime,
             'resource' => fopen('php://memory', 'r'),
             'closed' => $closed,
         );
@@ -127,7 +130,7 @@ abstract class LoggerInterfaceTest extends TestCase
     {
         $logger = $this->getLogger();
         $logger->warning('Random message', array('exception' => 'oops'));
-        $logger->critical('Uncaught Exception!', array('exception' => new \LogicException('Fail')));
+        $logger->critical('Uncaught Exception!', array('exception' => new LogicException('Fail')));
 
         $expected = array(
             'warning Random message',

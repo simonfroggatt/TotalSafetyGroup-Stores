@@ -1,13 +1,19 @@
 <?php
 namespace GuzzleHttp;
 
+use ArrayAccess;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+use Traversable;
+
 /**
  * Key value pair collection object
  */
 class Collection implements
-    \ArrayAccess,
-    \IteratorAggregate,
-    \Countable,
+    ArrayAccess,
+    IteratorAggregate,
+    Countable,
     ToArrayInterface
 {
     use HasDataTrait;
@@ -29,7 +35,7 @@ class Collection implements
      * @param array $required Required parameter names
      *
      * @return self
-     * @throws \InvalidArgumentException if a parameter is missing
+     * @throws InvalidArgumentException if a parameter is missing
      */
     public static function fromConfig(
         array $config = [],
@@ -39,7 +45,7 @@ class Collection implements
         $data = $config + $defaults;
 
         if ($missing = array_diff($required, array_keys($data))) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Config is missing the following keys: ' .
                 implode(', ', $missing));
         }
@@ -168,7 +174,7 @@ class Collection implements
      * Overwrite key value pairs in this collection with all of the data from
      * an array or collection.
      *
-     * @param array|\Traversable $data Values to override over this config
+     * @param array|Traversable $data Values to override over this config
      */
     public function overwriteWith($data)
     {

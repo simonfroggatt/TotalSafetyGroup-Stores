@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * {@inheritdoc}
  * 
@@ -15,15 +17,15 @@ namespace Braintree;
  * @property-read string $postalCode
  * @property-read string $region
  * @property-read string $streetAddress
- * @property-read \DateTime $createdAt
- * @property-read \Braintree\CreditCard $creditCard
+ * @property-read DateTime $createdAt
+ * @property-read CreditCard $creditCard
  * @property-read string|null $gatewayRejectionReason
  * @property-read string $id
  * @property-read string $merchantAccountId
  * @property-read string $processorResponseCode
  * @property-read string $processorResponseText
  * @property-read string $processorResponseType
- * @property-read \Braintree\RiskData|null $riskData
+ * @property-read RiskData|null $riskData
  */
 class CreditCardVerification extends Result\CreditCardVerification
 {

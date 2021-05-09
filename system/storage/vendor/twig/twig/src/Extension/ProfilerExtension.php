@@ -13,6 +13,7 @@ namespace Twig\Extension;
 
 use Twig\Profiler\NodeVisitor\ProfilerNodeVisitor;
 use Twig\Profiler\Profile;
+use function count;
 
 class ProfilerExtension extends AbstractExtension
 {
@@ -34,7 +35,7 @@ class ProfilerExtension extends AbstractExtension
         $profile->leave();
         array_shift($this->actives);
 
-        if (1 === \count($this->actives)) {
+        if (1 === count($this->actives)) {
             $this->actives[0]->leave();
         }
     }

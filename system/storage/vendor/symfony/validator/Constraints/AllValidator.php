@@ -15,6 +15,8 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Traversable;
+use function is_array;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -34,7 +36,7 @@ class AllValidator extends ConstraintValidator
             return;
         }
 
-        if (!\is_array($value) && !$value instanceof \Traversable) {
+        if (!is_array($value) && !$value instanceof Traversable) {
             throw new UnexpectedTypeException($value, 'array or Traversable');
         }
 

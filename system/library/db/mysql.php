@@ -1,5 +1,8 @@
 <?php
 namespace DB;
+use Exception;
+use stdClass;
+
 final class MySQL {
 	private $connection;
 
@@ -10,7 +13,7 @@ final class MySQL {
 		}
 
 		if (!mysql_select_db($database, $this->connection)) {
-			throw new \Exception('Error: Could not connect to database ' . $database);
+			throw new Exception('Error: Could not connect to database ' . $database);
 		}
 
 		mysql_query("SET NAMES 'utf8'", $this->connection);
@@ -37,7 +40,7 @@ final class MySQL {
 
 					mysql_free_result($resource);
 
-					$query = new \stdClass();
+					$query = new stdClass();
 					$query->row = isset($data[0]) ? $data[0] : array();
 					$query->rows = $data;
 					$query->num_rows = $i;
@@ -51,7 +54,7 @@ final class MySQL {
 			} else {
 				$trace = debug_backtrace();
 
-				throw new \Exception('Error: ' . mysql_error($this->connection) . '<br />Error No: ' . mysql_errno($this->connection) . '<br /> Error in: <b>' . $trace[1]['file'] . '</b> line <b>' . $trace[1]['line'] . '</b><br />' . $sql);
+				throw new Exception('Error: ' . mysql_error($this->connection) . '<br />Error No: ' . mysql_errno($this->connection) . '<br /> Error in: <b>' . $trace[1]['file'] . '</b> line <b>' . $trace[1]['line'] . '</b><br />' . $sql);
 			}
 		}
 	}

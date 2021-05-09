@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* default/template/common/currency.twig */
-class __TwigTemplate_1e195dda2a36a5caabf15321b958b8c5d612ef3c2c5fdae145c06d9d064c06bf extends \Twig\Template
+class __TwigTemplate_1e195dda2a36a5caabf15321b958b8c5d612ef3c2c5fdae145c06d9d064c06bf extends Template
 {
     private $source;
     private $macros = [];

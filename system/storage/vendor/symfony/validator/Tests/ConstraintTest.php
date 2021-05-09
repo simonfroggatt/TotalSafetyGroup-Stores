@@ -13,6 +13,8 @@ namespace Symfony\Component\Validator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Tests\Fixtures\ClassConstraint;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintB;
@@ -205,7 +207,7 @@ class ConstraintTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testGetErrorNameForUnknownCode()
     {
@@ -224,7 +226,7 @@ class ConstraintTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @expectedException InvalidOptionsException
      * @expectedExceptionMessage The options "0", "5" do not exist
      */
     public function testInvalidOptions()

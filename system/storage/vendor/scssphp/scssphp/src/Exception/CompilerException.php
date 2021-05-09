@@ -11,11 +11,13 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
+use Exception;
+
 /**
  * Compiler exception
  *
  * @author Oleksandr Savchenko <traveltino@gmail.com>
  */
-class CompilerException extends \Exception
+class CompilerException extends Exception
 {
 }

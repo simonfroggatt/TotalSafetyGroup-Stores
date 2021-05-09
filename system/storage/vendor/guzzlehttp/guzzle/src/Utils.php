@@ -5,6 +5,10 @@ use GuzzleHttp\Ring\Client\CurlHandler;
 use GuzzleHttp\Ring\Client\CurlMultiHandler;
 use GuzzleHttp\Ring\Client\StreamHandler;
 use GuzzleHttp\Ring\Client\Middleware;
+use InvalidArgumentException;
+use RuntimeException;
+use function json_decode;
+use function uri_template;
 
 /**
  * Utility methods used throughout Guzzle.
@@ -61,7 +65,7 @@ final class Utils
      * @param string $path  Path to set
      * @param mixed  $value Value to set at the key
      *
-     * @throws \RuntimeException when trying to setPath using a nested path
+     * @throws RuntimeException when trying to setPath using a nested path
      *     that travels through a scalar value.
      */
     public static function setPath(&$data, $path, $value)
@@ -76,7 +80,7 @@ final class Utils
         $current =& $data;
         while (null !== ($key = array_shift($queue))) {
             if (!is_array($current)) {
-                throw new \RuntimeException("Trying to setPath {$path}, but "
+                throw new RuntimeException("Trying to setPath {$path}, but "
                     . "{$key} is set and is not an array");
             } elseif (!$queue) {
                 if ($key == '[]') {
@@ -104,7 +108,7 @@ final class Utils
     public static function uriTemplate($template, array $variables)
     {
         if (function_exists('\\uri_template')) {
-            return \uri_template($template, $variables);
+            return uri_template($template, $variables);
         }
 
         static $uriTemplate;
@@ -126,7 +130,7 @@ final class Utils
      * @param int    $options Bitmask of JSON decode options.
      *
      * @return mixed
-     * @throws \InvalidArgumentException if the JSON cannot be parsed.
+     * @throws InvalidArgumentException if the JSON cannot be parsed.
      * @link http://www.php.net/manual/en/function.json-decode.php
      */
     public static function jsonDecode($json, $assoc = false, $depth = 512, $options = 0)
@@ -143,11 +147,11 @@ final class Utils
             JSON_ERROR_UTF8 => 'JSON_ERROR_UTF8 - Malformed UTF-8 characters, possibly incorrectly encoded'
         ];
 
-        $data = \json_decode($json, $assoc, $depth, $options);
+        $data = json_decode($json, $assoc, $depth, $options);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             $last = json_last_error();
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Unable to parse JSON data: '
                 . (isset($jsonErrors[$last])
                     ? $jsonErrors[$last]
@@ -180,7 +184,7 @@ final class Utils
     /**
      * Create a default handler to use based on the environment
      *
-     * @throws \RuntimeException if no viable Handler is available.
+     * @throws RuntimeException if no viable Handler is available.
      */
     public static function getDefaultHandler()
     {
@@ -206,7 +210,7 @@ final class Utils
                 ? new StreamHandler()
                 : Middleware::wrapStreaming($default, new StreamHandler());
         } elseif (!$default) {
-            throw new \RuntimeException('Guzzle requires cURL, the '
+            throw new RuntimeException('Guzzle requires cURL, the '
                 . 'allow_url_fopen ini setting, or a custom HTTP handler.');
         }
 

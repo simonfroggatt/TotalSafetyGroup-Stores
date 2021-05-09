@@ -12,6 +12,7 @@
 namespace Symfony\Component\Validator\Mapping;
 
 use Symfony\Component\Validator\ClassBasedInterface;
+use Symfony\Component\Validator\Constraints\GroupSequence;
 use Symfony\Component\Validator\PropertyMetadataContainerInterface as LegacyPropertyMetadataContainerInterface;
 
 /**
@@ -55,7 +56,7 @@ interface ClassMetadataInterface extends MetadataInterface, LegacyPropertyMetada
      * Returns the group sequence that overrides the "Default" group for this
      * class.
      *
-     * @return \Symfony\Component\Validator\Constraints\GroupSequence|null The group sequence or null
+     * @return GroupSequence|null The group sequence or null
      *
      * @see \Symfony\Component\Validator\Constraints\GroupSequence
      */

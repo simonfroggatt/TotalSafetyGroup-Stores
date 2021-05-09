@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* default/template/extension/module/slideshow.twig */
-class __TwigTemplate_6c01568cb6c0f4c92463ec2e8b970e8956198789d4b9e52b020f06fcb4dd1f55 extends \Twig\Template
+class __TwigTemplate_6c01568cb6c0f4c92463ec2e8b970e8956198789d4b9e52b020f06fcb4dd1f55 extends Template
 {
     private $source;
     private $macros = [];

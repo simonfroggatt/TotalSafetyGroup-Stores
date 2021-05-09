@@ -11,9 +11,11 @@
 
 namespace Symfony\Component\Translation\Tests;
 
+use LogicException;
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Translation\MessageCatalogue;
 
-class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
+class MessageCatalogueTest extends PHPUnit_Framework_TestCase
 {
     public function testGetLocale()
     {
@@ -125,7 +127,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testAddFallbackCatalogueWithParentCircularReference()
     {
@@ -137,7 +139,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testAddFallbackCatalogueWithFallbackCircularReference()
     {
@@ -151,7 +153,7 @@ class MessageCatalogueTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testAddCatalogueWhenLocaleIsNotTheSameAsTheCurrentOne()
     {

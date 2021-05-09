@@ -11,11 +11,13 @@
 
 namespace Symfony\Component\Translation\Exception;
 
+use InvalidArgumentException;
+
 /**
  * Thrown when a resource does not exist.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class NotFoundResourceException extends \InvalidArgumentException implements ExceptionInterface
+class NotFoundResourceException extends InvalidArgumentException implements ExceptionInterface
 {
 }

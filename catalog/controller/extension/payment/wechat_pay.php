@@ -1,4 +1,7 @@
 <?php
+
+use Wechat\WechatPay;
+
 /**
  * @package		OpenCart
  * @author		Meng Wenbin
@@ -62,7 +65,7 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 		);
 
 		\Wechat\Loader::config($options);
-		$pay = new \Wechat\WechatPay();
+		$pay = new WechatPay();
 
 		$result = $pay->getPrepayId(NULL, $subject, $order_id, $total_amount * 100, $notify_url, $trade_type = "NATIVE", NULL, $currency);
 
@@ -115,7 +118,7 @@ class ControllerExtensionPaymentWechatPay extends Controller {
 		);
 
 		\Wechat\Loader::config($options);
-		$pay = new \Wechat\WechatPay();
+		$pay = new WechatPay();
 		$notifyInfo = $pay->getNotify();
 
 		if ($notifyInfo === FALSE) {

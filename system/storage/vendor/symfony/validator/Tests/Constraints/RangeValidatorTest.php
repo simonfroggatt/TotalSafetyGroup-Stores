@@ -11,10 +11,14 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use DateTime;
+use DateTimeImmutable;
+use stdClass;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\RangeValidator;
 use Symfony\Component\Validator\Validation;
+use const PHP_VERSION_ID;
 
 class RangeValidatorTest extends AbstractConstraintValidatorTest
 {
@@ -189,15 +193,15 @@ class RangeValidatorTest extends AbstractConstraintValidatorTest
         $this->setDefaultTimezone('UTC');
 
         $tests = array(
-            array(new \DateTime('March 10, 2014')),
-            array(new \DateTime('March 15, 2014')),
-            array(new \DateTime('March 20, 2014')),
+            array(new DateTime('March 10, 2014')),
+            array(new DateTime('March 15, 2014')),
+            array(new DateTime('March 20, 2014')),
         );
 
-        if (\PHP_VERSION_ID >= 50500) {
-            $tests[] = array(new \DateTimeImmutable('March 10, 2014'));
-            $tests[] = array(new \DateTimeImmutable('March 15, 2014'));
-            $tests[] = array(new \DateTimeImmutable('March 20, 2014'));
+        if (PHP_VERSION_ID >= 50500) {
+            $tests[] = array(new DateTimeImmutable('March 10, 2014'));
+            $tests[] = array(new DateTimeImmutable('March 15, 2014'));
+            $tests[] = array(new DateTimeImmutable('March 20, 2014'));
         }
 
         $this->restoreDefaultTimezone();
@@ -212,13 +216,13 @@ class RangeValidatorTest extends AbstractConstraintValidatorTest
         $this->setDefaultTimezone('UTC');
 
         $tests = array(
-            array(new \DateTime('March 20, 2013'), 'Mar 20, 2013, 12:00 AM'),
-            array(new \DateTime('March 9, 2014'), 'Mar 9, 2014, 12:00 AM'),
+            array(new DateTime('March 20, 2013'), 'Mar 20, 2013, 12:00 AM'),
+            array(new DateTime('March 9, 2014'), 'Mar 9, 2014, 12:00 AM'),
         );
 
-        if (\PHP_VERSION_ID >= 50500) {
-            $tests[] = array(new \DateTimeImmutable('March 20, 2013'), 'Mar 20, 2013, 12:00 AM');
-            $tests[] = array(new \DateTimeImmutable('March 9, 2014'), 'Mar 9, 2014, 12:00 AM');
+        if (PHP_VERSION_ID >= 50500) {
+            $tests[] = array(new DateTimeImmutable('March 20, 2013'), 'Mar 20, 2013, 12:00 AM');
+            $tests[] = array(new DateTimeImmutable('March 9, 2014'), 'Mar 9, 2014, 12:00 AM');
         }
 
         $this->restoreDefaultTimezone();
@@ -233,13 +237,13 @@ class RangeValidatorTest extends AbstractConstraintValidatorTest
         $this->setDefaultTimezone('UTC');
 
         $tests = array(
-            array(new \DateTime('March 21, 2014'), 'Mar 21, 2014, 12:00 AM'),
-            array(new \DateTime('March 9, 2015'), 'Mar 9, 2015, 12:00 AM'),
+            array(new DateTime('March 21, 2014'), 'Mar 21, 2014, 12:00 AM'),
+            array(new DateTime('March 9, 2015'), 'Mar 9, 2015, 12:00 AM'),
         );
 
-        if (\PHP_VERSION_ID >= 50500) {
-            $tests[] = array(new \DateTimeImmutable('March 21, 2014'), 'Mar 21, 2014, 12:00 AM');
-            $tests[] = array(new \DateTimeImmutable('March 9, 2015'), 'Mar 9, 2015, 12:00 AM');
+        if (PHP_VERSION_ID >= 50500) {
+            $tests[] = array(new DateTimeImmutable('March 21, 2014'), 'Mar 21, 2014, 12:00 AM');
+            $tests[] = array(new DateTimeImmutable('March 9, 2015'), 'Mar 9, 2015, 12:00 AM');
         }
 
         $this->restoreDefaultTimezone();
@@ -383,7 +387,7 @@ class RangeValidatorTest extends AbstractConstraintValidatorTest
             array(20.000001),
             array('9.999999'),
             array('20.000001'),
-            array(new \stdClass()),
+            array(new stdClass()),
         );
     }
 

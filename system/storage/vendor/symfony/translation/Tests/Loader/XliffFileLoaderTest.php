@@ -11,10 +11,13 @@
 
 namespace Symfony\Component\Translation\Tests\Loader;
 
+use PHPUnit_Framework_TestCase;
+use Symfony\Component\Translation\Exception\InvalidResourceException;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Config\Resource\FileResource;
 
-class XliffFileLoaderTest extends \PHPUnit_Framework_TestCase
+class XliffFileLoaderTest extends PHPUnit_Framework_TestCase
 {
     public function testLoad()
     {
@@ -96,7 +99,7 @@ class XliffFileLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
+     * @expectedException InvalidResourceException
      */
     public function testLoadInvalidResource()
     {
@@ -105,7 +108,7 @@ class XliffFileLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
+     * @expectedException InvalidResourceException
      */
     public function testLoadResourceDoesNotValidate()
     {
@@ -114,7 +117,7 @@ class XliffFileLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Translation\Exception\NotFoundResourceException
+     * @expectedException NotFoundResourceException
      */
     public function testLoadNonExistingResource()
     {
@@ -124,7 +127,7 @@ class XliffFileLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
+     * @expectedException InvalidResourceException
      */
     public function testLoadThrowsAnExceptionIfFileNotLocal()
     {
@@ -134,7 +137,7 @@ class XliffFileLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        \Symfony\Component\Translation\Exception\InvalidResourceException
+     * @expectedException        InvalidResourceException
      * @expectedExceptionMessage Document types are not allowed.
      */
     public function testDocTypeIsNotAllowed()

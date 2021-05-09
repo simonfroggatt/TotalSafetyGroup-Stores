@@ -13,6 +13,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\GroupSequence;
+use Symfony\Component\Validator\Exception\OutOfBoundsException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -75,7 +76,7 @@ class GroupSequenceTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\OutOfBoundsException
+     * @expectedException OutOfBoundsException
      * @group legacy
      */
     public function testLegacyGetExpectsExistingKey()

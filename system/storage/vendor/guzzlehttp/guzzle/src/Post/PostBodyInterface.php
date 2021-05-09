@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Post;
 
+use Countable;
 use GuzzleHttp\Message\AppliesHeadersInterface;
 use GuzzleHttp\Stream\StreamInterface;
 
@@ -8,7 +9,7 @@ use GuzzleHttp\Stream\StreamInterface;
  * Represents a POST body that is sent as either a multipart/form-data stream
  * or application/x-www-urlencoded stream.
  */
-interface PostBodyInterface extends StreamInterface, \Countable, AppliesHeadersInterface
+interface PostBodyInterface extends StreamInterface, Countable, AppliesHeadersInterface
 {
     /**
      * Set a specific field

@@ -11,10 +11,12 @@
 
 namespace Symfony\Component\Validator\Constraints;
 
+use DateTimeInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use function is_string;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -34,7 +36,7 @@ class RangeValidator extends ConstraintValidator
             return;
         }
 
-        if (!is_numeric($value) && !$value instanceof \DateTime && !$value instanceof \DateTimeInterface) {
+        if (!is_numeric($value) && !$value instanceof \DateTime && !$value instanceof DateTimeInterface) {
             if ($this->context instanceof ExecutionContextInterface) {
                 $this->context->buildViolation($constraint->invalidMessage)
                     ->setParameter('{{ value }}', $this->formatValue($value, self::PRETTY_DATE))
@@ -57,12 +59,12 @@ class RangeValidator extends ConstraintValidator
         // This allows to compare with any date/time value supported by
         // the DateTime constructor:
         // http://php.net/manual/en/datetime.formats.php
-        if ($value instanceof \DateTime || $value instanceof \DateTimeInterface) {
-            if (\is_string($min)) {
+        if ($value instanceof \DateTime || $value instanceof DateTimeInterface) {
+            if (is_string($min)) {
                 $min = new \DateTime($min);
             }
 
-            if (\is_string($max)) {
+            if (is_string($max)) {
                 $max = new \DateTime($max);
             }
         }

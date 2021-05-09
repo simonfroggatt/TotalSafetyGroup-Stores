@@ -1,8 +1,11 @@
 <?php
 namespace GuzzleHttp\Tests\Ring\Client;
 
+use Exception;
 use GuzzleHttp\Ring\Client\StreamHandler;
 use GuzzleHttp\Ring\Core;
+use RuntimeException;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Class uses to control the test webserver.
@@ -26,7 +29,7 @@ class Server
 
     /**
      * Flush the received requests from the server
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public static function flush()
     {
@@ -41,7 +44,7 @@ class Server
      *
      * @param array $responses An array of responses. The shape of a response
      *                         is the shape described in the RingPHP spec.
-     * @throws \Exception
+     * @throws Exception
      */
     public static function enqueue(array $responses)
     {
@@ -49,7 +52,7 @@ class Server
 
         foreach ($responses as $response) {
             if (!is_array($response)) {
-                throw new \Exception('Each response must be an array');
+                throw new Exception('Each response must be an array');
             }
 
             if (isset($response['body'])) {
@@ -67,7 +70,7 @@ class Server
      * Get all of the received requests as a RingPHP request structure.
      *
      * @return array
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public static function received()
     {
@@ -79,7 +82,7 @@ class Server
         $body = Core::body($response);
         $result = json_decode($body, true);
         if ($result === false) {
-            throw new \RuntimeException('Error decoding response: '
+            throw new RuntimeException('Error decoding response: '
                 . json_last_error());
         }
 
@@ -126,7 +129,7 @@ class Server
         }
 
         if (!self::isListening()) {
-            throw new \RuntimeException('Unable to contact node.js server');
+            throw new RuntimeException('Unable to contact node.js server');
         }
     }
 
@@ -138,8 +141,8 @@ class Server
 
         try {
             self::wait();
-        } catch (\Exception $e) {
-            exec('node ' . __DIR__ . \DIRECTORY_SEPARATOR . 'server.js '
+        } catch (Exception $e) {
+            exec('node ' . __DIR__ . DIRECTORY_SEPARATOR . 'server.js '
                 . self::$port . ' >> /tmp/server.log 2>&1 &');
             self::wait();
         }

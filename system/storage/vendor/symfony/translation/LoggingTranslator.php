@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Translation;
 
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -35,7 +36,7 @@ class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface
     public function __construct(TranslatorInterface $translator, LoggerInterface $logger)
     {
         if (!$translator instanceof TranslatorBagInterface) {
-            throw new \InvalidArgumentException(sprintf('The Translator "%s" must implement TranslatorInterface and TranslatorBagInterface.', get_class($translator)));
+            throw new InvalidArgumentException(sprintf('The Translator "%s" must implement TranslatorInterface and TranslatorBagInterface.', get_class($translator)));
         }
 
         $this->translator = $translator;

@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Violation;
 
+use InvalidArgumentException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -156,7 +157,7 @@ class ConstraintViolationBuilder implements ConstraintViolationBuilderInterface
                     $this->parameters,
                     $this->translationDomain
                 );
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $translatedMessage = $this->translator->trans(
                     $this->message,
                     $this->parameters,

@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Braintree SamsungPayCard module
  * Creates and manages Braintree SamsungPayCards
@@ -8,13 +10,13 @@ namespace Braintree;
  * @package    Braintree
  * @category   Resources
  *
- * @property-read \Braintree\Address $billingAddress
+ * @property-read Address $billingAddress
  * @property-read string $bin
  * @property-read string $cardType
  * @property-read string $cardholderName
  * @property-read string $commercial
  * @property-read string $countryOfIssuance
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $customerId
  * @property-read string $customerLocation
  * @property-read string $debit
@@ -33,10 +35,10 @@ namespace Braintree;
  * @property-read string $prepaid
  * @property-read string $productId
  * @property-read string $sourceCardLast4
- * @property-read \Braintree\Subscription[] $subscriptions
+ * @property-read Subscription[] $subscriptions
  * @property-read string $token
  * @property-read string $uniqueNumberIdentifier
- * @property-read \DateTime $updatedAt
+ * @property-read DateTime $updatedAt
  */
 class SamsungPayCard extends Base
 {

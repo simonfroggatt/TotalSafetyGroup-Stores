@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* common/login.twig */
-class __TwigTemplate_ec841337f21d82b28dea5a90c5ab5b3add4854d691e75f3405fdba7f36c5f040 extends \Twig\Template
+class __TwigTemplate_ec841337f21d82b28dea5a90c5ab5b3add4854d691e75f3405fdba7f36c5f040 extends Template
 {
     private $source;
     private $macros = [];

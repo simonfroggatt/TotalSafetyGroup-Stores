@@ -3,6 +3,7 @@
 namespace Cardinity\Method\Payment;
 
 use Cardinity\Method\MethodInterface;
+use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Create implements MethodInterface
@@ -131,7 +132,7 @@ class Create implements MethodInterface
                 ]);
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 'Payment instrument for payment method "%s" is not expected',
                 $method

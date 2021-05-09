@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -252,7 +253,7 @@ class LegacyExecutionContextTest extends TestCase
         $this->translator->expects($this->once())
             ->method('transChoice')
             ->with('foo')
-            ->will($this->throwException(new \InvalidArgumentException()));
+            ->will($this->throwException(new InvalidArgumentException()));
         $this->translator->expects($this->once())
             ->method('trans')
             ->with('foo');

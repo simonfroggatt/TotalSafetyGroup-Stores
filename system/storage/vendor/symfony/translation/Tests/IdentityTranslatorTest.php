@@ -11,10 +11,12 @@
 
 namespace Symfony\Component\Translation\Tests;
 
+use Locale;
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Translation\IdentityTranslator;
 
-class IdentityTranslatorTest extends \PHPUnit_Framework_TestCase
+class IdentityTranslatorTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getTransTests
@@ -42,7 +44,7 @@ class IdentityTranslatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testTransChoiceWithDefaultLocale($expected, $id, $number, $parameters)
     {
-        \Locale::setDefault('en');
+        Locale::setDefault('en');
 
         $translator = new IdentityTranslator();
 
@@ -64,10 +66,10 @@ class IdentityTranslatorTest extends \PHPUnit_Framework_TestCase
 
         $translator = new IdentityTranslator();
 
-        \Locale::setDefault('en');
+        Locale::setDefault('en');
         $this->assertEquals('en', $translator->getLocale());
 
-        \Locale::setDefault('pt_BR');
+        Locale::setDefault('pt_BR');
         $this->assertEquals('pt_BR', $translator->getLocale());
     }
 

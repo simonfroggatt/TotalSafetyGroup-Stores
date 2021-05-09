@@ -2,6 +2,7 @@
 namespace GuzzleHttp\Message;
 
 use GuzzleHttp\Stream\StreamInterface;
+use InvalidArgumentException;
 
 abstract class AbstractMessage implements MessageInterface
 {
@@ -219,7 +220,7 @@ abstract class AbstractMessage implements MessageInterface
      * @param MessageInterface $message
      *
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function getStartLine(MessageInterface $message)
     {
@@ -232,7 +233,7 @@ abstract class AbstractMessage implements MessageInterface
                 . $message->getStatusCode() . ' '
                 . $message->getReasonPhrase();
         } else {
-            throw new \InvalidArgumentException('Unknown message type');
+            throw new InvalidArgumentException('Unknown message type');
         }
     }
 

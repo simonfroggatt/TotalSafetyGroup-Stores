@@ -1,6 +1,9 @@
 <?php
 namespace GuzzleHttp\Ring\Future;
 
+use GuzzleHttp\Ring\Exception\CancelledException;
+use RuntimeException;
+
 /**
  * Implements common future functionality that is triggered when the result
  * property is accessed via a magic __get method.
@@ -18,13 +21,13 @@ trait MagicFutureTrait
      * @param string $name Should always be "data" or an exception is thrown.
      *
      * @return mixed Returns the dereferenced data.
-     * @throws \RuntimeException
-     * @throws \GuzzleHttp\Ring\Exception\CancelledException
+     * @throws RuntimeException
+     * @throws CancelledException
      */
     public function __get($name)
     {
         if ($name !== '_value') {
-            throw new \RuntimeException("Class has no {$name} property");
+            throw new RuntimeException("Class has no {$name} property");
         }
 
         return $this->_value = $this->wait();

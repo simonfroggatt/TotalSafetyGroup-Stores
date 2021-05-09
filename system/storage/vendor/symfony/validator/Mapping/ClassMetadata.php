@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Mapping;
 
+use ReflectionClass;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\GroupSequence;
 use Symfony\Component\Validator\Constraints\Traverse;
@@ -18,6 +19,10 @@ use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\GroupDefinitionException;
 use Symfony\Component\Validator\ValidationVisitorInterface;
+use function count;
+use function get_class;
+use function in_array;
+use function is_array;
 
 /**
  * Default implementation of {@link ClassMetadataInterface}.
@@ -106,7 +111,7 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
     public $traversalStrategy = TraversalStrategy::IMPLICIT;
 
     /**
-     * @var \ReflectionClass
+     * @var ReflectionClass
      */
     private $reflClass;
 
@@ -146,7 +151,7 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
             foreach ($groups as $group) {
                 $this->accept($visitor, $value, $group, $propertyPath, Constraint::DEFAULT_GROUP);
 
-                if (\count($visitor->getViolations()) > 0) {
+                if (count($visitor->getViolations()) > 0) {
                     break;
                 }
             }
@@ -221,12 +226,12 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
      */
     public function addConstraint(Constraint $constraint)
     {
-        if (!\in_array(Constraint::CLASS_CONSTRAINT, (array) $constraint->getTargets())) {
-            throw new ConstraintDefinitionException(sprintf('The constraint "%s" cannot be put on classes.', \get_class($constraint)));
+        if (!in_array(Constraint::CLASS_CONSTRAINT, (array) $constraint->getTargets())) {
+            throw new ConstraintDefinitionException(sprintf('The constraint "%s" cannot be put on classes.', get_class($constraint)));
         }
 
         if ($constraint instanceof Valid) {
-            throw new ConstraintDefinitionException(sprintf('The constraint "%s" cannot be put on classes.', \get_class($constraint)));
+            throw new ConstraintDefinitionException(sprintf('The constraint "%s" cannot be put on classes.', get_class($constraint)));
         }
 
         if ($constraint instanceof Traverse) {
@@ -386,7 +391,7 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
                 $member = clone $member;
 
                 foreach ($member->getConstraints() as $constraint) {
-                    if (\in_array($constraint::DEFAULT_GROUP, $constraint->groups, true)) {
+                    if (in_array($constraint::DEFAULT_GROUP, $constraint->groups, true)) {
                         $member->constraintsByGroup[$this->getDefaultGroup()][] = $constraint;
                     }
 
@@ -497,15 +502,15 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
             throw new GroupDefinitionException('Defining a static group sequence is not allowed with a group sequence provider');
         }
 
-        if (\is_array($groupSequence)) {
+        if (is_array($groupSequence)) {
             $groupSequence = new GroupSequence($groupSequence);
         }
 
-        if (\in_array(Constraint::DEFAULT_GROUP, $groupSequence->groups, true)) {
+        if (in_array(Constraint::DEFAULT_GROUP, $groupSequence->groups, true)) {
             throw new GroupDefinitionException(sprintf('The group "%s" is not allowed in group sequences', Constraint::DEFAULT_GROUP));
         }
 
-        if (!\in_array($this->getDefaultGroup(), $groupSequence->groups, true)) {
+        if (!in_array($this->getDefaultGroup(), $groupSequence->groups, true)) {
             throw new GroupDefinitionException(sprintf('The group "%s" is missing in the group sequence', $this->getDefaultGroup()));
         }
 
@@ -519,7 +524,7 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
      */
     public function hasGroupSequence()
     {
-        return $this->groupSequence && \count($this->groupSequence->groups) > 0;
+        return $this->groupSequence && count($this->groupSequence->groups) > 0;
     }
 
     /**
@@ -533,12 +538,12 @@ class ClassMetadata extends ElementMetadata implements ClassMetadataInterface
     /**
      * Returns a ReflectionClass instance for this class.
      *
-     * @return \ReflectionClass
+     * @return ReflectionClass
      */
     public function getReflectionClass()
     {
         if (!$this->reflClass) {
-            $this->reflClass = new \ReflectionClass($this->getClassName());
+            $this->reflClass = new ReflectionClass($this->getClassName());
         }
 
         return $this->reflClass;

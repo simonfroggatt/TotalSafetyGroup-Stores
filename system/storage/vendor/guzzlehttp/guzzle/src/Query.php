@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp;
 
+use InvalidArgumentException;
+
 /**
  * Manages query string variables and can aggregate them into a string
  */
@@ -113,7 +115,7 @@ class Query extends Collection
      *
      * @param string|bool $type One of 'RFC1738', 'RFC3986', or false to disable encoding
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setEncodingType($type)
     {
@@ -128,7 +130,7 @@ class Query extends Collection
                 $this->encoding = function ($v) { return $v; };
                 break;
             default:
-                throw new \InvalidArgumentException('Invalid URL encoding type');
+                throw new InvalidArgumentException('Invalid URL encoding type');
         }
     }
 

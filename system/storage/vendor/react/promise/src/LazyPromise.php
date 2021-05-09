@@ -2,6 +2,10 @@
 
 namespace React\Promise;
 
+use Exception;
+use Throwable;
+use function call_user_func;
+
 /**
  * @deprecated 2.8.0 LazyPromise is deprecated and should not be used anymore.
  */
@@ -53,10 +57,10 @@ class LazyPromise implements ExtendedPromiseInterface, CancellablePromiseInterfa
     {
         if (null === $this->promise) {
             try {
-                $this->promise = resolve(\call_user_func($this->factory));
-            } catch (\Throwable $exception) {
+                $this->promise = resolve(call_user_func($this->factory));
+            } catch (Throwable $exception) {
                 $this->promise = new RejectedPromise($exception);
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->promise = new RejectedPromise($exception);
             }
         }

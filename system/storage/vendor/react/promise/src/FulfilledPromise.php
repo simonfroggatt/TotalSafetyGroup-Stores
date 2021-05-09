@@ -2,6 +2,10 @@
 
 namespace React\Promise;
 
+use Exception;
+use InvalidArgumentException;
+use Throwable;
+
 /**
  * @deprecated 2.8.0 External usage of FulfilledPromise is deprecated, use `resolve()` instead.
  */
@@ -12,7 +16,7 @@ class FulfilledPromise implements ExtendedPromiseInterface, CancellablePromiseIn
     public function __construct($value = null)
     {
         if ($value instanceof PromiseInterface) {
-            throw new \InvalidArgumentException('You cannot create React\Promise\FulfilledPromise with a promise. Use React\Promise\resolve($promiseOrValue) instead.');
+            throw new InvalidArgumentException('You cannot create React\Promise\FulfilledPromise with a promise. Use React\Promise\resolve($promiseOrValue) instead.');
         }
 
         $this->value = $value;
@@ -26,9 +30,9 @@ class FulfilledPromise implements ExtendedPromiseInterface, CancellablePromiseIn
 
         try {
             return resolve($onFulfilled($this->value));
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return new RejectedPromise($exception);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return new RejectedPromise($exception);
         }
     }

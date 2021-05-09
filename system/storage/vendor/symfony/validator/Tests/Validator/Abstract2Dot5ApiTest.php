@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Tests\Validator;
 
+use ArrayIterator;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Expression;
@@ -20,6 +21,9 @@ use Symfony\Component\Validator\Constraints\Traverse;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\RuntimeException;
+use Symfony\Component\Validator\Exception\UnsupportedMetadataException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\MetadataFactoryInterface;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
@@ -27,6 +31,7 @@ use Symfony\Component\Validator\Tests\Fixtures\FailingConstraint;
 use Symfony\Component\Validator\Tests\Fixtures\FakeClassMetadata;
 use Symfony\Component\Validator\Tests\Fixtures\Reference;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use function get_class;
 
 /**
  * Verifies that a validator satisfies the API of Symfony 2.5+.
@@ -333,7 +338,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     {
         $test = $this;
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array('key' => $entity));
+        $traversable = new ArrayIterator(array('key' => $entity));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test, $entity, $traversable) {
             $test->assertSame($test::ENTITY_CLASS, $context->getClassName());
@@ -371,7 +376,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     public function testTraversalEnabledOnClass()
     {
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array('key' => $entity));
+        $traversable = new ArrayIterator(array('key' => $entity));
 
         $callback = function ($value, ExecutionContextInterface $context) {
             $context->addViolation('Message');
@@ -396,7 +401,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     {
         $test = $this;
         $entity = new Entity();
-        $traversable = new \ArrayIterator(array('key' => $entity));
+        $traversable = new ArrayIterator(array('key' => $entity));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test) {
             $test->fail('Should not be called');
@@ -418,7 +423,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testExpectTraversableIfTraversalEnabledOnClass()
     {
@@ -433,7 +438,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     {
         $test = $this;
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator(array('key' => new Reference()));
+        $entity->reference = new ArrayIterator(array('key' => new Reference()));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test) {
             $test->fail('Should not be called');
@@ -459,7 +464,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     {
         $test = $this;
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator(array('key' => new Reference()));
+        $entity->reference = new ArrayIterator(array('key' => new Reference()));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test) {
             $test->fail('Should not be called');
@@ -487,7 +492,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     {
         $test = $this;
         $entity = new Entity();
-        $entity->reference = new \ArrayIterator(array('key' => new Reference()));
+        $entity->reference = new ArrayIterator(array('key' => new Reference()));
 
         $callback = function ($value, ExecutionContextInterface $context) use ($test) {
             $test->fail('Should not be called');
@@ -541,7 +546,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnsupportedMetadataException
+     * @expectedException UnsupportedMetadataException
      * @group legacy
      */
     public function testMetadataMustImplementClassMetadataInterface()
@@ -551,7 +556,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
         $metadata = $this->getMockBuilder('Symfony\Component\Validator\Tests\Fixtures\LegacyClassMetadata')->getMock();
         $metadata->expects($this->any())
             ->method('getClassName')
-            ->will($this->returnValue(\get_class($entity)));
+            ->will($this->returnValue(get_class($entity)));
 
         $this->metadataFactory->addMetadata($metadata);
 
@@ -559,7 +564,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnsupportedMetadataException
+     * @expectedException UnsupportedMetadataException
      * @group legacy
      */
     public function testReferenceMetadataMustImplementClassMetadataInterface()
@@ -570,7 +575,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
         $metadata = $this->getMockBuilder('Symfony\Component\Validator\Tests\Fixtures\LegacyClassMetadata')->getMock();
         $metadata->expects($this->any())
             ->method('getClassName')
-            ->will($this->returnValue(\get_class($entity->reference)));
+            ->will($this->returnValue(get_class($entity->reference)));
 
         $this->metadataFactory->addMetadata($metadata);
 
@@ -580,7 +585,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnsupportedMetadataException
+     * @expectedException UnsupportedMetadataException
      * @group legacy
      */
     public function testLegacyPropertyMetadataMustImplementPropertyMetadataInterface()
@@ -589,7 +594,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
 
         // Legacy interface
         $propertyMetadata = $this->getMockBuilder('Symfony\Component\Validator\MetadataInterface')->getMock();
-        $metadata = new FakeClassMetadata(\get_class($entity));
+        $metadata = new FakeClassMetadata(get_class($entity));
         $metadata->addCustomPropertyMetadata('firstName', $propertyMetadata);
 
         $this->metadataFactory->addMetadata($metadata);
@@ -636,7 +641,7 @@ abstract class Abstract2Dot5ApiTest extends AbstractValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\RuntimeException
+     * @expectedException RuntimeException
      */
     public function testValidateFailsIfNoConstraintsAndNoObjectOrArray()
     {

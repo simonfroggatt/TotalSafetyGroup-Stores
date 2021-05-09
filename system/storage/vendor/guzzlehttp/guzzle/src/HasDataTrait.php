@@ -1,6 +1,9 @@
 <?php
 namespace GuzzleHttp;
 
+use ArrayIterator;
+use RuntimeException;
+
 /**
  * Trait implementing ToArrayInterface, \ArrayAccess, \Countable,
  * \IteratorAggregate, and some path style methods.
@@ -12,7 +15,7 @@ trait HasDataTrait
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->data);
+        return new ArrayIterator($this->data);
     }
 
     public function offsetGet($offset)
@@ -65,7 +68,7 @@ trait HasDataTrait
      * @param string $path  Path to set
      * @param mixed  $value Value to set at the key
      *
-     * @throws \RuntimeException when trying to setPath using a nested path
+     * @throws RuntimeException when trying to setPath using a nested path
      *     that travels through a scalar value
      */
     public function setPath($path, $value)

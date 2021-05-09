@@ -2,6 +2,7 @@
 namespace GuzzleHttp\Stream;
 
 use GuzzleHttp\Stream\Exception\SeekException;
+use RuntimeException;
 
 /**
  * Static utility class because PHP's autoloaders don't support the concept
@@ -19,13 +20,13 @@ class Utils
      * @param string $mode     Mode used to open the file
      *
      * @return resource
-     * @throws \RuntimeException if the file cannot be opened
+     * @throws RuntimeException if the file cannot be opened
      */
     public static function open($filename, $mode)
     {
         $ex = null;
         set_error_handler(function () use ($filename, $mode, &$ex) {
-            $ex = new \RuntimeException(sprintf(
+            $ex = new RuntimeException(sprintf(
                 'Unable to open %s using mode %s: %s',
                 $filename,
                 $mode,
@@ -37,7 +38,7 @@ class Utils
         restore_error_handler();
 
         if ($ex) {
-            /** @var $ex \RuntimeException */
+            /** @var $ex RuntimeException */
             throw $ex;
         }
 

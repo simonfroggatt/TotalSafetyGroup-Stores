@@ -1,4 +1,4 @@
 <?php
 namespace GuzzleHttp\Exception;
 
-class StateException extends TransferException {};
+class StateException extends TransferException {}

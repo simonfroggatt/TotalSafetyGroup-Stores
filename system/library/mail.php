@@ -116,23 +116,23 @@ class Mail {
      */
 	public function send() {
 		if (!$this->to) {
-			throw new \Exception('Error: E-Mail to required!');
+			throw new Exception('Error: E-Mail to required!');
 		}
 
 		if (!$this->from) {
-			throw new \Exception('Error: E-Mail from required!');
+			throw new Exception('Error: E-Mail from required!');
 		}
 
 		if (!$this->sender) {
-			throw new \Exception('Error: E-Mail sender required!');
+			throw new Exception('Error: E-Mail sender required!');
 		}
 
 		if (!$this->subject) {
-			throw new \Exception('Error: E-Mail subject required!');
+			throw new Exception('Error: E-Mail subject required!');
 		}
 
 		if ((!$this->text) && (!$this->html)) {
-			throw new \Exception('Error: E-Mail message required!');
+			throw new Exception('Error: E-Mail message required!');
 		}
 		
 		foreach (get_object_vars($this) as $key => $value) {

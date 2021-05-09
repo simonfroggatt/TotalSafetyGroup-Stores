@@ -4,8 +4,9 @@ namespace GuzzleHttp\Tests\Ring\Client;
 use GuzzleHttp\Ring\Client\ClientUtils;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Client\StreamHandler;
+use PHPUnit_Framework_TestCase;
 
-class StreamHandlerTest extends \PHPUnit_Framework_TestCase
+class StreamHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function testReturnsResponseForSuccessfulRequest()
     {

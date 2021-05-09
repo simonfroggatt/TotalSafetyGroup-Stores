@@ -13,6 +13,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints\Valid;
 class ValidTest extends TestCase
 {
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testRejectGroupsOption()
     {

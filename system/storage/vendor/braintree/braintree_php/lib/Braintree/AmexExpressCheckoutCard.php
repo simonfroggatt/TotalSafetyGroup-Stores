@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Braintree AmexExpressCheckoutCard module
  * Creates and manages Braintree Amex Express Checkout cards
@@ -16,7 +18,7 @@ namespace Braintree;
  * @property-read string $cardMemberExpiryDate
  * @property-read string $cardMemberNumber
  * @property-read string $cardType
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $customerId
  * @property-read boolean $default
  * @property-read string $expirationMonth
@@ -24,8 +26,8 @@ namespace Braintree;
  * @property-read string $imageUrl
  * @property-read string $token
  * @property-read string $sourceDescription
- * @property-read \Braintree\Subscription[] $subscriptions
- * @property-read \DateTime $updatedAt
+ * @property-read Subscription[] $subscriptions
+ * @property-read DateTime $updatedAt
  */
 class AmexExpressCheckoutCard extends Base
 {

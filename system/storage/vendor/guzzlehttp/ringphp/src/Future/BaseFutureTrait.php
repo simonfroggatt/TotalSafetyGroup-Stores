@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Ring\Future;
 
+use Exception;
 use GuzzleHttp\Ring\Exception\CancelledFutureAccessException;
 use GuzzleHttp\Ring\Exception\RingException;
 use React\Promise\PromiseInterface;
@@ -19,7 +20,7 @@ trait BaseFutureTrait
     /** @var PromiseInterface */
     private $wrappedPromise;
 
-    /** @var \Exception Error encountered. */
+    /** @var Exception Error encountered. */
     private $error;
 
     /** @var mixed Result of the future */
@@ -116,7 +117,7 @@ trait BaseFutureTrait
             $wait = $this->waitfn;
             $this->waitfn = null;
             $wait();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Defer can throw to reject.
             $this->error = $e;
             $this->isRealized = true;

@@ -13,9 +13,13 @@ namespace Symfony\Component\Validator;
 
 @trigger_error('The '.__NAMESPACE__.'\ValidationVisitor class is deprecated since Symfony 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
+use LogicException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Traversable;
+use function is_array;
+use function is_object;
 
 /**
  * Default implementation of {@link ValidationVisitorInterface} and
@@ -92,7 +96,7 @@ class ValidationVisitor implements ValidationVisitorInterface, GlobalExecutionCo
             return;
         }
 
-        if (\is_object($value)) {
+        if (is_object($value)) {
             $hash = spl_object_hash($value);
 
             // Exit, if the object is already validated for the current group
@@ -104,7 +108,7 @@ class ValidationVisitor implements ValidationVisitorInterface, GlobalExecutionCo
             if (!isset($this->validatedObjects[$hash])) {
                 foreach ($this->objectInitializers as $initializer) {
                     if (!$initializer instanceof ObjectInitializerInterface) {
-                        throw new \LogicException('Validator initializers must implement ObjectInitializerInterface.');
+                        throw new LogicException('Validator initializers must implement ObjectInitializerInterface.');
                     }
                     $initializer->initialize($value);
                 }
@@ -118,10 +122,10 @@ class ValidationVisitor implements ValidationVisitorInterface, GlobalExecutionCo
         // Validate arrays recursively by default, otherwise every driver needs
         // to implement special handling for arrays.
         // https://github.com/symfony/symfony/issues/6246
-        if (\is_array($value) || ($traverse && $value instanceof \Traversable)) {
+        if (is_array($value) || ($traverse && $value instanceof Traversable)) {
             foreach ($value as $key => $element) {
                 // Ignore any scalar values in the collection
-                if (\is_object($element) || \is_array($element)) {
+                if (is_object($element) || is_array($element)) {
                     // Only repeat the traversal if $deep is set
                     $this->validate($element, $group, $propertyPath.'['.$key.']', $deep, $deep);
                 }

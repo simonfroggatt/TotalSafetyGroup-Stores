@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Braintree AndroidPayCard module
  * Creates and manages Braintree Android Pay cards
@@ -14,7 +16,7 @@ namespace Braintree;
  *
  * @property-read string $bin
  * @property-read string $cardType
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $customerId
  * @property-read boolean $default
  * @property-read string $expirationMonth
@@ -25,9 +27,9 @@ namespace Braintree;
  * @property-read string $sourceCardLast4
  * @property-read string $sourceCardType
  * @property-read string $sourceDescription
- * @property-read \Braintree\Subscription[] $subscriptions
+ * @property-read Subscription[] $subscriptions
  * @property-read string $token
- * @property-read \DateTime $updatedAt
+ * @property-read DateTime $updatedAt
  * @property-read string $virtualCardLast4
  * @property-read string $virtualCardType
  */

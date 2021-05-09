@@ -9,6 +9,7 @@ use GuzzleHttp\Stream\InflateStream;
 use GuzzleHttp\Stream\StreamInterface;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\Utils;
+use RuntimeException;
 
 /**
  * RingPHP client handler that uses PHP's HTTP stream wrapper.
@@ -88,7 +89,7 @@ class StreamHandler
      * @param string|resource|StreamInterface $dest
      *
      * @return Stream
-     * @throws \RuntimeException when the save_to option is invalid.
+     * @throws RuntimeException when the save_to option is invalid.
      */
     private function drain($stream, $dest)
     {
@@ -150,7 +151,7 @@ class StreamHandler
      * @param callable $callback Callable that returns stream resource
      *
      * @return resource
-     * @throws \RuntimeException on error
+     * @throws RuntimeException on error
      */
     private function createResource(callable $callback)
     {

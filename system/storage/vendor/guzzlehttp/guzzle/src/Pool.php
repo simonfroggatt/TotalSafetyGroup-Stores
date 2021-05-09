@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp;
 
+use ArrayIterator;
+use Exception;
 use GuzzleHttp\Event\BeforeEvent;
 use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Message\RequestInterface;
@@ -9,10 +11,13 @@ use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\FutureInterface;
 use GuzzleHttp\Event\ListenerAttacherTrait;
 use GuzzleHttp\Event\EndEvent;
+use InvalidArgumentException;
+use Iterator;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use React\Promise\RejectedPromise;
+use SplObjectStorage;
 
 /**
  * Sends and iterator of requests concurrently using a capped pool size.
@@ -35,10 +40,10 @@ class Pool implements FutureInterface
 {
     use ListenerAttacherTrait;
 
-    /** @var \GuzzleHttp\ClientInterface */
+    /** @var ClientInterface */
     private $client;
 
-    /** @var \Iterator Yields requests */
+    /** @var Iterator Yields requests */
     private $iter;
 
     /** @var Deferred */
@@ -62,7 +67,7 @@ class Pool implements FutureInterface
      * - once: Set to true so that the event is removed after it is triggered
      *
      * @param ClientInterface $client   Client used to send the requests.
-     * @param array|\Iterator $requests Requests to send in parallel
+     * @param array|Iterator $requests Requests to send in parallel
      * @param array           $options  Associative array of options
      *     - pool_size: (callable|int)   Maximum number of requests to send
      *                                   concurrently, or a callback that receives
@@ -99,19 +104,19 @@ class Pool implements FutureInterface
      * indeterminate number of requests concurrently.
      *
      * @param ClientInterface $client   Client used to send the requests
-     * @param array|\Iterator $requests Requests to send in parallel
+     * @param array|Iterator $requests Requests to send in parallel
      * @param array           $options  Passes through the options available in
      *                                  {@see GuzzleHttp\Pool::__construct}
      *
      * @return BatchResults Returns a container for the results.
-     * @throws \InvalidArgumentException if the event format is incorrect.
+     * @throws InvalidArgumentException if the event format is incorrect.
      */
     public static function batch(
         ClientInterface $client,
         $requests,
         array $options = []
     ) {
-        $hash = new \SplObjectStorage();
+        $hash = new SplObjectStorage();
         foreach ($requests as $request) {
             $hash->attach($request);
         }
@@ -138,7 +143,7 @@ class Pool implements FutureInterface
      * Creates a Pool and immediately sends the requests.
      *
      * @param ClientInterface $client   Client used to send the requests
-     * @param array|\Iterator $requests Requests to send in parallel
+     * @param array|Iterator $requests Requests to send in parallel
      * @param array           $options  Passes through the options available in
      *                                  {@see GuzzleHttp\Pool::__construct}
      */
@@ -189,7 +194,7 @@ class Pool implements FutureInterface
         while ($response = array_pop($this->waitQueue)) {
             try {
                 $response->wait();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Eat exceptions because they should be handled asynchronously
             }
             $this->addNextRequests();
@@ -250,13 +255,13 @@ class Pool implements FutureInterface
 
     private function coerceIterable($requests)
     {
-        if ($requests instanceof \Iterator) {
+        if ($requests instanceof Iterator) {
             return $requests;
         } elseif (is_array($requests)) {
-            return new \ArrayIterator($requests);
+            return new ArrayIterator($requests);
         }
 
-        throw new \InvalidArgumentException('Expected Iterator or array. '
+        throw new InvalidArgumentException('Expected Iterator or array. '
             . 'Found ' . Core::describeType($requests));
     }
 
@@ -276,7 +281,7 @@ class Pool implements FutureInterface
         $this->iter->next();
 
         if (!($request instanceof RequestInterface)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'All requests in the provided iterator must implement '
                 . 'RequestInterface. Found %s',
                 Core::describeType($request)
@@ -298,7 +303,7 @@ class Pool implements FutureInterface
         ) {
             try {
                 $this->finishResponse($request, $response->wait(), $hash);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->finishResponse($request, $e, $hash);
             }
             goto add_next;

@@ -1,15 +1,18 @@
 <?php
 namespace DB;
+use Exception;
+use stdClass;
+
 final class MSSQL {
 	private $connection;
 
 	public function __construct($hostname, $username, $password, $database, $port = '1433') {
 		if (!$this->connection = mssql_connect($hostname. ':' . $port, $username, $password)) {
-			throw new \Exception('Error: Could not make a database connection using ' . $username . '@' . $hostname);
+			throw new Exception('Error: Could not make a database connection using ' . $username . '@' . $hostname);
 		}
 
 		if (!mssql_select_db($database, $this->link)) {
-			throw new \Exception('Error: Could not connect to database ' . $database);
+			throw new Exception('Error: Could not connect to database ' . $database);
 		}
 
 		mssql_query("SET NAMES 'utf8'", $this->connection);
@@ -33,7 +36,7 @@ final class MSSQL {
 
 				mssql_free_result($resource);
 
-				$query = new \stdClass();
+				$query = new stdClass();
 				$query->row = isset($data[0]) ? $data[0] : array();
 				$query->rows = $data;
 				$query->num_rows = $i;
@@ -45,7 +48,7 @@ final class MSSQL {
 				return true;
 			}
 		} else {
-			throw new \Exception('Error: ' . mssql_get_last_message($this->connection) . '<br />' . $sql);
+			throw new Exception('Error: ' . mssql_get_last_message($this->connection) . '<br />' . $sql);
 		}
 	}
 

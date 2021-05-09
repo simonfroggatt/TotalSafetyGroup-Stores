@@ -1,4 +1,6 @@
 <?php
 namespace Braintree\Transaction;
 
-\class_exists('Braintree\TransactionLineItem');
+use function class_exists;
+
+class_exists('Braintree\TransactionLineItem');

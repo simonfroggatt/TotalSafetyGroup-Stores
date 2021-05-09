@@ -1,6 +1,9 @@
 <?php
 namespace GuzzleHttp\Message;
 
+use RuntimeException;
+use SimpleXMLElement;
+
 /**
  * Represents an HTTP response message.
  */
@@ -80,7 +83,7 @@ interface ResponseInterface extends MessageInterface
      *
      * @return mixed Returns the JSON decoded data based on the provided
      *     parse settings.
-     * @throws \RuntimeException if the response body is not in JSON format
+     * @throws RuntimeException if the response body is not in JSON format
      */
     public function json(array $config = []);
 
@@ -103,8 +106,8 @@ interface ResponseInterface extends MessageInterface
      *       listed at http://php.net/manual/en/libxml.constants.php
      *       (defaults to LIBXML_NONET)
      *
-     * @return \SimpleXMLElement
-     * @throws \RuntimeException if the response body is not in XML format
+     * @return SimpleXMLElement
+     * @throws RuntimeException if the response body is not in XML format
      * @link http://websec.io/2012/08/27/Preventing-XXE-in-PHP.html
      */
     public function xml(array $config = []);

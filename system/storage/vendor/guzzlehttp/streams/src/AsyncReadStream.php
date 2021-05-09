@@ -1,6 +1,8 @@
 <?php
 namespace GuzzleHttp\Stream;
 
+use InvalidArgumentException;
+
 /**
  * Represents an asynchronous read-only stream that supports a drain event and
  * pumping data from a source stream.
@@ -62,7 +64,7 @@ class AsyncReadStream implements StreamInterface
      *                                  been read by the event loop.
      * @param array           $config   Associative array of options.
      *
-     * @throws \InvalidArgumentException if the buffer is not readable and
+     * @throws InvalidArgumentException if the buffer is not readable and
      *                                   writable.
      */
     public function __construct(
@@ -70,7 +72,7 @@ class AsyncReadStream implements StreamInterface
         array $config = []
     ) {
         if (!$buffer->isReadable() || !$buffer->isWritable()) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Buffer must be readable and writable'
             );
         }
@@ -83,7 +85,7 @@ class AsyncReadStream implements StreamInterface
         foreach ($callables as $check) {
             if (isset($config[$check])) {
                 if (!is_callable($config[$check])) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         $check . ' must be callable'
                     );
                 }

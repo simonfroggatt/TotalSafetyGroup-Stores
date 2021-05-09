@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* default/template/extension/module/carousel.twig */
-class __TwigTemplate_9c9e67df5a9d25b02b9f930651360f76040f35ba445e50a5e8b1abe725fcbd80 extends \Twig\Template
+class __TwigTemplate_9c9e67df5a9d25b02b9f930651360f76040f35ba445e50a5e8b1abe725fcbd80 extends Template
 {
     private $source;
     private $macros = [];

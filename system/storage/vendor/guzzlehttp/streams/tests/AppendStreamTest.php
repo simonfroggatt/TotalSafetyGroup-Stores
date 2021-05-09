@@ -2,12 +2,16 @@
 namespace GuzzleHttp\Tests\Stream;
 
 use GuzzleHttp\Stream\AppendStream;
+use GuzzleHttp\Stream\Exception\CannotAttachException;
 use GuzzleHttp\Stream\Stream;
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
+use RuntimeException;
 
-class AppendStreamTest extends \PHPUnit_Framework_TestCase
+class AppendStreamTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Each stream must be readable
      */
     public function testValidatesStreamsAreReadable()
@@ -142,7 +146,7 @@ class AppendStreamTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
         $s->expects($this->once())
             ->method('read')
-            ->will($this->throwException(new \RuntimeException('foo')));
+            ->will($this->throwException(new RuntimeException('foo')));
         $s->expects($this->once())
             ->method('isReadable')
             ->will($this->returnValue(true));
@@ -168,7 +172,7 @@ class AppendStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Stream\Exception\CannotAttachException
+     * @expectedException CannotAttachException
      */
     public function testCannotAttach()
     {

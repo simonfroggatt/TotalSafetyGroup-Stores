@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* install/step_3.twig */
-class __TwigTemplate_647080a51280909fea0357d5e6e94cbe6e42a9e6f3c02e04ca1ed768e80e6db6 extends \Twig\Template
+class __TwigTemplate_647080a51280909fea0357d5e6e94cbe6e42a9e6f3c02e04ca1ed768e80e6db6 extends Template
 {
     private $source;
     private $macros = [];

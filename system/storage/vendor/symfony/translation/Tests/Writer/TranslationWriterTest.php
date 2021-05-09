@@ -11,11 +11,12 @@
 
 namespace Symfony\Component\Translation\Tests\Writer;
 
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Translation\Dumper\DumperInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 
-class TranslationWriterTest extends \PHPUnit_Framework_TestCase
+class TranslationWriterTest extends PHPUnit_Framework_TestCase
 {
     public function testWriteTranslations()
     {

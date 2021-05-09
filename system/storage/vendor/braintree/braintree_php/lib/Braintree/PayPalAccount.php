@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Braintree PayPalAccount module
  *
@@ -18,15 +20,15 @@ namespace Braintree;
  * @category   Resources
  *
  * @property-read string $billingAgreementId
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $customerId
  * @property-read boolean $default
  * @property-read string $email
  * @property-read string $imageUrl
  * @property-read string $payerId
- * @property-read \Braintree\Subscription[] $subscriptions
+ * @property-read Subscription[] $subscriptions
  * @property-read string $token
- * @property-read \DateTime $updatedAt
+ * @property-read DateTime $updatedAt
  */
 class PayPalAccount extends Base
 {

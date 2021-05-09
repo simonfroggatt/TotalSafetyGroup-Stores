@@ -601,10 +601,10 @@ class ModelExtensionPaymentAmazonLoginPay extends Model {
 
         try {
             $xml = simplexml_load_string($message['NotificationData']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->debugLog("ERROR", $e->getMessage());
 
-            throw new \RuntimeException($e->getMessage());
+            throw new RuntimeException($e->getMessage());
         }
 
         return $xml;
@@ -616,7 +616,7 @@ class ModelExtensionPaymentAmazonLoginPay extends Model {
         $json_error = json_last_error();
 
         if ($json_error != 0) {
-            throw new \RuntimeException("Error with message - content is not in json format. Error: " . $json_error);
+            throw new RuntimeException("Error with message - content is not in json format. Error: " . $json_error);
         }
 
         return $message;
@@ -742,7 +742,7 @@ class ModelExtensionPaymentAmazonLoginPay extends Model {
         if (!isset($this->session->data['apalwa']['login']['access_token'])) {
             $this->debugLog("ERROR", $this->language->get('error_shipping_methods'));
 
-            throw new \RuntimeException($this->language->get('error_shipping_methods'));
+            throw new RuntimeException($this->language->get('error_shipping_methods'));
         }
 
         $result = $this->postCurl("GetOrderReferenceDetails", array(
@@ -925,7 +925,7 @@ class ModelExtensionPaymentAmazonLoginPay extends Model {
             if (isset($result->ResponseBody->Error)) {
                 throw $this->loggedException((string)$result->ResponseBody->Error->Message, $this->language->get('error_process_order'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $this->loggedException($e->getMessage(), $this->language->get('error_process_order'));
         }
 
@@ -937,7 +937,7 @@ class ModelExtensionPaymentAmazonLoginPay extends Model {
 
         $this->debugLog("ERROR", $log_message, $id);
 
-        return new \RuntimeException("#" . $id . ": " . $error_message);
+        return new RuntimeException("#" . $id . ": " . $error_message);
     }
 
     public function logHandler($code, $message, $file, $line) {
@@ -986,7 +986,7 @@ class ModelExtensionPaymentAmazonLoginPay extends Model {
             $message .= PHP_EOL . ob_get_contents();
         ob_end_clean();
 
-        $log = new \Log(self::LOG_FILENAME);
+        $log = new Log(self::LOG_FILENAME);
 
         $log->write(($id ? '[' . $id . ']: ' : '') . $type . " ---> " . $message);
 

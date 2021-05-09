@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Mapping;
 
+use ReflectionMethod;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
@@ -75,6 +76,6 @@ class GetterMetadata extends MemberMetadata
      */
     protected function newReflectionMember($objectOrClassName)
     {
-        return new \ReflectionMethod($objectOrClassName, $this->getName());
+        return new ReflectionMethod($objectOrClassName, $this->getName());
     }
 }

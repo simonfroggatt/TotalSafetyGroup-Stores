@@ -161,7 +161,7 @@ class ControllerExtensionRecurringSquareup extends Controller {
             } catch (\Squareup\Exception $e) {
                 $result['transaction_error'][] = '[ID: ' . $payment['order_recurring_id'] . '] - ' . $e->getMessage();
             }
-        };
+        }
 
         if ($this->config->get('payment_squareup_cron_email_status')) {
             $this->model_extension_payment_squareup->cronEmail($result);

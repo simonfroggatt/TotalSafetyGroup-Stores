@@ -1,12 +1,15 @@
 <?php
 namespace GuzzleHttp\Tests\Stream;
 
+use GuzzleHttp\Stream\Exception\SeekException;
 use GuzzleHttp\Stream\FnStream;
 use GuzzleHttp\Stream\NoSeekStream;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\Utils;
+use PHPUnit_Framework_TestCase;
+use RuntimeException;
 
-class UtilsTest extends \PHPUnit_Framework_TestCase
+class UtilsTest extends PHPUnit_Framework_TestCase
 {
     public function testCopiesToString()
     {
@@ -115,7 +118,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Stream\Exception\SeekException
+     * @expectedException SeekException
      */
     public function testCalculatesHashThrowsWhenSeekFails()
     {
@@ -140,7 +143,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Unable to open /path/to/does/not/exist using mode r
      */
     public function testThrowsExceptionNotWarning()

@@ -1,5 +1,7 @@
 <?php
 namespace Template;
+use Exception;
+
 final class Template {
 	private $data = array();
 		
@@ -20,7 +22,7 @@ final class Template {
 			return ob_get_clean();
 		}
 
-		throw new \Exception('Error: Could not load template ' . $file . '!');
+		throw new Exception('Error: Could not load template ' . $file . '!');
 		exit();
 	}	
 }

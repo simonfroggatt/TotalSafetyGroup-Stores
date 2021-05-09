@@ -4208,7 +4208,7 @@
         };
       }(idx);
       context.memo('help.formatH'+idx, lang.help['formatH' + idx]);
-    };
+    }
     /* jshint ignore:end */
 
     /**
@@ -6753,7 +6753,7 @@
       if (list.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
         if (e.keyCode === key.code.ENTER) {
           if (this.$popover.is(':visible')) {
-            return;
+
           }
         }
       } else {

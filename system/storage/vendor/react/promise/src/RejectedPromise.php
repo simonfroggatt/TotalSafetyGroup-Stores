@@ -2,6 +2,10 @@
 
 namespace React\Promise;
 
+use Exception;
+use InvalidArgumentException;
+use Throwable;
+
 /**
  * @deprecated 2.8.0 External usage of RejectedPromise is deprecated, use `reject()` instead.
  */
@@ -12,7 +16,7 @@ class RejectedPromise implements ExtendedPromiseInterface, CancellablePromiseInt
     public function __construct($reason = null)
     {
         if ($reason instanceof PromiseInterface) {
-            throw new \InvalidArgumentException('You cannot create React\Promise\RejectedPromise with a promise. Use React\Promise\reject($promiseOrValue) instead.');
+            throw new InvalidArgumentException('You cannot create React\Promise\RejectedPromise with a promise. Use React\Promise\reject($promiseOrValue) instead.');
         }
 
         $this->reason = $reason;
@@ -26,9 +30,9 @@ class RejectedPromise implements ExtendedPromiseInterface, CancellablePromiseInt
 
         try {
             return resolve($onRejected($this->reason));
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return new RejectedPromise($exception);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return new RejectedPromise($exception);
         }
     }

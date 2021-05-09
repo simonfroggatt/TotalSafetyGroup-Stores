@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* common/column_left.twig */
-class __TwigTemplate_558d517fbe11300dbfac9e272f586ea2d2c31fadc1444118f275919a54cb0bb7 extends \Twig\Template
+class __TwigTemplate_558d517fbe11300dbfac9e272f586ea2d2c31fadc1444118f275919a54cb0bb7 extends Template
 {
     private $source;
     private $macros = [];

@@ -73,7 +73,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
             $this->session->data['error'] = $e->getMessage();
 
             $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->error['warning'] = $e->getMessage();
         }
 
@@ -92,7 +92,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->error['warning'] = $e->getMessage();
             }
         }
@@ -372,7 +372,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->error['warning'] = $e->getMessage();
             }
         }
@@ -456,7 +456,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->error['warning'] = $e->getMessage();
             }
         }
@@ -469,7 +469,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
             $this->session->data['error'] = $e->getMessage();
 
             $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->error['warning'] = $e->getMessage();
         }
 
@@ -613,7 +613,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->error['warning'] = $e->getMessage();
             }
         }
@@ -743,7 +743,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $json['redirect'] = html_entity_decode($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true), ENT_QUOTES, 'UTF-8');
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $json['status'] = false;
                 $json['error'] = $e->getMessage();
             }
@@ -903,7 +903,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                     $this->session->data['error'] = $e->getMessage();
 
                     $json['redirect'] = html_entity_decode($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true), ENT_QUOTES, 'UTF-8');
-                } catch (\RuntimeException $e) {
+                } catch (RuntimeException $e) {
                     $json['error'] = $e->getMessage();
                 }
             } else {
@@ -965,7 +965,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                     $this->session->data['error'] = $e->getMessage();
 
                     $json['redirect'] = html_entity_decode($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true), ENT_QUOTES, 'UTF-8');
-                } catch (\RuntimeException $e) {
+                } catch (RuntimeException $e) {
                     $json['error'] = $e->getMessage();
                 }
             } else {
@@ -1022,7 +1022,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                     $this->session->data['error'] = $e->getMessage();
 
                     $json['redirect'] = html_entity_decode($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true), ENT_QUOTES, 'UTF-8');
-                } catch (\RuntimeException $e) {
+                } catch (RuntimeException $e) {
                     $json['error'] = $e->getMessage();
                 }
             }
@@ -1111,7 +1111,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 unset($this->session->data['advertise_google']);
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->session->data['error'] = $e->getMessage();
             }
         } else if (!is_null($error)) {
@@ -1168,7 +1168,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->session->data['error'] = $e->getMessage();
             }
         } else if (isset($this->request->get['error'])) {
@@ -1325,7 +1325,7 @@ class ControllerExtensionAdvertiseGoogle extends Controller {
                 $this->session->data['error'] = $e->getMessage();
 
                 $this->response->redirect($this->url->link('extension/advertise/google/connect', 'store_id=' . $this->store_id . '&user_token=' . $this->session->data['user_token'], true));
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 $this->session->data['error'] = $e->getMessage();
             }
         } else {

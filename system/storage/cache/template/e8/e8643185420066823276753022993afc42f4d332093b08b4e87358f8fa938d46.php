@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* common/dashboard.twig */
-class __TwigTemplate_f99676aadfbfa2f14f4e23541ec20891b7c5a87fcf1746a62c953cad67423214 extends \Twig\Template
+class __TwigTemplate_f99676aadfbfa2f14f4e23541ec20891b7c5a87fcf1746a62c953cad67423214 extends Template
 {
     private $source;
     private $macros = [];

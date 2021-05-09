@@ -12,9 +12,13 @@
 
 namespace Twig;
 
+use Exception;
+use LogicException;
+use Throwable;
 use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
+use function is_array;
 
 /**
  * Default base class for compiled templates.
@@ -174,7 +178,7 @@ abstract class Template
 
         // avoid RCEs when sandbox is enabled
         if (null !== $template && !$template instanceof self) {
-            throw new \LogicException('A block must be a method on a \Twig\Template instance.');
+            throw new LogicException('A block must be a method on a \Twig\Template instance.');
         }
 
         if (null !== $template) {
@@ -192,7 +196,7 @@ abstract class Template
                 }
 
                 throw $e;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $e = new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $template->getSourceContext(), $e);
                 $e->guess();
 
@@ -313,7 +317,7 @@ abstract class Template
     protected function loadTemplate($template, $templateName = null, $line = null, $index = null)
     {
         try {
-            if (\is_array($template)) {
+            if (is_array($template)) {
                 return $this->env->resolveTemplate($template);
             }
 
@@ -388,7 +392,7 @@ abstract class Template
         }
         try {
             $this->display($context);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
             }
@@ -415,7 +419,7 @@ abstract class Template
             }
 
             throw $e;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $e = new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $this->getSourceContext(), $e);
             $e->guess();
 

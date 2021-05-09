@@ -37,6 +37,8 @@ class ControllerCommonHeader extends Controller {
 
 		$data['name'] = $this->config->get('config_name');
 
+		$data['theme_css'] = 'catalog/view/theme/'. $this->config->get('theme_default_directory'). '/stylesheet/stylesheet.css';
+
 		if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
 			$data['logo'] = $server . 'image/' . $this->config->get('config_logo');
 		} else {
@@ -76,6 +78,9 @@ class ControllerCommonHeader extends Controller {
 		$data['search'] = $this->load->controller('common/search');
 		$data['cart'] = $this->load->controller('common/cart');
 		$data['menu'] = $this->load->controller('common/menu');
+
+		$data['load_local'] = LOAD_LOCAL;
+        $data['subheader'] = $this->load->controller('common/header_subheader');
 
 		return $this->load->view('common/header', $data);
 	}

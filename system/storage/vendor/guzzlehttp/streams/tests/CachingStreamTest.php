@@ -4,11 +4,13 @@ namespace GuzzleHttp\Tests\Stream;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\CachingStream;
 use GuzzleHttp\Stream\Utils;
+use PHPUnit_Framework_TestCase;
+use RuntimeException;
 
 /**
  * @covers GuzzleHttp\Stream\CachingStream
  */
-class CachingStreamTest extends \PHPUnit_Framework_TestCase
+class CachingStreamTest extends PHPUnit_Framework_TestCase
 {
     /** @var CachingStream */
     protected $body;
@@ -36,7 +38,7 @@ class CachingStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Cannot seek to byte 10
      */
     public function testCannotSeekPastWhatHasBeenRead()

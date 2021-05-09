@@ -1,6 +1,8 @@
 <?php
 namespace Cardinity\Method;
 
+use Symfony\Component\Validator\Constraints\Collection;
+
 /**
  * Method interface for building queries for API.
  */
@@ -41,7 +43,7 @@ interface MethodInterface
     
     /**
      * Validation constraints for fields
-     * @return \Symfony\Component\Validator\Constraints\Collection
+     * @return Collection
      */
     public function getValidationConstraints();
 

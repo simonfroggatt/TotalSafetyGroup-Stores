@@ -1,6 +1,9 @@
 <?php
 namespace Braintree;
 
+use Braintree\Subscription\StatusDetails;
+use DateTime;
+
 /**
  * Braintree Subscription module
  *
@@ -12,36 +15,36 @@ namespace Braintree;
  *
  * @package   Braintree
  * 
- * @property-read \Braintree\Addon[] $addOns
+ * @property-read Addon[] $addOns
  * @property-read string $balance
  * @property-read int $billingDayOfMonth
- * @property-read \DateTime $billingPeriodEndDate
- * @property-read \DateTime $billingPeriodStartDate
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $billingPeriodEndDate
+ * @property-read DateTime $billingPeriodStartDate
+ * @property-read DateTime $createdAt
  * @property-read int $currentBillingCycle
  * @property-read int|null $daysPastDue
  * @property-read string|null $description
- * @property-read \Braintree\Descriptor|null $descriptor
- * @property-read \Braintree\Discount[] $discounts
+ * @property-read Descriptor|null $descriptor
+ * @property-read Discount[] $discounts
  * @property-read int $failureCount
- * @property-read \DateTime $firstBillingDate
+ * @property-read DateTime $firstBillingDate
  * @property-read string $id
  * @property-read string $merchantAccountId
  * @property-read boolean $neverExpires
  * @property-read string $nextBillingPeriodAmount
- * @property-read \DateTime $nextBillingDate
+ * @property-read DateTime $nextBillingDate
  * @property-read int|null $numberOfBillingCycles
- * @property-read \DateTime|null $paidThroughDate
+ * @property-read DateTime|null $paidThroughDate
  * @property-read string $paymentMethodToken
  * @property-read string $planId
  * @property-read string $price
  * @property-read string $status
- * @property-read \Braintree\Subscription\StatusDetails[] $statusHistory
- * @property-read \Braintree\Transaction[] $transactions
+ * @property-read StatusDetails[] $statusHistory
+ * @property-read Transaction[] $transactions
  * @property-read int $trialDuration
  * @property-read string $trialDurationUnit
  * @property-read boolean $trialPeriod
- * @property-read \DateTime $updatedAt
+ * @property-read DateTime $updatedAt
  */
 class Subscription extends Base
 {

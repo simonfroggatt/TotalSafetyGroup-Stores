@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Exception;
 
+use Exception;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Ring\Exception\ConnectException;
@@ -22,7 +23,7 @@ class RequestException extends TransferException
         $message,
         RequestInterface $request,
         ResponseInterface $response = null,
-        \Exception $previous = null
+        Exception $previous = null
     ) {
         // Set the code of the exception if the response is set and not future.
         $code = $response && !($response instanceof FutureInterface)
@@ -37,11 +38,11 @@ class RequestException extends TransferException
      * Wrap non-RequestExceptions with a RequestException
      *
      * @param RequestInterface $request
-     * @param \Exception       $e
+     * @param Exception       $e
      *
      * @return RequestException
      */
-    public static function wrapException(RequestInterface $request, \Exception $e)
+    public static function wrapException(RequestInterface $request, Exception $e)
     {
         if ($e instanceof RequestException) {
             return $e;
@@ -57,14 +58,14 @@ class RequestException extends TransferException
      *
      * @param RequestInterface  $request  Request
      * @param ResponseInterface $response Response received
-     * @param \Exception        $previous Previous exception
+     * @param Exception        $previous Previous exception
      *
      * @return self
      */
     public static function create(
         RequestInterface $request,
         ResponseInterface $response = null,
-        \Exception $previous = null
+        Exception $previous = null
     ) {
         if (!$response) {
             return new self('Error completing request', $request, null, $previous);

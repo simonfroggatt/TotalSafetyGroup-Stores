@@ -11,10 +11,17 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use ReflectionClass;
+use stdClass;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\FileValidator;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
+use function get_class;
+use function is_resource;
+use const DIRECTORY_SEPARATOR;
 
 abstract class FileValidatorTest extends AbstractConstraintValidatorTest
 {
@@ -36,7 +43,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     {
         parent::setUp();
 
-        $this->path = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'FileValidatorTest';
+        $this->path = sys_get_temp_dir(). DIRECTORY_SEPARATOR.'FileValidatorTest';
         $this->file = fopen($this->path, 'w');
         fwrite($this->file, ' ', 1);
     }
@@ -45,7 +52,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     {
         parent::tearDown();
 
-        if (\is_resource($this->file)) {
+        if (is_resource($this->file)) {
             fclose($this->file);
         }
 
@@ -72,11 +79,11 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleTypeOrFile()
     {
-        $this->validator->validate(new \stdClass(), new File());
+        $this->validator->validate(new stdClass(), new File());
     }
 
     public function testValidFile()
@@ -228,7 +235,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @expectedException ConstraintDefinitionException
      */
     public function testInvalidMaxSize()
     {
@@ -456,7 +463,7 @@ abstract class FileValidatorTest extends AbstractConstraintValidatorTest
             ), '1');
 
             // access FileValidator::factorizeSizes() private method to format max file size
-            $reflection = new \ReflectionClass(\get_class(new FileValidator()));
+            $reflection = new ReflectionClass(get_class(new FileValidator()));
             $method = $reflection->getMethod('factorizeSizes');
             $method->setAccessible(true);
             list($sizeAsString, $limit, $suffix) = $method->invokeArgs(new FileValidator(), array(0, UploadedFile::getMaxFilesize(), false));

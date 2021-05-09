@@ -11,9 +11,13 @@
 
 namespace ScssPhp\ScssPhp\Node;
 
+use ArrayAccess;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Node;
 use ScssPhp\ScssPhp\Type;
+use function count;
+use function is_array;
+use function is_null;
 
 /**
  * Dimension + optional units
@@ -26,7 +30,7 @@ use ScssPhp\ScssPhp\Type;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Number extends Node implements \ArrayAccess
+class Number extends Node implements ArrayAccess
 {
     /**
      * @var integer
@@ -89,7 +93,7 @@ class Number extends Node implements \ArrayAccess
     {
         $this->type      = Type::T_NUMBER;
         $this->dimension = $dimension;
-        $this->units     = \is_array($initialUnit)
+        $this->units     = is_array($initialUnit)
             ? $initialUnit
             : ($initialUnit ? [$initialUnit => 1]
                             : []);
@@ -100,7 +104,7 @@ class Number extends Node implements \ArrayAccess
      *
      * @param array $units
      *
-     * @return \ScssPhp\ScssPhp\Node\Number
+     * @return Number
      */
     public function coerce($units)
     {
@@ -110,7 +114,7 @@ class Number extends Node implements \ArrayAccess
 
         $dimension = $this->dimension;
 
-        if (\count($units)) {
+        if (count($units)) {
             $baseUnit = array_keys($units);
             $baseUnit = reset($baseUnit);
             $baseUnit = $this->findBaseUnit($baseUnit);
@@ -130,7 +134,7 @@ class Number extends Node implements \ArrayAccess
     /**
      * Normalize number
      *
-     * @return \ScssPhp\ScssPhp\Node\Number
+     * @return Number
      */
     public function normalize()
     {
@@ -148,11 +152,11 @@ class Number extends Node implements \ArrayAccess
     public function offsetExists($offset)
     {
         if ($offset === -3) {
-            return ! \is_null($this->sourceColumn);
+            return ! is_null($this->sourceColumn);
         }
 
         if ($offset === -2) {
-            return ! \is_null($this->sourceLine);
+            return ! is_null($this->sourceLine);
         }
 
         if ($offset === -1 ||
@@ -255,11 +259,11 @@ class Number extends Node implements \ArrayAccess
         foreach ($this->units as $unit => $exp) {
             $b = $this->findBaseUnit($unit);
 
-            if (\is_null($baseUnit)) {
+            if (is_null($baseUnit)) {
                 $baseUnit = $b;
             }
 
-            if (\is_null($b) or $b !== $baseUnit) {
+            if (is_null($b) or $b !== $baseUnit) {
                 return false;
             }
         }
@@ -279,23 +283,23 @@ class Number extends Node implements \ArrayAccess
 
         foreach ($this->units as $unit => $unitSize) {
             if ($unitSize > 0) {
-                $numerators = array_pad($numerators, \count($numerators) + $unitSize, $unit);
+                $numerators = array_pad($numerators, count($numerators) + $unitSize, $unit);
                 continue;
             }
 
             if ($unitSize < 0) {
-                $denominators = array_pad($denominators, \count($denominators) - $unitSize, $unit);
+                $denominators = array_pad($denominators, count($denominators) - $unitSize, $unit);
                 continue;
             }
         }
 
-        return implode('*', $numerators) . (\count($denominators) ? '/' . implode('*', $denominators) : '');
+        return implode('*', $numerators) . (count($denominators) ? '/' . implode('*', $denominators) : '');
     }
 
     /**
      * Output number
      *
-     * @param \ScssPhp\ScssPhp\Compiler $compiler
+     * @param Compiler $compiler
      *
      * @return string
      */
@@ -307,7 +311,7 @@ class Number extends Node implements \ArrayAccess
             return $unitSize;
         });
 
-        if (\count($units) > 1 && array_sum($units) === 0) {
+        if (count($units) > 1 && array_sum($units) === 0) {
             $dimension = $this->dimension;
             $units     = [];
 
@@ -321,7 +325,7 @@ class Number extends Node implements \ArrayAccess
 
         $unitSize = array_sum($units);
 
-        if ($compiler && ($unitSize > 1 || $unitSize < 0 || \count($units) > 1)) {
+        if ($compiler && ($unitSize > 1 || $unitSize < 0 || count($units) > 1)) {
             $this->units = $units;
             $unit = $this->unitStr();
         } else {

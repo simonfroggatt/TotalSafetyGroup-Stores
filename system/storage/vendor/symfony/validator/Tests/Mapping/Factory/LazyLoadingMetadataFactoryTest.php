@@ -13,9 +13,11 @@ namespace Symfony\Component\Validator\Tests\Mapping\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Exception\NoSuchMetadataException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
+use Symfony\Component\Validator\Mapping\Loader\StaticMethodLoader;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
 
 class LazyLoadingMetadataFactoryTest extends TestCase
@@ -150,7 +152,7 @@ class LazyLoadingMetadataFactoryTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\NoSuchMetadataException
+     * @expectedException NoSuchMetadataException
      */
     public function testNonClassNameStringValues()
     {
@@ -191,7 +193,7 @@ class LazyLoadingMetadataFactoryTest extends TestCase
 
     public function testGroupsFromParent()
     {
-        $reader = new \Symfony\Component\Validator\Mapping\Loader\StaticMethodLoader();
+        $reader = new StaticMethodLoader();
         $factory = new LazyLoadingMetadataFactory($reader);
         $metadata = $factory->getMetadataFor('Symfony\Component\Validator\Tests\Fixtures\EntityStaticCarTurbo');
         $groups = array();

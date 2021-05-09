@@ -95,9 +95,9 @@ $deferred = new React\Promise\Deferred();
 
 $promise = $deferred->promise();
 
-$deferred->resolve(mixed $value = null);
-$deferred->reject(mixed $reason = null);
-$deferred->notify(mixed $update = null);
+$deferred->resolve(mixed $value = null)
+$deferred->reject(mixed $reason = null)
+$deferred->notify(mixed $update = null)
 ```
 
 The `promise` method returns the promise of the deferred.
@@ -121,7 +121,7 @@ keeping the authority to modify its state to yourself.
 #### Deferred::resolve()
 
 ```php
-$deferred->resolve(mixed $value = null);
+$deferred->resolve(mixed $value = null)
 ```
 
 Resolves the promise returned by `promise()`. All consumers are notified by
@@ -134,7 +134,7 @@ this promise once it is resolved.
 #### Deferred::reject()
 
 ```php
-$deferred->reject(mixed $reason = null);
+$deferred->reject(mixed $reason = null)
 ```
 
 Rejects the promise returned by `promise()`, signalling that the deferred's
@@ -150,7 +150,7 @@ of this promise regardless whether it fulfills or rejects.
 > Deprecated in v2.6.0: Progress support is deprecated and should not be used anymore.
 
 ```php
-$deferred->notify(mixed $update = null);
+$deferred->notify(mixed $update = null)
 ```
 
 Triggers progress notifications, to indicate to consumers that the computation
@@ -180,7 +180,7 @@ Neither its state nor its result (or error) can be modified.
 #### PromiseInterface::then()
 
 ```php
-$transformedPromise = $promise->then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null);
+$transformedPromise = $promise->then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
 ```
 
 Transforms a promise's value by applying a function to the promise's fulfillment
@@ -232,7 +232,7 @@ and utility methods which are not part of the Promises/A specification.
 #### ExtendedPromiseInterface::done()
 
 ```php
-$promise->done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null);
+$promise->done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
 ```
 
 Consumes the promise's ultimate value if the promise fulfills, or handles the
@@ -252,7 +252,7 @@ Since the purpose of `done()` is consumption rather than transformation,
 #### ExtendedPromiseInterface::otherwise()
 
 ```php
-$promise->otherwise(callable $onRejected);
+$promise->otherwise(callable $onRejected)
 ```
 
 Registers a rejection handler for promise. It is a shortcut for:
@@ -266,7 +266,7 @@ only specific errors.
 
 ```php
 $promise
-    ->otherwise(function (\RuntimeException $reason) {
+    ->otherwise(function (RuntimeException $reason) {
         // Only catch \RuntimeException instances
         // All other types of errors will propagate automatically
     })
@@ -278,7 +278,7 @@ $promise
 #### ExtendedPromiseInterface::always()
 
 ```php
-$newPromise = $promise->always(callable $onFulfilledOrRejected);
+$newPromise = $promise->always(callable $onFulfilledOrRejected)
 ```
 
 Allows you to execute "cleanup" type tasks in a promise chain.
@@ -306,7 +306,7 @@ Consider the following synchronous code:
 ```php
 try {
   return doSomething();
-} catch(\Exception $e) {
+} catch(Exception $e) {
     return handleError($e);
 } finally {
     cleanup();
@@ -327,7 +327,7 @@ return doSomething()
 > Deprecated in v2.6.0: Progress support is deprecated and should not be used anymore.
 
 ```php
-$promise->progress(callable $onProgress);
+$promise->progress(callable $onProgress)
 ```
 
 Registers a handler for progress updates from promise. It is a shortcut for:
@@ -469,7 +469,7 @@ is a promise which resolves to an array, this promise is also cancelled.
 #### resolve()
 
 ```php
-$promise = React\Promise\resolve(mixed $promiseOrValue);
+$promise = React\Promise\resolve(mixed $promiseOrValue)
 ```
 
 Creates a promise for the supplied `$promiseOrValue`.
@@ -490,7 +490,7 @@ promise will be assimilated to a extended promise following `$promiseOrValue`.
 #### reject()
 
 ```php
-$promise = React\Promise\reject(mixed $promiseOrValue);
+$promise = React\Promise\reject(mixed $promiseOrValue)
 ```
 
 Creates a rejected promise for the supplied `$promiseOrValue`.
@@ -508,7 +508,7 @@ the value of another promise.
 #### all()
 
 ```php
-$promise = React\Promise\all(array|React\Promise\PromiseInterface $promisesOrValues);
+$promise = React\Promise\all(array|React\Promise\PromiseInterface $promisesOrValues)
 ```
 
 Returns a promise that will resolve only once all the items in
@@ -519,7 +519,7 @@ will be an array containing the resolution values of each of the items in
 #### race()
 
 ```php
-$promise = React\Promise\race(array|React\Promise\PromiseInterface $promisesOrValues);
+$promise = React\Promise\race(array|React\Promise\PromiseInterface $promisesOrValues)
 ```
 
 Initiates a competitive race that allows one winner. Returns a promise which is
@@ -528,7 +528,7 @@ resolved in the same way the first settled promise resolves.
 #### any()
 
 ```php
-$promise = React\Promise\any(array|React\Promise\PromiseInterface $promisesOrValues);
+$promise = React\Promise\any(array|React\Promise\PromiseInterface $promisesOrValues)
 ```
 
 Returns a promise that will resolve when any one of the items in
@@ -544,7 +544,7 @@ if `$promisesOrValues` contains 0 items.
 #### some()
 
 ```php
-$promise = React\Promise\some(array|React\Promise\PromiseInterface $promisesOrValues, integer $howMany);
+$promise = React\Promise\some(array|React\Promise\PromiseInterface $promisesOrValues, integer $howMany)
 ```
 
 Returns a promise that will resolve when `$howMany` of the supplied items in
@@ -563,7 +563,7 @@ if `$promisesOrValues` contains less items than `$howMany`.
 #### map()
 
 ```php
-$promise = React\Promise\map(array|React\Promise\PromiseInterface $promisesOrValues, callable $mapFunc);
+$promise = React\Promise\map(array|React\Promise\PromiseInterface $promisesOrValues, callable $mapFunc)
 ```
 
 Traditional map function, similar to `array_map()`, but allows input to contain
@@ -575,7 +575,7 @@ value of a promise or value in `$promisesOrValues`.
 #### reduce()
 
 ```php
-$promise = React\Promise\reduce(array|React\Promise\PromiseInterface $promisesOrValues, callable $reduceFunc , $initialValue = null);
+$promise = React\Promise\reduce(array|React\Promise\PromiseInterface $promisesOrValues, callable $reduceFunc , $initialValue = null)
 ```
 
 Traditional reduce function, similar to `array_reduce()`, but input may contain
@@ -687,16 +687,16 @@ $deferred = new React\Promise\Deferred();
 
 $deferred->promise()
     ->then(function ($x) {
-        throw new \Exception($x + 1);
+        throw new Exception($x + 1);
     })
-    ->otherwise(function (\Exception $x) {
+    ->otherwise(function (Exception $x) {
         // Propagate the rejection
         throw $x;
     })
-    ->otherwise(function (\Exception $x) {
+    ->otherwise(function (Exception $x) {
         // Can also propagate by returning another rejection
         return React\Promise\reject(
-            new \Exception($x->getMessage() + 1)
+            new Exception($x->getMessage() + 1)
         );
     })
     ->otherwise(function ($x) {
@@ -719,9 +719,9 @@ $deferred->promise()
         return $x + 1;
     })
     ->then(function ($x) {
-        throw new \Exception($x + 1);
+        throw new Exception($x + 1);
     })
-    ->otherwise(function (\Exception $x) {
+    ->otherwise(function (Exception $x) {
         // Handle the rejection, and don't propagate.
         // This is like catch without a rethrow
         return $x->getMessage() + 1;

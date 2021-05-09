@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Translation;
 
+use Locale;
+
 /**
  * IdentityTranslator does not translate anything.
  *
@@ -44,7 +46,7 @@ class IdentityTranslator implements TranslatorInterface
      */
     public function getLocale()
     {
-        return $this->locale ?: \Locale::getDefault();
+        return $this->locale ?: Locale::getDefault();
     }
 
     /**

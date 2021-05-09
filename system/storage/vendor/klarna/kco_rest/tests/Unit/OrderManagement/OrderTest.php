@@ -19,6 +19,7 @@
 
 namespace Klarna\Tests\Unit\Rest\OrderManagement;
 
+use ArrayObject;
 use GuzzleHttp\Exception\RequestException;
 use Klarna\Rest\OrderManagement\Order;
 use Klarna\Rest\Tests\Unit\TestCase;
@@ -98,7 +99,7 @@ class OrderTest extends TestCase
 
         $order = new Order($this->connector, '12345');
         $order['data'] = 'is overwritten';
-        $order['captures'][] = new \ArrayObject();
+        $order['captures'][] = new ArrayObject();
 
         $order->fetch();
 

@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Translation\Dumper;
 
+use LogicException;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Util\ArrayConverter;
 use Symfony\Component\Yaml\Yaml;
@@ -28,7 +29,7 @@ class YamlFileDumper extends FileDumper
     public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = array())
     {
         if (!class_exists('Symfony\Component\Yaml\Yaml')) {
-            throw new \LogicException('Dumping translations in the YAML format requires the Symfony Yaml component.');
+            throw new LogicException('Dumping translations in the YAML format requires the Symfony Yaml component.');
         }
 
         $data = $messages->all($domain);

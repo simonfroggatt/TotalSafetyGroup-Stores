@@ -138,7 +138,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
             }
 
             if (empty($quotes)) {
-                throw new \RuntimeException($this->language->get('error_no_shipping_methods'));
+                throw new RuntimeException($this->language->get('error_no_shipping_methods'));
             }
 
             $sort_order = array();
@@ -159,7 +159,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
             } else {
                 $json['selected'] = '';
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $json['error'] = $e->getMessage();
         }
 
@@ -200,7 +200,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
             $this->model_extension_module_amazon_login->persistAddress($this->session->data['apalwa']['pay']['address']);
 
             $json['redirect'] = $this->url->link('extension/payment/amazon_login_pay/payment', '', true);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $json['error'] = $e->getMessage();
         }
 
@@ -389,7 +389,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
 
             $data['order_reference_id'] = $this->session->data['apalwa']['pay']['order_reference_id'];
             $data['order'] = $order;
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->model_extension_payment_amazon_login_pay->cartRedirect($e->getMessage());
         }
 
@@ -619,7 +619,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
                                 setcookie('amazon_Login_state_cache', null, -1, '/');
                             }
 
-                            throw new \RuntimeException($cart_error_messages[$reason_code]);
+                            throw new RuntimeException($cart_error_messages[$reason_code]);
                         } else {
                             // This should never occur, but just in case...
                             throw $this->model_extension_payment_amazon_login_pay->loggedException("Authorization has failed with code: " . $reason_code, $this->language->get('error_process_order'));
@@ -644,7 +644,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
             }
 
             $this->response->redirect($this->url->link('checkout/success', '', true));
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->model_extension_payment_amazon_login_pay->cartRedirect($e->getMessage());
         }
     }
@@ -710,7 +710,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
 
                     $this->response->redirect($this->url->link('extension/payment/amazon_login_pay/payment', '', true));
                 } else {
-                    throw new \RuntimeException($constraints->Constraint->Description);
+                    throw new RuntimeException($constraints->Constraint->Description);
                 }
             }
 
@@ -758,7 +758,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
                                 setcookie('amazon_Login_state_cache', null, -1, '/');
                             }
 
-                            throw new \RuntimeException($cart_error_messages[$reason_code]);
+                            throw new RuntimeException($cart_error_messages[$reason_code]);
                         } else {
                             // This should never occur, but just in case...
                             throw $this->model_extension_payment_amazon_login_pay->loggedException("Authorization has failed with code: " . $reason_code, $this->language->get('error_process_order'));
@@ -777,7 +777,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
 
             try {
                 $this->model_checkout_order->addOrderHistory($order_id, $this->config->get('payment_amazon_login_pay_pending_status'), '', $this->config->get('payment_amazon_login_pay_mode') != 'payment');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 if ($this->config->get('error_log')) {
                     $this->log->write($e->getMessage());
                 }
@@ -792,7 +792,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
             set_error_handler(array($this->model_extension_payment_amazon_login_pay, 'logHandler'));
 
             $this->response->redirect($this->url->link('checkout/success', '', true));
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->model_extension_payment_amazon_login_pay->cartRedirect($e->getMessage());
         }
     }
@@ -860,13 +860,13 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
 
                     $json['redirect'] = $this->url->link('extension/payment/amazon_login_pay/payment', '', true);
                 } else {
-                    throw new \RuntimeException($constraints->Constraint->Description);
+                    throw new RuntimeException($constraints->Constraint->Description);
                 }
             } else {
                 // Confirm the order reference
                 $this->model_extension_payment_amazon_login_pay->confirmOrder($order_reference_id);
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $json['redirect'] = $this->model_extension_payment_amazon_login_pay->cartRedirect($e->getMessage(), true);
         }
 
@@ -881,19 +881,19 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
 
         try {
             if (!isset($this->request->get['token'])) {
-                throw new \RuntimeException('GET variable "token" is missing.');
+                throw new RuntimeException('GET variable "token" is missing.');
             }
 
             if (trim($this->request->get['token']) == '') {
-                throw new \RuntimeException('GET variable "token" set, but is empty.');
+                throw new RuntimeException('GET variable "token" set, but is empty.');
             }
 
             if (!$this->config->get('payment_amazon_login_pay_ipn_token')) {
-                throw new \RuntimeException('CONFIG variable "payment_amazon_login_pay_ipn_token" is empty.');
+                throw new RuntimeException('CONFIG variable "payment_amazon_login_pay_ipn_token" is empty.');
             }
 
             if (!hash_equals(trim($this->config->get('payment_amazon_login_pay_ipn_token')), trim($this->request->get['token']))) {
-                throw new \RuntimeException('Token values are different.');
+                throw new RuntimeException('Token values are different.');
             }
 
             // Everything is fine. Process the IPN
@@ -952,7 +952,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
                         break;
                 }
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->model_extension_payment_amazon_login_pay->debugLog('IPN ERROR', $e->getMessage());
         }
 
@@ -998,7 +998,7 @@ class ControllerExtensionPaymentAmazonLoginPay extends Controller {
 
                     $this->model_extension_payment_amazon_login_pay->updateCapturedStatus($amazon_login_pay_order['amazon_login_pay_order_id'], 1);
                 }
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 // Do nothing, as the exception is logged in case of debug logging.
             }
         }

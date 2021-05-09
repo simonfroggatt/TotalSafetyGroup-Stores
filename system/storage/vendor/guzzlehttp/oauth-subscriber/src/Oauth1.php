@@ -10,6 +10,8 @@ use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Post\PostBodyInterface;
 use GuzzleHttp\Query;
 use GuzzleHttp\Url;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * OAuth 1.0 signature plugin.
@@ -100,7 +102,7 @@ class Oauth1 implements SubscriberInterface
                 $request->getQuery()->overwriteWith($params);
                 break;
             default:
-                throw new \InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(sprintf(
                     'Invalid consumer method "%s"',
                     $this->config['request_method']
                 ));
@@ -115,7 +117,7 @@ class Oauth1 implements SubscriberInterface
      *
      * @return string
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function getSignature(RequestInterface $request, array $params)
     {
@@ -146,7 +148,7 @@ class Oauth1 implements SubscriberInterface
         )];
 
         if (!is_callable($meth)) {
-            throw new \RuntimeException('Unknown signature method: '
+            throw new RuntimeException('Unknown signature method: '
                 . $this->config['signature_method']);
         }
 
@@ -226,7 +228,7 @@ class Oauth1 implements SubscriberInterface
     private function sign_RSA_SHA1($baseString)
     {
         if (!function_exists('openssl_pkey_get_private')) {
-            throw new \RuntimeException('RSA-SHA1 signature method '
+            throw new RuntimeException('RSA-SHA1 signature method '
                 . 'requires the OpenSSL extension.');
         }
 

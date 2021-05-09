@@ -2,9 +2,11 @@
 namespace GuzzleHttp\Tests\Ring\Future;
 
 use GuzzleHttp\Ring\Future\FutureArray;
+use PHPUnit_Framework_TestCase;
 use React\Promise\Deferred;
+use RuntimeException;
 
-class FutureArrayTest extends \PHPUnit_Framework_TestCase
+class FutureArrayTest extends PHPUnit_Framework_TestCase
 {
     public function testLazilyCallsDeref()
     {
@@ -45,7 +47,7 @@ class FutureArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testThrowsWhenAccessingInvalidProperty()
     {

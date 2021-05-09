@@ -5,10 +5,11 @@ namespace spec\Cardinity\Exception;
 use Cardinity\Method\ResultObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use RuntimeException;
 
 class DeclinedSpec extends ObjectBehavior
 {
-    function let(\RuntimeException $exception, ResultObject $error)
+    function let(RuntimeException $exception, ResultObject $error)
     {
         $this->beConstructedWith(
             $exception,

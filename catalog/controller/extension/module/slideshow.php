@@ -6,16 +6,28 @@ class ControllerExtensionModuleSlideshow extends Controller {
 		$this->load->model('design/banner');
 		$this->load->model('tool/image');
 
-		$this->document->addStyle('catalog/view/javascript/jquery/swiper/css/swiper.min.css');
-		$this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
-		$this->document->addScript('catalog/view/javascript/jquery/swiper/js/swiper.jquery.js');
+        if(LOAD_LOCAL) {
+            /*   $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/swiper.min.css');
+               $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
+               $this->document->addScript('catalog/view/javascript/jquery/swiper/js/swiper.jquery.js');*/
+
+            $this->document->addStyle('catalog/view/javascript/jquery/swiper-6-5-3/css/swiper-bundle.css');
+            $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
+            $this->document->addScript('catalog/view/javascript/jquery/swiper-6-5-3/js/swiper-bundle.js');
+        }
+        else {
+            $this->document->addStyle("https://unpkg.com/swiper/swiper-bundle.min.css");
+            $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
+            $this->document->addScript("https://unpkg.com/swiper/swiper-bundle.min.js");
+        }
 		
 		$data['banners'] = array();
 
 		$results = $this->model_design_banner->getBanner($setting['banner_id']);
 
 		foreach ($results as $result) {
-			if (is_file(DIR_IMAGE . $result['image'])) {
+//			echo DIR_IMAGE . $result['image'];
+		    if (is_file(DIR_IMAGE . $result['image'])) {
 				$data['banners'][] = array(
 					'title' => $result['title'],
 					'link'  => $result['link'],

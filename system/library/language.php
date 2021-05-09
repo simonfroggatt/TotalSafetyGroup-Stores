@@ -11,7 +11,7 @@
 * Language class
 */
 class Language {
-	private $default = 'en-gb';
+	private $default = 'en-gb/default';
 	private $directory;
 	public $data = array();
 	
@@ -54,10 +54,12 @@ class Language {
      *
      * @param	string	$filename
 	 * @param	string	$key
+     * @param   string $store_lang_directory
 	 * 
 	 * @return	array
      */	
-	public function load($filename, $key = '') {
+	public function load($filename, $key = '', $store_lang_directory = '') {
+
 		if (!$key) {
 			$_ = array();
 	
@@ -71,10 +73,24 @@ class Language {
 			
 			if (is_file($file)) {
 				require($file);
-			} 
+			}
 	
 			$this->data = array_merge($this->data, $_);
-		} else {
+
+			/** TSG start changes - changes for multi sites
+             *
+             */
+            $file = DIR_LANGUAGE .  $this->directory . '/'. $store_lang_directory . '/' . $filename . '.php';
+
+            if (is_file($file)) {
+                require($file);
+            }
+
+            $this->data = array_merge($this->data, $_);
+
+            /** END changes ***/
+
+        } else {
 			// Put the language into a sub key
 			$this->data[$key] = new Language($this->directory);
 			$this->data[$key]->load($filename);

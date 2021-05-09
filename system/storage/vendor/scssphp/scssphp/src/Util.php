@@ -26,13 +26,13 @@ class Util
      * room for slight floating-point errors.
      *
      * @param string                    $name  The name of the value. Used in the error message.
-     * @param \ScssPhp\ScssPhp\Base\Range $range Range of values.
+     * @param Range $range Range of values.
      * @param array                     $value The value to check.
      * @param string                    $unit  The unit of the value. Used in error reporting.
      *
      * @return mixed `value` adjusted to fall within range, if it was outside by a floating-point margin.
      *
-     * @throws \ScssPhp\ScssPhp\Exception\RangeException
+     * @throws RangeException
      */
     public static function checkRange($name, Range $range, $value, $unit = '')
     {

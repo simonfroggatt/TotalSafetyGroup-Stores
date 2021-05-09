@@ -1,6 +1,9 @@
 <?php
 namespace GuzzleHttp\Stream;
+use BadMethodCallException;
+use Exception;
 use GuzzleHttp\Stream\Exception\CannotAttachException;
+use UnexpectedValueException;
 
 /**
  * Stream decorator trait
@@ -27,7 +30,7 @@ trait StreamDecoratorTrait
             return $this->stream;
         }
 
-        throw new \UnexpectedValueException("$name not found on class");
+        throw new UnexpectedValueException("$name not found on class");
     }
 
     public function __toString()
@@ -35,7 +38,7 @@ trait StreamDecoratorTrait
         try {
             $this->seek(0);
             return $this->getContents();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Really, PHP? https://bugs.php.net/bug.php?id=53648
             trigger_error('StreamDecorator::__toString exception: '
                 . (string) $e, E_USER_ERROR);
@@ -133,11 +136,11 @@ trait StreamDecoratorTrait
      * Implement in subclasses to dynamically create streams when requested.
      *
      * @return StreamInterface
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     protected function createStream()
     {
-        throw new \BadMethodCallException('createStream() not implemented in '
+        throw new BadMethodCallException('createStream() not implemented in '
             . get_class($this));
     }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Braintree;
 
+use DateTime;
+
 /**
  * Braintree ApplePayCard module
  * Creates and manages Braintree Apple Pay cards
@@ -14,7 +16,7 @@ namespace Braintree;
  *
  * @property-read string $bin
  * @property-read string $cardType
- * @property-read \DateTime $createdAt
+ * @property-read DateTime $createdAt
  * @property-read string $customerId
  * @property-read boolean $default
  * @property-read string $expirationDate
@@ -26,8 +28,8 @@ namespace Braintree;
  * @property-read string $token
  * @property-read string $paymentInstrumentName
  * @property-read string $sourceDescription
- * @property-read \Braintree\Subscription[] $subscriptions
- * @property-read \DateTime $updatedAt
+ * @property-read Subscription[] $subscriptions
+ * @property-read DateTime $updatedAt
  */
 class ApplePayCard extends Base
 {

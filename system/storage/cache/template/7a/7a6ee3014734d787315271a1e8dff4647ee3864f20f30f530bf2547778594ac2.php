@@ -13,7 +13,7 @@ use Twig\Source;
 use Twig\Template;
 
 /* extension/dashboard/map_info.twig */
-class __TwigTemplate_2b70f676bfb27fee556d612a5d4dc05de3cd11bab47e308c91d77c64461f6d1b extends \Twig\Template
+class __TwigTemplate_2b70f676bfb27fee556d612a5d4dc05de3cd11bab47e308c91d77c64461f6d1b extends Template
 {
     private $source;
     private $macros = [];

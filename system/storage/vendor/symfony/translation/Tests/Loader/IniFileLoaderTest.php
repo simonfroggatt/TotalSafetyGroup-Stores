@@ -11,10 +11,12 @@
 
 namespace Symfony\Component\Translation\Tests\Loader;
 
+use PHPUnit_Framework_TestCase;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\IniFileLoader;
 use Symfony\Component\Config\Resource\FileResource;
 
-class IniFileLoaderTest extends \PHPUnit_Framework_TestCase
+class IniFileLoaderTest extends PHPUnit_Framework_TestCase
 {
     public function testLoad()
     {
@@ -39,7 +41,7 @@ class IniFileLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Translation\Exception\NotFoundResourceException
+     * @expectedException NotFoundResourceException
      */
     public function testLoadNonExistingResource()
     {

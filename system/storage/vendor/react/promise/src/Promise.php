@@ -2,6 +2,15 @@
 
 namespace React\Promise;
 
+use Closure;
+use Exception;
+use LogicException;
+use ReflectionFunction;
+use ReflectionMethod;
+use Throwable;
+use function is_array;
+use function is_object;
+
 class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
 {
     private $canceller;
@@ -119,9 +128,9 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
                 $progressHandler = static function ($update) use ($notify, $onProgress) {
                     try {
                         $notify($onProgress($update));
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         $notify($e);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $notify($e);
                     }
                 };
@@ -154,7 +163,7 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
 
         if ($promise === $this) {
             $promise = new RejectedPromise(
-                new \LogicException('Cannot resolve a promise with itself.')
+                new LogicException('Cannot resolve a promise with itself.')
             );
         }
 
@@ -201,12 +210,12 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
         // function arguments is actually faster than blindly passing them.
         // Also, this helps avoiding unnecessary function arguments in the call stack
         // if the callback creates an Exception (creating garbage cycles).
-        if (\is_array($callback)) {
-            $ref = new \ReflectionMethod($callback[0], $callback[1]);
-        } elseif (\is_object($callback) && !$callback instanceof \Closure) {
-            $ref = new \ReflectionMethod($callback, '__invoke');
+        if (is_array($callback)) {
+            $ref = new ReflectionMethod($callback[0], $callback[1]);
+        } elseif (is_object($callback) && !$callback instanceof Closure) {
+            $ref = new ReflectionMethod($callback, '__invoke');
         } else {
-            $ref = new \ReflectionFunction($callback);
+            $ref = new ReflectionFunction($callback);
         }
         $args = $ref->getNumberOfParameters();
 
@@ -245,10 +254,10 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
                     }
                 );
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $target = null;
             $this->reject($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $target = null;
             $this->reject($e);
         }

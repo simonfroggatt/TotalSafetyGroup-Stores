@@ -12,6 +12,7 @@
 namespace Symfony\Component\Validator\Tests\Mapping;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Mapping\GetterMetadata;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
 
@@ -62,7 +63,7 @@ class GetterMetadataTest extends TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
+     * @expectedException ValidatorException
      * @expectedExceptionMessage The hasLastName() method does not exist in class Symfony\Component\Validator\Tests\Fixtures\Entity.
      */
     public function testUndefinedMethodNameThrowsException()

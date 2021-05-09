@@ -12,6 +12,8 @@
 namespace ScssPhp\ScssPhp;
 
 use Exception;
+use function is_array;
+use function is_null;
 
 /**
  * The scss cache manager.
@@ -90,7 +92,7 @@ class Cache
      *
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getCache($operation, $what, $options = [], $lastModified = null)
     {
@@ -101,13 +103,13 @@ class Cache
         ) {
             $cacheTime = filemtime($fileCache);
 
-            if ((\is_null($lastModified) || $cacheTime > $lastModified) &&
+            if ((is_null($lastModified) || $cacheTime > $lastModified) &&
                 $cacheTime + self::$gcLifetime > time()
             ) {
                 $c = file_get_contents($fileCache);
                 $c = unserialize($c);
 
-                if (\is_array($c) && isset($c['value'])) {
+                if (is_array($c) && isset($c['value'])) {
                     return $c['value'];
                 }
             }
@@ -169,7 +171,7 @@ class Cache
     /**
      * Check that the cache dir exists and is writeable
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function checkCacheDir()
     {

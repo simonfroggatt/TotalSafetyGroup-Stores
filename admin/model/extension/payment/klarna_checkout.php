@@ -13,7 +13,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			);
 
 			return $connector;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -25,7 +25,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->fetch();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -37,7 +37,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->cancel();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -49,7 +49,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->createCapture($data);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -61,7 +61,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->refund($data);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -73,7 +73,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->extendAuthorizationTime();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -85,7 +85,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->updateMerchantReferences($data);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -97,7 +97,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->updateCustomerDetails($data);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -109,7 +109,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$order = new KCOrder($connector, $order_id);
 
 			return $order->releaseRemainingAuthorization();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -122,7 +122,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 
 			$capture = $order->fetchCapture($capture_id);
 			return $capture->addShippingInfo($data);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -135,7 +135,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 
 			$capture = $order->fetchCapture($capture_id);
 			return $capture->updateCustomerDetails($data);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;
@@ -148,7 +148,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 
 			$capture = $order->fetchCapture($capture_id);
 			return $capture->triggerSendout();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage());
 
 			return false;

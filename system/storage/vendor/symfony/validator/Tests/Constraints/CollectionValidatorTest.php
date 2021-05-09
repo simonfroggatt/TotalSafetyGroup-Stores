@@ -11,12 +11,14 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use ArrayObject;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\CollectionValidator;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Optional;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Required;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
@@ -58,7 +60,7 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testThrowsExceptionIfNotTraversable()
     {
@@ -368,7 +370,7 @@ abstract class CollectionValidatorTest extends AbstractConstraintValidatorTest
 
     public function testObjectShouldBeLeftUnchanged()
     {
-        $value = new \ArrayObject(array(
+        $value = new ArrayObject(array(
             'foo' => 3,
         ));
 

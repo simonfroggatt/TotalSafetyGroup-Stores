@@ -14,6 +14,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use Symfony\Component\Validator\Constraints\CardScheme;
 use Symfony\Component\Validator\Constraints\CardSchemeValidator;
 use Symfony\Component\Validator\Validation;
+use function is_string;
 
 class CardSchemeValidatorTest extends AbstractConstraintValidatorTest
 {
@@ -64,7 +65,7 @@ class CardSchemeValidatorTest extends AbstractConstraintValidatorTest
         $this->validator->validate($number, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', \is_string($number) ? '"'.$number.'"' : $number)
+            ->setParameter('{{ value }}', is_string($number) ? '"'.$number.'"' : $number)
             ->setCode($code)
             ->assertRaised();
     }

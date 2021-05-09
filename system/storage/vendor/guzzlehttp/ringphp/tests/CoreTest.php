@@ -1,13 +1,17 @@
 <?php
 namespace GuzzleHttp\Tests\Ring;
 
+use ArrayIterator;
+use Exception;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
 use GuzzleHttp\Ring\Future\FutureArray;
 use GuzzleHttp\Stream\Stream;
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
 use React\Promise\Deferred;
 
-class CoreTest extends \PHPUnit_Framework_TestCase
+class CoreTest extends PHPUnit_Framework_TestCase
 {
     public function testReturnsNullNoHeadersAreSet()
     {
@@ -123,7 +127,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage No Host header was provided
      */
     public function testEnsuresHostIsAvailableWhenCreatingUrls()
@@ -178,7 +182,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
 
     public function testReturnsIteratorContent()
     {
-        $a = new \ArrayIterator(['a', 'b', 'cd', '']);
+        $a = new ArrayIterator(['a', 'b', 'cd', '']);
         $this->assertEquals('abcd', Core::body(['body' => $a]));
     }
 
@@ -188,7 +192,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testEnsuresBodyIsValid()
     {
@@ -242,7 +246,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
 
     public function testRewindsIterators()
     {
-        $iter = new \ArrayIterator(['foo']);
+        $iter = new ArrayIterator(['foo']);
         $this->assertTrue(Core::rewindBody(['body' => $iter]));
     }
 
@@ -316,11 +320,11 @@ class CoreTest extends \PHPUnit_Framework_TestCase
         $d = new Deferred();
         $f = new FutureArray($d->promise());
         $f2 = Core::proxy($f);
-        $d->reject(new \Exception('foo'));
+        $d->reject(new Exception('foo'));
         try {
             $f2['hello?'];
             $this->fail('did not throw');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertEquals('foo', $e->getMessage());
         }
 

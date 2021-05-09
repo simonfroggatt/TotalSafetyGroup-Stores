@@ -82,12 +82,12 @@ CHANGELOG for 2.x
       If you need automatic cancellation, you can use something like:
 
       ```php
-      function allAndCancel(array $promises)
+use React\Promise\CancellablePromiseInterface;use function React\Promise\all;      function allAndCancel(array $promises)
       {
-           return \React\Promise\all($promises)
+           return all($promises)
                ->always(function() use ($promises) {
                    foreach ($promises as $promise) {
-                       if ($promise instanceof \React\Promise\CancellablePromiseInterface) {
+                       if ($promise instanceof CancellablePromiseInterface) {
                            $promise->cancel();
                        }
                    }

@@ -24,7 +24,7 @@ class Block
     public $type;
 
     /**
-     * @var \ScssPhp\ScssPhp\Block
+     * @var Block
      */
     public $parent;
 
@@ -64,7 +64,7 @@ class Block
     public $children;
 
     /**
-     * @var \ScssPhp\ScssPhp\Block
+     * @var Block
      */
     public $selfParent;
 }

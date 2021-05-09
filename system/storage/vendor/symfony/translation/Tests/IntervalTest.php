@@ -11,9 +11,11 @@
 
 namespace Symfony\Component\Translation\Tests;
 
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Translation\Interval;
 
-class IntervalTest extends \PHPUnit_Framework_TestCase
+class IntervalTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getTests
@@ -24,7 +26,7 @@ class IntervalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testTestException()
     {

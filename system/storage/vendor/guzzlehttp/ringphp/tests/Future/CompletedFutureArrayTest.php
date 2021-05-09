@@ -2,8 +2,9 @@
 namespace GuzzleHttp\Tests\Ring\Future;
 
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
+use PHPUnit_Framework_TestCase;
 
-class CompletedFutureArrayTest extends \PHPUnit_Framework_TestCase
+class CompletedFutureArrayTest extends PHPUnit_Framework_TestCase
 {
     public function testReturnsAsArray()
     {

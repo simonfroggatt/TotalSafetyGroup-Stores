@@ -4,6 +4,7 @@ namespace GuzzleHttp\Ring\Client;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
+use InvalidArgumentException;
 
 /**
  * Ring handler that returns a canned response or evaluated function result.
@@ -41,7 +42,7 @@ class MockHandler
                 'effective_url' => null,
             ]);
         } elseif (!$response instanceof FutureArrayInterface) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Response must be an array or FutureArrayInterface. Found '
                 . Core::describeType($request)
             );

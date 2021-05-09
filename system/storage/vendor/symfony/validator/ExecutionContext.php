@@ -13,7 +13,10 @@ namespace Symfony\Component\Validator;
 
 @trigger_error('The '.__NAMESPACE__.'\ExecutionContext class is deprecated since Symfony 2.5 and will be removed in 3.0. Use the Symfony\Component\Validator\Context\ExecutionContext class instead.', E_USER_DEPRECATED);
 
+use InvalidArgumentException;
 use Symfony\Component\Translation\TranslatorInterface;
+use function func_num_args;
+use function is_array;
 
 /**
  * Default implementation of {@link ExecutionContextInterface}.
@@ -72,7 +75,7 @@ class ExecutionContext implements ExecutionContextInterface
         } else {
             try {
                 $translatedMessage = $this->translator->transChoice($message, $plural, $params, $this->translationDomain);
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $translatedMessage = $this->translator->trans($message, $params, $this->translationDomain);
             }
         }
@@ -84,7 +87,7 @@ class ExecutionContext implements ExecutionContextInterface
             $this->globalContext->getRoot(),
             $this->propertyPath,
             // check using func_num_args() to allow passing null values
-            \func_num_args() >= 3 ? $invalidValue : $this->value,
+            func_num_args() >= 3 ? $invalidValue : $this->value,
             $plural,
             $code
         ));
@@ -104,7 +107,7 @@ class ExecutionContext implements ExecutionContextInterface
             $this->globalContext->getRoot(),
             $this->getPropertyPath($subPath),
             // check using func_num_args() to allow passing null values
-            \func_num_args() >= 4 ? $invalidValue : $this->value,
+            func_num_args() >= 4 ? $invalidValue : $this->value,
             $plural,
             $code
         ));
@@ -208,7 +211,7 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function validateValue($value, $constraints, $subPath = '', $groups = null)
     {
-        $constraints = \is_array($constraints) ? $constraints : array($constraints);
+        $constraints = is_array($constraints) ? $constraints : array($constraints);
 
         if (null === $groups && '' === $subPath) {
             $context = clone $this;

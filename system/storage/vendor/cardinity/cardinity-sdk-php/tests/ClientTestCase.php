@@ -6,8 +6,9 @@ use Cardinity\Client;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Cardinity\Method\Payment;
+use PHPUnit_Framework_TestCase;
 
-class ClientTestCase extends \PHPUnit_Framework_TestCase
+class ClientTestCase extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {

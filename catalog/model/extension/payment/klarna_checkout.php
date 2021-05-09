@@ -1,4 +1,6 @@
 <?php
+
+use Klarna\Rest\OrderManagement\Order;
 use Klarna\Rest\Transport\Connector as KCConnector;
 use Klarna\Rest\Transport\ConnectorInterface as KCConnectorInterface;
 use Klarna\Rest\Checkout\Order as KCOrder;
@@ -10,7 +12,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$checkout->create($order_data);
 
 			return $checkout->fetch();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage(), 1);
 
 			return false;
@@ -22,7 +24,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$checkout = new KCOrder($connector, $order_id);
 
 			return $checkout->fetch();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage(), 1);
 
 			return false;
@@ -35,7 +37,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			$checkout->update($order_data);
 
 			return $checkout->fetch();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage(), 1);
 
 			return false;
@@ -44,10 +46,10 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 
 	public function omOrderRetrieve(KCConnector $connector, $order_id) {
 		try {
-			$order = new \Klarna\Rest\OrderManagement\Order($connector, $order_id);
+			$order = new Order($connector, $order_id);
 
 			return $order->fetch();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage(), 1);
 
 			return false;
@@ -236,7 +238,7 @@ class ModelExtensionPaymentKlarnaCheckout extends Model {
 			);
 
 			return $connector;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage(), 1);
 
 			return false;

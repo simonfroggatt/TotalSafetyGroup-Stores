@@ -11,6 +11,10 @@
 
 namespace Symfony\Component\Validator;
 
+use function get_class;
+use function is_array;
+use function is_object;
+
 /**
  * Default implementation of {@ConstraintViolationInterface}.
  *
@@ -70,9 +74,9 @@ class ConstraintViolation implements ConstraintViolationInterface
      */
     public function __toString()
     {
-        if (\is_object($this->root)) {
-            $class = 'Object('.\get_class($this->root).')';
-        } elseif (\is_array($this->root)) {
+        if (is_object($this->root)) {
+            $class = 'Object('. get_class($this->root).')';
+        } elseif (is_array($this->root)) {
             $class = 'Array';
         } else {
             $class = (string) $this->root;

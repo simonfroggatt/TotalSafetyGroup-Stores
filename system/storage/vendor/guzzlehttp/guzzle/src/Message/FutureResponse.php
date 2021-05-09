@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Message;
 
+use Exception;
 use GuzzleHttp\Ring\Future\MagicFutureTrait;
 use GuzzleHttp\Ring\Future\FutureInterface;
 use GuzzleHttp\Stream\StreamInterface;
@@ -90,7 +91,7 @@ class FutureResponse implements ResponseInterface, FutureInterface
     {
         try {
             return $this->_value->__toString();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
             return '';
         }

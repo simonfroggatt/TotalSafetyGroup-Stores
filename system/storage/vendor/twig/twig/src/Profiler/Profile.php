@@ -11,12 +11,16 @@
 
 namespace Twig\Profiler;
 
+use ArrayIterator;
+use IteratorAggregate;
+use Serializable;
+
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  *
  * @final since Twig 2.4.0
  */
-class Profile implements \IteratorAggregate, \Serializable
+class Profile implements IteratorAggregate, Serializable
 {
     const ROOT = 'ROOT';
     const BLOCK = 'block';
@@ -159,7 +163,7 @@ class Profile implements \IteratorAggregate, \Serializable
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->profiles);
+        return new ArrayIterator($this->profiles);
     }
 
     public function serialize()

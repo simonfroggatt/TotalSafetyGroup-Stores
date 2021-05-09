@@ -11,12 +11,17 @@
 
 namespace Symfony\Component\Validator;
 
+use ArrayAccess;
+use Countable;
+use OutOfBoundsException;
+use Traversable;
+
 /**
  * A list of constraint violations.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-interface ConstraintViolationListInterface extends \Traversable, \Countable, \ArrayAccess
+interface ConstraintViolationListInterface extends Traversable, Countable, ArrayAccess
 {
     /**
      * Adds a constraint violation to this list.
@@ -35,7 +40,7 @@ interface ConstraintViolationListInterface extends \Traversable, \Countable, \Ar
      *
      * @return ConstraintViolationInterface The violation
      *
-     * @throws \OutOfBoundsException if the offset does not exist
+     * @throws OutOfBoundsException if the offset does not exist
      */
     public function get($offset);
 

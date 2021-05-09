@@ -2,11 +2,12 @@
 namespace GuzzleHttp\Tests\Subscriber\LogSubscriber;
 
 use GuzzleHttp\Subscriber\Log\SimpleLogger;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @covers GuzzleHttp\Subscriber\Log\SimpleLogger
  */
-class SimpleLoggerTest extends \PHPUnit_Framework_TestCase
+class SimpleLoggerTest extends PHPUnit_Framework_TestCase
 {
     public function testLogsToFopen()
     {

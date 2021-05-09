@@ -1,10 +1,13 @@
 <?php
 namespace GuzzleHttp\Message;
 
+use Exception;
 use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\XmlParseException;
 use GuzzleHttp\Stream\StreamInterface;
 use GuzzleHttp\Utils;
+use InvalidArgumentException;
+use SimpleXMLElement;
 
 /**
  * Guzzle HTTP response object
@@ -144,7 +147,7 @@ class Response extends AbstractMessage implements ResponseInterface
                 512,
                 isset($config['big_int_strings']) ? JSON_BIGINT_AS_STRING : 0
             );
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new ParseException(
                 $e->getMessage(),
                 $this
@@ -159,7 +162,7 @@ class Response extends AbstractMessage implements ResponseInterface
 
         try {
             // Allow XML to be retrieved even if there is no response body
-            $xml = new \SimpleXMLElement(
+            $xml = new SimpleXMLElement(
                 (string) $this->getBody() ?: '<root />',
                 isset($config['libxml_options']) ? $config['libxml_options'] : LIBXML_NONET,
                 false,
@@ -168,7 +171,7 @@ class Response extends AbstractMessage implements ResponseInterface
             );
             libxml_disable_entity_loader($disableEntities);
             libxml_use_internal_errors($internalErrors);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             libxml_disable_entity_loader($disableEntities);
             libxml_use_internal_errors($internalErrors);
             throw new XmlParseException(

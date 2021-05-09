@@ -6,6 +6,7 @@ use Cardinity\Method\Error;
 use Cardinity\Method\Payment\Payment;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use RuntimeException;
 
 class RequestSpec extends ObjectBehavior
 {
@@ -26,7 +27,7 @@ class RequestSpec extends ObjectBehavior
 
     private $error;
 
-    function let(\RuntimeException $exception)
+    function let(RuntimeException $exception)
     {
         $this->error = new Error();
         $this->error->setErrors($this->result['errors']);
@@ -42,7 +43,7 @@ class RequestSpec extends ObjectBehavior
         $this->shouldHaveType('Cardinity\Exception\Runtime');
     }
 
-    function it_stores_previous_exception(\RuntimeException $exception)
+    function it_stores_previous_exception(RuntimeException $exception)
     {
         $this->getPrevious()->shouldReturn($exception);
     }
@@ -72,7 +73,7 @@ payment_instrument.exp_month: must be between 1 and 12 ('13' given);")
         ;
     }
 
-        function it_returns_erros_from_payment_result_object(\RuntimeException $exception)
+        function it_returns_erros_from_payment_result_object(RuntimeException $exception)
     {
         $msg = 'Payment error';
 

@@ -11,9 +11,12 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use Locale;
+use stdClass;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Validator\Constraints\Currency;
 use Symfony\Component\Validator\Constraints\CurrencyValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class CurrencyValidatorTest extends AbstractConstraintValidatorTest
@@ -43,11 +46,11 @@ class CurrencyValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Currency());
+        $this->validator->validate(new stdClass(), new Currency());
     }
 
     /**
@@ -67,7 +70,7 @@ class CurrencyValidatorTest extends AbstractConstraintValidatorTest
     {
         IntlTestHelper::requireFullIntl($this, false);
 
-        \Locale::setDefault('en_GB');
+        Locale::setDefault('en_GB');
 
         $this->validator->validate($currency, new Currency());
 

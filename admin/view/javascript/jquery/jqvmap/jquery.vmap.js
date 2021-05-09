@@ -917,7 +917,7 @@
 
      getPins: function(){
        var pins = this.container.find('.jqvmap_pin');
-       var ret = new Object();
+       var ret = {};
        jQuery.each(pins, function(index, pinObj){
          pinObj = jQuery(pinObj);
          var cc = pinObj.attr('for');

@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use DateTime;
 use Symfony\Component\Validator\Constraints\NotIdenticalTo;
 use Symfony\Component\Validator\Constraints\NotIdenticalToValidator;
 use Symfony\Component\Validator\Validation;
@@ -49,12 +50,12 @@ class NotIdenticalToValidatorTest extends AbstractComparisonValidatorTestCase
             array(1, 2),
             array('2', 2),
             array('22', '333'),
-            array(new \DateTime('2001-01-01'), new \DateTime('2000-01-01')),
-            array(new \DateTime('2000-01-01'), new \DateTime('2000-01-01')),
-            array(new \DateTime('2001-01-01'), '2000-01-01'),
-            array(new \DateTime('2000-01-01'), '2000-01-01'),
-            array(new \DateTime('2001-01-01'), '2000-01-01'),
-            array(new \DateTime('2000-01-01 UTC'), '2000-01-01 UTC'),
+            array(new DateTime('2001-01-01'), new DateTime('2000-01-01')),
+            array(new DateTime('2000-01-01'), new DateTime('2000-01-01')),
+            array(new DateTime('2001-01-01'), '2000-01-01'),
+            array(new DateTime('2000-01-01'), '2000-01-01'),
+            array(new DateTime('2001-01-01'), '2000-01-01'),
+            array(new DateTime('2000-01-01 UTC'), '2000-01-01 UTC'),
             array(null, 1),
         );
     }
@@ -77,7 +78,7 @@ class NotIdenticalToValidatorTest extends AbstractComparisonValidatorTestCase
      */
     public function provideInvalidComparisons()
     {
-        $date = new \DateTime('2000-01-01');
+        $date = new DateTime('2000-01-01');
         $object = new ComparisonTest_Class(2);
 
         $comparisons = array(

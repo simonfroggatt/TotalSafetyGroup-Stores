@@ -11,11 +11,13 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
+use Exception;
+
 /**
  * Parser Exception
  *
  * @author Oleksandr Savchenko <traveltino@gmail.com>
  */
-class ParserException extends \Exception
+class ParserException extends Exception
 {
 }

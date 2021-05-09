@@ -5,6 +5,7 @@ use GuzzleHttp\Stream\AppendStream;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Stream\StreamDecoratorTrait;
 use GuzzleHttp\Stream\StreamInterface;
+use InvalidArgumentException;
 
 /**
  * Stream that when read returns bytes for a streaming multipart/form-data body
@@ -20,7 +21,7 @@ class MultipartBody implements StreamInterface
      *                         each value is a string or array of strings.
      * @param array  $files    Associative array of PostFileInterface objects
      * @param string $boundary You can optionally provide a specific boundary
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         array $fields = [],
@@ -90,7 +91,7 @@ class MultipartBody implements StreamInterface
         foreach ($files as $file) {
 
             if (!$file instanceof PostFileInterface) {
-                throw new \InvalidArgumentException('All POST fields must '
+                throw new InvalidArgumentException('All POST fields must '
                     . 'implement PostFieldInterface');
             }
 

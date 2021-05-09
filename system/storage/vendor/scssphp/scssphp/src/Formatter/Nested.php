@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Formatter;
 use ScssPhp\ScssPhp\Formatter;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\Type;
+use function in_array;
 
 /**
  * Nested formatter
@@ -89,7 +90,7 @@ class Nested extends Formatter
             $previousHasSelector = false;
         }
 
-        $isMediaOrDirective = \in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]);
+        $isMediaOrDirective = in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]);
         $isSupport = ($block->type === Type::T_DIRECTIVE
             && $block->selectors && strpos(implode('', $block->selectors), '@supports') !== false);
 

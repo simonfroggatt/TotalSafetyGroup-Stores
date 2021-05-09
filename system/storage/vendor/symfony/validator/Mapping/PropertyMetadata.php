@@ -11,7 +11,10 @@
 
 namespace Symfony\Component\Validator\Mapping;
 
+use ReflectionProperty;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use function get_class;
+use function is_string;
 
 /**
  * Stores all metadata needed for validating a class property.
@@ -56,7 +59,7 @@ class PropertyMetadata extends MemberMetadata
      */
     protected function newReflectionMember($objectOrClassName)
     {
-        $originalClass = \is_string($objectOrClassName) ? $objectOrClassName : \get_class($objectOrClassName);
+        $originalClass = is_string($objectOrClassName) ? $objectOrClassName : get_class($objectOrClassName);
 
         while (!property_exists($objectOrClassName, $this->getName())) {
             $objectOrClassName = get_parent_class($objectOrClassName);
@@ -66,7 +69,7 @@ class PropertyMetadata extends MemberMetadata
             }
         }
 
-        $member = new \ReflectionProperty($objectOrClassName, $this->getName());
+        $member = new ReflectionProperty($objectOrClassName, $this->getName());
         $member->setAccessible(true);
 
         return $member;

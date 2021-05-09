@@ -14,6 +14,7 @@ namespace Symfony\Component\Validator\Tests;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\MetadataFactoryInterface;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
 use Symfony\Component\Validator\Tests\Validator\AbstractLegacyApiTest;
@@ -33,7 +34,7 @@ class LegacyValidatorTest extends AbstractLegacyApiTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
+     * @expectedException ValidatorException
      */
     public function testValidateValueRejectsValid()
     {

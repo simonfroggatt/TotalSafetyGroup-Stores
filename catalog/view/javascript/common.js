@@ -367,7 +367,7 @@ $(document).delegate('.agree', 'click', function(e) {
 	$.fn.autocomplete = function(option) {
 		return this.each(function() {
 			this.timer = null;
-			this.items = new Array();
+			this.items = [];
 
 			$.extend(this, option);
 
@@ -450,14 +450,14 @@ $(document).delegate('.agree', 'click', function(e) {
 					}
 
 					// Get all the ones with a categories
-					var category = new Array();
+					var category = [];
 
 					for (i = 0; i < json.length; i++) {
 						if (json[i]['category']) {
 							if (!category[json[i]['category']]) {
-								category[json[i]['category']] = new Array();
+								category[json[i]['category']] = [];
 								category[json[i]['category']]['name'] = json[i]['category'];
-								category[json[i]['category']]['item'] = new Array();
+								category[json[i]['category']]['item'] = [];
 							}
 
 							category[json[i]['category']]['item'].push(json[i]);

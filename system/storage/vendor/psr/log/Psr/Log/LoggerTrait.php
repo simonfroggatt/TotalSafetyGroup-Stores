@@ -136,7 +136,7 @@ trait LoggerTrait
      *
      * @return void
      *
-     * @throws \Psr\Log\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     abstract public function log($level, $message, array $context = array());
 }

@@ -11,10 +11,17 @@
 
 namespace Symfony\Component\Validator\Constraints;
 
+use Closure;
+use ReflectionMethod;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use function call_user_func;
+use function get_class;
+use function is_array;
+use function is_callable;
+use function is_object;
 
 /**
  * Validator for Callback constraint.
@@ -38,30 +45,30 @@ class CallbackValidator extends ConstraintValidator
 
         // has to be an array so that we can differentiate between callables
         // and method names
-        if (null !== $constraint->methods && !\is_array($constraint->methods)) {
+        if (null !== $constraint->methods && !is_array($constraint->methods)) {
             throw new UnexpectedTypeException($constraint->methods, 'array');
         }
 
         $methods = $constraint->methods ?: array($constraint->callback);
 
         foreach ($methods as $method) {
-            if ($method instanceof \Closure) {
+            if ($method instanceof Closure) {
                 $method($object, $this->context);
-            } elseif (\is_array($method)) {
-                if (!\is_callable($method)) {
-                    if (isset($method[0]) && \is_object($method[0])) {
-                        $method[0] = \get_class($method[0]);
+            } elseif (is_array($method)) {
+                if (!is_callable($method)) {
+                    if (isset($method[0]) && is_object($method[0])) {
+                        $method[0] = get_class($method[0]);
                     }
                     throw new ConstraintDefinitionException(sprintf('%s targeted by Callback constraint is not a valid callable', json_encode($method)));
                 }
 
-                \call_user_func($method, $object, $this->context);
+                call_user_func($method, $object, $this->context);
             } elseif (null !== $object) {
                 if (!method_exists($object, $method)) {
-                    throw new ConstraintDefinitionException(sprintf('Method "%s" targeted by Callback constraint does not exist in class %s', $method, \get_class($object)));
+                    throw new ConstraintDefinitionException(sprintf('Method "%s" targeted by Callback constraint does not exist in class %s', $method, get_class($object)));
                 }
 
-                $reflMethod = new \ReflectionMethod($object, $method);
+                $reflMethod = new ReflectionMethod($object, $method);
 
                 if ($reflMethod->isStatic()) {
                     $reflMethod->invoke(null, $object, $this->context);

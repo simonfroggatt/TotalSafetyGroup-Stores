@@ -2,5 +2,7 @@
 
 namespace googleshopping\Exception;
 
-class Connection extends \RuntimeException {
+use RuntimeException;
+
+class Connection extends RuntimeException {
 }

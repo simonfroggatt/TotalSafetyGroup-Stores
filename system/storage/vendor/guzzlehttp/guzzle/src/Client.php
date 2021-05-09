@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp;
 
+use Exception;
 use GuzzleHttp\Event\HasEmitterTrait;
 use GuzzleHttp\Message\MessageFactory;
 use GuzzleHttp\Message\MessageFactoryInterface;
@@ -9,8 +10,10 @@ use GuzzleHttp\Message\FutureResponse;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\FutureInterface;
 use GuzzleHttp\Exception\RequestException;
+use InvalidArgumentException;
 use React\Promise\FulfilledPromise;
 use React\Promise\RejectedPromise;
+use TypeError;
 
 /**
  * HTTP client
@@ -176,14 +179,14 @@ class Client implements ClientInterface
                 $trans->response = $trans->response->wait();
             }
             return $trans->response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($isFuture) {
                 // Wrap the exception in a promise
                 return new FutureResponse(new RejectedPromise($e));
             }
             throw RequestException::wrapException($trans->request, $e);
-        } catch (\TypeError $error) {
-            $exception = new \Exception($error->getMessage(), $error->getCode(), $error);
+        } catch (TypeError $error) {
+            $exception = new Exception($error->getMessage(), $error->getCode(), $error);
             if ($isFuture) {
                 // Wrap the exception in a promise
                 return new FutureResponse(new RejectedPromise($exception));
@@ -227,7 +230,7 @@ class Client implements ClientInterface
      * @param string|array $url URL or an array of the URI template to expand
      *                          followed by a hash of template varnames.
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function buildUrl($url)
     {
@@ -239,7 +242,7 @@ class Client implements ClientInterface
         }
 
         if (!isset($url[1])) {
-            throw new \InvalidArgumentException('You must provide a hash of '
+            throw new InvalidArgumentException('You must provide a hash of '
                 . 'varname options in the second element of a URL array.');
         }
 
@@ -261,7 +264,7 @@ class Client implements ClientInterface
         } elseif (!is_array($config['base_url'])) {
             $this->baseUrl = Url::fromString($config['base_url']);
         } elseif (count($config['base_url']) < 2) {
-            throw new \InvalidArgumentException('You must provide a hash of '
+            throw new InvalidArgumentException('You must provide a hash of '
                 . 'varname options in the second element of a base_url array.');
         } else {
             $this->baseUrl = Url::fromString(

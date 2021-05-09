@@ -1,17 +1,19 @@
 <?php
 namespace GuzzleHttp\Tests\Subscriber\LogSubscriber;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Log\Formatter;
 use GuzzleHttp\Subscriber\Log\LogSubscriber;
 use GuzzleHttp\Subscriber\Log\SimpleLogger;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @covers GuzzleHttp\Subscriber\Log\LogSubscriber
  */
-class LogSubscriberTest extends \PHPUnit_Framework_TestCase
+class LogSubscriberTest extends PHPUnit_Framework_TestCase
 {
     public function testUsesSimpleLogger()
     {
@@ -68,7 +70,7 @@ class LogSubscriberTest extends \PHPUnit_Framework_TestCase
         $client->getEmitter()->attach(new Mock([new Response(500)]));
         try {
             $client->get('http://httbin.org/get');
-        } catch (\Exception $e) {}
+        } catch (Exception $e) {}
         rewind($resource);
         $this->assertEquals("[critical] 500\n", stream_get_contents($resource));
         fclose($resource);

@@ -11,7 +11,13 @@
 
 namespace Symfony\Component\Validator\Constraints;
 
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 use Symfony\Component\Validator\Exception\OutOfBoundsException;
+use Traversable;
+use function count;
 
 /**
  * A sequence of validation groups.
@@ -56,7 +62,7 @@ use Symfony\Component\Validator\Exception\OutOfBoundsException;
  *
  * Implementing \ArrayAccess, \IteratorAggregate and \Countable is @deprecated since 2.5 and will be removed in 3.0.
  */
-class GroupSequence implements \ArrayAccess, \IteratorAggregate, \Countable
+class GroupSequence implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * The groups in the sequence.
@@ -97,7 +103,7 @@ class GroupSequence implements \ArrayAccess, \IteratorAggregate, \Countable
      *
      * Implemented for backwards compatibility with Symfony < 2.5.
      *
-     * @return \Traversable The iterator
+     * @return Traversable The iterator
      *
      * @see \IteratorAggregate::getIterator()
      * @deprecated since version 2.5, to be removed in 3.0.
@@ -106,7 +112,7 @@ class GroupSequence implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         @trigger_error('The '.__METHOD__.' method is deprecated since Symfony 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
-        return new \ArrayIterator($this->groups);
+        return new ArrayIterator($this->groups);
     }
 
     /**
@@ -203,6 +209,6 @@ class GroupSequence implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         @trigger_error('The '.__METHOD__.' method is deprecated since Symfony 2.5 and will be removed in 3.0.', E_USER_DEPRECATED);
 
-        return \count($this->groups);
+        return count($this->groups);
     }
 }

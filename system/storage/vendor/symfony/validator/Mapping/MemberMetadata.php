@@ -11,9 +11,14 @@
 
 namespace Symfony\Component\Validator\Mapping;
 
+use ReflectionMethod;
+use ReflectionProperty;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\ValidationVisitorInterface;
+use function get_class;
+use function in_array;
+use function is_string;
 
 /**
  * Stores all metadata needed for validating a class property.
@@ -51,7 +56,7 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
     public $property;
 
     /**
-     * @var \ReflectionMethod[]|\ReflectionProperty[]
+     * @var ReflectionMethod[]|ReflectionProperty[]
      */
     private $reflMember = array();
 
@@ -88,8 +93,8 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
      */
     public function addConstraint(Constraint $constraint)
     {
-        if (!\in_array(Constraint::PROPERTY_CONSTRAINT, (array) $constraint->getTargets())) {
-            throw new ConstraintDefinitionException(sprintf('The constraint %s cannot be put on properties or getters', \get_class($constraint)));
+        if (!in_array(Constraint::PROPERTY_CONSTRAINT, (array) $constraint->getTargets())) {
+            throw new ConstraintDefinitionException(sprintf('The constraint %s cannot be put on properties or getters', get_class($constraint)));
         }
 
         parent::addConstraint($constraint);
@@ -223,11 +228,11 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
      *
      * @param object|string $objectOrClassName The object or the class name
      *
-     * @return \ReflectionMethod|\ReflectionProperty The reflection instance
+     * @return ReflectionMethod|ReflectionProperty The reflection instance
      */
     public function getReflectionMember($objectOrClassName)
     {
-        $className = \is_string($objectOrClassName) ? $objectOrClassName : \get_class($objectOrClassName);
+        $className = is_string($objectOrClassName) ? $objectOrClassName : get_class($objectOrClassName);
         if (!isset($this->reflMember[$className])) {
             $this->reflMember[$className] = $this->newReflectionMember($objectOrClassName);
         }
@@ -242,7 +247,7 @@ abstract class MemberMetadata extends ElementMetadata implements PropertyMetadat
      *
      * @param object|string $objectOrClassName The object or the class name
      *
-     * @return \ReflectionMethod|\ReflectionProperty The reflection instance
+     * @return ReflectionMethod|ReflectionProperty The reflection instance
      */
     abstract protected function newReflectionMember($objectOrClassName);
 }

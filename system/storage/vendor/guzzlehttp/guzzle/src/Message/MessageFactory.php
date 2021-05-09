@@ -107,7 +107,7 @@ class MessageFactory implements MessageFactoryInterface
      * @param string $message Message to parse
      *
      * @return RequestInterface|ResponseInterface
-     * @throws \InvalidArgumentException if unable to parse a message
+     * @throws Iae if unable to parse a message
      */
     public function fromMessage($message)
     {
@@ -129,7 +129,7 @@ class MessageFactory implements MessageFactoryInterface
 
         // Parse a request
         if (!($data = ($parser->parseRequest($message)))) {
-            throw new \InvalidArgumentException('Unable to parse request');
+            throw new Iae('Unable to parse request');
         }
 
         return $this->createRequest(

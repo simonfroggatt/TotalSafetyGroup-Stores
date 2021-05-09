@@ -1,17 +1,21 @@
 <?php
 namespace GuzzleHttp\Subscriber;
 
+use ArrayIterator;
+use Countable;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\ErrorEvent;
 use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
+use Iterator;
+use IteratorAggregate;
 
 /**
  * Maintains a list of requests and responses sent using a request or client
  */
-class History implements SubscriberInterface, \IteratorAggregate, \Countable
+class History implements SubscriberInterface, IteratorAggregate, Countable
 {
     /** @var int The maximum number of requests to maintain in the history */
     private $limit;
@@ -71,11 +75,11 @@ class History implements SubscriberInterface, \IteratorAggregate, \Countable
      * - sent_request: A clone of the request that will not be mutated.
      * - response: The response that was received (if available).
      *
-     * @return \Iterator
+     * @return Iterator
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->transactions);
+        return new ArrayIterator($this->transactions);
     }
 
     /**

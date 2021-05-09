@@ -12,15 +12,28 @@
 
 namespace Twig\Node;
 
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+use LogicException;
 use Twig\Compiler;
 use Twig\Source;
+use function array_key_exists;
+use function count;
+use function func_get_arg;
+use function func_num_args;
+use function get_class;
+use function gettype;
+use function is_object;
+use function strlen;
 
 /**
  * Represents a node in the AST.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Node implements \Countable, \IteratorAggregate
+class Node implements Countable, IteratorAggregate
 {
     protected $nodes;
     protected $attributes;
@@ -40,7 +53,7 @@ class Node implements \Countable, \IteratorAggregate
     {
         foreach ($nodes as $name => $node) {
             if (!$node instanceof self) {
-                throw new \InvalidArgumentException(sprintf('Using "%s" for the value of node "%s" of "%s" is not supported. You must pass a \Twig\Node\Node instance.', \is_object($node) ? \get_class($node) : (null === $node ? 'null' : \gettype($node)), $name, static::class));
+                throw new InvalidArgumentException(sprintf('Using "%s" for the value of node "%s" of "%s" is not supported. You must pass a \Twig\Node\Node instance.', is_object($node) ? get_class($node) : (null === $node ? 'null' : gettype($node)), $name, static::class));
             }
         }
         $this->nodes = $nodes;
@@ -58,9 +71,9 @@ class Node implements \Countable, \IteratorAggregate
 
         $repr = [static::class.'('.implode(', ', $attributes)];
 
-        if (\count($this->nodes)) {
+        if (count($this->nodes)) {
             foreach ($this->nodes as $name => $node) {
-                $len = \strlen($name) + 4;
+                $len = strlen($name) + 4;
                 $noderepr = [];
                 foreach (explode("\n", (string) $node) as $line) {
                     $noderepr[] = str_repeat(' ', $len).$line;
@@ -99,7 +112,7 @@ class Node implements \Countable, \IteratorAggregate
      */
     public function hasAttribute($name)
     {
-        return \array_key_exists($name, $this->attributes);
+        return array_key_exists($name, $this->attributes);
     }
 
     /**
@@ -107,8 +120,8 @@ class Node implements \Countable, \IteratorAggregate
      */
     public function getAttribute($name)
     {
-        if (!\array_key_exists($name, $this->attributes)) {
-            throw new \LogicException(sprintf('Attribute "%s" does not exist for Node "%s".', $name, static::class));
+        if (!array_key_exists($name, $this->attributes)) {
+            throw new LogicException(sprintf('Attribute "%s" does not exist for Node "%s".', $name, static::class));
         }
 
         return $this->attributes[$name];
@@ -142,7 +155,7 @@ class Node implements \Countable, \IteratorAggregate
     public function getNode($name)
     {
         if (!isset($this->nodes[$name])) {
-            throw new \LogicException(sprintf('Node "%s" does not exist for Node "%s".', $name, static::class));
+            throw new LogicException(sprintf('Node "%s" does not exist for Node "%s".', $name, static::class));
         }
 
         return $this->nodes[$name];
@@ -160,12 +173,12 @@ class Node implements \Countable, \IteratorAggregate
 
     public function count()
     {
-        return \count($this->nodes);
+        return count($this->nodes);
     }
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->nodes);
+        return new ArrayIterator($this->nodes);
     }
 
     /**
@@ -173,7 +186,7 @@ class Node implements \Countable, \IteratorAggregate
      */
     public function setTemplateName($name/*, $triggerDeprecation = true */)
     {
-        $triggerDeprecation = 2 > \func_num_args() || \func_get_arg(1);
+        $triggerDeprecation = 2 > func_num_args() || func_get_arg(1);
         if ($triggerDeprecation) {
             @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Use setSourceContext() instead.', E_USER_DEPRECATED);
         }

@@ -3,6 +3,7 @@
 namespace Cardinity\Exception;
 
 use Cardinity\Method\ResultObjectInterface;
+use Exception;
 
 class Request extends Runtime
 {
@@ -10,10 +11,10 @@ class Request extends Runtime
     private $result;
     
     /**
-     * @param \Exception $previous
+     * @param Exception $previous
      * @param ResultObjectInterface $result
      */
-    public function __construct(\Exception $previous = null, ResultObjectInterface $result = null)
+    public function __construct(Exception $previous = null, ResultObjectInterface $result = null)
     {
         $this->message .= ' Response data: ' . serialize($result);
         parent::__construct($this->message, $this->code, $previous);

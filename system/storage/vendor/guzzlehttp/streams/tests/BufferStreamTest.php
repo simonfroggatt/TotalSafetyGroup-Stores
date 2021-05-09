@@ -2,8 +2,10 @@
 namespace GuzzleHttp\Tests\Stream;
 
 use GuzzleHttp\Stream\BufferStream;
+use GuzzleHttp\Stream\Exception\CannotAttachException;
+use PHPUnit_Framework_TestCase;
 
-class BufferStreamTest extends \PHPUnit_Framework_TestCase
+class BufferStreamTest extends PHPUnit_Framework_TestCase
 {
     public function testHasMetadata()
     {
@@ -59,7 +61,7 @@ class BufferStreamTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Stream\Exception\CannotAttachException
+     * @expectedException CannotAttachException
      */
     public function testCannotAttach()
     {

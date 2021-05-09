@@ -24,6 +24,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use Klarna\Rest\Transport\Exception\ConnectorException;
+use LogicException;
 
 /**
  * HTTP transport connector interface used to authenticate and make HTTP requests
@@ -72,7 +73,7 @@ interface ConnectorInterface
      *
      * @throws ConnectorException If the API returned an error response
      * @throws RequestException   When an error is encountered
-     * @throws \LogicException    When the adapter does not populate a response
+     * @throws LogicException    When the adapter does not populate a response
      *
      * @return ResponseInterface
      */

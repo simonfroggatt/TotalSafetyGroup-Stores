@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use stdClass;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\TypeValidator;
 use Symfony\Component\Validator\Validation;
@@ -77,7 +78,7 @@ class TypeValidatorTest extends AbstractConstraintValidatorTest
 
     public function getValidValues()
     {
-        $object = new \stdClass();
+        $object = new stdClass();
         $file = $this->createFile();
 
         return array(
@@ -133,7 +134,7 @@ class TypeValidatorTest extends AbstractConstraintValidatorTest
 
     public function getInvalidValues()
     {
-        $object = new \stdClass();
+        $object = new stdClass();
         $file = $this->createFile();
 
         return array(

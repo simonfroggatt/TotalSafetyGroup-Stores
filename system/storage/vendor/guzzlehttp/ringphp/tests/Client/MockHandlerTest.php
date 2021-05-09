@@ -3,9 +3,11 @@ namespace GuzzleHttp\Tests\Ring\Client;
 
 use GuzzleHttp\Ring\Client\MockHandler;
 use GuzzleHttp\Ring\Future\FutureArray;
+use InvalidArgumentException;
+use PHPUnit_Framework_TestCase;
 use React\Promise\Deferred;
 
-class MockHandlerTest extends \PHPUnit_Framework_TestCase
+class MockHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function testReturnsArray()
     {
@@ -75,7 +77,7 @@ class MockHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Response must be an array or FutureArrayInterface. Found
      */
     public function testEnsuresMockIsValid()

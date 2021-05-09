@@ -1,14 +1,18 @@
 <?php
 namespace Braintree;
 
+use Braintree\MerchantAccount\BusinessDetails;
+use Braintree\MerchantAccount\FundingDetails;
+use Braintree\MerchantAccount\IndividualDetails;
+
 /**
- * @property-read \Braintree\MerchantAccount\BusinessDetails $businessDetails
+ * @property-read BusinessDetails $businessDetails
  * @property-read string $currencyIsoCode
  * @property-read boolean $default
- * @property-read \Braintree\MerchantAccount\FundingDetails $fundingDetails
+ * @property-read FundingDetails $fundingDetails
  * @property-read string $id
- * @property-read \Braintree\MerchantAccount\IndividualDetails $individualDetails
- * @property-read \Braintree\MerchantAccount $masterMerchantAccount
+ * @property-read IndividualDetails $individualDetails
+ * @property-read MerchantAccount $masterMerchantAccount
  * @property-read string $status
  */
 class MerchantAccount extends Base

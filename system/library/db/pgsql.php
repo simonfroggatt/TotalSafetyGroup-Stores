@@ -1,15 +1,18 @@
 <?php
 namespace DB;
+use Exception;
+use stdClass;
+
 final class PgSQL {
 	private $link;
 
 	public function __construct($hostname, $username, $password, $database, $port = '5432') {
 		if (!$this->link = pg_connect('hostname=' . $hostname . ' port=' . $port .  ' username=' . $username . ' password='	. $password . ' database=' . $database)) {
-			throw new \Exception('Error: Could not make a database link using ' . $username . '@' . $hostname);
+			throw new Exception('Error: Could not make a database link using ' . $username . '@' . $hostname);
 		}
 
 		if (!mysql_select_db($database, $this->link)) {
-			throw new \Exception('Error: Could not connect to database ' . $database);
+			throw new Exception('Error: Could not connect to database ' . $database);
 		}
 
 		pg_query($this->link, "SET CLIENT_ENCODING TO 'UTF8'");
@@ -32,7 +35,7 @@ final class PgSQL {
 
 				pg_free_result($resource);
 
-				$query = new \stdClass();
+				$query = new stdClass();
 				$query->row = isset($data[0]) ? $data[0] : array();
 				$query->rows = $data;
 				$query->num_rows = $i;
@@ -44,7 +47,7 @@ final class PgSQL {
 				return true;
 			}
 		} else {
-			throw new \Exception('Error: ' . pg_result_error($this->link) . '<br />' . $sql);
+			throw new Exception('Error: ' . pg_result_error($this->link) . '<br />' . $sql);
 		}
 	}
 

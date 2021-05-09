@@ -2,6 +2,7 @@
 namespace GuzzleHttp;
 
 use GuzzleHttp\Ring\Core;
+use InvalidArgumentException;
 
 /**
  * Parses and generates URLs based on URL parts
@@ -27,7 +28,7 @@ class Url
      * @param string $url Full URL used to create a Url object
      *
      * @return Url
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromString($url)
     {
@@ -36,7 +37,7 @@ class Url
             'user' => null, 'pass' => null, 'fragment' => null];
 
         if (false === ($parts = parse_url($url))) {
-            throw new \InvalidArgumentException('Unable to parse malformed '
+            throw new InvalidArgumentException('Unable to parse malformed '
                 . 'url: ' . $url);
         }
 
@@ -440,7 +441,7 @@ class Url
      *     of key value pairs, or a Query object.
      * @param bool $rawString Set to true when providing a raw query string.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setQuery($query, $rawString = false)
     {
@@ -461,7 +462,7 @@ class Url
         } elseif (is_array($query)) {
             $this->query = new Query($query);
         } else {
-            throw new \InvalidArgumentException('Query must be a Query, '
+            throw new InvalidArgumentException('Query must be a Query, '
                 . 'array, or string. Got ' . Core::describeType($query));
         }
     }
@@ -504,7 +505,7 @@ class Url
      * @param string $url Relative URL to combine with
      *
      * @return Url
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @link http://tools.ietf.org/html/rfc3986#section-5.4
      */
     public function combine($url)

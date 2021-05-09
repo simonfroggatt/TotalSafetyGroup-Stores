@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Ring\Client;
 
+use BadMethodCallException;
 use GuzzleHttp\Ring\Future\FutureArray;
 use React\Promise\Deferred;
 
@@ -60,7 +61,7 @@ class CurlMultiHandler
             return $this->_mh = curl_multi_init();
         }
 
-        throw new \BadMethodCallException();
+        throw new BadMethodCallException();
     }
 
     public function __destruct()

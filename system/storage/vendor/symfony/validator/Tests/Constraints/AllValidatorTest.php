@@ -11,10 +11,12 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use ArrayObject;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\AllValidator;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class AllValidatorTest extends AbstractConstraintValidatorTest
@@ -37,7 +39,7 @@ class AllValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testThrowsExceptionIfNotTraversable()
     {
@@ -87,7 +89,7 @@ class AllValidatorTest extends AbstractConstraintValidatorTest
     {
         return array(
             array(array(5, 6, 7)),
-            array(new \ArrayObject(array(5, 6, 7))),
+            array(new ArrayObject(array(5, 6, 7))),
         );
     }
 }

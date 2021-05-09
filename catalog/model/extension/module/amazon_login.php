@@ -15,7 +15,7 @@ class ModelExtensionModuleAmazonLogin extends Model {
         if (!empty($profile->error)) {
             $this->debugLog("ERROR", $this->language->get('error_login'));
 
-            throw new \RuntimeException($this->language->get('error_login'));
+            throw new RuntimeException($this->language->get('error_login'));
         }
 
         $full_name = explode(' ', $profile->name);
@@ -33,7 +33,7 @@ class ModelExtensionModuleAmazonLogin extends Model {
         if (!isset($token->aud) || $token->aud != $this->config->get('payment_amazon_login_pay_client_id')) {
             $this->debugLog("ERROR", $this->language->get('error_login'));
 
-            throw new \RuntimeException($this->language->get('error_login'));
+            throw new RuntimeException($this->language->get('error_login'));
         }
 
         return true;
@@ -136,11 +136,11 @@ class ModelExtensionModuleAmazonLogin extends Model {
             if (!$customer_info['status']) {
                 $this->debugLog("ERROR", $this->language->get('error_approved'));
 
-                throw new \RuntimeException($this->language->get('error_approved'));
+                throw new RuntimeException($this->language->get('error_approved'));
             } else {
                 $this->debugLog("ERROR", $this->language->get('error_login'));
 
-                throw new \RuntimeException($this->language->get('error_login'));
+                throw new RuntimeException($this->language->get('error_login'));
             }
         } else {
             $this->model_account_customer->deleteLoginAttempts($customer_info['email']);
@@ -209,7 +209,7 @@ class ModelExtensionModuleAmazonLogin extends Model {
 
             $this->debugLog("ERROR", $debug);
 
-            throw new \RuntimeException($this->language->get('error_login'));
+            throw new RuntimeException($this->language->get('error_login'));
         } else {
             $this->debugLog("SUCCESS", $response);
         }
@@ -235,7 +235,7 @@ class ModelExtensionModuleAmazonLogin extends Model {
             $message .= PHP_EOL . ob_get_contents();
         ob_end_clean();
 
-        $log = new \Log(self::LOG_FILENAME);
+        $log = new Log(self::LOG_FILENAME);
 
         $log->write($type . " ---> " . $message);
 

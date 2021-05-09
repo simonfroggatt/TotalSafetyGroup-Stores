@@ -11,7 +11,11 @@
 
 namespace Symfony\Component\Translation\Dumper;
 
+use DOMDocument;
+use InvalidArgumentException;
+use Locale;
 use Symfony\Component\Translation\MessageCatalogue;
+use Traversable;
 
 /**
  * XliffFileDumper generates xliff files from a message catalogue.
@@ -33,7 +37,7 @@ class XliffFileDumper extends FileDumper
         if (array_key_exists('default_locale', $options)) {
             $defaultLocale = $options['default_locale'];
         } else {
-            $defaultLocale = \Locale::getDefault();
+            $defaultLocale = Locale::getDefault();
         }
 
         if ('1.2' === $xliffVersion) {
@@ -43,7 +47,7 @@ class XliffFileDumper extends FileDumper
             return $this->dumpXliff2($defaultLocale, $messages, $domain, $options);
         }
 
-        throw new \InvalidArgumentException(sprintf('No support implemented for dumping XLIFF version "%s".', $xliffVersion));
+        throw new InvalidArgumentException(sprintf('No support implemented for dumping XLIFF version "%s".', $xliffVersion));
     }
 
     /**
@@ -61,7 +65,7 @@ class XliffFileDumper extends FileDumper
             $toolInfo = array_merge($toolInfo, $options['tool_info']);
         }
 
-        $dom = new \DOMDocument('1.0', 'utf-8');
+        $dom = new DOMDocument('1.0', 'utf-8');
         $dom->formatOutput = true;
 
         $xliff = $dom->appendChild($dom->createElement('xliff'));
@@ -130,7 +134,7 @@ class XliffFileDumper extends FileDumper
 
     private function dumpXliff2($defaultLocale, MessageCatalogue $messages, $domain, array $options = array())
     {
-        $dom = new \DOMDocument('1.0', 'utf-8');
+        $dom = new DOMDocument('1.0', 'utf-8');
         $dom->formatOutput = true;
 
         $xliff = $dom->appendChild($dom->createElement('xliff'));
@@ -178,6 +182,6 @@ class XliffFileDumper extends FileDumper
      */
     private function hasMetadataArrayInfo($key, $metadata = null)
     {
-        return null !== $metadata && array_key_exists($key, $metadata) && ($metadata[$key] instanceof \Traversable || is_array($metadata[$key]));
+        return null !== $metadata && array_key_exists($key, $metadata) && ($metadata[$key] instanceof Traversable || is_array($metadata[$key]));
     }
 }

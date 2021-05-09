@@ -58,7 +58,7 @@ echo "
         //alert(JSON.stringify(arguments));
     });
     // JSSDK 配置参数
-    wx.config({$json});
+    wx.config({$json})
     // JSSDK 初始化成功
     wx.ready(function(){
         alert('初始化成功！');

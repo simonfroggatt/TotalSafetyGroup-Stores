@@ -11,9 +11,12 @@
 
 namespace Symfony\Component\Validator\Tests\Constraints;
 
+use stdClass;
 use Symfony\Component\Validator\Constraints\Isbn;
 use Symfony\Component\Validator\Constraints\IsbnValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
+use function chr;
 
 /**
  * @see https://en.wikipedia.org/wiki/Isbn
@@ -65,7 +68,7 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
             array('1A34567890', Isbn::INVALID_CHARACTERS_ERROR),
             // chr(1) evaluates to 0
             // 2070546810 is valid
-            array('2'.\chr(1).'70546810', Isbn::INVALID_CHARACTERS_ERROR),
+            array('2'. chr(1).'70546810', Isbn::INVALID_CHARACTERS_ERROR),
         );
     }
 
@@ -103,7 +106,7 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
             array('978-272C442282', Isbn::INVALID_CHARACTERS_ERROR),
             // chr(1) evaluates to 0
             // 978-2070546817 is valid
-            array('978-2'.\chr(1).'70546817', Isbn::INVALID_CHARACTERS_ERROR),
+            array('978-2'. chr(1).'70546817', Isbn::INVALID_CHARACTERS_ERROR),
         );
     }
 
@@ -142,13 +145,13 @@ class IsbnValidatorTest extends AbstractConstraintValidatorTest
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
+     * @expectedException UnexpectedTypeException
      */
     public function testExpectsStringCompatibleType()
     {
         $constraint = new Isbn(true);
 
-        $this->validator->validate(new \stdClass(), $constraint);
+        $this->validator->validate(new stdClass(), $constraint);
     }
 
     /**

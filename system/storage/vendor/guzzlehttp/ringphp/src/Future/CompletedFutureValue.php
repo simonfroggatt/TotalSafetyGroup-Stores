@@ -1,6 +1,7 @@
 <?php
 namespace GuzzleHttp\Ring\Future;
 
+use Exception;
 use React\Promise\FulfilledPromise;
 use React\Promise\RejectedPromise;
 
@@ -16,10 +17,10 @@ class CompletedFutureValue implements FutureInterface
 
     /**
      * @param mixed      $result Resolved result
-     * @param \Exception $e      Error. Pass a GuzzleHttp\Ring\Exception\CancelledFutureAccessException
+     * @param Exception $e      Error. Pass a GuzzleHttp\Ring\Exception\CancelledFutureAccessException
      *                           to mark the future as cancelled.
      */
-    public function __construct($result, \Exception $e = null)
+    public function __construct($result, Exception $e = null)
     {
         $this->result = $result;
         $this->error = $e;

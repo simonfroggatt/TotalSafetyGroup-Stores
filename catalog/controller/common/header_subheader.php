@@ -44,9 +44,12 @@ class ControllerCommonHeaderSubheader extends Controller {
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');
 		$data['search'] = $this->load->controller('common/search');
-		$data['cart'] = $this->load->controller('common/cart');
-		$data['menu'] = $this->load->controller('common/menu');
+		$data['cart'] = '';//$this->load->controller('common/cart');
+		//$data['menu'] = $this->load->controller('common/menu');
+        $data['menu_tsg'] = $this->load->controller('tsg/menu');
+		$data['customer_name'] = $this->customer->getFirstName();
 
+		//TSG
 		$data['load_local'] = LOAD_LOCAL;
 
 		return $this->load->view('common/header_subheader', $data);

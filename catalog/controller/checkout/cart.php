@@ -97,12 +97,21 @@ class ControllerCheckoutCart extends Controller {
 					);
 				}
 
+				//now we need to get the bulk discounted price
+
+             //   $this->load->model('tsg/product_bulk_discounts');
+             //   $bulk_price = $this->model_tsg_product_bulk_discounts->GetProductDiscountPrice($product['product_id'], $product['price'], $product['quantity']);
+                $bulk_price = $product['price'];
+
 				// Display prices
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$unit_price = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
-					
+					$unit_price = $this->tax->calculate($bulk_price, $product['tax_class_id'], $this->config->get('config_tax'));
+					$tax_value = $this->currency->format($this->tax->getTax($bulk_price, $product['tax_class_id']),$this->session->data['currency']);
 					$price = $this->currency->format($unit_price, $this->session->data['currency']);
-					$total = $this->currency->format($unit_price * $product['quantity'], $this->session->data['currency']);
+					//TSG
+					$pre_taxprice = $this->currency->format($bulk_price, $this->session->data['currency']);
+					$total = $this->currency->format($bulk_price* $product['quantity'], $this->session->data['currency']);
+					$discount = $this->currency->format(0, $this->session->data['currency']);
 				} else {
 					$price = false;
 					$total = false;
@@ -130,6 +139,7 @@ class ControllerCheckoutCart extends Controller {
 					}
 				}
 
+				$productURL = $this->makeProductLink($product['product_id'], $product['product_variant_id'], $product['tsg_options']);
 				$data['products'][] = array(
 					'cart_id'   => $product['cart_id'],
 					'thumb'     => $image,
@@ -141,8 +151,16 @@ class ControllerCheckoutCart extends Controller {
 					'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
 					'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
 					'price'     => $price,
+                    'pre_tax'     => $pre_taxprice,
+					'tax'       => $tax_value,
 					'total'     => $total,
-					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+					'href'      => $productURL,
+                    'size_name' => $product['size_name'],
+                    'orientation_name' => $product['orientation_name'],
+                    'material_name' => $product['material_name'],
+                    'tsg_options'  => $product['tsg_options'],
+                    'discount'      => $discount
+
 				);
 			}
 
@@ -270,13 +288,20 @@ class ControllerCheckoutCart extends Controller {
 			$product_id = 0;
 		}
 
+        if (isset($this->request->post['prod_variant_id'])) {
+            $product_variant_id = (int)$this->request->post['prod_variant_id'];
+        }else {
+            $product_variant_id = 0;
+        }
+
+
 		$this->load->model('catalog/product');
 
 		$product_info = $this->model_catalog_product->getProduct($product_id);
 
 		if ($product_info) {
-			if (isset($this->request->post['quantity'])) {
-				$quantity = (int)$this->request->post['quantity'];
+			if (isset($this->request->post['qtyDropdown'])) {
+				$quantity = (int)$this->request->post['qtyDropdown'];
 			} else {
 				$quantity = 1;
 			}
@@ -316,9 +341,14 @@ class ControllerCheckoutCart extends Controller {
 			}
 
 			if (!$json) {
-				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);
 
-				$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
+                $tsg_product_class_options = $this->TSGextractOPTS($this->request->post);
+
+				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $tsg_product_class_options);
+
+				//$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
+
+
 
 				// Unset all shipping and payment methods
 				unset($this->session->data['shipping_method']);
@@ -369,8 +399,10 @@ class ControllerCheckoutCart extends Controller {
 
 					array_multisort($sort_order, SORT_ASC, $totals);
 				}
-
-				$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+				$cart_sub_total = $this->currency->format($total, $this->session->data['currency']);
+				$cart_product_count = $this->cart->countProducts();
+                $json['success'] = $product_info['name'] . " added to cart. <strong>Cart subtotal</strong> ( ".$cart_product_count . " items ) <strong>". $cart_sub_total ."</strong>";
+				$json['total'] = sprintf($this->language->get('text_items'), $cart_product_count + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $cart_sub_total);
 			} else {
 				$json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
 			}
@@ -475,4 +507,43 @@ class ControllerCheckoutCart extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+
+    private function TSGextractOPTS($arr) {
+        $res = array_key_exists('tsg_po',$arr);
+        $result = array();
+        foreach ($arr as $key => $val) {
+            $pos = strpos($key, "tsg_po_");
+            if($pos !== false)
+            {
+                $tmp = array();
+                //$tmp[(int)substr($key, 7)] = (int)$val;
+                $classid = (int)substr($key, 7);
+                $tmp['option_class_id'] = $classid;
+                $tmp['option_class_val'] = (int)$val;
+              //  $tmp['option_class_val_type'] = (int)$arr['classtype'.$classid];
+
+                if((int)$val > 0)
+                    array_push($result, $tmp);
+            }
+        }
+
+        return $result;
+    }
+
+    private function makeProductLink($product_id, $variant_id, $options = []){
+        $urlstr = "";
+        $urlstr .= 'product_id=' . $product_id;
+        $urlstr .= '&pv_id='.$variant_id;
+
+        if($options != []){
+            $urlstr .= '&ops=';
+            foreach($options as $option){
+                $urlstr .= $option['class_id'] .','.$option['value_id'].":";
+            }
+            $urlstr = substr($urlstr, 0 , -1);
+        }
+
+        return $this->url->link('product/product', $urlstr);
+    }
 }

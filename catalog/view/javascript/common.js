@@ -69,6 +69,25 @@ $(document).ready(function() {
 		}
 	});
 
+	//TSG - search symbol
+	$('#symbol-search input[name=\'searchsymbol\']').parent().find('button').on('click', function() {
+		var url = $('base').attr('href') + 'index.php?route=tsg/symbol_search';
+
+		var value = $('#symbol-search input[name=\'searchsymbol\']').val();
+
+		if (value) {
+			url += '&search_symbol_text=' + encodeURIComponent(value);
+		}
+
+		location = url;
+	});
+
+	$('#symbol-search input[name=\'searchsymbol\']').on('keydown', function(e) {
+		if (e.keyCode == 13) {
+			$('#symbol-search input[name=\'searchsymbol\']').parent().find('button').trigger('click');
+		}
+	});
+
 	// Menu
 	$('#menu .dropdown-menu').each(function() {
 		var menu = $('#menu').offset();
@@ -111,13 +130,14 @@ $(document).ready(function() {
 		localStorage.setItem('display', 'grid');
 	});
 
-	if (localStorage.getItem('display') == 'list') {
+	/*if (localStorage.getItem('display') == 'list') {
 		$('#list-view').trigger('click');
 		$('#list-view').addClass('active');
 	} else {
 		$('#grid-view').trigger('click');
 		$('#grid-view').addClass('active');
 	}
+*/
 
 	// Checkout
 	$(document).on('keydown', '#collapse-checkout-option input[name=\'email\'], #collapse-checkout-option input[name=\'password\']', function(e) {
@@ -133,6 +153,24 @@ $(document).ready(function() {
 	$(document).ajaxStop(function() {
 		$('[data-toggle=\'tooltip\']').tooltip({container: 'body'});
 	});
+
+
+	$(window).scroll(function () {
+		if ($(this).scrollTop() > 50) {
+			$('#back-to-top').fadeIn();
+		} else {
+			$('#back-to-top').fadeOut();
+		}
+	});
+	// scroll body to 0px on click
+	$('#back-to-top').click(function () {
+		$('body,html').animate({
+			scrollTop: 0
+		}, 200);
+		return false;
+	});
+
+
 });
 
 // Cart add remove functions

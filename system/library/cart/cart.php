@@ -38,7 +38,40 @@ class Cart {
 		foreach ($cart_query->rows as $cart) {
 			$stock = true;
 
-			$product_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_store p2s LEFT JOIN " . DB_PREFIX . "product p ON (p2s.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND p2s.product_id = '" . (int)$cart['product_id'] . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.date_available <= NOW() AND p.status = '1'");
+            $sql =  "SELECT DISTINCT ". DB_PREFIX . "product_description.*, ";
+            $sql .= " ". DB_PREFIX . "product_to_store.product_id, ";
+            $sql .= " ". DB_PREFIX . "product.*, ";
+            $sql .= " ". DB_PREFIX . "tsg_size_material_comb_prices.price as var_price, ";
+            $sql .= " ". DB_PREFIX . "tsg_product_material.material_name, ";
+            $sql .= " ". DB_PREFIX . "tsg_product_sizes.size_name, ";
+            $sql .= " ". DB_PREFIX . "tsg_product_sizes.orientation_name, ";
+            $sql .= " ". DB_PREFIX . "tsg_product_variants.variant_code, ";
+            $sql .= " IFNULL(" . DB_PREFIX . "tsg_product_variants.alt_image, IFNULL(" . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image) ) as alternative_image";
+            $sql .= " FROM ". DB_PREFIX . "product_description";
+            $sql .= " INNER JOIN ". DB_PREFIX . "product_to_store ON ". DB_PREFIX . "product_description.product_desc_id = ". DB_PREFIX . "product_to_store.product_desc_id";
+            $sql .= " INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id";
+            $sql .= " INNER JOIN ". DB_PREFIX . "product_to_category ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_category.product_id";
+            $sql .= " INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "product_to_category.category_store_id = ". DB_PREFIX . "category_to_store.category_store_id";
+            $sql .= " INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_variant_core.product_id";
+            $sql .= " INNER JOIN ". DB_PREFIX . "tsg_product_variants ON ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = ". DB_PREFIX . "tsg_product_variants.prod_var_core_id ";
+            $sql .= " INNER JOIN ". DB_PREFIX . "tsg_size_material_comb ON ". DB_PREFIX . "tsg_product_variant_core.size_material_id = ". DB_PREFIX . "tsg_size_material_comb.id ";
+	        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_size_material_comb_prices ON ". DB_PREFIX . "tsg_size_material_comb.id = ". DB_PREFIX . "tsg_size_material_comb_prices.size_material_comb_id ";
+	        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_product_sizes ON ". DB_PREFIX . "tsg_size_material_comb.product_size_id = ". DB_PREFIX . "tsg_product_sizes.size_id ";
+	        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_product_material ON ". DB_PREFIX . "tsg_size_material_comb.product_material_id = ". DB_PREFIX . "tsg_product_material.material_id  ";
+            $sql .= " INNER JOIN " . DB_PREFIX . "tsg_orientation ON " . DB_PREFIX . "tsg_product_sizes.orientation_id = " . DB_PREFIX . "tsg_orientation.orientation_id ";
+            $sql .= " WHERE";
+            $sql .= " ". DB_PREFIX . "product_to_store.`status` = 1";
+            $sql .= " AND ". DB_PREFIX . "product_to_store.store_id = " . (int)$this->config->get('config_store_id');
+            $sql .= " AND ". DB_PREFIX . "category_to_store.store_id = " . (int)$this->config->get('config_store_id');
+            $sql .= " AND ". DB_PREFIX . "product_to_category.`status` = 1";
+            $sql .= " AND ". DB_PREFIX . "product_to_store.product_id = '" . (int)$cart['product_id'] . "'";
+            $sql .= " AND ". DB_PREFIX . "tsg_product_variants.prod_variant_id = '" . (int)$cart['product_variant_id'] . "'";
+            $sql .= " AND ". DB_PREFIX . "tsg_size_material_comb_prices.store_id = ". (int)$this->config->get('config_store_id');
+
+			//$product_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_store p2s LEFT JOIN " . DB_PREFIX . "product p ON (p2s.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND p2s.product_id = '" . (int)$cart['product_id'] . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.date_available <= NOW() AND p.status = '1'");
+
+            $product_query = $this->db->query($sql);
+
 
 			if ($product_query->num_rows && ($cart['quantity'] > 0)) {
 				$option_price = 0;
@@ -163,12 +196,13 @@ class Cart {
 					}
 				}
 
-				$price = $product_query->row['price'];
-
+				$price = $product_query->row['var_price'];
+                $variant_price = $product_query->row['var_price'];
 				// Product Discounts
 				$discount_quantity = 0;
 
-				foreach ($cart_query->rows as $cart_2) {
+				/* OLD DISCOUNT CALC
+				 * foreach ($cart_query->rows as $cart_2) {
 					if ($cart_2['product_id'] == $cart['product_id']) {
 						$discount_quantity += $cart_2['quantity'];
 					}
@@ -179,7 +213,7 @@ class Cart {
 				if ($product_discount_query->num_rows) {
 					$price = $product_discount_query->row['price'];
 				}
-
+                */
 				// Product Specials
 				$product_special_query = $this->db->query("SELECT price FROM " . DB_PREFIX . "product_special WHERE product_id = '" . (int)$cart['product_id'] . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY priority ASC, price ASC LIMIT 1");
 
@@ -211,9 +245,12 @@ class Cart {
 				}
 
 				// Stock
-				if (!$product_query->row['quantity'] || ($product_query->row['quantity'] < $cart['quantity'])) {
+                //TODO - add qty to variants
+				/*if (!$product_query->row['quantity'] || ($product_query->row['quantity'] < $cart['quantity'])) {
 					$stock = false;
 				}
+				*/
+
 
 				$recurring_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "recurring r LEFT JOIN " . DB_PREFIX . "product_recurring pr ON (r.recurring_id = pr.recurring_id) LEFT JOIN " . DB_PREFIX . "recurring_description rd ON (r.recurring_id = rd.recurring_id) WHERE r.recurring_id = '" . (int)$cart['recurring_id'] . "' AND pr.product_id = '" . (int)$cart['product_id'] . "' AND rd.language_id = " . (int)$this->config->get('config_language_id') . " AND r.status = 1 AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "'");
 
@@ -235,21 +272,46 @@ class Cart {
 					$recurring = false;
 				}
 
+				//TSG - our options time
+                //TSG get out options and class info here
+                $tsg_option_data_txt = array();
+                $tsg_option_data = json_decode($cart['tsg_options'], true);
+                $option_price_add = 0;
+                $selected_options= array();
+
+                foreach ($tsg_option_data as $value) {
+                    $optionData = $this->getTSGOptionData($value['option_class_id'], $value['option_class_val'], $cart['product_variant_id'], $variant_price);
+                    $selected_options[] = $optionData;
+                    $price += $optionData['price'];
+                    /*$tsg_option_data_txt[] = array(
+                        'name' => $tsg_sel_options['label'],
+                        'value' => $tsg_sel_options['value'],
+                        'class_id' => $value['option_class_id'],
+                        'value_id' => $value['option_class_val']
+                    );*/
+                }
+
+               // $this->load->model('tsg/product_bulk_discounts');
+                $tsg_price = $price + $option_price;
+                $tsg_bulk_price = $this->getProductPriceBulkDiscount($product_query->row['product_id'], $cart['quantity'], $tsg_price);
+
+              //  $bulk_price = $this->model_tsg_product_bulk_discounts->GetProductDiscountPrice($product_query->row['product_id'], $price, $cart['quantity']);
+
 				$product_data[] = array(
 					'cart_id'         => $cart['cart_id'],
 					'product_id'      => $product_query->row['product_id'],
 					'name'            => $product_query->row['name'],
-					'model'           => $product_query->row['model'],
+					'model'           => $product_query->row['variant_code'],
 					'shipping'        => $product_query->row['shipping'],
-					'image'           => $product_query->row['image'],
+					'image'           => $product_query->row['alternative_image'],
 					'option'          => $option_data,
 					'download'        => $download_data,
 					'quantity'        => $cart['quantity'],
 					'minimum'         => $product_query->row['minimum'],
 					'subtract'        => $product_query->row['subtract'],
 					'stock'           => $stock,
-					'price'           => ($price + $option_price),
-					'total'           => ($price + $option_price) * $cart['quantity'],
+					'price'           => $tsg_bulk_price,
+					'total'           => $tsg_bulk_price * $cart['quantity'],
 					'reward'          => $reward * $cart['quantity'],
 					'points'          => ($product_query->row['points'] ? ($product_query->row['points'] + $option_points) * $cart['quantity'] : 0),
 					'tax_class_id'    => $product_query->row['tax_class_id'],
@@ -259,7 +321,12 @@ class Cart {
 					'width'           => $product_query->row['width'],
 					'height'          => $product_query->row['height'],
 					'length_class_id' => $product_query->row['length_class_id'],
-					'recurring'       => $recurring
+					'recurring'       => $recurring,
+                    'product_variant_id' => $cart['product_variant_id'] ,
+                    'size_name' => $product_query->row['size_name'],
+                    'orientation_name' => $product_query->row['orientation_name'],
+                    'material_name' => $product_query->row['material_name'],
+                    'tsg_options'   => $selected_options
 				);
 			} else {
 				$this->remove($cart['cart_id']);
@@ -269,14 +336,48 @@ class Cart {
 		return $product_data;
 	}
 
-	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
+	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0, $product_variant_id = 0, $tsg_option_array = []) {
+		//$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
+        $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart ";
+        $sql .= " WHERE " . DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' ";
+        $sql .= " AND " . DB_PREFIX . "cart.customer_id = '" . (int)$this->customer->getId() . "'";
+        $sql .= " AND " . DB_PREFIX . "cart.session_id = '" . $this->db->escape($this->session->getId()) . "' ";
+        $sql .= " AND " . DB_PREFIX . "cart.product_id = '" . (int)$product_id . "' ";
+        $sql .= " AND " . DB_PREFIX . "cart.recurring_id = '" . (int)$recurring_id . "' ";
+        $sql .= " AND " . DB_PREFIX . "cart.`option` = '" . $this->db->escape(json_encode($option)) . "'";
+        $sql .= " AND " . DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "'";
+        $sql .= " AND " . DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id');
+        $sql .= " AND " . DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "'";
 
-		if (!$query->row['total']) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "cart SET api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "', customer_id = '" . (int)$this->customer->getId() . "', session_id = '" . $this->db->escape($this->session->getId()) . "', product_id = '" . (int)$product_id . "', recurring_id = '" . (int)$recurring_id . "', `option` = '" . $this->db->escape(json_encode($option)) . "', quantity = '" . (int)$quantity . "', date_added = NOW()");
-		} else {
-			$this->db->query("UPDATE " . DB_PREFIX . "cart SET quantity = (quantity + " . (int)$quantity . ") WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
-		}
+        $query = $this->db->query($sql);
+
+        if (!$query->row['total']) {
+            $sql = "INSERT INTO " . DB_PREFIX . "cart SET ";
+            $sql .= DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "', ";
+            $sql .= DB_PREFIX . "cart.customer_id = '" . (int)$this->customer->getId() . "', ";
+            $sql .= DB_PREFIX . "cart.session_id = '" . $this->db->escape($this->session->getId()) . "', ";
+            $sql .= DB_PREFIX . "cart.product_id = '" . (int)$product_id . "', recurring_id = '" . (int)$recurring_id . "', ";
+            $sql .= DB_PREFIX . "cart.`option` = '" . $this->db->escape(json_encode($option)) . "', ";
+            $sql .= DB_PREFIX . "cart.quantity = '" . (int)$quantity . "', ";
+            $sql .= DB_PREFIX . "cart.date_added = NOW(), ";
+            $sql .= DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "', ";
+            $sql .= DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id') . ",";
+            $sql .= DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "'";
+			$this->db->query($sql);
+        } else {
+            $sql = "UPDATE " . DB_PREFIX . "cart SET quantity = (quantity + " . (int)$quantity . ") ";
+            $sql .= " WHERE " . DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "'";
+            $sql .= " AND " . DB_PREFIX . "cart.customer_id = '" . (int)$this->customer->getId() . "' ";
+            $sql .= " AND " . DB_PREFIX . "cart.session_id = '" . $this->db->escape($this->session->getId()) . "'";
+            $sql .= " AND " . DB_PREFIX . "cart.product_id = '" . (int)$product_id . "' ";
+            $sql .= " AND " . DB_PREFIX . "cart.recurring_id = '" . (int)$recurring_id . "' ";
+            $sql .= " AND " . DB_PREFIX . "cart.`option` = '" . $this->db->escape(json_encode($option)) . "'";
+            $sql .= " AND " . DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "'";
+            $sql .= " AND " . DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id'). "";
+            $sql .= " AND " . DB_PREFIX . "cart.tsg_options = '" . $this->db->escape(json_encode($tsg_option_array)) . "'";
+
+            $this->db->query($sql);
+    		}
 	}
 
 	public function update($cart_id, $quantity) {
@@ -404,4 +505,181 @@ class Cart {
 
 		return false;
 	}
+
+	private function getTSGOptionData($class_id, $value_id, $variant_id, $variant_base_price){
+        //RETURN - name, value, price, class_id, value_id,
+        $sql = "SELECT DISTINCT";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.label, ";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.dropdown_title, ";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.product_id, ";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.price_modifier, ";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_type_id, ";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.show_at_checkout";
+        $sql .= " FROM " . DB_PREFIX . "tsg_dep_option_class";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_dep_option_class.option_class_id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_dep_option_options.option_options_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_types ON " . DB_PREFIX . "tsg_dep_option_options.option_type_id = " . DB_PREFIX . "tsg_dep_option_types.option_type_id";
+        $sql .= " WHERE";
+        $sql .= " " . DB_PREFIX . "tsg_dep_option_class_values.store_id = ".(int)$this->config->get('config_store_id');
+        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.option_class_id = ".(int)$class_id;
+        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = ".(int)$value_id;
+
+        $query = $this->db->query($sql);
+        $class_info = $query->row;
+
+        //for case 4 types - e.g. clips, that are not a fixed product then the opion_cvalue_id represents the variant from the drop down and not the base variant.
+        //In this case we need a different method to lookup the option_type_id
+        if($query->num_rows == 0 ){
+            $sql = "SELECT DISTINCT";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_class.label, ";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_options.dropdown_title, ";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_options.product_id, ";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_options.price_modifier, ";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_type_id, ";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_options.show_at_checkout";
+            $sql .= " FROM " . DB_PREFIX . "tsg_dep_option_class";
+            $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_dep_option_class.option_class_id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
+            $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_dep_option_options.option_options_id";
+            $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_types ON " . DB_PREFIX . "tsg_dep_option_options.option_type_id = " . DB_PREFIX . "tsg_dep_option_types.option_type_id";
+            $sql .= " WHERE";
+            $sql .= " " . DB_PREFIX . "tsg_dep_option_class_values.store_id = ".(int)$this->config->get('config_store_id');
+            $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.option_class_id = ".(int)$class_id;
+            $query = $this->db->query($sql);
+            $class_info = $query->row;
+        }
+
+
+        $option_price = 0;
+
+        $tmp_return = [];
+        $tmp_return['label'] = $class_info['label'];
+        $tmp_return['value'] = $class_info['dropdown_title'];
+        $tmp_return['show_at_checkout'] = $class_info['show_at_checkout'];
+        $tmp_return['class_id'] = $class_id;
+        $tmp_return['value_id'] = $value_id;
+
+
+        switch($class_info['option_type_id']){
+            case 1 : // FIXED - e.g. drill holes
+                $option_price =  $class_info['price_modifier'];
+                break;
+            case 2 : //PERC  - e.g. Laminate
+                $variantSize = $this->getVariantSize($variant_id);
+                $prod_width = $variantSize['size_width'] / 1000 ;
+                $prod_height = $variantSize['size_height'] / 1000 ;
+                $option_price =  $class_info['price_modifier'] * $prod_width * $prod_height;//size_width, size_height
+
+                break;
+            case 3 : //width - e.g. Channel
+                $variantSize = $this->getVariantSize($variant_id);
+                $prod_width = $variantSize['size_width'] / 1000 ;
+                $option_price =  $class_info['price_modifier'] * $prod_width;//size_width, size_height
+                break;
+            case 4 : //Product - e.g. Clips
+                $variant_price  = $this->getOptionProductVariant($value_id);
+                $option_price =  $variant_price['price'] * $class_info['price_modifier'];
+                $tmp_return['value'] = $variant_price['size_name'];
+                break;
+            case 6: //single fixed product, so no need to show drop down of product, but do need the underyling price
+                //need to get the price of the unlying variant "pruduct_id" for this website
+                $variant_price  = $this->getOptionProductVariant($class_info['product_id']);
+                $option_price =  $variant_price['price'] * $class_info['price_modifier'];
+                break;
+        }
+
+        $tmp_return['price'] = $option_price;
+
+
+        return $tmp_return;
+    }
+
+    private function getVariantSize($variant_id){
+        $sql = "SELECT DISTINCT";
+        $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_width,";
+        $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_height ";
+        $sql .= " FROM " . DB_PREFIX . "tsg_product_variants";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "tsg_product_variants.prod_var_core_id = " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_sizes ON " . DB_PREFIX . "tsg_size_material_comb.product_size_id = " . DB_PREFIX . "tsg_product_sizes.size_id ";
+        $sql .= " WHERE";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.prod_variant_id = ".$variant_id;
+        $sql .= " AND " . DB_PREFIX . "tsg_product_variants.store_id = ".(int)$this->config->get('config_store_id');
+
+        $query = $this->db->query($sql);
+        return $query->row;
+
+    }
+
+    private function getProductPriceBulkDiscount($product_id, $qty, $price){
+	    $sql = "SELECT " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.discount_percent, " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min ";
+        $sql .= " FROM " . DB_PREFIX . "tsg_product_to_bulk_discounts ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_bulkdiscount_groups ON " . DB_PREFIX . "tsg_product_to_bulk_discounts.bulk_discount_group_id = " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_bulkdiscount_group_breaks ON " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id = " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.bulk_discount_group_id  ";
+        $sql .= " WHERE ";
+        $sql .= " " . DB_PREFIX . "tsg_product_to_bulk_discounts.product_id = ".$product_id;
+        $sql .= " AND " . DB_PREFIX . "tsg_product_to_bulk_discounts.store_id = ".(int)$this->config->get('config_store_id');
+        $sql .= " AND " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min <= ".(int)$qty;
+        $sql .= " ORDER BY " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min DESC LIMIT 1";
+
+        $query = $this->db->query($sql);
+        $row = $query->row;
+        $discount = $row['discount_percent'];
+
+        $tmp = round($price * (1- ($discount/100)),2);
+        return $tmp;
+
+    }
+
+    private function getOptionProductVariant($product_var_id){
+        $sql = "SELECT";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_code,";
+        $sql .= " " . DB_PREFIX . "tsg_size_material_comb_prices.price, ";
+        $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_name, ";
+	    $sql .= " " . DB_PREFIX . "tsg_product_material.material_name ";
+        $sql .= " FROM " . DB_PREFIX . "tsg_product_variants";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "tsg_product_variants.prod_var_core_id = " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb_prices ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_comb_prices.size_material_comb_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_sizes ON " . DB_PREFIX . "tsg_size_material_comb.product_size_id = " . DB_PREFIX . "tsg_product_sizes.size_id ";
+	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_size_material_comb.product_material_id = " . DB_PREFIX . "tsg_product_material.material_id ";
+        $sql .= " WHERE";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.prod_variant_id = '".(int)$product_var_id ."'";
+        $sql .= " AND " . DB_PREFIX . "tsg_size_material_comb_prices.store_id = " . (int)$this->config->get('config_store_id');
+
+        $class_prod_res = $this->db->query($sql);
+        $class_row = $class_prod_res->row;
+        if($class_prod_res->num_rows > 0)
+        {
+            return $class_row;
+        }
+        else{
+            return [];
+        }
+
+
+    }
+
 }
+
+/*
+ *  case 1:
+                    price_mod = class_opt_vals['price_modifier'];   //FIXED  - e.g. Drill holes
+                    break;
+                case 2:  //PERC  - e.g. Laminate
+                    var base_prod_var = prod_variants[variant_selected['size']][variant_selected['material']];
+                    var prod_width = parseFloat(base_prod_var['size_width']) / 1000;
+                    var prod_height = parseFloat(base_prod_var['size_height']) / 1000;
+                    price_mod = parseFloat(class_opt_vals['price_modifier']) * prod_width * prod_height;//size_width, size_height
+                    break;
+                case 3:  //width - e.g. Channel
+                    var base_prod_var = prod_variants[variant_selected['size']][variant_selected['material']];
+                    var prod_width = parseFloat(base_prod_var['size_width']) / 1000;
+                    price_mod = parseFloat(class_opt_vals['price_modifier']) * prod_width;
+                    break;
+                case 4:
+                    price_mod = class_opt_vals['price_modifier'];//Product - e.g. Clips
+                    break;
+                case 6: //single fixed product, so no need to show drop down of product, but do need the underyling price
+                    price_mod = class_opt_vals['price_modifier'];   //
+                    break;
+ */

@@ -76,8 +76,8 @@ class ControllerCommonHeader extends Controller {
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');
 		$data['search'] = $this->load->controller('common/search');
-		$data['cart'] = $this->load->controller('common/cart');
-		$data['menu'] = $this->load->controller('common/menu');
+		$data['cart'] = '';//$this->load->controller('common/cart');
+		//$data['menu'] = $this->load->controller('common/menu');
 
 		$data['load_local'] = LOAD_LOCAL;
         $data['subheader'] = $this->load->controller('common/header_subheader');

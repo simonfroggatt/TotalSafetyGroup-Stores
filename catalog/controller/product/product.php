@@ -225,7 +225,7 @@ class ControllerProductProduct extends Controller {
 			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
 			$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
-			$data['heading_title'] = $product_info['name'];
+			$data['heading_title'] = $product_info['title'];
 
 			$data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);
 			$data['text_login'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
@@ -442,13 +442,29 @@ class ControllerProductProduct extends Controller {
 			$data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 
 			$this->model_catalog_product->updateViewed($this->request->get['product_id']);
-			
+
+            //TSG - load in the variants for this product
+
+            $variant_data = $this->load->controller('tsg/product_variants');
+
+            $data['variants'] = $variant_data['options_section'];
+            $data['variants_table'] = $variant_data['variants_table'];
+            $data['option_bulk_table'] = $variant_data['option_bulk_table'];
+
+
+
+            $this->load->model('tsg/product_variants');
+            $data['MaterialsDesc'] = array();
+            $data['MaterialsDesc'] =  $this->model_tsg_product_variants->getMaterialDescriptions($this->request->get['product_id']);
+
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
+
+
 
 			$this->response->setOutput($this->load->view('product/product', $data));
 		} else {

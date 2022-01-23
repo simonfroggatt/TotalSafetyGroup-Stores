@@ -1,0 +1,358 @@
+{{ header }}
+<div id="checkout-checkout" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    <div id="content" class="col-sm-12">{{ content_top }}
+        <form id="checkout-form">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                Contact Details
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="form-floating col-2 col-lg-1">
+                                        <select class="form-select" id="accountTitle" aria-label="Title">
+                                            <option selected>Title</option>
+                                            <option value="mr">Mr</option>
+                                            <option value="miss">Miss</option>
+                                            <option value="ms">Ms</option>
+                                        </select>
+                                        <label for="accountTitle">Title</label>
+                                    </div>
+                                    <div class="form-floating col-4 col-lg-2">
+                                        <input type="text" class="form-control" id="accountForename" placeholder="Forename" required>
+                                        <label for="accountForename">Forename (required)</label>
+                                    </div>
+                                    <div class="form-floating col-6 col-lg-3">
+                                        <input type="text" class="form-control" id="accountSurname" placeholder="Surname" required>
+                                        <label for="accountSurname">Surname (required)</label>
+                                    </div>
+                                    <div class="form-floating col-12 col-sm-6 col-lg-3">
+                                        <input type="email" class="form-control" id="contactEmail" placeholder="someone@example.com" required>
+                                        <label for="contactEmail">Email (required)</label>
+                                    </div>
+                                    <div class="form-floating col-12 col-sm-6 col-lg-3">
+                                        <input type="text" class="form-control" id="contactPhone" placeholder="0123 345 6789" required>
+                                        <label for="contactPhone">Contact Number (required)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-6 gy-2">
+                        <div class="card">
+                            <div class="card-header">
+                                Billing Address
+                            </div>
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="checkBillingSame">
+                                        <label class="form-check-label" for="checkBillingSame">
+                                            Same as Contact details
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="form-floating col-2 col-lg-2">
+                                        <select class="form-select" id="billingTitle" aria-label="Title">
+                                            <option selected>Title</option>
+                                            <option value="foa">FOA</option>
+                                            <option value="mr">Mr</option>
+                                            <option value="miss">Miss</option>
+                                            <option value="ms">Ms</option>
+                                        </select>
+                                        <label for="billingTitle">Title</label>
+                                    </div>
+                                    <div class="form-floating col-4 col-lg-5">
+                                        <input type="text" class="form-control" id="billingForename" placeholder="Forename" required>
+                                        <label for="billingForename">Forename (required)</label>
+                                    </div>
+                                    <div class="form-floating col-6 col-lg-5">
+                                        <input type="text" class="form-control" id="billingSurname" placeholder="Surname" required>
+                                        <label for="billingSurname">Surname (required)</label>
+                                    </div>
+                                    <div class="form-floating col-12 col-sm-6 col-lg-7">
+                                        <input type="email" class="form-control" id="billingEmail" placeholder="someone@example.com" required>
+                                        <label for="billingEmail">Invoice Email (required)</label>
+                                    </div>
+                                    <div class="form-floating col-12 col-sm-6 col-lg-5">
+                                        <input type="text" class="form-control" id="billingPhone" placeholder="0123 345 6789" required>
+                                        <label for="billingPhone">Contact Number (required)</label>
+                                    </div>
+                                    <div class="form-floating col-6 col-lg-7">
+                                        <input type="text" class="form-control" id="billingCompany" placeholder="Company">
+                                        <div id="suggestedAddress">
+                                            <select class="form-select" id="billingTitle" aria-label="Title">
+                                                <option selected>Title asdsa asd as dasd asd a asd as dasd asd as das</option>
+                                                <option value="foa">FOA</option>
+                                                <option value="mr">Mr</option>
+                                                <option value="miss">Miss</option>
+                                                <option value="ms">Ms</option>
+                                            </select>
+                                        </div>
+                                        <label for="billingCompany">Company (optional)</label>
+                                    </div>
+                                    <div class="form-floating col-6 col-lg-5">
+                                        <input  class="form-control" list="billingDepartmentList" id="billingDepartment" placeholder="Department" required>
+
+                                        <label for="billingDepartment">Department (Optional)</label>
+                                    </div>
+                                    <div class="fieldWrap">
+                                        <div id="result"></div>
+                                    </div>
+                                    <div class="form-floating col-12">
+                                        <textarea class="form-control" placeholder="Address" id="billingAddress" style="height: 100px"></textarea>
+                                        <label for="billingAddress">Address - just start typing</label>
+                                    </div>
+                                    <div class="form-floating col-12 col-lg-6">
+                                        <input type="text" class="form-control" id="billingPostcode" placeholder="AB1 2BC" required>
+                                        <label for="billingPostcode">Postcode (required)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 gy-2">
+                        <div class="card">
+                            <div class="card-header">
+                                Delivery Address
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Special title treatment</h5>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+      {{ content_bottom }}
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+    $( "#billingDepartment").keyup(function() {
+        let inputVal = this.value;
+        if(inputVal.length > 2){
+            lookUPAddress(inputVal);
+
+            var mycars = ['Herr','Frau'];
+
+
+
+          //  findAddress();
+           // getAddress("asdasd");
+           // retrieveAddress("GE22-EN14-WD26-TD79","GB|RM|A|5046469")
+        }
+
+    });
+
+    function lookUPAddress(inputVal) {
+        var Key = "GE22-EN14-WD26-TD79",
+            IsMiddleware = false,
+            Origin = "",
+            Countries = "GBR",
+            Limit = "10",
+            Language = "en-gb",
+            url = 'https://services.postcodeanywhere.co.uk/Capture/Interactive/Find/v1.10/json3.ws';
+            //url = 'https://api.addressy.com/Capture/Interactive/Find/v1.1/'
+        var Container = "";
+
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: { Key: encodeURIComponent(Key),
+                    Text : encodeURIComponent(inputVal),
+                    IsMiddleware: encodeURIComponent(IsMiddleware),
+                    Countries: encodeURIComponent(Countries),
+                    Limit: encodeURIComponent(Limit),
+                    Container: encodeURIComponent(Container),
+                    Origin: encodeURIComponent(Origin),
+                    Language: encodeURIComponent(Language)},
+
+            success: function (response, statusText, resObject) {
+
+                    let addressLists = response['Items'];
+                if(addressLists.length > 0) {
+                   // $("#billingDepartmentList").empty();
+                   // var list = document.getElementById('billingDepartmentList');
+                    // list.options.length = 0;
+                    $.each(addressLists, function (key, value) {
+                   //     var option = document.createElement("option");
+                    //    option.setAttribute("data-value", value.Id)
+                    //    option.setAttribute("value", value.Text + " " + value.Description)
+                        // option.text = value.Text + " " + value.Description;
+
+                    //    list.appendChild(option);
+                        console.log(value);
+                    });
+                }
+            }
+        });
+
+
+        console.log( inputVal );
+    }
+
+    function getAddress(id) {
+
+        var Key = "GE22-EN14-WD26-TD79",
+            url = 'https://services.postcodeanywhere.co.uk/Capture/Interactive/Retrieve/v1.00/json3.ws';
+
+
+        $.ajax({
+            url: url,
+            type: 'post',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            data: {
+                Key: encodeURIComponent(Key),
+                Id: id, //encodeURIComponent(Id),
+                Field1Format : encodeURIComponent("")
+            },
+
+            success: function (response) {
+                let addressData = response['Items'][0];
+                if (typeof(addressData.Error) != "undefined") {
+                    console.log(addressData.Cause);
+                    //then there was error
+                }
+
+
+            }
+        });
+
+    }
+
+    function retrieveAddress(Key, Id){
+        var Field1Format = "";
+        var url = 'https://services.postcodeanywhere.co.uk/Capture/Interactive/Retrieve/v1.00/json3.ws';
+        var params = '';
+        params += "&Key=" + encodeURIComponent(Key);
+        params += "&Id=" + encodeURIComponent(Id);
+        params += "&Field1Format=" + encodeURIComponent(Field1Format);
+
+        var http = new XMLHttpRequest();
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function() {
+            if (http.readyState == 4 && http.status == 200) {
+                var response = JSON.parse(http.responseText);
+
+                if (response.Items.length == 1 && typeof(response.Items[0].Error) != "undefined") {
+                    showError(response.Items[0].Description);
+                }
+                else {
+                    if (response.Items.length == 0)
+                        showError("Sorry, there were no results");
+                    else {
+                        var res = response.Items[0];
+                        var resBox = document.getElementById("output");
+                        resBox.innerText = res.Label;
+                        document.getElementById("output").style.display = "block";
+                        document.getElementById("seperator").style.display = "block";
+                    }
+                }
+            }
+        }
+        http.send(params);
+    }
+
+
+
+    function findAddress(SecondFind) {
+    var Text = "safetysigns"
+
+    if (Text === "") {
+        showError("Please enter an address");
+        return;
+    }
+
+    var Container = "";
+
+    if (SecondFind !== undefined){
+        Container = SecondFind;
+    }
+
+    var Key = "GE22-EN14-WD26-TD79",
+        IsMiddleware = false,
+        Origin = "",
+        Countries = "GBR",
+        Limit = "10",
+        Language = "en-gb",
+        url = 'https://services.postcodeanywhere.co.uk/Capture/Interactive/Find/v1.10/json3.ws';
+    var params = '';
+    params += "&Key=" + encodeURIComponent(Key);
+    params += "&Text=" + encodeURIComponent(Text);
+    params += "&IsMiddleware=" + encodeURIComponent(IsMiddleware);
+    params += "&Container=" + encodeURIComponent(Container);
+    params += "&Origin=" + encodeURIComponent(Origin);
+    params += "&Countries=" + encodeURIComponent(Countries);
+    params += "&Limit=" + encodeURIComponent(Limit);
+    params += "&Language=" + encodeURIComponent(Language);
+    var http = new XMLHttpRequest();
+    http.open('POST', url, true);
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    http.onreadystatechange = function() {
+        if (http.readyState == 4 && http.status == 200) {
+            var response = JSON.parse(http.responseText);
+            if (response.Items.length == 1 && typeof(response.Items[0].Error) != "undefined") {
+                showError(response.Items[0].Description);
+            }
+            else {
+                if (response.Items.length == 0)
+                    showError("Sorry, there were no results");
+
+                else {
+                    var resultBox = document.getElementById("result");
+
+                    if (resultBox.childNodes.length > 0) {
+                        var selectBox = document.getElementById("mySelect");
+                        selectBox.parentNode.removeChild(selectBox)
+                    }
+
+                    var resultArea = document.getElementById("result");
+                    var list = document.createElement("select");
+                    list.id = "selectList";
+                    list.setAttribute("id", "mySelect");
+                    resultArea.appendChild(list);
+
+                    var defaultOption = document.createElement("option");
+                    defaultOption.text = "Select Address";
+                    defaultOption.setAttribute("value", "");
+                    defaultOption.setAttribute("selected", "selected");
+                    list.appendChild(defaultOption);
+
+                    for (var i = 0; i < response.Items.length; i++){
+                        var option = document.createElement("option");
+                        option.setAttribute("value", response.Items[i].Id)
+                        option.text = response.Items[i].Text + " " + response.Items[i].Description;
+                        option.setAttribute("class", response.Items[i].Type)
+
+                        list.appendChild(option);
+                    }
+                    selectAddress(Key);
+                }
+            }
+        }
+    }
+    http.send(params);
+    };
+
+
+</script>
+
+{{ footer }}

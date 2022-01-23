@@ -1,0 +1,109 @@
+<div class="d-none d-sm-block">
+    <table id="product_variant_table"
+       data-toggle="table"
+       data-classes="table table-sm table-borderless table-hover product-variant table-striped caption-top"
+       data-filter-control="false"
+       data-filter-show-clear="false"
+       data-row-style="rowStyle"
+>
+    <caption>Bulk prices shown EXCLUDE any chosen options and are for base product only. Please see table below options for overall bulk pricing.</caption>
+
+    <tbody>
+   {#  <?php $hidestyle = $showBulkQtyColumn ? 'bulk-column-show' : 'bulk-column-hide'; ?> #}
+   {% for product_variant_data in product_table_data %}
+
+    <tr id="{{ product_variant_data.prod_variant_id }}" data-uniqueid="{{ product_variant_data.prod_variant_id }}">
+        <td class="product-variant ">
+            {{ product_variant_data.variant_code }}
+        </td>
+        <td class="product-variant">
+            {{ product_variant_data.size_name }}
+        </td>
+        <td class="product-variant">
+            {{ product_variant_data.material_name }}
+        </td>
+        {% for discount_value in product_variant_data.discount_array  %}
+        <td class="col-md-1 bulkcell_{{ product_variant_data.prod_variant_id }} product-variant" data-variant-bulk-id="{{ product_variant_data.prod_variant_id }}_{{loop.index0}}">
+            {#  <?php echo number_format($discount_value * $tax_multiplier,2);?><br><span class="tabletax">
+                <?php if($tax_multiplier == 1) { ?>
+                (inc VAT
+                <?php echo number_format($discount_value * $j_tax_multiplier,2); } else { ?>
+                (ex VAT
+                <?php echo number_format($discount_value / $j_tax_multiplier,2); } ?>
+                )<span>#}
+            {{ discount_value }}
+        </td>
+        {% endfor %}
+    </tr>
+   {%  endfor %}
+    </tbody>
+    <thead>
+    <tr>
+        <th data-field="id" data-sortable="false" data-halign="center" data-align="center" >Code</th>
+        <th data-field="size" data-filter-control="select" data-sortable="false" data-halign="center" data-align="center" >Size</th>
+        <th data-field="material" data-filter-control="select" data-sortable="false" data-halign="center" data-align="center">Material</th>
+
+        {% for bulk_discount_value in bulk_discount_group %}
+        <th data-field="bulk_price[{{loop.index0}}]" data-sortable="false" data-halign="center" data-align="center">
+            {{ bulk_discount_value.columnTitle }}
+        </th>
+        {% endfor %}
+    </tr>
+    </thead>
+</table>
+</div>
+
+<div class="d-block d-sm-none">
+<table id="product_variant_table_xs"
+       data-toggle="table"
+       data-classes="table table-sm  table-hover product-variant table-striped caption-top"
+       data-filter-control="false"
+       data-filter-show-clear="false"
+       data-row-style="rowStyle"
+
+>
+    <caption>XS - Bulk prices shown EXCLUDE any chosen options and are for base product only. Please see table below options for overall bulk pricing.</caption>
+
+    <tbody>
+    {#  <?php $hidestyle = $showBulkQtyColumn ? 'bulk-column-show' : 'bulk-column-hide'; ?> #}
+    {% for product_variant_data in product_table_data %}
+
+        <tr id="{{ product_variant_data.prod_variant_id }}" data-uniqueid-xs="{{ product_variant_data.prod_variant_id }}">
+            <td class="product-variant">
+                {{ product_variant_data.size_name }}<br>
+                {{ product_variant_data.material_name }}
+            </td>
+            {% for discount_value in product_variant_data.discount_array  %}
+                <td class="col-md-1 bulkcell_{{ product_variant_data.prod_variant_id }} product-variant" data-variant-bulk-xs-id="{{ product_variant_data.prod_variant_id }}_{{loop.index0}}">
+                    {#  <?php echo number_format($discount_value * $tax_multiplier,2);?><br><span class="tabletax">
+                <?php if($tax_multiplier == 1) { ?>
+                (inc VAT
+                <?php echo number_format($discount_value * $j_tax_multiplier,2); } else { ?>
+                (ex VAT
+                <?php echo number_format($discount_value / $j_tax_multiplier,2); } ?>
+                )<span>#}
+                    {{ discount_value }}
+                </td>
+            {% endfor %}
+        </tr>
+    {%  endfor %}
+    </tbody>
+    <thead>
+    <tr>
+        <th data-field="material" data-filter-control="select" data-sortable="false" data-halign="center" data-align="center">Size / Material</th>
+
+        {% for bulk_discount_value in bulk_discount_group %}
+            <th data-field="bulk_price[{{loop.index0}}]" data-sortable="false" data-halign="center" data-align="center">
+                {{ bulk_discount_value.columnTitleShort }}
+            </th>
+        {% endfor %}
+    </tr>
+    </thead>
+
+
+</table>
+</div>
+
+<script>
+    var productVariantInfomationArray = {{ product_table_data | json_encode | raw }};
+</script>

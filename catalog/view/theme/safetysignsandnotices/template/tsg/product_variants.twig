@@ -1,0 +1,68 @@
+
+    <div class="input-group input-group-xs mb-2">
+         <label class="input-group-text col-3 col-md-12 col-lg-3" for="posize">Size</label>
+        <select name="posize" id="posize" class="form-select product-variants">
+            {% for sizeval in vSizes %}
+                <option value="{{ sizeval.size_id }}">{{ sizeval.size_name }}</option>
+            {% endfor %}
+        </select>
+        <a href="image/catalog/sizes/size-200x300-p.png" class="btn btn-outline-secondary thumbnail" tabindex="-1" role="button" aria-disabled="true"><i class="fa fa-info" aria-hidden="true"></i></a>
+
+
+    </div>
+    <div class="input-group input-group-xs mb-2">
+        <label class="input-group-text col-3 col-md-12 col-lg-3" for="pomaterial">Material</label>
+        <select name="pomaterial" id="pomaterial" class="form-select product-variants">
+        </select>
+        <button class="btn btn-outline-secondary" type="button" id="material-info" onclick="ShowMaterial(); return false;"><i class="fa fa-info" aria-hidden="true"></i></button>
+    </div>
+
+    <!--TSG addin for our options stuff --START -- -->
+    {% if vOptClassesValues %}
+        {% for classinfo in vOptClassesValues %}
+            {% set classopts = classinfo.class_info %}
+            {% set class_values = classinfo.class_values %}
+            <div class="input-group input-group-xs mb-2 class-options" id="optionclassid-{{ classopts.option_class_id }}" >
+                <label class="input-group-text col-3 col-md-12 col-lg-3" for="tsg_po_{{ classopts.option_class_id }}">{{ classopts.label }}:</label>
+                {% set curr_classid = classopts.option_class_id %}
+                <select name="tsg_po_{{ classopts.option_class_id }}" id="tsg_po_{{ classopts.option_class_id }}" class="form-select tsg-option" data-optionclass-id="{{ classopts.option_class_id }}" >
+                    {% for key, value in class_values %}
+                        <option value="{{ key }}">{{ value.dropdown_title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+    {% endfor %}
+    {% endif %}
+
+
+
+    <script type="text/javascript">
+var prod_variants = {{ variants | json_encode | raw }};
+
+var variant_classes_tsg = {{ vOptionClasses | json_encode | raw }};
+
+var product_size_mat_classes_tsg = {{ vSizeMatClasses | json_encode | raw }};
+
+var variant_classes_values_tsg = {{ vOptClassesValues | json_encode | raw}};
+
+var discount_group_data = {{ bulk_discount_group | json_encode | raw}};
+
+var variant_selected = new Array();
+
+
+
+console.log('variant_classes_values_tsg');
+console.log(variant_classes_values_tsg);
+
+
+var prod_var_options = [];  //this is the variable that holds all the infomation to rebuild the selected product with it's options
+
+var chosen_options = [];
+
+var class_count = {{ vOptClassesValues|length }};
+
+var init_variant_id = {{ variant_id_selected }};
+
+var init_tsg_options = {{ options_selected | json_encode | raw}};
+
+    </script>

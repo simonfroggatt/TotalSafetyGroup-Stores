@@ -7,6 +7,9 @@ class ControllerProductSearch extends Controller {
 
 		$this->load->model('catalog/product');
 
+        $this->load->model('tsg/symbol_search');
+
+
 		$this->load->model('tool/image');
 
 		if (isset($this->request->get['search'])) {
@@ -64,6 +67,13 @@ class ControllerProductSearch extends Controller {
 		} else {
 			$limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
 		}
+
+        if (isset($this->request->get['symbol_id'])) {
+            $symbol_id = (int)$this->request->get['symbol_id'];
+        } else {
+            $symbol_id = 0;
+        }
+
 
 		if (isset($this->request->get['search'])) {
 			$this->document->setTitle($this->language->get('heading_title') .  ' - ' . $this->request->get['search']);
@@ -171,7 +181,7 @@ class ControllerProductSearch extends Controller {
 
 		$data['products'] = array();
 
-		if (isset($this->request->get['search']) || isset($this->request->get['tag'])) {
+		if (isset($this->request->get['search']) || isset($this->request->get['tag']) || isset($this->request->get['symbol_id'])) {
 			$filter_data = array(
 				'filter_name'         => $search,
 				'filter_tag'          => $tag,
@@ -181,12 +191,19 @@ class ControllerProductSearch extends Controller {
 				'sort'                => $sort,
 				'order'               => $order,
 				'start'               => ($page - 1) * $limit,
-				'limit'               => $limit
-			);
+				'limit'               => $limit,
+                'symbol_id'           => $symbol_id
+            );
 
-			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+            if (isset($this->request->get['symbol_id'])){
+                $product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+                $results = $this->model_catalog_product->getProductsBySymbol($filter_data);
+            }
+            else{
+                $product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+                $results = $this->model_catalog_product->getProducts($filter_data);
+            }
 
-			$results = $this->model_catalog_product->getProducts($filter_data);
 
 			foreach ($results as $result) {
 				if ($result['image']) {
@@ -225,6 +242,7 @@ class ControllerProductSearch extends Controller {
 					'product_id'  => $result['product_id'],
 					'thumb'       => $image,
 					'name'        => $result['name'],
+					'title'       => $result['title'],
 					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
 					'price'       => $price,
 					'special'     => $special,
@@ -293,7 +311,7 @@ class ControllerProductSearch extends Controller {
 				'href'  => $this->url->link('product/search', 'sort=p.price&order=DESC' . $url)
 			);
 
-			if ($this->config->get('config_review_status')) {
+			/*if ($this->config->get('config_review_status')) {
 				$data['sorts'][] = array(
 					'text'  => $this->language->get('text_rating_desc'),
 					'value' => 'rating-DESC',
@@ -306,7 +324,7 @@ class ControllerProductSearch extends Controller {
 					'href'  => $this->url->link('product/search', 'sort=rating&order=ASC' . $url)
 				);
 			}
-
+*/
 			$data['sorts'][] = array(
 				'text'  => $this->language->get('text_model_asc'),
 				'value' => 'p.model-ASC',
@@ -362,6 +380,13 @@ class ControllerProductSearch extends Controller {
 					'href'  => $this->url->link('product/search', $url . '&limit=' . $value)
 				);
 			}
+
+            //TSG add in all signs
+            $data['limits'][] = array(
+                'text'  => 'Show All',
+                'value' => 10000,
+                'href'  => $this->url->link('product/search', $url . '&limit=' . 10000)
+            );
 
 			$url = '';
 

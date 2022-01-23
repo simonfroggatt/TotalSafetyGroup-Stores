@@ -1,0 +1,92 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <dl class="row pull-left">
+                <dt class="col-sm-2">Title</dt>
+                <dd class="col-sm-10">{{ variant_data.name }}</dd>
+
+                <dt class="col-sm-2">Sign Type</dt>
+                <dd class="col-sm-10">{{ category_data.title }}</dd>
+
+                <dt class="col-sm-2">Sign Type Description</dt>
+                <dd class="col-sm-10">{{ category_data.description }}</dd>
+
+                <dt class="col-sm-2">Material</dt>
+                <dd class="col-sm-10">{{ variant_data.material_name }} <a href="#" onclick="ShowMaterial(); return false;">more info</a></dd>
+
+                <dt class="col-sm-2">Width</dt>
+                <dd class="col-sm-10">{{ variant_data.size_width }} {{ variant_data.size_units }}</dd>
+
+                <dt class="col-sm-2">Height</dt>
+                <dd class="col-sm-10">{{ variant_data.size_height }} {{ variant_data.size_units }}</dd>
+
+                <dt class="col-sm-2">Orientation</dt>
+                <dd class="col-sm-10">{{ variant_data.orientation_name }}</dd>
+
+                {% if variant_data.gtin %}
+                    <dt class="col-sm-2">GTIN</dt>
+                    <dd class="col-sm-10">{{ variant_data.gtin }}</dd>
+                {% endif %}
+
+                {% if variant_data.sign_reads %}
+                    <dt class="col-sm-2">Sign Reads</dt>
+                    <dd class="col-sm-10">{{ variant_data.sign_reads }}</dd>
+                {% endif %}
+
+                {% if symbology %}
+                <dt class="col-sm-2">Sign Symbols</dt>
+                <dd class="col-sm-10">Click a symbol to search all signs with that symbol</dd>
+                {% endif %}
+            </dl>
+        </div>
+
+        <div class="col-12 col-sm-12 ">
+            <div class="container symbol_info g-0">
+
+                    {% for symbol_info in symbology %}
+                <div class="row outer_row">
+                    <div class="col-12 col-md-3 col-lg-2 align-self-center text-center">
+                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="image/{{ symbol_info.svg_path }}" title="{{ symbol_info.function }}" alt="{{ symbol_info.function }}" class="mx-auto d-block symbol_thumb"><small class="text-muted">Click to search by
+                                symbol</small></a>
+
+                    </div>
+                    <div class="col-12 col-md-9 col-lg-10">
+                        <dl class="row pull-left">
+                            <dt class="col-sm-4 col-lg-3">Reference No:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.refenceno }}</dd>
+
+                            <dt class="col-sm-4 col-lg-3">Reference:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.referent }}</dd>
+
+                            <dt class="col-sm-4 col-lg-3">Function:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.function }}</dd>
+
+                            <dt class="col-sm-4 col-lg-3">Symbol Contents:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.content }}</dd>
+
+                            <dt class="col-sm-4 col-lg-3">Hazard:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.hazard }}</dd>
+
+                            <dt class="col-sm-4 col-lg-3">Human Behaviour:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.humanbehav }}</dd>
+
+                            <dt class="col-sm-4 col-lg-3">Standards:</dt>
+                            <dd class="col-sm-8 col-lg-9">{{ symbol_info.standard_title }} <a href="{{ symbol_info.target_url }}">read more...</a></dd>
+                        </dl>
+                    </div>
+                </div>
+                    {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function ShowMaterial()
+    {
+        $('.nav-tabs a[href="#materials"]').tab('show')
+        return false;
+    }
+</script>

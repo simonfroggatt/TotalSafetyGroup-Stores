@@ -1,64 +1,34 @@
 <?php
 class ModelCatalogCategory extends Model {
 	public function getCategory($category_id) {
-		//$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) WHERE c.category_id = '" . (int)$category_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND c.status = '1'");
 
-
-        //$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) WHERE c.category_id = '" . (int)$category_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND c.status = '1'");
-        //(int)$this->config->get('config_store_id')
-        $sql = "";
-        //$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) WHERE c.category_id = '" . (int)$category_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND c.status = '1'");
-
-        $sql = "SELECT\n".
-        "	". DB_PREFIX . "category_description.* , ". DB_PREFIX . "category_to_store.category_id \n".
-        "FROM\n".
-        "	". DB_PREFIX . "category_description\n".
-        "	INNER JOIN ". DB_PREFIX . "tsg_category_store_to_language ON ". DB_PREFIX . "category_description.category_desc_id = ". DB_PREFIX . "tsg_category_store_to_language.category_desc_id\n".
-        "	INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "category_to_store.category_desc_lang_id = ". DB_PREFIX . "tsg_category_store_to_language.category_desc_language_id\n".
-        "	INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id \n".
-        "WHERE\n".
-        "	". DB_PREFIX . "category_to_store.store_id = ".(int)$this->config->get('config_store_id')." \n".
-        "	AND ". DB_PREFIX . "category_description.language_id = ". (int)$this->config->get('config_language_id') . " \n".
-        "	AND ". DB_PREFIX . "tsg_category_store_parent.`status` = 1 \n".
-        "	AND ". DB_PREFIX . "category_to_store.category_id = " . (int)$category_id;
+        $sql = "SELECT ". DB_PREFIX . "category_description.*, ". DB_PREFIX . "category_to_store.category_id ";
+        $sql .= " FROM ". DB_PREFIX . "category_description";
+        $sql .= " INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "category_description.category_desc_id = ". DB_PREFIX . "category_to_store.category_desc_id";
+        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id ";
+        $sql .= " WHERE ";
+        $sql .= DB_PREFIX . "category_to_store.category_id = " . (int)$category_id;
+        $sql .= " AND ". DB_PREFIX . "category_to_store.store_id = ".(int)$this->config->get('config_store_id');
+        $sql .= " AND ". DB_PREFIX . "tsg_category_store_parent.`status` = 1";
+        $sql .= " AND ". DB_PREFIX . "category_description.language_id = ". (int)$this->config->get('config_language_id');
 
         $query = $this->db->query($sql);
-
 
         return $query->row;
 	}
 
 	public function getCategories($parent_id = 0) {
-		//$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store c2s ON (c.category_id = c2s.category_id) WHERE c.parent_id = '" . (int)$parent_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "'  AND c.status = '1' ORDER BY c.sort_order, LCASE(cd.name)");
+        $sql = "SELECT ". DB_PREFIX . "category_description.*, ". DB_PREFIX . "tsg_category_store_parent.top, ". DB_PREFIX . "tsg_category_store_parent.homepage, ". DB_PREFIX . "tsg_category_store_parent.sort_order, ". DB_PREFIX . "category_to_store.category_id ";
+        $sql .= " FROM ". DB_PREFIX . "category_description";
+        $sql .= " INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "category_description.category_desc_id = ". DB_PREFIX . "category_to_store.category_desc_id";
+        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id ";
+        $sql .= " WHERE ";
+        $sql .= DB_PREFIX . "category_to_store.store_id = ".(int)$this->config->get('config_store_id');
+        $sql .= " AND ". DB_PREFIX . "tsg_category_store_parent.`status` = 1";
+        $sql .= " AND ". DB_PREFIX . "category_description.language_id = ". (int)$this->config->get('config_language_id');
+        $sql .= " AND ". DB_PREFIX . "tsg_category_store_parent.parent_id = " . (int)$parent_id;
+        $sql .= " ORDER BY ". DB_PREFIX . "tsg_category_store_parent.sort_order ASC, LCASE(". DB_PREFIX . "category_description.`name`) ASC";
 
-
-        $sql = "SELECT\n".
-            "	". DB_PREFIX . "category_description.*, ".DB_PREFIX."tsg_category_store_parent.top, " .DB_PREFIX."tsg_category_store_parent.homepage, ". DB_PREFIX . "category_to_store.category_id, 1 as 'column' \n".
-            "FROM\n".
-            "	". DB_PREFIX . "category_description\n".
-            "	INNER JOIN ". DB_PREFIX . "tsg_category_store_to_language ON ". DB_PREFIX . "category_description.category_desc_id = ". DB_PREFIX . "tsg_category_store_to_language.category_desc_id\n".
-            "	INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "category_to_store.category_desc_lang_id = ". DB_PREFIX . "tsg_category_store_to_language.category_desc_language_id\n".
-            "	INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id \n".
-            "WHERE\n".
-            "	". DB_PREFIX . "category_to_store.store_id = ".(int)$this->config->get('config_store_id')." \n".
-            "	AND ". DB_PREFIX . "category_description.language_id = ". (int)$this->config->get('config_language_id') . " \n".
-            "	AND ". DB_PREFIX . "tsg_category_store_parent.`status` = 1 \n".
-            "	AND ". DB_PREFIX . "tsg_category_store_parent.parent_id = " . (int)$parent_id . " \n".
-            " ORDER BY ". DB_PREFIX . "tsg_category_store_parent.sort_order ASC, LCASE(". DB_PREFIX . "category_description.`name`) ASC";
-/*
-
-        $sql = "SELECT\n".
-            DB_PREFIX  . "category_description.*, ".DB_PREFIX."tsg_category_store_parent.top, 1 as 'column' \n".
-            "FROM\n".
-            DB_PREFIX . "category_to_store\n".
-            "	INNER JOIN ". DB_PREFIX . "category_description ON ". DB_PREFIX . "category_to_store.category_desc_id = ". DB_PREFIX . "category_description.category_desc_id\n".
-            "	INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id \n".
-            "WHERE\n".
-            "	". DB_PREFIX . "tsg_category_store_parent.parent_id = " . (int)$parent_id . " \n".
-            "	AND ". DB_PREFIX . "category_to_store.store_id = ".(int)$this->config->get('config_store_id')." \n".
-            "	AND ". DB_PREFIX . "category_description.language_id = ". (int)$this->config->get('config_language_id') . "\n".
-            "	AND ". DB_PREFIX . "tsg_category_store_parent.`status` = 1";
-            " ORDER BY ". DB_PREFIX . "tsg_category_store_parent.sort_order ASC, LCASE(". DB_PREFIX . "category_description.`name`) ASC";*/
         $query = $this->db->query($sql);
 
 		return $query->rows;

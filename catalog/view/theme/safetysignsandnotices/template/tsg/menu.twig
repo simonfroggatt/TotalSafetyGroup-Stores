@@ -1,0 +1,57 @@
+
+{% if categories %}
+<div class="container">
+  <nav id="menu" class="navbar navbar-expand-md" role="navigation">
+    <div class="container-fluid">
+
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fa fa-bars"></i>
+      </button>
+        <ul class="navbar-nav d-block d-sm-none">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{{ shopping_cart }}" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="cart-totals-sm">{{ cart_menu['md'] }}</span>
+                </a>
+            </li>
+        </ul>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <ul class="navbar-nav me-auto">
+        {% for category in categories %}
+          {% if category.children %}
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle " href="{{ category.href }}" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ category.name }}</a>
+                <div class="dropdown-menu shadow" aria-labelledby="navbarDropdownMenuLink">
+
+                  {% for children in category.children %}
+                      <a class="dropdown-item" href="{{ children.href }}">{{ children.name }}</a>
+                  {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{ category.href }}">All {{ category.name }}</a>
+                </div>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{ category.href }}">{{ category.name }}</a>
+            </li>
+            <li><a href=""></a></li>
+          {% endif %}
+        {% endfor %}
+        </ul>
+          <ul class="navbar-nav d-none d-sm-block">
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="{{ shopping_cart }}" id="navbarDropdownMenuLink" role="button"  aria-expanded="false">
+                      <span id="cart-totals-md">{{ cart_menu['md'] }}</span>
+                  </a>
+              </li>
+          </ul>
+
+      </div>
+    </div>
+  </nav>
+</div>
+{% endif %}
+
+
+

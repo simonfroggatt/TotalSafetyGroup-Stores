@@ -12,7 +12,7 @@ class ControllerTsgCartMenu extends Controller {
         if($cart_count == 0)
         {
             $cart_layouts['cart_class'] = '';
-            $prodData['cart_count'] = 'empty';
+            $prodData['cart_count'] = 'Empty';
         }
           elseif ($cart_count > 99) {
             $prodData['cart_count'] = '99+';

@@ -9,22 +9,41 @@
   <div class="row">
     <div id="content" class="col-sm-12">{{ content_top }}
       <div class="row">
-        <div class="col-12 col-md-5 col-lg-4">
+        <div class="col-12 col-md-5 col-lg-5 text-center align-self-center">
             <h2 class="d-block d-sm-none">{{ heading_title }}</h2>
-            {% if thumb or images %}
-          <ul class="thumbnails">
-            {% if thumb %}
-            <li ><a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"><img id="main-image" src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" class="img-fluid mx-auto d-block" /></a></li>
-            {% endif %}
-            {% if images %}
-            {% for image in images %}
-            <li class="image-additional"><a class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> <img class="img-fluid" src="{{ image.thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" /></a></li>
-            {% endfor %}
-            {% endif %}
-          </ul>
-          {% endif %}
+
+            <div class="row align-middle">
+                {% if images %}
+                    <div class="col-2">
+                        <div class="row">
+                            {% for image in images %}
+                                <div class="col-12">
+                                    <a href="{{ image.popup }}" title="{{ heading_title }}" data-toggle="lightbox"
+                                       data-gallery="product-gallery"> <img class="img-thumbnail"
+                                                                            src="{{ image.thumb }}"
+                                                                            title="{{ heading_title }}"
+                                                                            alt="{{ heading_title }}"/></a>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                <div class="col-10">
+                    {% else %}
+                    <div class="col-12">
+                    {% endif %}
+                    <a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"
+                       data-toggle="lightbox" data-gallery="product-gallery"><img id="main-image" src="{{ thumb }}"
+                                                                                  title="{{ heading_title }}"
+                                                                                  alt="{{ heading_title }}"
+                                                                                  class="img-fluid"/></a>
+                </div>
+            </div>
+
+
         </div>
-        <div class="col-12 col-md-7 col-lg-8">
+        <div class="col-12 col-md-7 col-lg-7">
           <h2 class="d-none d-md-block">{{ heading_title }}</h2>
             <div class="row">
                 <div class="col-12 col-md-6">
@@ -45,8 +64,6 @@
                     </dl>
                 </div>
                 <div id="product-options-holder" class="col-12 col-md-6">
-
-
                     <div id="product">
                         {{ variants }}
                         {% if options %}
@@ -154,7 +171,7 @@
                         <div class="input-group input-group-sm mb-3">
                             <label class="input-group-text col-md-3" for="input-quantity">Qty</label>
                             <input type="number" name="qtyDropdown" value="1" min="1" size="2" id="qtyDropdown" class="form-control col-md-1" />
-                            <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>
+                            <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-success btn-lg btn-block">{{ button_cart }}</button>
 
                         </div>
 
@@ -171,7 +188,23 @@
             </div>
            </div>
       </div>
-        <div class="row" id="product-details-tabs">
+          {% if has_related == 1 %}
+          <div class="row ssan-tabs" id="product-extra-tabs">
+              <div class="col">
+                  <div class="col">
+                      <ul class="nav nav-tabs" id="extra-tabs" role="tablist">
+                          <li class="nav-item" role="presentation">
+                              <a class="nav-link active" id="related-tab" data-bs-toggle="tab" href="#related" role="tab" aria-controls="bulk" aria-selected="true">Related Products</a>
+                          </li>
+                      </ul>
+                      <div class="tab-content" id="related-tabs-content">
+                          <div class="tab-pane fade show active" id="related" role="tabpanel" aria-labelledby="related-tab">{{ related }}</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {% endif %}
+        <div class="row ssan-tabs" id="product-details-tabs">
             <div class="col">
                 <ul class="nav nav-tabs" id="product-tabs" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -189,7 +222,7 @@
                 </ul>
                 <div class="tab-content" id="product-tabs-content">
                     <div class="tab-pane fade show active" id="bulk" role="tabpanel" aria-labelledby="bulk-tab">{{ variants_table }}</div>
-                    <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">{{ description }}</div>
+                    <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">{{ long_description }}</div>
                     <div class="tab-pane fade" id="variant-specification" role="tabpanel" aria-labelledby="specification-tab">Specification - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
 
                         <div class="tab-pane fade" id="materials" role="tabpanel" aria-labelledby="materials-tab">
@@ -221,7 +254,10 @@
 
       {{ content_bottom }}</div>
     {{ column_right }}</div>
+  </div>
 </div>
+
+
 <script type="text/javascript"><!--
 $('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
 	$.ajax({
@@ -298,9 +334,14 @@ $('#button-cart').on('click', function() {
 				//$('html, body').animate({ scrollTop: 0 }, 'slow');
 
 				//$('#cart > ul').load('index.php?route=common/cart/info ul li');
-				$('#cart-totals-sm').html(json['total']);
-                $('#cart-totals-md').html("Your Basket ( "+ json['total'] + " )");  //Your Basket ( 3 items - £56.70 )
-                $('#cart-totals-md').alert();
+                let cart_menu_html = json['cart_menu']['xs'];
+                $('#cart_menu_top').html(cart_menu_html);
+                let cart_off_canvas = json['offcanvas_cart'];
+                $('#offcanvasCart').html(cart_off_canvas);
+
+				//$('#cart-totals-sm').html(json['total']);
+                //$('#cart-totals-md').html("Your Basket ( "+ json['total'] + " )");  //Your Basket ( 3 items - £56.70 )
+                //$('#cart-totals-md').alert();
 			}
 		},
         error: function(xhr, ajaxOptions, thrownError) {
@@ -422,14 +463,15 @@ $('#button-review').on('click', function() {
 });
 
 $(document).ready(function() {
-	$('.thumbnails').magnificPopup({
+
+	/*$('.thumbnails').magnificPopup({
 		type:'image',
 		delegate: 'a',
 		gallery: {
 			enabled: true
 		}
 	});
-
+*/
 
 });
     function ShowDetails()

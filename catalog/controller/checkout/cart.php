@@ -403,6 +403,10 @@ class ControllerCheckoutCart extends Controller {
 				$cart_product_count = $this->cart->countProducts();
                 $json['success'] = $product_info['name'] . " added to cart. <strong>Cart subtotal</strong> ( ".$cart_product_count . " items ) <strong>". $cart_sub_total ."</strong>";
 				$json['total'] = sprintf($this->language->get('text_items'), $cart_product_count + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $cart_sub_total);
+
+                $json['cart_menu'] = $this->load->controller('tsg/cart_menu');
+                $json['offcanvas_cart'] = $this->load->controller('tsg/offcanvas_cart');
+
 			} else {
 				$json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
 			}
@@ -498,10 +502,22 @@ class ControllerCheckoutCart extends Controller {
 					$sort_order[$key] = $value['sort_order'];
 				}
 
+                $data['totals'] = array();
+
+				//TSG
+                foreach ($totals as $total) {
+                    $data['totals'][] = array(
+                        'title' => $total['title'],
+                        'code'  => $total['code'],
+                        'text'  => $this->currency->format($total['value'], $this->session->data['currency']),
+                    );
+                }
+
 				array_multisort($sort_order, SORT_ASC, $totals);
 			}
 
 			$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+            $json['TSG_totals'] = $data['totals'];
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

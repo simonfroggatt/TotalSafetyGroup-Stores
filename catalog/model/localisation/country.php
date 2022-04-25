@@ -19,4 +19,30 @@ class ModelLocalisationCountry extends Model {
 
 		return $country_data;
 	}
+
+	public function TSGgetCountries() {
+        //$country_data = $this->cache->get('country.catalog');
+
+       // if (!$country_data) {
+            $query  = $this->db->query("SELECT * FROM ". DB_PREFIX . "tsg_country_iso WHERE status = '1' ORDER BY sort_order, name ASC;");
+
+
+           // $this->cache->set('country.catalog', $country_data);
+       // }
+
+        return $query->rows;
+    }
+
+    public function TSGgetCountryID($iso_id) {
+        //$country_data = $this->cache->get('country.catalog');
+
+        // if (!$country_data) {
+        $query  = $this->db->query("SELECT * FROM ". DB_PREFIX . "tsg_country_iso WHERE status = '1' AND iso_id = ".(int)$iso_id." ORDER BY sort_order, name ASC;");
+
+
+        // $this->cache->set('country.catalog', $country_data);
+        // }
+
+        return $query->row;
+    }
 }

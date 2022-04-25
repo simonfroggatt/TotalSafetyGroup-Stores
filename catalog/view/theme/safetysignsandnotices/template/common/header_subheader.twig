@@ -1,77 +1,41 @@
 <header>
     <div class="full-width-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-8 col-sm-5 col-md-4 col-lg-3">
-                    <div id="logo">{% if logo %}<a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>{% else %}
-                            <h1><a href="{{ home }}">{{ name }}</a></h1>
-                        {% endif %}
-                    </div>
+        <div class="container mb-0 pb-0">
+            <div class="row " id="nav-belt">
+                <div class="nav flex-row col-6 col-md-3 col-lg-2 order-0">
+                    <ul class="navbar-nav nav-logo">
+                        <li class="nav-item nav-off d-block d-md-none">
+                            <a class="nav-link active text-white" data-bs-toggle="offcanvas" href="#offcanvasSSAN" role="button" aria-controls="offcanvasSSAN"><i class="fas fa-bars fa-3x me-3" ></i></a>
+                        </li>
+                        <li class="nav-item"><a href="{{ home }}"><img id="logo" src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-4 d-sm-none " id="top-links">
-                    <div class="col">
-                        <ul class="nav flex-column flex-row-reverse">
-                            <li class="nav-item">
-                                <a class="nav-link" href="tel:{{ telephone }}"><i class="fa fa-phone"></i> {{ telephone }}333</a>
-                            </li>
-                            {% if logged %}
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-user"></i> Hi, {{ customer_name }}
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="{{ account }}">{{ text_account }}</a></li>
-                                        <li><a class="dropdown-item" href="{{ order }}">{{ text_order }}</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{{ logout }}">{{ text_logout }}</a></li>
-                                    </ul>
-                                </li>
-                            {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ login }}"><i class="fa fa-user"></i> {{ text_login }}</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-7 col-md-8 col-lg-9" id="top-links">
-                    <div class="row d-none d-sm-block">
-                        <div class="col">
-                            <ul class="nav justify-content-end">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="tel:{{ telephone }}"><i class="fa fa-phone"></i> {{ telephone }}</a>
-                                </li>
-                                {% if logged %}
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa fa-user"></i> Hi, {{ customer_name }}
-                                        </a>
-                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                            <li><a class="dropdown-item" href="{{ account }}">{{ text_account }}</a></li>
-                                            <li><a class="dropdown-item" href="{{ order }}">{{ text_order }}</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="{{ logout }}">{{ text_logout }}</a></li>
-                                        </ul>
-                                    </li>
-                                {% else %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ login }}"><i class="fa fa-user"></i> {{ text_login }}</a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            {{ search }}
-                        </div>
-                    </div>
 
+                <div class="col-12 col-md-6 col-lg-8 order-2 order-md-1 pb-2 pb-md-0 p-sm-0" id="nav-search" >
+                    {{ search }}
                 </div>
+                <div class="col-6 col-md-3 col-lg-2 order-1 order-md-2" id="top-links">
+                    {{ header_links }}
+                </div>
+            </div>
+            <div class="search_results_container">
+            <div class="container ">
+                <div class="row">
+                    <div class="container" id="search_results_grid">
+                    </div>
+                </div>
+            </div>
+
             </div>
         </div>
         {{ menu_tsg }}
     </div>
+   <!-- <div class="overlay position-absolute vh-100 flex-fill">
+        asdasda
+        asd
+        as
+    </div> -->
 </header>
 
 

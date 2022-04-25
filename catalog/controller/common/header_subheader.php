@@ -47,6 +47,7 @@ class ControllerCommonHeaderSubheader extends Controller {
 		$data['cart'] = '';//$this->load->controller('common/cart');
 		//$data['menu'] = $this->load->controller('common/menu');
         $data['menu_tsg'] = $this->load->controller('tsg/menu');
+        $data['header_links'] = $this->load->controller('tsg/header_links');
 		$data['customer_name'] = $this->customer->getFirstName();
 
 		//TSG

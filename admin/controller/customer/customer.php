@@ -1150,6 +1150,7 @@ class ControllerCustomerCustomer extends Controller {
 			$this->load->model('setting/store');
 
 			$store_info = $this->model_setting_store->getStore($store_id);
+            unset($this->session->data['checkout_register']);
 
 			if ($store_info) {
 				$this->response->redirect($store_info['url'] . 'index.php?route=account/login&token=' . $token);

@@ -1,22 +1,13 @@
 
 {% if categories %}
-<div class="container">
-  <nav id="menu" class="navbar navbar-expand-md" role="navigation">
+<div class="container d-none d-md-block">
+  <nav id="menu" class="navbar pt-0 pb-0 navbar-expand-md" role="navigation">
     <div class="container-fluid">
-
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <i class="fa fa-bars"></i>
-      </button>
-        <ul class="navbar-nav d-block d-sm-none">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="{{ shopping_cart }}" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span id="cart-totals-sm">{{ cart_menu['md'] }}</span>
-                </a>
-            </li>
-        </ul>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <ul class="navbar-nav me-auto">
+            <li class="nav-item d-none d-md-block">
+                <a class="nav-link active" data-bs-toggle="offcanvas" href="#offcanvasSSAN" role="button" aria-controls="offcanvasSSAN"><i class="fas fa-bars"></i> All</a>
+            </li>
         {% for category in categories %}
           {% if category.children %}
             <li class="nav-item dropdown">
@@ -39,10 +30,11 @@
           {% endif %}
         {% endfor %}
         </ul>
+          <a href="tel:01157270172"></a>
           <ul class="navbar-nav d-none d-sm-block">
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="{{ shopping_cart }}" id="navbarDropdownMenuLink" role="button"  aria-expanded="false">
-                      <span id="cart-totals-md">{{ cart_menu['md'] }}</span>
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="tel:01157270172}">
+                      <i class="fas fa-phone-alt"> 0115 72 701 72</i>
                   </a>
               </li>
           </ul>
@@ -53,5 +45,61 @@
 </div>
 {% endif %}
 
+{{ offcanvas_menu }}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCart">
+{{ offcanvas_cart }}
+</div>
 
+<script>
+    //we will use ajax to remove from the cart, but dom to make it look like it's gone
+    //105
+    $(function() {
 
+        $('.btnRemove').on('click', function(event){
+            let cart_id = $(this).data('cartid');
+            deleteFromCart(cart_id);
+        })
+
+        function deleteFromCart(cart_id){
+            //ajax call in here,but needs to synchronous just incase it doesn't work
+            $.ajax({
+                url: 'index.php?route=checkout/cart/remove',
+                type: 'post',
+                data: 'key=' + cart_id,
+                dataType: 'json',
+                async: false,
+                beforeSend: function() {
+
+                },
+                complete: function() {
+
+                },
+                success: function(json) {
+                    if(json['TSG_totals']){
+                        let total_array = json['TSG_totals'];
+                        total_array.forEach( function (value, index ){
+                            let cart_menu_id = '#total_'+value['code'];
+                            $(cart_menu_id).html(value['text']);
+                        })
+                    // Need to set timeout otherwise it wont update the total
+                        updateSide(cart_id)
+                     }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+
+        }
+
+        function updateSide(cart_id){
+            //update the total
+
+            //remove the row
+            let row_hide = $('#row_cartid_'+cart_id);
+            row_hide.fadeOut( 1000 );
+        }
+
+    })
+
+</script>

@@ -28,6 +28,7 @@ class ControllerAccountRegister extends Controller {
 
 			unset($this->session->data['guest']);
 
+
 			$this->response->redirect($this->url->link('account/success'));
 		}
 
@@ -218,7 +219,7 @@ class ControllerAccountRegister extends Controller {
 	}
 
 	private function validate() {
-		if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
+	/*	if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
 			$this->error['firstname'] = $this->language->get('error_firstname');
 		}
 
@@ -228,15 +229,16 @@ class ControllerAccountRegister extends Controller {
 
 		if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
 			$this->error['email'] = $this->language->get('error_email');
-		}
+		}*/
 
-		if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['email'])) {
-			$this->error['warning'] = $this->language->get('error_exists');
-		}
+		if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['accountEmail'])) { //email
+            $this->error['warning'] = sprintf($this->language->get('error_exists'), $this->url->link('account/forgotten', '', true));
 
+		}
+/*
 		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
 			$this->error['telephone'] = $this->language->get('error_telephone');
-		}
+		}*/
 
 		// Customer Group
 		if (isset($this->request->post['customer_group_id']) && is_array($this->config->get('config_customer_group_display')) && in_array($this->request->post['customer_group_id'], $this->config->get('config_customer_group_display'))) {
@@ -315,4 +317,36 @@ class ControllerAccountRegister extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function create(){
+        $json = array();
+
+        $this->load->language('account/register');
+
+        $this->document->setTitle($this->language->get('heading_title'));
+
+        $this->load->model('account/customer');
+
+        if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+            $customer_id = $this->model_account_customer->addCustomer($this->request->post);
+
+            // Clear any previous login attempts for unregistered accounts.
+            $this->model_account_customer->deleteLoginAttempts($this->request->post['accountEmail']);
+
+            $this->customer->login($this->request->post['accountEmail'], $this->request->post['password']);
+
+            unset($this->session->data['guest']);
+            $this->session->data['checkout_register'] = true;
+
+
+            $json['redirect'] = ($this->url->link('account/success'));
+        }
+        else
+        {
+            $json['error'] = $this->error;
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
 }

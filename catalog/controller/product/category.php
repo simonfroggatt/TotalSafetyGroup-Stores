@@ -137,14 +137,14 @@ class ControllerProductCategory extends Controller {
 
 			foreach ($results as $result) {
 				$filter_data = array(
-					'filter_category_id'  => $result['category_id'],
+					'filter_category_id'  => $result['category_store_id'],
 					'filter_sub_category' => true
 				);
 
 				$data['categories'][] = array(
 					'title' => $result['title'],
 				    'name' => $result['name'],// . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url),
+					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_store_id'] . $url),
                     'image' => $result['image']
 				);
 			}
@@ -177,13 +177,15 @@ class ControllerProductCategory extends Controller {
 					$price = false;
 				}
 
-				if (!is_null($result['special']) && (float)$result['special'] >= 0) {
+				/*if (!is_null($result['special']) && (float)$result['special'] >= 0) {
 					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
 					$tax_price = (float)$result['special'];
 				} else {
 					$special = false;
 					$tax_price = (float)$result['price'];
-				}
+				}*/
+                $special = false;
+                $tax_price = (float)$result['price'];
 	
 				if ($this->config->get('config_tax')) {
 					$tax = $this->currency->format($tax_price, $this->session->data['currency']);
@@ -191,11 +193,12 @@ class ControllerProductCategory extends Controller {
 					$tax = false;
 				}
 
-				if ($this->config->get('config_review_status')) {
+				/*if ($this->config->get('config_review_status')) {
 					$rating = (int)$result['rating'];
 				} else {
 					$rating = false;
-				}
+				}*/
+                $rating = false;
 
 				$data['products'][] = array(
 					'product_id'  => $result['product_id'],
@@ -207,7 +210,7 @@ class ControllerProductCategory extends Controller {
 					'special'     => $special,
 					'tax'         => $tax,
 					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
-					'rating'      => $result['rating'],
+					'rating'      => false, //$result['rating'],
 					'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $result['product_id'] . $url)
 				);
 			}
@@ -344,17 +347,17 @@ class ControllerProductCategory extends Controller {
 
 			// http://googlewebmastercentral.blogspot.com/2011/09/pagination-with-relnext-and-relprev.html
 			if ($page == 1) {
-			    $this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_id']), 'canonical');
+			    $this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_store_id']), 'canonical');
 			} else {
-				$this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_id'] . '&page='. $page), 'canonical');
+				$this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_store_id'] . '&page='. $page), 'canonical');
 			}
 			
 			if ($page > 1) {
-			    $this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_id'] . (($page - 2) ? '&page='. ($page - 1) : '')), 'prev');
+			    $this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_store_id'] . (($page - 2) ? '&page='. ($page - 1) : '')), 'prev');
 			}
 
 			if ($limit && ceil($product_total / $limit) > $page) {
-			    $this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_id'] . '&page='. ($page + 1)), 'next');
+			    $this->document->addLink($this->url->link('product/category', 'path=' . $category_info['category_store_id'] . '&page='. ($page + 1)), 'next');
 			}
 
 			$data['sort'] = $sort;

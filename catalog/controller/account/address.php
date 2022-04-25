@@ -130,6 +130,10 @@ class ControllerAccountAddress extends Controller {
 		$this->getList();
 	}
 
+	protected function getListTSG(){
+
+    }
+
 	protected function getList() {
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),

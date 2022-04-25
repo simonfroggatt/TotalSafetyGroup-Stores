@@ -69,6 +69,12 @@ class ControllerCommonContentBottom extends Controller {
 			}
 		}
 
+        $this->document->addScript('catalog/view/javascript/jquery/owl/owl.carousel.min.js');
+        $this->document->addStyle('catalog/view/javascript/jquery/owl/owl.carousel.min.css');
+        $this->document->addStyle('catalog/view/javascript/jquery/owl/owl.theme.default.min.css');
+
+        $data['recently_viewed'] = $this->load->controller('tsg/recently_viewed');
+
 		return $this->load->view('common/content_bottom', $data);
 	}
 }

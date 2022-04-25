@@ -1,0 +1,224 @@
+{{ header }}
+<div id="account-address" class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    {% if success %}
+        <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
+    {% endif %}
+    {% if error_warning %}
+        <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+    {% endif %}
+    <div class="row">{{ column_left }}
+        {% if column_left and column_right %}
+            {% set class = 'col-sm-6' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'col-sm-9' %}
+        {% else %}
+            {% set class = 'col-sm-12' %}
+        {% endif %}
+        <div id="content" class="{{ class }}">{{ content_top }}
+            <h2>{{ text_address_book }}</h2>
+            <form id="address_form" method="post">
+                <input type="hidden" id="addressID" name="addressID" value="{{ address_id }}">
+                <input type="hidden" id="customerID" name="customerID" value="{{ customer_id }}">
+                <div class="row g-2">
+                    <div class="form-floating col-12 col-sm-6 col-md-6">
+                        <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Fullname" required {% if address.fullname %} value="{{ address.fullname }}" {% endif %}>
+                        <label for="fullname">Fullname (required)</label>
+                    </div>
+                    <div class="form-floating col-12 col-sm-6 col-md-6">
+                        <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="0123 345 6789" required {% if address.telephone %} value="{{ address.telephone }}" {% endif %}>
+                        <label for="telephone">Contact Number (required)</label>
+                    </div>
+                    <div class="form-floating col-12">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="someone@example.com" required {% if address.email %} value="{{ address.email }}" {% endif %}>
+                        <label for="email">Invoice Email (required)</label>
+                    </div>
+                    {% if address_id > 0 %}
+                        {% set classSearch = 'd-none' %}
+                        {% set classFull = '' %}
+                    {% else %}
+                        {% set classSearch = '' %}
+                        {% set classFull = 'd-none' %}
+                    {% endif %}
+                    <div class="form-floating col-12 {{ classSearch }}">
+                        <input type="text" class="form-control" id="addressLookupBilling"  placeholder="Start typing to find your" >
+                        <label for="addressLookupBilling">Start typing to find your address</label>
+                    </div>
+                    <div id="js-fulladdress" class="col-12 {{ classFull }}">
+                        <div class="row g-2">
+                        <div class="form-floating col-12">
+                            <input type="text" class="form-control" id="company" name="company" placeholder="Company" {% if address.company %} value="{{ address.company }}" {% endif %}>
+                            <label for="company">Company (optional)</label>
+                        </div>
+                        <div class="form-floating col-12">
+                            <textarea class="form-control" placeholder="Address" id="address" name="address" style="height: 100px" required>{% if address.address_1 %}{{ address.address_1 }}{% endif %}</textarea>
+                            <label for="address">Address - just start typing</label>
+                        </div>
+                        <div class="form-floating col-6 col-lg-6">
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Town / City" required {% if address.city %} value="{{ address.city }}" {% endif %}>
+                            <label for="city">Town / City (required)</label>
+                        </div>
+                        <div class="form-floating col-6 col-lg-6">
+                            <input type="text" class="form-control" id="area" name="area" placeholder="Area...e.g. Derbyshire required" required {% if address.area %} value="{{ address.area }}" {% endif %}>
+                            <label for="area">Area</label>
+                        </div>
+                        <div class="form-floating col-6 col-lg-6">
+                            <input type="text" class="form-control" id="postcode" name="postcode" placeholder="AB1 2BC" required {% if address.postcode %} value="{{ address.postcode }}" {% endif %}>
+                            <label for="postcode">Postcode (required)</label>
+                        </div>
+                        <div class="form-floating col-6 col-md-6">
+                            <div class="form-floating ">
+                                <select class="form-select" id="country_id" name="country_id" aria-label="billing country">
+                                    {% for country in countries %}
+                                        <option {% if daddress.country_id == country.iso_id %} selected {% endif %} value="{{ country.iso_id }}">{{ country.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelect">Country</label>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="defaultBilling" name="defaultBilling" {% if address.default_billing %} checked {% endif %}>
+                            <label class="form-check-label" for="defaultBilling">
+                                Set as default Billing Address
+                            </label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="1" id="defaultShipping" name="defaultShipping" {% if address.default_shipping %} checked {% endif %}>
+                            <label class="form-check-label" for="defaultShipping">
+                                Set as default Shipping Address
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{{ back }}" type="button" class="btn btn-lg btn-primary">Cancel</a>
+                        {% if address_id > 0 %}
+                            <button type="submit" class="btn btn-lg btn-success" id="btnUpdate" >Update</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-lg btn-success" id="btnAdd" >Add New</button>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </form>
+            {{ content_bottom }}</div>
+        {{ column_right }}</div>
+</div>
+
+<script>
+    //Address lookup
+    $(function() {
+
+        let fieldMatch = {
+            'Company': 'company',
+            'Line1': 'address',
+            'Line2': 'address',
+            'City': 'city',
+            'ProvinceName': 'area',
+            'PostalCode': 'postcode',
+            'CountryIsoNumber': 'country_id'
+        }
+
+        let inputFields = ['#addressLookup'];//,'#company', '#address']
+        let lookupTest = new TSGAddressLookup(inputFields, '', fieldMatch, '#js-fulladdress')
+
+
+        $('#btnAdd').on("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+            let form = $("#address_form");
+            if (!form[0].checkValidity() === false) {
+                var form_data = form.serializeArray();
+                let btn = $(this);
+
+                $.ajax({
+                    url: 'index.php?route=account/addressbook/create',
+                    type: 'post',
+                    data: form_data,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        let loadingText = "<i class='fa fa-spinner fa-spin '></i> Adding address...";
+                        btn.data('original-text',  btn.html());
+                        btn.html(loadingText);
+                    },
+                    complete: function() {
+                        btn.html(btn.data('original-text'));
+                    },
+                    success: function(json) {
+                        console.log(json);
+
+                        if (json['redirect']) {
+
+                            window.location.href = json['redirect'];
+
+                        } else if (json['error']) {
+                            let error_div = $('#register-error');
+                            error_div.html(json['error']['warning']);
+                            error_div.show();
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+
+
+            }
+            form.addClass('was-validated');
+        });
+
+        $('#btnUpdate').on("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+            let form = $("#address_form");
+            if (!form[0].checkValidity() === false) {
+                var form_data = form.serializeArray();
+                let btn = $(this);
+
+                $.ajax({
+                    url: 'index.php?route=account/addressbook/update',
+                    type: 'post',
+                    data: form_data,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        let loadingText = "<i class='fa fa-spinner fa-spin '></i> Updating address...";
+                        btn.data('original-text',  btn.html());
+                        btn.html(loadingText);
+                    },
+                    complete: function() {
+                        btn.html(btn.data('original-text'));
+                    },
+                    success: function(json) {
+
+                        if (json['redirect']) {
+
+                            window.location.href = json['redirect'];
+                        } else if (json['error']) {
+                            let error_div = $('#register-error');
+                            error_div.html(json['error']['warning']);
+                            error_div.show();
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+
+                //do the ajox update here to add the new address
+            }
+            form.addClass('was-validated');
+        });
+
+    });
+
+</script>
+{{ footer }}

@@ -32,7 +32,15 @@ class ControllerCheckoutCheckout extends Controller {
 		$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
 		$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
+
         $this->document->addScript('catalog/view/javascript/tsg/checkout.js');
+        $this->document->addScript('catalog/view/javascript/tsg/address-lookup.js');
+        $this->document->addScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js');
+
+        $this->document->addScript('catalog/view/javascript/jquery/step-form/multi-step.js');
+        $this->document->addStyle('catalog/view/theme/safetysignsandnotices/stylesheet/multi-step.css');
+
+        $this->document->addScript('catalog/view/javascript/jquery/validate/jquery.validate.min.js');
 
 		// Required by klarna
 		if ($this->config->get('payment_klarna_account') || $this->config->get('payment_klarna_invoice')) {
@@ -56,13 +64,23 @@ class ControllerCheckoutCheckout extends Controller {
 			'href' => $this->url->link('checkout/checkout', '', true)
 		);
 
+		$data['section_account'] = $this->load->controller('tsg/checkout_account');
+        $data['section_address'] = $this->load->controller('tsg/checkout_address');
+        $data['section_shipping'] = $this->load->controller('tsg/checkout_shipping');
+        $data['section_check'] = $this->load->controller('tsg/checkout_confirm');
+       // $data['paypal_payment'] = $this->load->controller('extension/payment/paypal');
+
+
 		$data['text_checkout_option'] = sprintf($this->language->get('text_checkout_option'), 1);
 		$data['text_checkout_account'] = sprintf($this->language->get('text_checkout_account'), 2);
 		$data['text_checkout_payment_address'] = sprintf($this->language->get('text_checkout_payment_address'), 2);
 		$data['text_checkout_shipping_address'] = sprintf($this->language->get('text_checkout_shipping_address'), 3);
 		$data['text_checkout_shipping_method'] = sprintf($this->language->get('text_checkout_shipping_method'), 4);
-		
-		if ($this->cart->hasShipping()) {
+
+
+
+
+        if ($this->cart->hasShipping()) {
 			$data['text_checkout_payment_method'] = sprintf($this->language->get('text_checkout_payment_method'), 5);
 			$data['text_checkout_confirm'] = sprintf($this->language->get('text_checkout_confirm'), 6);
 		} else {
@@ -78,6 +96,14 @@ class ControllerCheckoutCheckout extends Controller {
 		}
 
 		$data['logged'] = $this->customer->isLogged();
+
+        if($this->customer->isLogged())
+        {
+            $data['logged'] = 1;
+        }
+        else {
+            $data['logged'] = 0;
+        }
 
 		if (isset($this->session->data['account'])) {
 			$data['account'] = $this->session->data['account'];

@@ -1,0 +1,36 @@
+<!-- toggle -->
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSSAN" aria-labelledby="offcanvasSSAN">
+    <div class="offcanvas-header">
+        <div id="user-logo"><h3><i class="fas fa-user "></i>   Hello,
+        {% if logged %}
+            {{customer_name}}
+        {% else %}
+                 <a href="{{ login }}">Login</a>
+        {% endif %}
+            </h3></div>
+
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div>
+            <h4>Help & Settings</h4>
+            <ul>
+                {% if logged %}
+                    <li><a href="{{ account }}">Your Account</a></li>
+                    <li><a href="{{ logout }}">Sign Out</a></li>
+                {% else %}
+                    <li><a href="{{ login }}">Login</a></li>
+                {% endif %}
+                <li><a href="{{ contact }}">Delivery</a></li>
+                <li><a href="{{ contact }}">Contact Us</a></li>
+            </ul>
+        </div>
+        <hr>
+        <div>
+            <h4>Shop by Category</h4>
+        </div>
+    </div>
+</div>
+

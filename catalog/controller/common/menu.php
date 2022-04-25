@@ -17,17 +17,17 @@ class ControllerCommonMenu extends Controller {
 				// Level 2
 				$children_data = array();
 
-				$children = $this->model_catalog_category->getCategories($category['category_id']);
+				$children = $this->model_catalog_category->getCategories($category['category_store_id']);
 
 				foreach ($children as $child) {
 					$filter_data = array(
-						'filter_category_id'  => $child['category_id'],
+						'filter_category_id'  => $child['category_store_id'],
 						'filter_sub_category' => true
 					);
 
 					$children_data[] = array(
 						'name'  => $child['name'], // . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-						'href'  => $this->url->link('product/category', 'path=' . $category['category_id'] . '_' . $child['category_id'])
+						'href'  => $this->url->link('product/category', 'path=' . $category['category_store_id'] . '_' . $child['category_store_id'])
 					);
 				}
 
@@ -36,7 +36,7 @@ class ControllerCommonMenu extends Controller {
 					'name'     => $category['name'],
 					'children' => $children_data,
 					'column'   => $category['column'] ? $category['column'] : 1,
-					'href'     => $this->url->link('product/category', 'path=' . $category['category_id'])
+					'href'     => $this->url->link('product/category', 'path=' . $category['category_store_id'])
 				);
 			}
 		}

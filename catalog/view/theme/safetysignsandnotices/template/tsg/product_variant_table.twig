@@ -1,12 +1,12 @@
 <div class="d-none d-sm-block">
     <table id="product_variant_table"
        data-toggle="table"
-       data-classes="table table-sm table-borderless table-hover product-variant table-striped caption-top"
+       data-classes="table table-sm table-hover product-variant table-striped caption-top"
        data-filter-control="false"
        data-filter-show-clear="false"
        data-row-style="rowStyle"
 >
-    <caption>Bulk prices shown EXCLUDE any chosen options and are for base product only. Please see table below options for overall bulk pricing.</caption>
+        <caption>Bulk prices shown <strong>EXCLUDE VAT</strong> and any <strong>chosen options</strong> and are for base product only. Please see table below options for overall bulk pricing.</caption>
 
     <tbody>
    {#  <?php $hidestyle = $showBulkQtyColumn ? 'bulk-column-show' : 'bulk-column-hide'; ?> #}
@@ -31,7 +31,8 @@
                 (ex VAT
                 <?php echo number_format($discount_value / $j_tax_multiplier,2); } ?>
                 )<span>#}
-            {{ discount_value }}
+            {{ discount_value }}<br>
+            <span class="tabletax">(inc VAT {{ discount_value }})</span>
         </td>
         {% endfor %}
     </tr>

@@ -29,7 +29,6 @@
       <form action="{{ action }}" method="post" enctype="multipart/form-data">
         <div class="table-responsive">
           <table class="table table-bordered">
-            <caption>* - Image may not always show the true orientation of the sign</caption>
             <thead>
               <tr>
                 <td class="text-center col-1">{{ column_image }}</td>
@@ -63,27 +62,37 @@
                 {% if product.recurring %} <br />
                 <span class="label label-info">{{ text_recurring_item }}</span> <small>{{ product.recurring }}</small> {% endif %}</td>
 
-              <td class="text-start col-2">
-                <div class="input-group">
-                  <input type="number" class="form-control" name="quantity[{{ product.cart_id }}]" value="{{ product.quantity }}" size="1" min="1" class="form-control" >
-                  <button type="submit" data-toggle="tooltip" title="{{ button_update }}" class="btn btn-success"><i class="fa fa-refresh"></i></button>
-                  <button type="button" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger" onclick="cart.remove('{{ product.cart_id }}');"><i class="fa fa-times-circle"></i></button>
+
+              <td class="text-center text-md-start col-2">
+                <div class="row">
+                  <div class="col-12 col-md-12 col-lg-6">
+                    <input type="number" class="form-control" name="quantity[{{ product.cart_id }}]"
+                           value="{{ product.quantity }}" min="1">
+                  </div>
+                  <div class="col-12 col-md-12 col-lg-6">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                      <button type="submit" data-toggle="tooltip" title="{{ button_update }}"
+                              class="btn btn-success btn-sm"><i class="fas fa-sync-alt"></i></button>
+                      <button type="button" data-toggle="tooltip" title="{{ button_remove }}"
+                              class="btn btn-danger btn-sm" onclick="cart.remove('{{ product.cart_id }}');"><i
+                                class="fa fa-times-circle"></i></button>
+                    </div>
+                  </div>
                 </div>
               </td>
               <td class="text-end col-1">{{ product.pre_tax }}</td>
               <td class="text-end col-1">{{ product.total }}</td>
             </tr>
             {% endfor %}
-
-              </tbody>
+            </tbody>
 
           </table>
         </div>
       </form>
 
-      <div class="row pull-right">
-        <div class="col-sm-4 col-sm-offset-8">
-          <table class="table table-bordered">
+      <div class="row float-end" id="cartButtons">
+        <div class="col-12 ">
+          <table class="table table-bordered table-responsive"
             {% for total in totals %}
             <tr>
               <td class="text-right"><strong>{{ total.title }}:</strong></td>
@@ -92,11 +101,12 @@
             {% endfor %}
           </table>
         </div>
+        <div class="buttons">
+          <div class="float-end"><a href="{{ checkout }}" class="next action-button" role="button">Checkout</a></div>
+          <div class="float-start"><p>* Image shown may not always represent the finished sign</p></div>
+        </div>
       </div>
-      <div class="buttons clearfix">
-        <div class="pull-left"><a href="{{ continue }}" class="btn btn-default">{{ button_shopping }}</a></div>
-        <div class="pull-right"><a href="{{ checkout }}" class="btn btn-primary">{{ button_checkout }}</a></div>
-      </div>
+
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>

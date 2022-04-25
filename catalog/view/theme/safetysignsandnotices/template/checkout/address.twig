@@ -1,0 +1,284 @@
+<form id="checkout-address" method="post" data-action-url="tsg/checkout_address/save" data-action-function="getShipping">
+<div class="row">
+
+    <div class="col-12 col-lg-6 gy-2 mb-2">
+        <div class="card">
+            <div class="card-header p-0">
+                <h3>Billing Address</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    {% if addressList %}
+                        <button class="btn btn-primary col-12" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBillingAddress" aria-expanded="false" aria-controls="collapseBillingAddress">
+                            Not the address you wanted? Choose from your address book
+                        </button>
+                        <div class="collapse" id="collapseBillingAddress">
+                            <div class="card card-body" id="billingList">
+                                {% for addressItem in addressList %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="addressListItem" id="addressListItem-{{ addressItem.address_id }}" data-address-list-id="{{ addressItem.address_id }}"
+                                            {% if addressItem.address_id == default_billing['address_id'] %} checked {% endif %}>
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        <strong>{{ addressItem.fullname }}</strong>, {{addressItem.address_1|replace({"\r": ","})|raw }}, <strong>{{ addressItem.postcode }}</strong>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                <button class="btn action-button " type="button" id="jsBillingListBtn">Use this address</button>
+                            </div>
+                        </div>
+                    {% else %}
+                    <div class="form-check form-switch text-start">
+                        <input class="form-check-input" type="checkbox" value="" id="checkBillingSame" >
+                        <label class="form-check-label" for="checkBillingSame">
+                            Same as Contact details
+                        </label>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row g-2">
+                    <div class="form-floating col-12 col-sm-6 col-md-6">
+                        <input type="text" class="form-control" id="billingFullname" placeholder="Fullname" name="billingFullname" required value="{{ default_billing['fullname'] }}">
+                        <label for="billingFullname">Fullname (required)</label>
+                    </div>
+                    <div class="form-floating col-12 col-sm-6 col-md-6">
+                        <input type="tel" class="form-control" id="billingPhone" placeholder="0123 345 6789" name="billingPhone"  required value="{{ default_billing['telephone'] }}">
+                        <label for="billingPhone">Contact Number (required)</label>
+                    </div>
+                    <div class="form-floating col-12">
+                        <input type="email" class="form-control" id="billingEmail" name="billingEmail" placeholder="someone@example.com" required value="{{ default_billing['email'] }}">
+                        <label for="billingEmail">Invoice Email (required)</label>
+                    </div>
+                    {% if default_billing %}
+                        {% set classSearch = 'd-none' %}
+                        {% set classFull = '' %}
+                    {% else %}
+                        {% set classSearch = '' %}
+                        {% set classFull = 'd-none' %}
+                    {% endif %}
+                    <div class="form-floating col-12 {{ classSearch }}">
+                        <input type="text" class="form-control" id="addressLookupBilling"  placeholder="Start typing to find your" required>
+                        <label for="addressLookupBilling">Start typing to find your address</label>
+                    </div>
+                    <div id="js-fulladdress-billing" class="col-12 {{ classFull }}" >
+                        <div class="row g-2">
+                            <div class="form-floating col-12">
+                                <input type="text" class="form-control" id="billingCompany" name="billingCompany" placeholder="Company" value="{{ default_billing['company'] }}">
+                                <label for="billingCompany">Company (optional)</label>
+                            </div>
+                            <div class="form-floating col-12">
+                                <textarea class="form-control" autocomplete="street-address" placeholder="Address" id="billingAddress" name="billingAddress" style="height: 100px" required>{{ default_billing['address_1'] }}</textarea>
+                                <label for="billingAddress">Address - just start typing</label>
+                            </div>
+                            <div class="form-floating col-6">
+                                <input type="text" class="form-control" id="billingCity" name="billingCity" placeholder="City" required value="{{ default_billing['city'] }}">
+                                <label for="billingCity">City (required)</label>
+                            </div>
+                            <div class="form-floating col-6">
+                                <input type="text" class="form-control" id="billingArea" name="billingArea" placeholder="Area e.g. Derbyshire" required value="{{ default_billing['area'] }}">
+                                <label for="billingCity">Area e.g. Derbyshire (required)</label>
+                            </div>
+                            <div class="form-floating col-6">
+                                <input type="text" class="form-control" id="billingPostcode" name="billingPostcode" placeholder="AB1 2BC" required value="{{ default_billing['postcode'] }}">
+                                <label for="billingPostcode">Postcode (required)</label>
+                            </div>
+                            <div class="form-floating col-6 col-md-6">
+                                <div class="form-floating ">
+                                    <select class="form-select" id="billing_country_id" name="billing_country_id" aria-label="billing country">
+                                        {% for country in countries %}
+                                            <option {% if default_billing['country_id'] == country.iso_id %} selected {% endif %} value="{{ country.iso_id }}">{{ country.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="floatingSelect">Country</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if logged %}
+                        <div class="form-check col-12">
+                            <input class="form-check-input align-baseline" type="checkbox" value="" id="billingSaveaddress" name="billingSaveaddress">
+                            <label class="form-check-label" for="billingSaveaddress">
+                                Save to address book
+                            </label>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6 gy-2">
+        <div class="card">
+            <div class="card-header p-0">
+                <h3>Delivery Address</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    {% if addressList %}
+                        <div class="row">
+                            <div class="col-3">
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" value="1" id="checkShippingSame" name="checkShippingSame">
+                                <label class="form-check-label" for="checkShippingSame">
+                                    Same as billing
+                                </label>
+                            </div>
+                        </div>
+                            <div class="col-9">
+                            <button class="btn btn-primary col-12" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShippingAddress" aria-expanded="false" aria-controls="collapseShippingAddress">
+                                Not the address you wanted? Choose from your address book
+                            </button>
+                            <div class="collapse" id="collapseShippingAddress">
+                                <div class="card card-body" id="shippingList">
+                                    {% for addressItem in addressList %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="addressListItem" id="addressShippingListItem-{{ addressItem.address_id }}" data-address-list-id="{{ addressItem.address_id }}"
+                                                    {% if addressItem.address_id == default_shipping['address_id'] %} checked {% endif %}>
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                <strong>{{ addressItem.fullname }}</strong>, {{addressItem.address_1|replace({"\r": ","})|raw }}, <strong>{{ addressItem.postcode }}</strong>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                    <button class="btn action-button " type="button" id="jsShippingListBtn">Use this address</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        {% set delivery_class = '' %}
+                    {% else %}
+                        <div class="form-check form-switch text-start">
+                            <input class="form-check-input" type="checkbox" value="1" id="checkShippingSame" name="checkShippingSame" checked>
+                            <label class="form-check-label" for="checkShippingSame">
+                                Same as Invoice address
+                            </label>
+                        </div>
+                        {% set delivery_show = 'style="display: none;"' %}
+                    {% endif %}
+                </div>
+                {% if default_shipping %}
+                    {% set isrequired = 'required' %}
+                {% else %}
+                    {% set isrequired = '' %}
+                {% endif %}
+                <div class="row g-2 " id="shipping_fieldset" {{ delivery_show }}>
+                    <div class="form-floating col-12 col-sm-6 col-md-6">
+                        <input type="text" class="form-control" id="shippingFullname" name="shippingFullname" placeholder="Fullname"
+                               {{ isrequired }} value="{{ default_shipping['fullname'] }}">
+                        <label for="shippingFullname">Fullname (required)</label>
+                    </div>
+                    <div class="form-floating col-12 col-sm-6 col-md-6">
+                        <input type="tel" class="form-control" id="shippingPhone" name="shippingPhone" placeholder="0123 345 6789"  {{ isrequired }} value="{{ default_shipping['telephone'] }}">
+                        <label for="shippingPhone">Contact Number (required)</label>
+                    </div>
+                    <div class="form-floating col-12">
+                        <input type="email" class="form-control" id="shippingEmail" name="shippingEmail" placeholder="someone@example.com"  {{ isrequired }} value="{{ default_shipping['email'] }}">
+                        <label for="shippingEmail">Delivery Email Contact (required)</label>
+                    </div>
+                    {% if default_shipping %}
+                        {% set classSearch = 'd-none' %}
+                        {% set classFull = '' %}
+                    {% else %}
+                        {% set classSearch = '' %}
+                        {% set classFull = 'd-none' %}
+                    {% endif %}
+                    <div class="form-floating col-12 {{ classSearch }}">
+                        <input type="text" class="form-control" id="addressLookupShipping"  placeholder="Start typing to find your" {{ isrequired }}>
+                        <label for="addressLookupShipping">Start typing to find your address</label>
+                    </div>
+                    <div id="js-fulladdress-shipping" class="col-12 {{ classFull }}" >
+                        <div class="row g-2">
+                            <div class="form-floating col-12">
+                                <input type="text" class="form-control" id="shippingCompany" name="shippingCompany" placeholder="Company" value="{{ default_shipping['company'] }}">
+                                <label for="shippingCompany">Company (optional)</label>
+                            </div>
+                            <div class="form-floating col-12">
+                                <textarea class="form-control" placeholder="Address" id="shippingAddress" name="shippingAddress" style="height: 100px"  {{ isrequired }}>{{ default_shipping['address_1'] }}</textarea>
+                                <label for="shippingAddress">Address - just start typing</label>
+                            </div>
+                            <div class="form-floating col-12 col-md-6">
+                                <input type="text" class="form-control" id="shippingCity" name="shippingCity" placeholder="CityC"  {{ isrequired }} value="{{ default_shipping['city'] }}">
+                                <label for="shippingCity">City (required)</label>
+                            </div>
+                            <div class="form-floating col-12 col-md-6">
+                                <input type="text" class="form-control" id="shippingArea" name="shippingArea" placeholder="AB1 2BC"  {{ isrequired }} value="{{ default_shipping['area'] }}">
+                                <label for="shippingArea">Area e.g. Derbyshire (required)</label>
+                            </div>
+                            <div class="form-floating col-12 col-md-6">
+                                <input type="text" class="form-control" id="shippingPostcode" name="shippingPostcode" placeholder="AB1 2BC"  {{ isrequired }} value="{{ default_shipping['postcode'] }}">
+                                <label for="shippingPostcode">Postcode (required)</label>
+                            </div>
+                            <div class="form-floating col-12 col-md-6">
+                                <div class="form-floating ">
+                                    <select class="form-select" id="shipping_country_id" name="shipping_country_id" aria-label="shipping country">
+                                        {% for country in countries %}
+                                            <option {% if default_shipping['country_id'] == country.iso_id %} selected {% endif %} value="{{ country.iso_id }}">{{ country.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="floatingSelect">Country</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if logged %}
+                    <div class="form-check col-12">
+                        <input class="form-check-input align-baseline" type="checkbox" value="" id="shippingSaveaddress" name="shippingSaveaddress">
+                        <label class="form-check-label" for="shippingSaveaddress">
+                            Save to address book
+                        </label>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    <button type="button" class="action-button previous previous_button float-start">Back</button>
+    <button type="button" class="next action-button float-end" id="checkout-address-btn">Continue</button>
+</form>
+
+<script type="text/javascript">
+    /* <![CDATA[ */
+    let customer_firstname = '{{ customer_firstname }}';
+    let customer_lastname = '{{ customer_lastname }}';
+    let customer_email = '{{ customer_email }}';
+    let customer_telephone = '{{ customer_telephone }}';
+    let address_book = {{ addressList|json_encode }}
+
+    $(function () {
+        $('#jsBillingListBtn').on('click', function(){
+
+            let add_id = $('input[name="addressListItem"]:checked').data('addressListId');
+            let address = address_book[add_id];
+
+            $('#billingFullname').val(address['fullname']);
+            $('#billingPhone').val(address['telephone']);
+            $('#billingEmail').val(address['email']);
+            $('#billingCompany').val(address['company']);
+            $('#billingAddress').val(address['address_1']);
+            $('#billingCity').val(address['city']);
+            $('#billingArea').val(address['area']);
+            $('#billingPostcode').val(address['postcode']);
+            $('#billing_country_id').val(address['country_id']);
+            $('#collapseBillingAddress').collapse("hide");
+        })
+
+        $('#jsShippingListBtn').on('click', function(){
+
+            let add_id = $('input[name="addressListItem"]:checked').data('addressListId');
+            let address = address_book[add_id];
+
+            $('#shippingFullname').val(address['fullname']);
+            $('#shippingPhone').val(address['telephone']);
+            $('#shippingEmail').val(address['email']);
+            $('#shippingCompany').val(address['company']);
+            $('#shippingAddress').val(address['address_1']);
+            $('#shippingCity').val(address['city']);
+            $('#shippingArea').val(address['area']);
+            $('#shippingPostcode').val(address['postcode']);
+            $('#shipping_country_id').val(address['country_id']);
+            $('#collapseShippingAddress').collapse("hide");
+        })
+    })
+
+    /* ]]> */
+</script>

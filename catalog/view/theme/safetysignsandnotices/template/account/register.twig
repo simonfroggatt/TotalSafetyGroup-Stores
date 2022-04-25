@@ -1,0 +1,160 @@
+{{ header }}
+<div id="account-register" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+  {% endif %}
+  <div class="row">
+    <div id="content">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      <p>{{ text_account_already }}</p>
+
+<main class="col-12 col-lg-6">
+	<form id="checkout-account" method="post" >
+		<div class="row g-2">
+			<div class="form-floating col-12 col-lg-6">
+				<input type="text" autocomplete="name" class="form-control" id="accountFirstname"
+					   name="accountFirstname" placeholder="Firstname" required>
+				<label for="accountFirstname">Firstname (required)</label>
+			</div>
+			<div class="form-floating col-12 col-lg-6">
+				<input type="text" autocomplete="name" class="form-control" id="accountLastname"
+					   name="accountLastname" placeholder="Lastname" required>
+				<label for="accountLastname">Lastname (required)</label>
+			</div>
+			<div class="form-floating col-12">
+				<input type="email" autocomplete="email" class="form-control" id="accountEmail"
+					   name="accountEmail" placeholder="someone@example.com" required>
+				<label for="accountEmail">Email (required)</label>
+			</div>
+			<div class="form-floating col-12">
+				<input type="tel" class="form-control" id="accountPhone" placeholder="0123 345 6789"
+					   name="accountPhone" required>
+				<label for="accountPhone">Contact Number (required)</label>
+			</div>
+			<div class="form-floating col-6">
+				<input type="password" class="form-control tsg-validate" id="input-password-account" name="password"
+					   placeholder="password" required oninput="checkInputPassword(this.value)">
+				<label for="input-password">Password (required)</label>
+				<div id="password-valid" class="valid-feedback">
+					Looks good!
+				</div>
+				<div id="password-invalid" class="invalid-feedback">
+					Not strong enough yet...
+				</div>
+			</div>
+			<div class="form-floating col-6">
+				<input type="password" class="form-control tsg-validate" id="input-confirm-account" name="confirm"
+					   placeholder="confirm password" required oninput="checkPasswordsMatch()">
+				<label for="input-confirm">Confirm Password (required)</label>
+				<div class="valid-feedback" id="CheckPasswordMatch"></div>
+			</div>
+			<div id="passwordHelpBlock" class="form-text">
+				Your password must be at least 5 characters, contain at least 1 uppercase letter, 1 lowercase letter, and 1 number. Special characters are allowed.
+			</div>
+			<div class="alert alert-danger col-12" role="alert" aria-hidden="true" id="register-error" style="display:none;"></div>
+			<div class="form-check col-8">
+				<input class="form-check-input" type="checkbox" value="1" id="agree" name="agree" required>
+				<label class="form-check-label" for="agree">
+					{{ text_agree }}
+				</label>
+			</div>
+			<div class="col-4 text-end">
+				<button type="submit" id="checkout-register" class="btn btn-success btn-lg" >Register</button>
+			</div>
+
+		</div>
+		<input type="hidden" id="country_id" name="country_id" value="222">
+
+	</form>
+</main>
+
+      </div>
+    </div>
+</div>
+
+<script>
+	$('#checkout-register').on("click", function(event) {
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		let register_form = $(this).parents('form').attr('id');
+		let form = $("#"+register_form);
+		let skip_elements = document.getElementsByClassName("tsg-validate");
+		let passwords_valid = register_password_check();
+
+		if ( (form[0].checkValidity() === false) || (passwords_valid === false) ) {
+			let form_elements = form[0];
+
+			for (var i = 0; i < form_elements.length; i++) {
+				let parentDiv = form_elements[i].parentElement;
+				parentDiv.classList.add('was-validated');
+			}
+			for (var i = 0; i < skip_elements.length; i++) {
+				let parentDiv = skip_elements[i].parentElement;
+				parentDiv.classList.remove('was-validated');
+			}
+		}
+		else {
+			var form_data = form.serializeArray();
+			let btn = $(this);
+
+
+			$.ajax({
+				url: 'index.php?route=account/register/create',
+				type: 'post',
+				data: form_data,
+				dataType: 'json',
+				beforeSend: function() {
+					let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
+					btn.data('original-text',  btn.html());
+					btn.html(loadingText);
+				},
+				complete: function() {
+					btn.html(btn.data('original-text'));
+				},
+				success: function(json) {
+
+					if (json['redirect']) {
+
+						location = json['redirect'];
+						window.location.assign(location)
+					} else if (json['error']) {
+						let error_div = $('#register-error');
+						error_div.html(json['error']['warning']);
+						error_div.show();
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+		form.addClass('was-validated');
+		return true
+
+	});
+
+	function register_password_check(){
+		var password = $("#input-password-account").val();
+		var confirmPassword = $("#input-confirm-account").val();
+
+		let isValid = checkPasswordValid(password);
+		let isequal = (password == confirmPassword);
+
+		if(isequal === false){
+			var error = "An invalid input message.";
+			let tmp = document.getElementById("input-confirm-account");
+			tmp.setCustomValidity(error);
+		}
+		return isValid && isequal;
+	}
+</script>
+
+
+{{ footer }} 

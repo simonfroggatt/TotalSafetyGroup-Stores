@@ -18,6 +18,7 @@ class ControllerProductSearch extends Controller {
 			$search = '';
 		}
 
+
 		if (isset($this->request->get['tag'])) {
 			$tag = $this->request->get['tag'];
 		} elseif (isset($this->request->get['search'])) {
@@ -128,6 +129,10 @@ class ControllerProductSearch extends Controller {
 			$url .= '&limit=' . $this->request->get['limit'];
 		}
 
+        if (isset($this->request->get['symbol_id'])) {
+            $url .= '&symbol_id=' . $this->request->get['symbol_id'];
+        }
+
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
 			'href' => $this->url->link('product/search', $url)
@@ -196,12 +201,13 @@ class ControllerProductSearch extends Controller {
             );
 
             if (isset($this->request->get['symbol_id'])){
-                $product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+                $product_total = $this->model_catalog_product->getTotalProductsSymbols($filter_data);
                 $results = $this->model_catalog_product->getProductsBySymbol($filter_data);
             }
             else{
-                $product_total = $this->model_catalog_product->getTotalProducts($filter_data);
                 $results = $this->model_catalog_product->getProducts($filter_data);
+                $product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+
             }
 
 
@@ -218,13 +224,15 @@ class ControllerProductSearch extends Controller {
 					$price = false;
 				}
 
-				if (!is_null($result['special']) && (float)$result['special'] >= 0) {
+				/*if (!is_null($result['special']) && (float)$result['special'] >= 0) {
 					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
 					$tax_price = (float)$result['special'];
 				} else {
 					$special = false;
 					$tax_price = (float)$result['price'];
-				}
+				}*/
+                $special = false;
+                $tax_price = (float)$result['price'];
 	
 				if ($this->config->get('config_tax')) {
 					$tax = $this->currency->format($tax_price, $this->session->data['currency']);
@@ -232,11 +240,12 @@ class ControllerProductSearch extends Controller {
 					$tax = false;
 				}
 
-				if ($this->config->get('config_review_status')) {
+				/*if ($this->config->get('config_review_status')) {
 					$rating = (int)$result['rating'];
 				} else {
 					$rating = false;
-				}
+				}*/
+                $rating = false;
 
 				$data['products'][] = array(
 					'product_id'  => $result['product_id'],
@@ -248,7 +257,7 @@ class ControllerProductSearch extends Controller {
 					'special'     => $special,
 					'tax'         => $tax,
 					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
-					'rating'      => $result['rating'],
+					'rating'      => false, //$result['rating'],
 					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'] . $url)
 				);
 			}
@@ -277,6 +286,10 @@ class ControllerProductSearch extends Controller {
 
 			if (isset($this->request->get['limit'])) {
 				$url .= '&limit=' . $this->request->get['limit'];
+			}
+
+			if (isset($this->request->get['symbol_id'])) {
+                        $url .= '&symbol_id=' . $this->request->get['symbol_id'];
 			}
 
 			$data['sorts'] = array();
@@ -366,6 +379,9 @@ class ControllerProductSearch extends Controller {
 			if (isset($this->request->get['order'])) {
 				$url .= '&order=' . $this->request->get['order'];
 			}
+			if (isset($this->request->get['symbol_id'])) {
+				$url .= '&symbol_id=' . $this->request->get['symbol_id'];
+			}
 
 			$data['limits'] = array();
 
@@ -420,6 +436,10 @@ class ControllerProductSearch extends Controller {
 
 			if (isset($this->request->get['limit'])) {
 				$url .= '&limit=' . $this->request->get['limit'];
+			}
+
+			if (isset($this->request->get['symbol_id'])) {
+				$url .= '&symbol_id=' . $this->request->get['symbol_id'];
 			}
 
 			$pagination = new Pagination();

@@ -13,9 +13,10 @@ class ControllerExtensionModuleHomepageCategory extends Controller {
 
         foreach ($categories as $category) {
             $data['categories'][] = array(
-                'category_id' => $category['category_id'],
+                'category_id' => $category['category_store_id'],
                 'name'        => $category['name'],
-                'href'        => $this->url->link('product/category', 'path=' . $category['category_id']),
+                'title'        => $category['title'],
+                'href'        => $this->url->link('product/category', 'path=' . $category['category_store_id']),
                 'image' =>  'image/'.$category['image']
             );
         }

@@ -7,6 +7,13 @@ class ModelToolImage extends Model {
 
 		$extension = pathinfo($filename, PATHINFO_EXTENSION);
 
+        //SSAN - cut in here
+        if($extension == 'svg')
+        {
+            $image_new = 'image/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')). '.' . $extension;
+            return $image_new;
+        }
+
 		$image_old = $filename;
 		$image_new = 'cache/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . (int)$width . 'x' . (int)$height . '.' . $extension;
 

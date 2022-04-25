@@ -1,0 +1,65 @@
+
+
+
+{% if products|length > 0 %}
+<h3>Products</h3>
+<div class="row row-cols-2 row-cols-md-6 row-cols-lg-6 g-2 text-center seach_result_section">
+        {% for product in products %}
+            <div class="col ">
+                <div class="card h-100">
+                    <a href="index.php?route=product/product&product_id={{ product.path }}"><img src="{{ product.image }}" class="img-responsive mt-2"
+                                                                                                 alt="{{ product.title }}"></a>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <a href="index.php?route=product/product&product_id={{ product.path }}">
+                                {{ product.title }}</a></p>
+                    </div>
+                </div>
+
+
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if category|length > 0 %}
+    <h3>Categories</h3>
+    <div class="row row-cols-2 row-cols-md-6 row-cols-lg-6 g-2 text-center seach_result_section">
+        {% for cat in category %}
+            <div class="col ">
+                <div class="card h-100">
+                    <a href="index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-responsive mt-2"
+                                                                                               alt="{{ cat.title }}" height="75" width="75"></a>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <a href="index.php?route=product/category&path={{ cat.path }}">{{ cat.title }}</a>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if symbols|length > 0 %}
+    <h3>Symbols</h3>
+    <div class="row row-cols-2 row-cols-md-6 row-cols-lg-6 g-2 text-center seach_result_section">
+        {% for symbol_info in symbols %}
+            <div class="col ">
+                <div class="card h-100 symbols">
+                    <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ symbol_info.image }}" class="card-img-top mt-2"
+                                                                                                 alt="{{ symbol_info.referent }}" height="50px"></a>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}">
+                                <b>{{ symbol_info.refenceno }}</b>{{ symbol_info.referent }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

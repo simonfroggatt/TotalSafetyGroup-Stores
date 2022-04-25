@@ -5,11 +5,11 @@
                 <li class="mb-1">
                 <button class="btn btn-toggle align-items-center rounded collapsed " data-bs-toggle="collapse"
                         data-bs-target="#collapse-{{ category.category_id }}"
-                        aria-expanded="{{ category.category_id == category_id ? 'true' : 'false' }}">
+                        aria-expanded="{{ category.category_id == category_store_id ? 'true' : 'false' }}">
                     {{ category.name }}
                 </button>
                 {% for child in category.children %}
-                    <div class="collapse {{ category.category_id == category_id ? 'show' }}"
+                    <div class="collapse {{ category.category_id == category_store_id ? 'show' }}"
                          id="collapse-{{ category.category_id }}">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a href="{{ child.href }}"
@@ -21,7 +21,7 @@
                 </li>
             {% else %}
             <li class="mb-1">
-                <a class="btn btn-toggle align-items-center rounded" href="{{ category.href }}" role="button" aria-expanded="{{ category.category_id == category_id ? 'true' : 'false' }}">{{ category.name }}</a>
+                <a class="btn btn-toggle align-items-center rounded" href="{{ category.href }}" role="button" aria-expanded="{{ category.category_id == category_store_id ? 'true' : 'false' }}">{{ category.name }}</a>
             </li>
             {% endif %}
         {% endfor %}

@@ -1,0 +1,133 @@
+
+<div class="row pb-2">
+        <div class="col-6 checkout-account-tabs border-end">
+            <h3>New Customer?</h3>
+            <ul class="nav nav-tabs" id="account-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="register-tab" data-bs-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="true">Register Account</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link " id="guest-tab" data-bs-toggle="tab" href="#guest" role="tab" aria-controls="details" aria-selected="true">Guest Checkout</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="checkout-account-content ">
+                <div class="tab-pane fade show active" id="register" role="tabpanel" aria-labelledby="register-tab-tab">
+                    <form id="checkout-account" method="post" >
+                    <div class="row g-2">
+                        <div class="form-floating col-12 col-lg-6">
+                            <input type="text" autocomplete="name" class="form-control" id="accountFirstname"
+                                   name="accountFirstname" placeholder="Firstname" required>
+                            <label for="accountFirstname">Firstname (required)</label>
+                        </div>
+                        <div class="form-floating col-12 col-lg-6">
+                            <input type="text" autocomplete="name" class="form-control" id="accountLastname"
+                                   name="accountLastname" placeholder="Lastname" required>
+                            <label for="accountLastname">Lastname (required)</label>
+                        </div>
+                        <div class="form-floating col-12">
+                            <input type="email" autocomplete="email" class="form-control" id="accountEmail"
+                                   name="accountEmail" placeholder="someone@example.com" required>
+                            <label for="accountEmail">Email (required)</label>
+                        </div>
+                        <div class="form-floating col-12">
+                            <input type="tel" class="form-control" id="accountPhone" placeholder="0123 345 6789"
+                                   name="accountPhone" required>
+                            <label for="accountPhone">Contact Number (required)</label>
+                        </div>
+                        <div class="form-floating col-6">
+                            <input type="password" class="form-control tsg-validate" id="input-password-account" name="password"
+                                   placeholder="password" required oninput="checkInputPassword(this.value)">
+                            <label for="input-password">Password (required)</label>
+                            <div id="password-valid" class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div id="password-invalid" class="invalid-feedback">
+                                Not strong enough yet...
+                            </div>
+                        </div>
+                        <div class="form-floating col-6">
+                            <input type="password" class="form-control tsg-validate" id="input-confirm-account" name="confirm"
+                                   placeholder="confirm password" required oninput="checkPasswordsMatch()">
+                            <label for="input-confirm">Confirm Password (required)</label>
+                            <div class="valid-feedback" id="CheckPasswordMatch"></div>
+                        </div>
+                        <div id="passwordHelpBlock" class="form-text">
+                            Your password must be at least 5 characters, contain at least 1 uppercase letter, 1 lowercase letter, and 1 number. Special characters are allowed.
+                        </div>
+                        <div class="alert alert-danger col-12" role="alert" aria-hidden="true" id="register-error" style="display:none;"></div>
+                        <div class="form-check col-8">
+                            <input class="form-check-input" type="checkbox" value="1" id="agree" name="agree" required>
+                            <label class="form-check-label" for="agree">
+                                {{ text_agree }}
+                            </label>
+                        </div>
+                        <div class="col-4 text-end">
+                            <button type="submit" id="checkout-register" class="action-button" >Register</button>
+                        </div>
+
+                    </div>
+                        <input type="hidden" id="country_id" name="country_id" value="222">
+
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="guest" role="tabpanel" aria-labelledby="bulk-tab">
+                    <form id="checkout-guest-account" method="post" data-action-url="tsg/checkout_account/saveguest">
+                        <div class="row g-2 mb-2">
+                        <div class="form-floating col-12">
+                            <input type="text" autocomplete="name" class="form-control" id="guestFullname"
+                                   name="guestFullname"
+                                   placeholder="Fullname" required>
+                            <label for="accountForename">Fullname (required)</label>
+                        </div>
+                        <div class="form-floating col-12">
+                            <input type="email" autocomplete="email" class="form-control" id="guestEmail"
+                                   name="guestEmail"
+                                   placeholder="someone@example.com" required>
+                            <label for="accountEmail">Email (required)</label>
+                        </div>
+                        <div class="form-floating col-12">
+                            <input type="tel" class="form-control" id="guestPhone"
+                                   name="guestPhone" placeholder="0123 345 6789" required>
+                            <label for="accountPhone">Contact Number (required)</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="next action-button float-end" id="checkout-guest">Continue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <div class="col-6 checkout-account-tabs">
+        <h3>Already a Customer?</h3>
+        <ul class="nav nav-tabs" id="account-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="signin-tab" data-bs-toggle="tab" href="#signin" role="tab" aria-controls="register" aria-selected="true">Sign in</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="signin-account-content">
+            <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
+
+                <form id="form-checkout-login" method="post" >
+                    <div class="row g-2 mb-2">
+                        <div class="form-floating ">
+                            <input type="email" class="form-control" id="input-email" placeholder="name@example.com"
+                                   name="email" required>
+                            <label for="input-email">Email address</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="input-password" placeholder="Password"
+                                   name="password" required>
+                            <label for="input-password">Password</label>
+                        </div>
+                        <div class="checkbox">
+                            <p><a href="{{ forgotten }}">Forgot</a> your password?</p>
+                        </div>
+                        <div class="alert alert-danger" role="alert" aria-hidden="true" id="login-error" style="display:none;"></div>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary mb-2" id="checkout-login" data-loading-text="Checking details..." type="submit">Sign in</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+

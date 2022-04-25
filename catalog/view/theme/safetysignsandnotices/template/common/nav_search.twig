@@ -1,0 +1,104 @@
+<form class="w-100 me-3" id="nav-search" method="post" action="/index.php?route=product/search">
+    <div class="input-group input-group-lg mb-0">
+        <div class="input-group-text p-0">
+            <select class="form-select form-select-lg shadow-none bg-light border-0" id="topnav_search_type" name="topnav_search_type">
+                <option value="all">All</option>
+                <option value="products">Products</option>
+                <option>Symbols</option>
+                <option>Categories</option>
+            </select>
+        </div>
+         <input type="search" class="form-control input-lg" placeholder="" aria-label="Search" id="topnav_search_field" name="topnav_search_field">
+         <button class="btn btn-search" type="submit" id="button-search"><i class="fas fa-search" ></i></button>
+    </div>
+</form>
+
+
+
+<script>
+
+   //search_results_container
+   $(document).ready(function(){
+       $('#topnav_search_field').focus(function(){
+           $('.search_results_container').fadeIn(100);
+       }).focusout(function(){
+           $('.search_results_container').fadeOut(1000);
+       });
+
+       $('#topnav_search_field_2').keyup(function() {
+           let dInput = this.value
+           if(dInput.length > 2)
+           {
+                //route=tsg/dynamic_search&q=smoking&type=product
+               $.ajax({
+                   url: 'index.php?route=tsg/dynamic_search',
+                   type: 'get',
+                   data: { q: dInput, type: "all" },
+                   dataType: 'html',
+
+                   success: function(data) {
+                       console.log(data)
+                       $('#search_results_grid').html(data);
+
+                   }
+               });
+           }
+
+       })
+
+       $.fn.delayKeyup = function(callback, ms){
+           var timer = 0;
+           $(this).keyup(function(){
+               clearTimeout (timer);
+               timer = setTimeout(callback, ms);
+           });
+           return $(this);
+       };
+
+       $('#topnav_search_field').delayKeyup(function(){
+           let dInput = $('#topnav_search_field').val();
+           if(dInput.length > 2)
+           {
+               //route=tsg/dynamic_search&q=smoking&type=product
+               $.ajax({
+                   url: 'index.php?route=tsg/dynamic_search',
+                   type: 'get',
+                   data: { q: dInput, type: "all" },
+                   dataType: 'html',
+
+                   success: function(data) {
+                       console.log(data)
+                       $('#search_results_grid').html(data);
+
+                   }
+               });
+           }
+
+           }, 500);
+
+       $( "#nav-search" ).submit(function( event ) {
+           var url = $('base').attr('href') + 'index.php?route=product/search';
+
+           var value = $('#topnav_search_field').val();
+
+           if (value) {
+               url += '&search=' + encodeURIComponent(value);
+           }
+
+           location = url;
+           event.preventDefault();
+       });
+
+
+
+       /*
+
+        */
+
+
+   });
+
+
+
+
+</script>

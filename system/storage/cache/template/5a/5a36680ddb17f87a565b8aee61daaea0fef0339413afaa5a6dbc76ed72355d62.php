@@ -49,7 +49,7 @@ class __TwigTemplate_40dcaaca91f5d3df5cc39838c82a593909907aaa65df40183cc6b852ead
 <script type=\"text/javascript\" src=\"view/javascript/jquery/jquery-2.1.1.min.js\"></script>
 <link href=\"view/javascript/bootstrap/css/bootstrap.css\" rel=\"stylesheet\" media=\"screen\" />
 <script src=\"view/javascript/bootstrap/js/bootstrap.js\" type=\"text/javascript\"></script>
-<link href=\"view/javascript/font-awesome/css/font-awesome.min.css\" type=\"text/css\" rel=\"stylesheet\" />
+<link href=\"view/javascript/font-awesome-4/css/font-awesome-4.min.css\" type=\"text/css\" rel=\"stylesheet\" />
 <link href=\"//fonts.googleapis.com/css?family=Open+Sans:400,400i,300,700\" rel=\"stylesheet\" type=\"text/css\" />
 <link rel=\"stylesheet\" type=\"text/css\" href=\"view/stylesheet/stylesheet.css\" />
 </head>

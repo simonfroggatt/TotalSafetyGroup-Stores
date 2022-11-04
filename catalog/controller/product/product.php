@@ -243,6 +243,7 @@ class ControllerProductProduct extends Controller {
 			$data['points'] = 0; /*$product_info['points'];*/
 			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 			$data['long_description'] = html_entity_decode($product_info['long_description'], ENT_QUOTES, 'UTF-8');
+            $data['mib_logo']  = $product_info['mib_logo'];
 
 			/*if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
@@ -429,7 +430,7 @@ class ControllerProductProduct extends Controller {
 					'tax'         => $tax,
 					'minimum'     => 1, //$result['minimum'] > 0 ? $result['minimum'] : 1,
 					'rating'      => $rating,
-					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
+					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id']),
 				);
 			}
 
@@ -465,6 +466,8 @@ class ControllerProductProduct extends Controller {
             $data['variants'] = $variant_data['options_section'];
             $data['variants_table'] = $variant_data['variants_table'];
             $data['option_bulk_table'] = $variant_data['option_bulk_table'];
+
+            $data['extra_info'] = $this->load->controller('tsg/extra_info');
 
 
 

@@ -67,7 +67,7 @@ class ControllerTsgCheckoutAccount extends Controller {
             $this->session->data['guest']['fullname'] = $this->request->post['guestFullname'];
             $this->session->data['guest']['email'] = $this->request->post['guestEmail'];
             $this->session->data['guest']['telephone'] = $this->request->post['guestPhone'];
-            $this->session->data['guest']['company'] = '';
+            $this->session->data['guest']['company'] = $this->request->post['guestCompany'];
             $this->session->data['guest']['customer_group_id'] = $this->config->get('config_customer_group_id');
             $this->session->data['guest']['custom_field'] = '';
 

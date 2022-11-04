@@ -177,26 +177,36 @@ let TSGAddressLookup = function (inputFieldName, outputSelectName, fieldsToMatch
 
                         let addressDetailsValue = addressDetails[key];
 
-                        if(fieldObj.is("input") || fieldObj.is("textarea")) {
-                            let currentVal = $(fieldID).val()
-                            if (currentVal.length > 0) {
-                                currentVal += '\r';
-                            }
+                        if(addressDetailsValue.length > 0) {
+                            if(fieldObj.is("input") || fieldObj.is("textarea")) {
+                                let currentVal = $(fieldID).val()
+                                if (currentVal.length > 0) {
+                                    currentVal += '\r';
+                                }
 
-                            if(addressDetailsValue.length > 0){
-                                currentVal += addressDetailsValue;
-                                fieldObj.val(currentVal);
-                            }
+                                if(addressDetailsValue.length > 0){
+                                    currentVal += addressDetailsValue;
+                                    fieldObj.val(currentVal);
+                                }
+                                //check if area is empty
 
-                        }
-                        if(fieldObj.is("select")) {
-                            if(addressDetailsValue.length > 0){
-                                let currentVal = parseInt(addressDetailsValue);
-                                fieldObj.val(addressDetailsValue);
-                            }
 
+                            }
+                            if(fieldObj.is("select")) {
+                                if(addressDetailsValue.length > 0){
+                                    let currentVal = parseInt(addressDetailsValue);
+                                    fieldObj.val(addressDetailsValue);
+                                }
+
+                            }
                         }
                     })
+                    if(addressDetails['ProvinceName'].length <= 0){
+                        let area_fld_id = TSGlookup.fieldsMatch['ProvinceName'];
+                        let fieldObj = $('#'+area_fld_id);
+                        let city_text = addressDetails['City']
+                        fieldObj.val(city_text);
+                    }
                 }
 
             //now show the hidden

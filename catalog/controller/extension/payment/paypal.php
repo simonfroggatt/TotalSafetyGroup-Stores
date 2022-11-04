@@ -434,10 +434,14 @@ class ControllerExtensionPaymentPayPal extends Controller {
 			'grant_type' => 'client_credentials'
 		);	
 		
-		$paypal->setAccessToken($token_info);		
+		$paypal->setAccessToken($token_info);
+		$checkout_type = '';
+        $payment_method_id = 1;
 		
 		if (isset($this->request->post['checkout']) && ($this->request->post['checkout'] == 'express') && isset($this->request->post['paypal_order_id'])) {
 			$paypal_order_id = $this->request->post['paypal_order_id'];
+            $checkout_type = 'paypal express';
+            $payment_method_id = 1;  //paypal
 		}
 		
 		if (isset($this->request->post['checkout']) && ($this->request->post['checkout'] == 'card') && isset($this->request->post['payload'])) {
@@ -445,6 +449,8 @@ class ControllerExtensionPaymentPayPal extends Controller {
 			
 			if (isset($payload['orderId'])) {
 				$paypal_order_id = $payload['orderId'];
+                $payment_method_id = 2;  //paypal card
+                $checkout_type = 'Card';
 						
 				if ($setting['checkout']['card']['secure_status']) {					
 					$paypal_order_info = $paypal->getOrder($paypal_order_id);
@@ -471,7 +477,8 @@ class ControllerExtensionPaymentPayPal extends Controller {
 						$this->error['warning'] = implode(' ', $error_messages);
 					}
 							
-					if (isset($paypal_order_info['payment_source']['card']) && !$this->error) {
+					if (isset($paypal_order_info['payment_source']['card']) && !$this->error) { //card payment
+                        $checkout_type = 'card';
 						$this->model_extension_payment_paypal->log($paypal_order_info['payment_source']['card'], 'Card');
 						
 						$liability_shift = (isset($paypal_order_info['payment_source']['card']['authentication_result']['liability_shift']) ? $paypal_order_info['payment_source']['card']['authentication_result']['liability_shift'] : '');
@@ -520,7 +527,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 			}
 		}
 				
-		if (isset($paypal_order_id) && !$this->error) {				
+		if (isset($paypal_order_id) && !$this->error) {		  //this is paypal express - paypal button
 			if ($transaction_method == 'authorize') {
 				$result = $paypal->setOrderAuthorize($paypal_order_id);
 			} else {
@@ -596,6 +603,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 							$message = sprintf($this->language->get('text_order_message'), $seller_protection_status);
 				
 							$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $message);
+                            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2, "Ref: ".$paypal_order_id);
 						}
 						
 						if (($authorization_status == 'CREATED') || ($authorization_status == 'PARTIALLY_CAPTURED') || ($authorization_status == 'PARTIALLY_CREATED') || ($authorization_status == 'VOIDED') || ($authorization_status == 'PENDING')) {
@@ -603,6 +611,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 						}
 					}
 				} else {
+				    //this is the bit that a successfull order is added
 					$this->model_extension_payment_paypal->log($result, 'Capture Order');
 					
 					if (isset($result['purchase_units'][0]['payments']['captures'][0]['status']) && isset($result['purchase_units'][0]['payments']['captures'][0]['seller_protection']['status'])) {
@@ -615,7 +624,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 						}
 						
 						if ($capture_status == 'COMPLETED') {
-							$order_status_id = $setting['order_status']['completed']['id'];
+							$order_status_id = $setting['order_status']['completed']['id'];  //set the order status to paid
 						}
 						
 						if ($capture_status == 'DECLINED') {
@@ -636,6 +645,8 @@ class ControllerExtensionPaymentPayPal extends Controller {
 							$message = sprintf($this->language->get('text_order_message'), $seller_protection_status);
 				
 							$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $message);
+
+                            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2, "Ref: ".$paypal_order_id);   //$payment_method_id, $payment_status_id
 						}
 						
 						if (($capture_status == 'COMPLETED') || ($capture_status == 'PARTIALLY_REFUNDED') || ($capture_status == 'REFUNDED') || ($capture_status == 'PENDING')) {
@@ -645,6 +656,9 @@ class ControllerExtensionPaymentPayPal extends Controller {
 				}
 			}
 		}
+		if($this->error){
+            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], 1, 1, $this->error['warning']);
+        }
 		
 		$data['error'] = $this->error;
 				

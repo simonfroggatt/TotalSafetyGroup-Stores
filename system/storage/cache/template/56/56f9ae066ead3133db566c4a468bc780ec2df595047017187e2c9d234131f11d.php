@@ -89,7 +89,7 @@ class __TwigTemplate_b96ff689cfa38f83b797fd8379c1afb679442e2c4db9464fd2260c95c4f
         echo "<script src=\"catalog/view/javascript/jquery/jquery-2.1.1.min.js\" type=\"text/javascript\"></script>
 <link href=\"catalog/view/javascript/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\" media=\"screen\" />
 <script src=\"catalog/view/javascript/bootstrap/js/bootstrap.min.js\" type=\"text/javascript\"></script>
-<link href=\"catalog/view/javascript/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\" />
+<link href=\"catalog/view/javascript/font-awesome-4/css/font-awesome-4.min.css\" rel=\"stylesheet\" type=\"text/css\" />
 <link href=\"//fonts.googleapis.com/css?family=Open+Sans:400,400i,300,700\" rel=\"stylesheet\" type=\"text/css\" />
 <link href=\"catalog/view/theme/default/stylesheet/stylesheet.css\" rel=\"stylesheet\">
 ";

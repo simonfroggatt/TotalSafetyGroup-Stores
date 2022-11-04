@@ -324,7 +324,7 @@ class ControllerCatalogProduct extends Controller {
 		$filter_data = array(
 			'filter_name'	  => $filter_name,
 			'filter_model'	  => $filter_model,
-			'filter_price'	  => $filter_price,
+			//'filter_price'	  => $filter_price,
 			'filter_quantity' => $filter_quantity,
 			'filter_status'   => $filter_status,
 			'sort'            => $sort,

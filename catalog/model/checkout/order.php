@@ -6,7 +6,13 @@ class ModelCheckoutOrder extends Model {
         $sql .= " store_id = '" . (int)$data['store_id'] . "', ";
         $sql .= "store_name = '" . $this->db->escape($data['store_name']) . "', ";
         $sql .= "store_url = '" . $this->db->escape($data['store_url']) . "', ";
-        $sql .= "customer_id = '" . (int)$data['customer_id'] . "', ";
+        if($data['customer_id'] <= 0){
+            $sql .= "customer_id = NULL, ";
+        }
+        else{
+            $sql .= "customer_id = '" . (int)$data['customer_id'] . "', ";
+        }
+
         $sql .= "customer_group_id = '" . (int)$data['customer_group_id'] . "', ";
        // $sql .= "firstname = '" . $this->db->escape($data['firstname']) . "', ";
         //$sql .= "lastname = '" . $this->db->escape($data['lastname']) . "', ";
@@ -86,7 +92,7 @@ class ModelCheckoutOrder extends Model {
                 $sql_products .= " total = '" . (float)$product['total'] . "', ";
                 $sql_products .= " tax = '" . (float)$product['tax'] . "', ";
                 $sql_products .= " reward = '" . (int)$product['reward'] . "', ";
-                $sql_products .= " size_name = '" . $this->db->escape($product['model']) . "', ";
+                $sql_products .= " size_name = '" . $this->db->escape($product['size_name']) . "', ";
                 $sql_products .= " orientation_name = '" . $this->db->escape($product['orientation_name']) . "', ";
                 $sql_products .= " material_name = '" . $this->db->escape($product['material_name']) . "', ";
                 $sql_products .= " product_variant_id = '" . (float)$product['product_variant_id'] . "'";
@@ -474,4 +480,24 @@ class ModelCheckoutOrder extends Model {
 			$this->cache->delete('product');
 		}
 	}
+
+	public function AddPaymentHistory($order_id, $payment_method_id, $payment_status_id, $comment)
+    {
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " payment_status_id  = " . (int)$payment_status_id;
+        $sql .= " , payment_method_id  = " . (int)$payment_method_id;
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+
+        $this->db->query($sql);
+
+        //now add a payment history
+        $sql = "INSERT INTO " . DB_PREFIX . "tsg_payment_history SET ";
+        $sql .= " order_id = " . (int)$order_id;
+        $sql .= " , payment_status_id = " . (int)$payment_status_id;
+        $sql .= " , payment_method_id = " . (int)$payment_method_id;
+        $sql .= " , comment = '" .$this->db->escape($comment) . "'";
+        $sql .= " , date_added = NOW()";
+
+        $this->db->query($sql);
+    }
 }

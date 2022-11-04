@@ -2,7 +2,7 @@
 /*Color Variables*/
 @import url("https://fonts.googleapis.com/css?family=Roboto:300i,400,400i,500,700,900");
 .multi_step_form {
-  background: #f6f9fb;
+  /*background: #f6f9fb;*/
   display: block;
   overflow-x: hidden;
 }

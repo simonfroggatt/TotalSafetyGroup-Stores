@@ -605,6 +605,7 @@ $(document).ready(function () {
             'Company': 'billingCompany',
             'Line1': 'billingAddress',
             'Line2': 'billingAddress',
+            'Line3': 'billingAddress',
             'City': 'billingCity',
             'ProvinceName': 'billingArea',
             'PostalCode': 'billingPostcode',
@@ -618,6 +619,7 @@ $(document).ready(function () {
             'Company': 'shippingCompany',
             'Line1': 'shippingAddress',
             'Line2': 'shippingAddress',
+            'Line3': 'shippingAddress',
             'City': 'shippingCity',
             'ProvinceName': 'shippingArea',
             'PostalCode': 'shippingPostcode',
@@ -675,6 +677,7 @@ $(document).ready(function () {
                 $('#billingFullname').val($('#guestFullname').val());
                 $('#billingEmail').val($('#guestEmail').val());
                 $('#billingPhone').val($('#guestPhone').val());
+                $('#billingCompany').val($('#guestCompany').val());
             }
         }
     });
@@ -716,7 +719,9 @@ $(document).ready(function () {
         $('#shippingPostcode').attr('required', !this.checked);
         $('#shippingCity').attr('required', !this.checked);
         $('#shippingArea').attr('required', !this.checked);
-        $('#addressLookupShipping').attr('required', !this.checked);
+
+        let divsearch = $('#div-addressLookupShipping').is(":visible");
+        $('#addressLookupShipping').attr('required', divsearch);
 
 
 

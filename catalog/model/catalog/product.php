@@ -21,7 +21,8 @@ class ModelCatalogProduct extends Model {
         $sql .= "". DB_PREFIX . "product.date_added, ";
         $sql .= "". DB_PREFIX . "product.date_modified, ";
         $sql .= "". DB_PREFIX . "product.model,  ";
-        $sql .= "". DB_PREFIX . "product.product_id  ";
+        $sql .= "". DB_PREFIX . "product.product_id,  ";
+        $sql .= "". DB_PREFIX . "product.mib_logo  ";
         $sql .= "FROM ". DB_PREFIX . "product_to_store ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product_to_store.product_id = ". DB_PREFIX . "product.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_description_base ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description_base.product_id ";
@@ -55,7 +56,8 @@ class ModelCatalogProduct extends Model {
 				'sort_order'       => '',
 				'date_added'       => $query->row['date_added'],
 				'date_modified'    => $query->row['date_modified'],
-                'minimum'          => 1
+                'minimum'          => 1,
+                'mib_logo'          => $query->row['mib_logo']
 			);
 		} else {
 			return false;

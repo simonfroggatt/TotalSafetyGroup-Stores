@@ -1,7 +1,8 @@
 <?php
 class PayPal {
 	private $server = array(
-		'sandbox' => 'https://api.sandbox.paypal.com',
+        'sandbox' => 'https://api-m.sandbox.paypal.com',
+		//'sandbox' => 'https://api.sandbox.paypal.com',
 		'production' => 'https://api.paypal.com'
 	);
 	private $environment = 'sandbox';

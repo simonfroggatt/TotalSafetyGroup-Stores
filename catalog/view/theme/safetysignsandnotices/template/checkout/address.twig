@@ -51,13 +51,16 @@
                     {% if default_billing %}
                         {% set classSearch = 'd-none' %}
                         {% set classFull = '' %}
+                        {% set is_search_equired = '' %}
                     {% else %}
                         {% set classSearch = '' %}
                         {% set classFull = 'd-none' %}
+                        {% set is_search_equired = 'required' %}
                     {% endif %}
                     <div class="form-floating col-12 {{ classSearch }}">
-                        <input type="text" class="form-control" id="addressLookupBilling"  placeholder="Start typing to find your" required>
+                        <input type="text" class="form-control" id="addressLookupBilling"  placeholder="Start typing to find your" {{ is_search_equired  }}>
                         <label for="addressLookupBilling">Start typing to find your address</label>
+                        <span class="text-sm-start"><a href="javascript: showFullAddress('js-fulladdress-billing', 'addressLookupBilling')">Enter address manually</a></span>
                     </div>
                     <div id="js-fulladdress-billing" class="col-12 {{ classFull }}" >
                         <div class="row g-2">
@@ -114,15 +117,15 @@
                 <div class="card-title">
                     {% if addressList %}
                         <div class="row">
-                            <div class="col-3">
-                            <div class="form-check form-switch text-start">
+                            <div class="col-12 col-md-3">
+                                <div class="form-check form-switch text-start">
                                 <input class="form-check-input" type="checkbox" value="1" id="checkShippingSame" name="checkShippingSame">
                                 <label class="form-check-label" for="checkShippingSame">
                                     Same as billing
                                 </label>
                             </div>
                         </div>
-                            <div class="col-9">
+                            <div class="col-12 col-md-9">
                             <button class="btn btn-primary col-12" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShippingAddress" aria-expanded="false" aria-controls="collapseShippingAddress">
                                 Not the address you wanted? Choose from your address book
                             </button>
@@ -147,10 +150,11 @@
                         <div class="form-check form-switch text-start">
                             <input class="form-check-input" type="checkbox" value="1" id="checkShippingSame" name="checkShippingSame" checked>
                             <label class="form-check-label" for="checkShippingSame">
-                                Same as Invoice address
+                                Same as Billing address
                             </label>
                         </div>
                         {% set delivery_show = 'style="display: none;"' %}
+                        {% set same_as_checked = true %}
                     {% endif %}
                 </div>
                 {% if default_shipping %}
@@ -175,13 +179,20 @@
                     {% if default_shipping %}
                         {% set classSearch = 'd-none' %}
                         {% set classFull = '' %}
+                        {% set is_search_equired = '' %}
                     {% else %}
                         {% set classSearch = '' %}
                         {% set classFull = 'd-none' %}
+                        {% if same_as_checked %}
+                            {% set is_search_equired = '' %}
+                        {% else %}
+                            {% set is_search_equired = 'required' %}
+                        {% endif %}
                     {% endif %}
-                    <div class="form-floating col-12 {{ classSearch }}">
-                        <input type="text" class="form-control" id="addressLookupShipping"  placeholder="Start typing to find your" {{ isrequired }}>
+                    <div class="form-floating col-12 {{ classSearch }}" id="div-addressLookupShipping">
+                        <input type="text" class="form-control" id="addressLookupShipping"  placeholder="Start typing to find your" {{ is_search_equired }}>
                         <label for="addressLookupShipping">Start typing to find your address</label>
+                        <span class="text-sm-start"><a href="javascript: showFullAddress('js-fulladdress-shipping', 'addressLookupShipping')">Enter address manually</a></span>
                     </div>
                     <div id="js-fulladdress-shipping" class="col-12 {{ classFull }}" >
                         <div class="row g-2">
@@ -243,6 +254,11 @@
     let customer_email = '{{ customer_email }}';
     let customer_telephone = '{{ customer_telephone }}';
     let address_book = {{ addressList|json_encode }}
+
+        function showFullAddress(divName, searchName){
+            $('#'+divName).removeClass('d-none');
+            $('#'+searchName).attr('required', false);
+        }
 
     $(function () {
         $('#jsBillingListBtn').on('click', function(){

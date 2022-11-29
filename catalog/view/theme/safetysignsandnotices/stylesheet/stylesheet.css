@@ -942,5 +942,7 @@ span.product-variants  {
     font-size: 8px;
 }
 
-
-
+.btn-noborder{
+    box-shadow: none !important;
+    border: none !important;
+}

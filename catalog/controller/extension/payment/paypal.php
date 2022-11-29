@@ -149,8 +149,13 @@ class ControllerExtensionPaymentPayPal extends Controller {
 		
 		$this->load->model('extension/payment/paypal');
 		$this->load->model('checkout/order');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 				
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+        $payment_method_id = 1;  //paypal
+
+        $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 6, "Paypal started");
 		
 		// Setting
 		$_config = new Config();
@@ -310,15 +315,15 @@ class ControllerExtensionPaymentPayPal extends Controller {
 				)
 			)
 		);
-	
+	    $store_order_id = $store_info['prefix'].'-'. $order_info['order_id'];
 		if ($this->cart->hasShipping()) {
 			$paypal_order_info = array(
 				'intent' => strtoupper($transaction_method),
 				'purchase_units' => array(
 					array(
 						'reference_id' => 'default',
-						'description' => 'Your order ' . $order_info['order_id'],
-						'invoice_id' => $order_info['order_id'],
+						'description' => 'Order referance: ' . $store_order_id,
+						'invoice_id' => $store_order_id,
 						'shipping' => $shipping_info,
 						'items' => $item_info,
 						'amount' => $amount_info
@@ -335,7 +340,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 					array(
 						'reference_id' => 'default',
 						'description' => 'Your order ' . $order_info['order_id'],
-						'invoice_id' => $order_info['order_id'],
+						'invoice_id' => $store_order_id,
 						'items' => $item_info,
 						'amount' => $amount_info
 					)
@@ -603,7 +608,8 @@ class ControllerExtensionPaymentPayPal extends Controller {
 							$message = sprintf($this->language->get('text_order_message'), $seller_protection_status);
 				
 							$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $message);
-                            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2, "Ref: ".$paypal_order_id);
+                            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2, "Authcode: ".$paypal_order_id);
+
 						}
 						
 						if (($authorization_status == 'CREATED') || ($authorization_status == 'PARTIALLY_CAPTURED') || ($authorization_status == 'PARTIALLY_CREATED') || ($authorization_status == 'VOIDED') || ($authorization_status == 'PENDING')) {
@@ -624,34 +630,43 @@ class ControllerExtensionPaymentPayPal extends Controller {
 						}
 						
 						if ($capture_status == 'COMPLETED') {
+                            $message = sprintf($this->language->get('text_order_message'), $seller_protection_status);
 							$order_status_id = $setting['order_status']['completed']['id'];  //set the order status to paid
+                            $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $message);
+                            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2, "Authcode: ".$paypal_order_id);   //$payment_method_id, $payment_status_id
 						}
 						
 						if ($capture_status == 'DECLINED') {
 							$order_status_id = $setting['order_status']['denied']['id'];
 							
 							$this->error['warning'] = $this->language->get('error_capture_declined');
+                            $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $this->error['warning'] );
+							$this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2,$this->error['warning']);
 						}
 						
 						if ($capture_status == 'FAILED') {
 							$this->error['warning'] = sprintf($this->language->get('error_capture_failed'), $this->url->link('information/contact', '', true));
+                            $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $this->error['warning'] );
+							$this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 1, $this->error['warning']);
 						}
 						
 						if ($capture_status == 'PENDING') {
 							$order_status_id = $setting['order_status']['pending']['id'];
+                            $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $this->error['warning'] );
+                            $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 3,'Pending');
 						}
 						
-						if (($capture_status == 'COMPLETED') || ($capture_status == 'DECLINED') || ($capture_status == 'PENDING')) {
+						/*if (($capture_status == 'COMPLETED') || ($capture_status == 'DECLINED') || ($capture_status == 'PENDING')) {
 							$message = sprintf($this->language->get('text_order_message'), $seller_protection_status);
 				
 							$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $order_status_id, $message);
-
                             $this->model_checkout_order->AddPaymentHistory($this->session->data['order_id'], $payment_method_id, 2, "Ref: ".$paypal_order_id);   //$payment_method_id, $payment_status_id
 						}
 						
 						if (($capture_status == 'COMPLETED') || ($capture_status == 'PARTIALLY_REFUNDED') || ($capture_status == 'REFUNDED') || ($capture_status == 'PENDING')) {
 							$data['success'] = $this->url->link('checkout/success', '', true);
-						}
+
+						}*/
 					}
 				}
 			}

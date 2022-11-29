@@ -3,6 +3,8 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 	public function index() {
 		$this->load->language('extension/payment/pp_standard');
 
+
+
 		$data['text_testmode'] = $this->language->get('text_testmode');
 		$data['button_confirm'] = $this->language->get('button_confirm');
 
@@ -15,6 +17,8 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 		}
 
 		$this->load->model('checkout/order');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 		if(!isset($this->session->data['order_id'])) {
 			return false;
@@ -84,6 +88,8 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			$data['address2'] = html_entity_decode($order_info['payment_address_2'], ENT_QUOTES, 'UTF-8');
 			$data['city'] = html_entity_decode($order_info['payment_city'], ENT_QUOTES, 'UTF-8');
 			$data['zip'] = html_entity_decode($order_info['payment_postcode'], ENT_QUOTES, 'UTF-8');
+			$data['invoice_id'] = html_entity_decode($store_info['prefix'].'-'.$order_info['order_id'], ENT_QUOTES, 'UTF-8');
+
 			$data['country'] = $order_info['payment_iso_code_2'];
 			$data['email'] = $order_info['email'];
 			$data['invoice'] = $this->session->data['order_id'] . ' - ' . html_entity_decode($order_info['payment_firstname'], ENT_QUOTES, 'UTF-8') . ' ' . html_entity_decode($order_info['payment_lastname'], ENT_QUOTES, 'UTF-8');
@@ -91,6 +97,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			$data['return'] = $this->url->link('checkout/success');
 			$data['notify_url'] = $this->url->link('extension/payment/pp_standard/callback', '', true);
 			$data['cancel_return'] = $this->url->link('checkout/checkout', '', true);
+
 
 			if (!$this->config->get('payment_pp_standard_transaction')) {
 				$data['paymentaction'] = 'authorization';
@@ -184,6 +191,8 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 						break;
 					case 'Processed':
 						$order_status_id = $this->config->get('payment_pp_standard_processed_status_id');
+                        //SSAN
+                        $payment_status_id = 2;  //set to paid
 						break;
 					case 'Refunded':
 						$order_status_id = $this->config->get('payment_pp_standard_refunded_status_id');
@@ -196,7 +205,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 						break;
 				}
 
-				$this->model_checkout_order->addOrderHistory($order_id, $order_status_id);
+				$this->model_checkout_order->addOrderHistory($order_id, $order_status_id, '', false, false, $payment_status_id, 2);
 			} else {
 				$this->model_checkout_order->addOrderHistory($order_id, $this->config->get('config_order_status_id'));
 			}

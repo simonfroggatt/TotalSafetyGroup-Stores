@@ -28,6 +28,7 @@ class ModelCheckoutOrder extends Model {
         $sql .= "payment_company = '" . $this->db->escape($data['payment_company']) . "', ";
         $sql .= "payment_address_1 = '" . $this->db->escape($data['payment_address_1']) . "', ";
         $sql .= "payment_address_2 = '" . $this->db->escape($data['payment_address_2']) . "', ";
+        $sql .= "payment_area = '" . $this->db->escape($data['payment_area']) . "', ";
         $sql .= "payment_city = '" . $this->db->escape($data['payment_city']) . "', ";
         $sql .= "payment_postcode = '" . $this->db->escape($data['payment_postcode']) . "', ";
         $sql .= "payment_country = '" . $this->db->escape($data['payment_country']) . "', ";
@@ -46,6 +47,7 @@ class ModelCheckoutOrder extends Model {
         $sql .= "shipping_company = '" . $this->db->escape($data['shipping_company']) . "', ";
         $sql .= "shipping_address_1 = '" . $this->db->escape($data['shipping_address_1']) . "', ";
         $sql .= "shipping_address_2 = '" . $this->db->escape($data['shipping_address_2']) . "', ";
+        $sql .= "shipping_area = '" . $this->db->escape($data['shipping_area']) . "', ";
         $sql .= "shipping_city = '" . $this->db->escape($data['shipping_city']) . "', ";
         $sql .= "shipping_postcode = '" . $this->db->escape($data['shipping_postcode']) . "', ";
         $sql .= "shipping_country = '" . $this->db->escape($data['shipping_country']) . "', ";
@@ -72,11 +74,14 @@ class ModelCheckoutOrder extends Model {
         $sql .= " accept_language = '" . $this->db->escape($data['accept_language']) . "', ";
         $sql .= "date_added = NOW(), date_modified = NOW(),";
         $sql .= "payment_method_id = '" . (int)$data['payment_method_id'] . "', ";
-        $sql .= "payment_type_id = '" . (int)$data['payment_type_id'] . "', ";
+        $sql .= "order_type_id = '" . (int)$data['order_type_id'] . "', ";
         $sql .= "payment_status_id = '" . (int)$data['payment_status_id'] . "', ";
-        $sql .= "order_status_id = '" . (int)$data['order_status_id'] . "' ";
+        $sql .= "order_status_id = '" . (int)$data['order_status_id'] . "', ";
+        $sql .= "printed = '" . (int)$data['printed'] . "', ";
+        $sql .= "tax_rate = '" . (int)$data['tax_rate'] . "' ";
 
-		$this->db->query($sql);
+
+        $this->db->query($sql);
 		$order_id = $this->db->getLastId();
 
 		// Products
@@ -323,7 +328,7 @@ class ModelCheckoutOrder extends Model {
 				'accept_language'         => $order_query->row['accept_language'],
 				'date_added'              => $order_query->row['date_added'],
 				'payment_method_id'           => $order_query->row['payment_method_id'],
-				'payment_type_id'           => $order_query->row['payment_type_id'],
+				'order_type_id'           => $order_query->row['order_type_id'],
 				'payment_status_id'           => $order_query->row['payment_status_id'],
 				'payment_email'           => $order_query->row['payment_email'],
 				'payment_telephone'           => $order_query->row['payment_telephone'],
@@ -396,7 +401,7 @@ class ModelCheckoutOrder extends Model {
 				}
 			}
 
-			// If current order status is not processing or complete but new status is processing or complete then commence completing the order
+            // If current order status is not processing or complete but new status is processing or complete then commence completing the order
 			if (!in_array($order_info['order_status_id'], array_merge($this->config->get('config_processing_status'), $this->config->get('config_complete_status'))) && in_array($order_status_id, array_merge($this->config->get('config_processing_status'), $this->config->get('config_complete_status')))) {
 				// Redeem coupon, vouchers and reward points
 				$order_totals = $this->getOrderTotals($order_id);
@@ -483,6 +488,7 @@ class ModelCheckoutOrder extends Model {
 
 	public function AddPaymentHistory($order_id, $payment_method_id, $payment_status_id, $comment)
     {
+        //1 - Failed, 2 - Paid, 6 - Cart (not attempted)
         $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
         $sql .= " payment_status_id  = " . (int)$payment_status_id;
         $sql .= " , payment_method_id  = " . (int)$payment_method_id;

@@ -255,6 +255,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $order_data['payment_company'] = $this->session->data['payment_address']['company'];
             $order_data['payment_address_1'] = $this->session->data['payment_address']['address_1'];
             $order_data['payment_address_2'] = (isset($this->session->data['payment_address']['address_2']) ? $this->session->data['payment_address']['address_2']:'');
+            $order_data['payment_area'] = (isset($this->session->data['payment_address']['area']) ? $this->session->data['payment_address']['area']:'');
             $order_data['payment_city'] = (isset($this->session->data['payment_address']['city']) ? $this->session->data['payment_address']['city']:'');
             $order_data['payment_postcode'] = $this->session->data['payment_address']['postcode'];
             $order_data['payment_zone'] = (isset($this->session->data['payment_address']['zone']) ? $this->session->data['payment_address']['zone']:'');
@@ -277,6 +278,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['payment_code'] = '';
             }
 
+            $order_data['printed'] = 0;
+            $order_data['tax_rate'] = 86; //TODO -- make tax rate global for website and customer
+
+
             if ($this->cart->hasShipping()) {
                 $order_data['shipping_fullname'] = $this->session->data['shipping_address']['fullname'];
                 $order_data['shipping_telephone'] = $this->session->data['shipping_address']['telephone'];
@@ -287,6 +292,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['shipping_company'] = $this->session->data['shipping_address']['company'];
                 $order_data['shipping_address_1'] = $this->session->data['shipping_address']['address_1'];
                 $order_data['shipping_address_2'] = (isset($this->session->data['shipping_address']['address_2']) ? $this->session->data['shipping_address']['address_2']:'');
+                $order_data['shipping_area'] = (isset($this->session->data['shipping_address']['area']) ? $this->session->data['shipping_address']['area']:'');
                 $order_data['shipping_city'] = (isset($this->session->data['shipping_address']['city']) ? $this->session->data['shipping_address']['city']:'');
                 $order_data['shipping_postcode'] = $this->session->data['shipping_address']['postcode'];
                 $order_data['shipping_zone'] = (isset($this->session->data['shipping_address']['zone']) ? $this->session->data['shipping_address']['zone']:'');
@@ -316,6 +322,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['shipping_company'] = '';
                 $order_data['shipping_address_1'] = '';
                 $order_data['shipping_address_2'] = '';
+                $order_data['shipping_area'] = '';
                 $order_data['shipping_city'] = '';
                 $order_data['shipping_postcode'] = '';
                 $order_data['shipping_zone'] = '';
@@ -428,7 +435,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
 
             //TSG nice stuff
             $order_data['payment_method_id'] = '8';  //not attempted
-            $order_data['payment_type_id'] = '1';   //website
+            $order_data['order_type_id'] = '1';   //website
             $order_data['payment_status_id'] = '6'; //cart - no payment tried yet
             $order_data['order_status_id'] = '10';   //Open
 

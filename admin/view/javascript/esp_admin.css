@@ -1,0 +1,154 @@
+/* START COMMON */
+.panel-primary .panel-heading a i, .panel-success .panel-heading a i, .panel-info .panel-heading a i, .panel-warning .panel-heading a i, .panel-danger .panel-heading a i, .panel-dark .panel-heading a i {
+    color: #ffffff!important;
+}
+
+.panel-heading {
+    padding: 13px 15px;
+    text-shadow: none!important;
+}
+
+.panel-heading h3 {
+    font-size: 15px;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 0px;
+}
+
+.panel-default > .panel-heading {
+    color: #333333;
+    border-color: #dcdcdc;
+    background: #fafafa;
+}
+
+.panel-primary > .panel-heading {
+    color: #ffffff;
+    border-color: #2196f3;
+    background: #2196f3;
+}
+
+.panel-success > .panel-heading {
+    color: #ffffff;
+    border-color: #4caf50;
+    background: #4caf50;
+}
+
+.panel-info > .panel-heading {
+    color: #ffffff;
+    border-color: #00bcd4;
+    background: #00bcd4;
+}
+.panel-warning > .panel-heading {
+    color: #ffffff;
+    border-color: #ff7043;
+    background: #ff7043;
+}
+
+.panel-danger > .panel-heading {
+    color: #ffffff;
+    border-color: #f44336;
+    background: #f44336;
+}
+
+.panel-white > .panel-heading {
+    color: #333333;
+    border-color: #dfdfdf;
+    background: #ffffff;
+}
+
+.panel-dark > .panel-heading {
+    color: #ffffff;
+    border-color: #324148;
+    background: #324148;
+}
+
+.panel-nav-tabs > .panel-heading {
+    padding-bottom: 0;
+}
+
+.panel-nav-tabs > .panel-heading .nav-tabs {
+    border-bottom: none;
+    margin-bottom: 0px;
+}
+
+.panel-default.panel-nav-tabs > .panel-heading .nav-tabs li a,
+.panel-default.panel-nav-tabs > .panel-heading .nav-tabs li a:hover,
+.panel-default.panel-nav-tabs > .panel-heading .nav-tabs li a:focus {
+    color: #777;
+}
+
+.panel-default.panel-nav-tabs > .panel-heading .nav-tabs li.active a,
+.panel-default.panel-nav-tabs > .panel-heading .nav-tabs li.active a:hover,
+.panel-default.panel-nav-tabs > .panel-heading .nav-tabs li.active a:focus {
+    color: #4c4d5a;
+}
+
+.panel-heading .btn {
+    margin-top: -8px;
+}
+
+.panel-heading .btn-xs {
+    margin-top: -1px;
+}
+
+.panel-heading .btn-sm {
+    margin-top: -5px;
+}
+
+.title-separator {
+    background-color: #f4f4f4;
+    padding: 13px 12px;
+    font-size: 15px;
+    line-height: 17px;
+    font-weight: 600;
+    color: #333333;
+}
+/* END COMMON */
+
+
+
+/* START CHECKBOXES */
+div[attr-refname] {
+    display: none;
+}
+.is-visible {
+    display: flex !important;
+}
+.chb-root {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 6px !important;
+    flex-direction: column;
+}
+.chb-options-wrapper {
+    height: 60px !important;
+    overflow: auto;
+    flex-wrap: wrap;
+}
+.chb-options-wrapper label {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+.chb-footer {
+    text-align: right;
+    margin-top: 5px;
+    border-top: 1px solid #efebeb;
+    padding-top: 10px;
+}
+.chb-footer a {
+    margin-right: 10px;
+}
+a.chb-select-unselect-all, a.chb-show-selected {
+    background: #909090;
+    padding: 2px 6px;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-left: 5px;
+}
+a.chb-select-unselect-all:hover,
+a.chb-show-selected:hover {
+    background: #03A9F4;
+}
+/* END CHECKBOXES */
+

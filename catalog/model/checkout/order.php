@@ -496,14 +496,28 @@ class ModelCheckoutOrder extends Model {
 
         $this->db->query($sql);
 
+
+
         //now add a payment history
         $sql = "INSERT INTO " . DB_PREFIX . "tsg_payment_history SET ";
         $sql .= " order_id = " . (int)$order_id;
-        $sql .= " , payment_status_id = " . (int)$payment_status_id;
-        $sql .= " , payment_method_id = " . (int)$payment_method_id;
+        $sql .= " , payment_status = " . $this->GetPaymentStatusByID($payment_status_id);
+        $sql .= " , payment_method = " . $this->GetPaymentMethodByID($payment_method_id);
         $sql .= " , comment = '" .$this->db->escape($comment) . "'";
         $sql .= " , date_added = NOW()";
 
         $this->db->query($sql);
+    }
+
+    private function GetPaymentStatusByID($payment_status_id){
+	    $sql = "SELECT name from " . DB_PREFIX . "tsg_payment_status WHERE payment_status_id = '" . (int)$payment_status_id . "'";
+        $query = $this->db->query($sql);
+        return $query->row['name'];
+    }
+
+    private function GetPaymentMethodByID($payment_method_id){
+        $sql = "SELECT payment_method_name from " . DB_PREFIX . "tsg_payment_method WHERE payment_method_id = '" . (int)$payment_method_id . "'";
+        $query = $this->db->query($sql);
+        return $query->row['payment_method_name'];
     }
 }

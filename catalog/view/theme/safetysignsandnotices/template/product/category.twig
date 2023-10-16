@@ -29,9 +29,9 @@
           {% for category in categories %}
             <div class="col">
               <div class="card h-100 text-center">
-                <a href="{{ category.href }}"><img src="image/{{ category.image }}" alt="{{ category.title }}" title="{{ product.title }}" class="card-img-top" /></a>
+                <a href="{{ category.href }}"><img src="image/{{ category.image }}" alt="{{ category.name }}" title="{{ product.title }}" class="card-img-top" /></a>
                 <div class="card-footer h-100">
-                 <a href="{{ category.href }}">{{ category.title }}</a>
+                 <a href="{{ category.href }}">{{ category.name }}</a>
                 </div>
               </div>
             </div>

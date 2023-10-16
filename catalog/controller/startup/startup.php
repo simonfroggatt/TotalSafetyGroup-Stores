@@ -20,7 +20,8 @@ class ControllerStartupStartup extends Controller {
 			$this->config->set('config_url', HTTP_SERVER);
 			$this->config->set('config_ssl', HTTPS_SERVER);
 		}
-		
+
+		//TODO - NEED TO OVERRIDE THIS PART WITH OUR JSON FILE
 		// Settings
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
 		
@@ -199,4 +200,10 @@ class ControllerStartupStartup extends Controller {
 		// Encryption
 		$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));
 	}
+
+	public function ReadConfig()
+    {
+        $tmp = TSG_CONFIG;
+        $tmp2 = $tmp;
+    }
 }

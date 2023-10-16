@@ -1,0 +1,12 @@
+#licenseExpired, #licenseActive, #licenseInvalid {
+    display: none;
+}
+.license-key-text {
+    padding-top: 9px;
+}
+.license-key-text span {
+    margin-left: 20px;
+}
+.getNewLicenseLink {
+    margin-left: 10px;
+}

@@ -413,7 +413,14 @@ class ModelCatalogProduct extends Model {
 
 	public function getProductImages($product_id) {
 		//$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_image WHERE product_id = '" . (int)$product_id . "' ORDER BY sort_order ASC");
-        $sql = "SELECT " . DB_PREFIX . "product_image_base.image FROM " . DB_PREFIX . "product_image_base WHERE " . DB_PREFIX . "product_image_base.product_id=" . (int)$product_id . " ORDER BY " . DB_PREFIX . "product_image_base.sort_order ASC";
+        //$sql = "SELECT " . DB_PREFIX . "product_image_base.image FROM " . DB_PREFIX . "product_image_base WHERE " . DB_PREFIX . "product_image_base.product_id=" . (int)$product_id . " ORDER BY " . DB_PREFIX . "product_image_base.sort_order ASC";
+
+        $sql = "SELECT " . DB_PREFIX . "product_image.image FROM " . DB_PREFIX . "product_image";
+	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_image_to_store ON oc_product_image.product_image_id = " . DB_PREFIX . "tsg_product_image_to_store.product_image_id";
+	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_image_type ON " . DB_PREFIX . "tsg_product_image_to_store.image_type = " . DB_PREFIX . "tsg_image_type.id ";
+        $sql .= " WHERE  " . DB_PREFIX . "tsg_product_image_to_store.`status` = 1 ";
+	    $sql .= " AND " . DB_PREFIX . "tsg_product_image_to_store.store_id = " . (int)$this->config->get('config_store_id');
+
         $query = $this->db->query($sql);
 		return $query->rows;
 	}

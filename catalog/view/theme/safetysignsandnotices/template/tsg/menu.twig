@@ -1,8 +1,8 @@
 
 {% if categories %}
-<div class="container d-none d-md-block">
+<div class="container-fluid d-none d-md-block ps-0 pe-0">
   <nav id="menu" class="navbar pt-0 pb-0 navbar-expand-md" role="navigation">
-    <div class="container-fluid">
+    <div class="container-fluid navbar-tsg" >
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <ul class="navbar-nav me-auto">
             <li class="nav-item d-none d-md-block">
@@ -30,11 +30,11 @@
           {% endif %}
         {% endfor %}
         </ul>
-          <a href="tel:01157270172"></a>
+          <a href="tel:{{ telephone }}"></a>
           <ul class="navbar-nav d-none d-sm-block">
               <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="tel:01157270172}">
-                      <i class="fas fa-phone-alt"> 0115 72 701 72</i>
+                  <a class="nav-link active" aria-current="page" href="tel:{{ telephone }}">
+                      <i class="fa-regular fa-phone"><span class="header_text ps-2">{{ telephone }}</span></i>
                   </a>
               </li>
           </ul>

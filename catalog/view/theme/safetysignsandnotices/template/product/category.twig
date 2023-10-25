@@ -1,5 +1,5 @@
 {{ header }}
-<div id="product-category" class="container">
+<div id="product-category" class="container-fluid">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
@@ -25,7 +25,7 @@
       {% if categories %}
 
 
-        <div class="subcategory-layout-grid row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-1">
+        <div class="subcategory-layout-grid row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 ">
           {% for category in categories %}
             <div class="col">
               <div class="card h-100 text-center">
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-        <div class="product-layout-grid row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-2">
+        <div class="product-layout-grid row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2">
           {% for product in products %}
           <div class="col text-center">
             <div class="card h-100">
@@ -106,4 +106,5 @@
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
+
 {{ footer }} 

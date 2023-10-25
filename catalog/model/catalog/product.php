@@ -22,7 +22,8 @@ class ModelCatalogProduct extends Model {
         $sql .= "". DB_PREFIX . "product.date_modified, ";
         $sql .= "". DB_PREFIX . "product.model,  ";
         $sql .= "". DB_PREFIX . "product.product_id,  ";
-        $sql .= "". DB_PREFIX . "product.mib_logo  ";
+        $sql .= "". DB_PREFIX . "product.mib_logo,  ";
+        $sql .= "". DB_PREFIX . "product.tax_class_id  ";
         $sql .= "FROM ". DB_PREFIX . "product_to_store ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product_to_store.product_id = ". DB_PREFIX . "product.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_description_base ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description_base.product_id ";
@@ -52,7 +53,7 @@ class ModelCatalogProduct extends Model {
 				'manufacturer_id'  => 1, // $query->row['manufacturer_id'],
 				'manufacturer'     => '',//$query->row['manufacturer'],
 				'price'            => $query->row['price_from'], //($query->row['discount'] ? $query->row['discount'] : $query->row['price']),
-				'tax_class_id'     => 0,
+				'tax_class_id'     => $query->row['tax_class_id'],
 				'sort_order'       => '',
 				'date_added'       => $query->row['date_added'],
 				'date_modified'    => $query->row['date_modified'],
@@ -427,17 +428,10 @@ class ModelCatalogProduct extends Model {
 
 	public function getProductRelated($product_id) {
 		$product_data = array();
+        $sql = "SELECT " . DB_PREFIX . "product_related.related_id FROM " . DB_PREFIX . "product_related WHERE " .
+            DB_PREFIX . "product_related.product_id= " . (int)$product_id .
+            " ORDER BY " . DB_PREFIX . "product_related.`order` ASC";
 
-		$sql = "SELECT ". DB_PREFIX . "product_related.related_id ";
-        $sql .= " FROM ". DB_PREFIX . "product_related ";
-        $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product_related.related_id = ". DB_PREFIX . "product.product_id  ";
-        $sql .= "WHERE ";
-        $sql .= "". DB_PREFIX . "product_related.product_id = " . (int)$product_id;
-        $sql .= " AND ". DB_PREFIX . "product_related.store_id = " . (int)$this->config->get('config_store_id');
-        $sql .= " AND ". DB_PREFIX . "product.`status` = 1";
-        $sql .= " ORDER BY ". DB_PREFIX . "product_related.order ASC";
-
-		//$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_related pr LEFT JOIN " . DB_PREFIX . "product p ON (pr.related_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '" . (int)$product_id . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
 
         $query = $this->db->query($sql);
 

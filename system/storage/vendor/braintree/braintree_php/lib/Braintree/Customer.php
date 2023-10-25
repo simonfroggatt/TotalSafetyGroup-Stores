@@ -1,8 +1,6 @@
 <?php
 namespace Braintree;
 
-use DateTime;
-
 /**
  * Braintree Customer module
  * Creates and manages Customers
@@ -14,29 +12,29 @@ use DateTime;
  * @package    Braintree
  * @category   Resources
  *
- * @property-read Address[] $addresses
- * @property-read AndroidPayCard[] $androidPayCards
- * @property-read AmexExpressCheckoutCard[] $amexExpressCheckoutCards
- * @property-read ApplePayCard[] $applePayCards
- * @property-read CoinbaseAccount[] $coinbaseAccounts
+ * @property-read \Braintree\Address[] $addresses
+ * @property-read \Braintree\AndroidPayCard[] $androidPayCards
+ * @property-read \Braintree\AmexExpressCheckoutCard[] $amexExpressCheckoutCards
+ * @property-read \Braintree\ApplePayCard[] $applePayCards
+ * @property-read \Braintree\CoinbaseAccount[] $coinbaseAccounts
  * @property-read string $company
- * @property-read DateTime $createdAt
- * @property-read CreditCard[] $creditCards
+ * @property-read \DateTime $createdAt
+ * @property-read \Braintree\CreditCard[] $creditCards
  * @property-read array  $customFields custom fields passed with the request
  * @property-read string $email
  * @property-read string $fax
  * @property-read string $firstName
  * @property-read string $id
  * @property-read string $lastName
- * @property-read MasterpassCard[] $masterpassCards
- * @property-read PaymentMethod[] $paymentMethods
- * @property-read PayPalAccount[] $paypalAccounts
+ * @property-read \Braintree\MasterpassCard[] $masterpassCards
+ * @property-read \Braintree\PaymentMethod[] $paymentMethods
+ * @property-read \Braintree\PayPalAccount[] $paypalAccounts
  * @property-read string $phone
- * @property-read SamsungPayCard[] $samsungPayCards
- * @property-read DateTime $updatedAt
- * @property-read UsBankAccount[] $usBankAccounts
- * @property-read VenmoAccount[] $venmoAccounts
- * @property-read VisaCheckoutCard[] $visaCheckoutCards
+ * @property-read \Braintree\SamsungPayCard[] $samsungPayCards
+ * @property-read \DateTime $updatedAt
+ * @property-read \Braintree\UsBankAccount[] $usBankAccounts
+ * @property-read \Braintree\VenmoAccount[] $venmoAccounts
+ * @property-read \Braintree\VisaCheckoutCard[] $visaCheckoutCards
  * @property-read string $website
  */
 class Customer extends Base

@@ -4,6 +4,7 @@
             {% if category.children %}
                 <li class="mb-1">
                 <button class="btn btn-toggle align-items-center rounded collapsed " data-bs-toggle="collapse"
+                        data-haschild="true"
                         data-bs-target="#collapse-{{ category.category_id }}"
                         aria-expanded="{{ category.category_id == category_store_id ? 'true' : 'false' }}">
                     {{ category.name }}
@@ -21,7 +22,9 @@
                 </li>
             {% else %}
             <li class="mb-1">
-                <a class="btn btn-toggle align-items-center rounded" href="{{ category.href }}" role="button" aria-expanded="{{ category.category_id == category_store_id ? 'true' : 'false' }}">{{ category.name }}</a>
+                <a class="btn btn-toggle align-items-center rounded" href="{{ category.href }}" role="button"
+                   data-haschild="false"
+                   aria-expanded="{{ category.category_id == category_store_id ? 'true' : 'false' }}">{{ category.name }} - single</a>
             </li>
             {% endif %}
         {% endfor %}

@@ -19,19 +19,15 @@
 
 namespace Klarna\Rest;
 
-use ArrayObject;
 use GuzzleHttp\Exception\RequestException;
-use InvalidArgumentException;
 use Klarna\Rest\Transport\Connector;
 use Klarna\Rest\Transport\Exception\ConnectorException;
 use Klarna\Rest\Transport\ResponseValidator;
-use LogicException;
-use RuntimeException;
 
 /**
  * Abstract resource class.
  */
-abstract class Resource extends ArrayObject
+abstract class Resource extends \ArrayObject
 {
     /**
      * Id property field name.
@@ -108,10 +104,10 @@ abstract class Resource extends ArrayObject
      *
      * @throws ConnectorException        When the API replies with an error response
      * @throws RequestException          When an error is encountered
-     * @throws RuntimeException         On an unexpected API response
-     * @throws RuntimeException         If the response content type is not JSON
-     * @throws InvalidArgumentException If the JSON cannot be parsed
-     * @throws LogicException           When Guzzle cannot populate the response
+     * @throws \RuntimeException         On an unexpected API response
+     * @throws \RuntimeException         If the response content type is not JSON
+     * @throws \InvalidArgumentException If the JSON cannot be parsed
+     * @throws \LogicException           When Guzzle cannot populate the response
      *
      * @return self
      */
@@ -136,7 +132,7 @@ abstract class Resource extends ArrayObject
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws LogicException    When Guzzle cannot populate the response
+     * @throws \LogicException    When Guzzle cannot populate the response
      *
      * @return ResponseValidator
      */
@@ -154,7 +150,7 @@ abstract class Resource extends ArrayObject
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws LogicException    When Guzzle cannot populate the response
+     * @throws \LogicException    When Guzzle cannot populate the response
      *
      * @return ResponseValidator
      */
@@ -171,7 +167,7 @@ abstract class Resource extends ArrayObject
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws LogicException    When Guzzle cannot populate the response
+     * @throws \LogicException    When Guzzle cannot populate the response
      *
      * @return ResponseValidator
      */
@@ -188,7 +184,7 @@ abstract class Resource extends ArrayObject
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws LogicException    When Guzzle cannot populate the response
+     * @throws \LogicException    When Guzzle cannot populate the response
      *
      * @return ResponseValidator
      */

@@ -147,7 +147,7 @@ $(document).ready(function() {
 	});
 
 	// tooltips on hover
-	$('[data-toggle=\'tooltip\']').tooltip({container: 'body'});
+	//$('[data-toggle=\'tooltip\']').tooltip({container: 'body'});
 
 	// Makes tooltips work on ajax generated content
 	$(document).ajaxStop(function() {

@@ -12,12 +12,10 @@
 
 namespace Twig\Node;
 
-use LogicException;
 use Twig\Compiler;
 use Twig\Node\Expression\AbstractExpression;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Source;
-use function count;
 
 /**
  * Represents a module node.
@@ -27,17 +25,11 @@ use function count;
  * display_end, constructor_start, constructor_end, and class_end.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @final since Twig 2.4.0
  */
-class ModuleNode extends Node
+final class ModuleNode extends Node
 {
     public function __construct(Node $body, ?AbstractExpression $parent, Node $blocks, Node $macros, Node $traits, $embeddedTemplates, Source $source)
     {
-        if (__CLASS__ !== static::class) {
-            @trigger_error('Overriding '.__CLASS__.' is deprecated since Twig 2.4.0 and the class will be final in 3.0.', E_USER_DEPRECATED);
-        }
-
         $nodes = [
             'body' => $body,
             'blocks' => $blocks,
@@ -68,7 +60,7 @@ class ModuleNode extends Node
         $this->setAttribute('index', $index);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $this->compileTemplate($compiler);
 
@@ -165,7 +157,7 @@ class ModuleNode extends Node
             // if the template name contains */, add a blank to avoid a PHP parse error
             ->write('/* '.str_replace('*/', '* /', $this->getSourceContext()->getName())." */\n")
             ->write('class '.$compiler->getEnvironment()->getTemplateClass($this->getSourceContext()->getName(), $this->getAttribute('index')))
-            ->raw(sprintf(" extends %s\n", $compiler->getEnvironment()->getBaseTemplateClass(false)))
+            ->raw(" extends Template\n")
             ->write("{\n")
             ->indent()
             ->write("private \$source;\n")
@@ -188,7 +180,7 @@ class ModuleNode extends Node
             $compiler->write("\$this->parent = false;\n\n");
         }
 
-        $countTraits = count($this->getNode('traits'));
+        $countTraits = \count($this->getNode('traits'));
         if ($countTraits) {
             // traits
             foreach ($this->getNode('traits') as $i => $trait) {
@@ -382,7 +374,7 @@ class ModuleNode extends Node
         //
         // Put another way, a template can be used as a trait if it
         // only contains blocks and use statements.
-        $traitable = !$this->hasNode('parent') && 0 === count($this->getNode('macros'));
+        $traitable = !$this->hasNode('parent') && 0 === \count($this->getNode('macros'));
         if ($traitable) {
             if ($this->getNode('body') instanceof BodyNode) {
                 $nodes = $this->getNode('body')->getNode(0);
@@ -390,12 +382,12 @@ class ModuleNode extends Node
                 $nodes = $this->getNode('body');
             }
 
-            if (!count($nodes)) {
+            if (!\count($nodes)) {
                 $nodes = new Node([$nodes]);
             }
 
             foreach ($nodes as $node) {
-                if (!count($node)) {
+                if (!\count($node)) {
                     continue;
                 }
 
@@ -466,9 +458,7 @@ class ModuleNode extends Node
                 ->raw(");\n")
             ;
         } else {
-            throw new LogicException('Trait templates can only be constant nodes.');
+            throw new \LogicException('Trait templates can only be constant nodes.');
         }
     }
 }
-
-class_alias('Twig\Node\ModuleNode', 'Twig_Node_Module');

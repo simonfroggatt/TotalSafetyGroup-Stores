@@ -477,10 +477,10 @@ function setMaterialTableHighlight()
 
     let material_id = variant_selected['material'];
 
-    let sel_mat = $('#tblmat_' + material_id);
+    let sel_mat = $('#card_material_' + material_id);
 
-    sel_mat.parent().children().removeClass("table-success");
-    sel_mat.addClass("table-success");
+    $('.material_cards').removeClass("text-bg-success");
+    sel_mat.addClass("text-bg-success");
 }
 
 function switchImage(ssan_var_info)

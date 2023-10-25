@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Validator\Mapping\Factory;
 
-use LogicException;
+use Symfony\Component\Validator\Exception\LogicException;
 
 /**
  * Metadata factory that does not store metadata.

@@ -6,20 +6,9 @@ class ControllerExtensionModuleCarousel extends Controller {
 		$this->load->model('design/banner');
 		$this->load->model('tool/image');
 
-        if(LOAD_LOCAL) {
-         /*   $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/swiper.min.css');
-            $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
-            $this->document->addScript('catalog/view/javascript/jquery/swiper/js/swiper.jquery.js');*/
-
-            $this->document->addStyle('catalog/view/javascript/jquery/swiper-6-5-3/css/swiper-bundle.css');
-            $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
-            $this->document->addScript('catalog/view/javascript/jquery/swiper-6-5-3/js/swiper-bundle.js');
-        }
-        else {
-            $this->document->addStyle("https://unpkg.com/swiper/swiper-bundle.min.css");
-            $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
-            $this->document->addScript("https://unpkg.com/swiper/swiper-bundle.min.js");
-        }
+        $this->document->addStyle("https://unpkg.com/swiper/swiper-bundle.min.css");
+        $this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');
+        $this->document->addScript("https://unpkg.com/swiper/swiper-bundle.min.js");
 
 		$data['banners'] = array();
 

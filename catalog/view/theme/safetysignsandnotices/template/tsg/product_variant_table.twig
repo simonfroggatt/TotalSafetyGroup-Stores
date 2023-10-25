@@ -24,15 +24,8 @@
         </td>
         {% for discount_value in product_variant_data.discount_array  %}
         <td class="col-md-1 bulkcell_{{ product_variant_data.prod_variant_id }} product-variant" data-variant-bulk-id="{{ product_variant_data.prod_variant_id }}_{{loop.index0}}">
-            {#  <?php echo number_format($discount_value * $tax_multiplier,2);?><br><span class="tabletax">
-                <?php if($tax_multiplier == 1) { ?>
-                (inc VAT
-                <?php echo number_format($discount_value * $j_tax_multiplier,2); } else { ?>
-                (ex VAT
-                <?php echo number_format($discount_value / $j_tax_multiplier,2); } ?>
-                )<span>#}
-            {{ discount_value }}<br>
-            <span class="tabletax">(inc VAT {{ discount_value }})</span>
+            {{ discount_value.price }}<br>
+            <span class="tabletax">(inc VAT {{ discount_value.price_tax }})</span>
         </td>
         {% endfor %}
     </tr>
@@ -76,14 +69,8 @@
             </td>
             {% for discount_value in product_variant_data.discount_array  %}
                 <td class="col-md-1 bulkcell_{{ product_variant_data.prod_variant_id }} product-variant" data-variant-bulk-xs-id="{{ product_variant_data.prod_variant_id }}_{{loop.index0}}">
-                    {#  <?php echo number_format($discount_value * $tax_multiplier,2);?><br><span class="tabletax">
-                <?php if($tax_multiplier == 1) { ?>
-                (inc VAT
-                <?php echo number_format($discount_value * $j_tax_multiplier,2); } else { ?>
-                (ex VAT
-                <?php echo number_format($discount_value / $j_tax_multiplier,2); } ?>
-                )<span>#}
-                    {{ discount_value }}
+                    {{ discount_value.price }}<br>
+                    <span class="tabletax">(inc VAT {{ discount_value.price_tax }})</span>
                 </td>
             {% endfor %}
         </tr>

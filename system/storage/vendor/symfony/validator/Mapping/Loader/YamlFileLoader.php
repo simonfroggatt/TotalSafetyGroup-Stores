@@ -11,12 +11,10 @@
 
 namespace Symfony\Component\Validator\Mapping\Loader;
 
-use InvalidArgumentException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
-use function count;
-use function is_array;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Loads validation metadata from a YAML file.
@@ -45,19 +43,7 @@ class YamlFileLoader extends FileLoader
     public function loadClassMetadata(ClassMetadata $metadata)
     {
         if (null === $this->classes) {
-            if (null === $this->yamlParser) {
-                $this->yamlParser = new YamlParser();
-            }
-
-            $this->classes = $this->parseFile($this->file);
-
-            if (isset($this->classes['namespaces'])) {
-                foreach ($this->classes['namespaces'] as $alias => $namespace) {
-                    $this->addNamespaceAlias($alias, $namespace);
-                }
-
-                unset($this->classes['namespaces']);
-            }
+            $this->loadClassesFromYaml();
         }
 
         if (isset($this->classes[$metadata->getClassName()])) {
@@ -72,6 +58,20 @@ class YamlFileLoader extends FileLoader
     }
 
     /**
+     * Return the names of the classes mapped in this file.
+     *
+     * @return string[] The classes names
+     */
+    public function getMappedClasses()
+    {
+        if (null === $this->classes) {
+            $this->loadClassesFromYaml();
+        }
+
+        return array_keys($this->classes);
+    }
+
+    /**
      * Parses a collection of YAML nodes.
      *
      * @param array $nodes The YAML nodes
@@ -80,19 +80,19 @@ class YamlFileLoader extends FileLoader
      */
     protected function parseNodes(array $nodes)
     {
-        $values = array();
+        $values = [];
 
         foreach ($nodes as $name => $childNodes) {
-            if (is_numeric($name) && is_array($childNodes) && 1 === count($childNodes)) {
+            if (is_numeric($name) && \is_array($childNodes) && 1 === \count($childNodes)) {
                 $options = current($childNodes);
 
-                if (is_array($options)) {
+                if (\is_array($options)) {
                     $options = $this->parseNodes($options);
                 }
 
                 $values[] = $this->newConstraint(key($childNodes), $options);
             } else {
-                if (is_array($childNodes)) {
+                if (\is_array($childNodes)) {
                     $childNodes = $this->parseNodes($childNodes);
                 }
 
@@ -106,40 +106,47 @@ class YamlFileLoader extends FileLoader
     /**
      * Loads the YAML class descriptions from the given file.
      *
-     * @param string $path The path of the YAML file
-     *
-     * @return array The class descriptions
-     *
-     * @throws InvalidArgumentException If the file could not be loaded or did
+     * @throws \InvalidArgumentException If the file could not be loaded or did
      *                                   not contain a YAML array
      */
-    private function parseFile($path)
+    private function parseFile(string $path): array
     {
         try {
-            $classes = $this->yamlParser->parse(file_get_contents($path));
+            $classes = $this->yamlParser->parseFile($path, Yaml::PARSE_CONSTANT);
         } catch (ParseException $e) {
-            throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML.', $path), 0, $e);
+            throw new \InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML: ', $path).$e->getMessage(), 0, $e);
         }
 
         // empty file
         if (null === $classes) {
-            return array();
+            return [];
         }
 
         // not an array
-        if (!is_array($classes)) {
-            throw new InvalidArgumentException(sprintf('The file "%s" must contain a YAML array.', $this->file));
+        if (!\is_array($classes)) {
+            throw new \InvalidArgumentException(sprintf('The file "%s" must contain a YAML array.', $this->file));
         }
 
         return $classes;
     }
 
-    /**
-     * Loads the validation metadata from the given YAML class description.
-     *
-     * @param ClassMetadata $metadata         The metadata to load
-     * @param array         $classDescription The YAML class description
-     */
+    private function loadClassesFromYaml()
+    {
+        if (null === $this->yamlParser) {
+            $this->yamlParser = new YamlParser();
+        }
+
+        $this->classes = $this->parseFile($this->file);
+
+        if (isset($this->classes['namespaces'])) {
+            foreach ($this->classes['namespaces'] as $alias => $namespace) {
+                $this->addNamespaceAlias($alias, $namespace);
+            }
+
+            unset($this->classes['namespaces']);
+        }
+    }
+
     private function loadClassMetadataFromYaml(ClassMetadata $metadata, array $classDescription)
     {
         if (isset($classDescription['group_sequence_provider'])) {
@@ -152,13 +159,13 @@ class YamlFileLoader extends FileLoader
             $metadata->setGroupSequence($classDescription['group_sequence']);
         }
 
-        if (isset($classDescription['constraints']) && is_array($classDescription['constraints'])) {
+        if (isset($classDescription['constraints']) && \is_array($classDescription['constraints'])) {
             foreach ($this->parseNodes($classDescription['constraints']) as $constraint) {
                 $metadata->addConstraint($constraint);
             }
         }
 
-        if (isset($classDescription['properties']) && is_array($classDescription['properties'])) {
+        if (isset($classDescription['properties']) && \is_array($classDescription['properties'])) {
             foreach ($classDescription['properties'] as $property => $constraints) {
                 if (null !== $constraints) {
                     foreach ($this->parseNodes($constraints) as $constraint) {
@@ -168,7 +175,7 @@ class YamlFileLoader extends FileLoader
             }
         }
 
-        if (isset($classDescription['getters']) && is_array($classDescription['getters'])) {
+        if (isset($classDescription['getters']) && \is_array($classDescription['getters'])) {
             foreach ($classDescription['getters'] as $getter => $constraints) {
                 if (null !== $constraints) {
                     foreach ($this->parseNodes($constraints) as $constraint) {

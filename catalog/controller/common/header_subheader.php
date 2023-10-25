@@ -50,9 +50,6 @@ class ControllerCommonHeaderSubheader extends Controller {
         $data['header_links'] = $this->load->controller('tsg/header_links');
 		$data['customer_name'] = $this->customer->getFirstName();
 
-		//TSG
-		$data['load_local'] = LOAD_LOCAL;
-
 		return $this->load->view('common/header_subheader', $data);
 	}
 }

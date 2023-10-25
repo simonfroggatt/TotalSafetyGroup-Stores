@@ -1,9 +1,5 @@
 <?php
 namespace Template;
-use Exception;
-use Twig\Environment;
-use Twig\Loader\ArrayLoader;
-
 final class Twig {
 	private $data = array();
 
@@ -18,7 +14,7 @@ final class Twig {
 			if (is_file($file)) {
 				$code = file_get_contents($file);
 			} else {
-				throw new Exception('Error: Could not load template ' . $file . '!');
+				throw new \Exception('Error: Could not load template ' . $file . '!');
 				exit();
 			}
 		}
@@ -32,9 +28,9 @@ final class Twig {
 		);
 
 		try {
-			$loader = new ArrayLoader(array($filename . '.twig' => $code));
+			$loader = new \Twig\Loader\ArrayLoader(array($filename . '.twig' => $code));
 
-			$twig = new Environment($loader, $config);
+			$twig = new \Twig\Environment($loader, $config);
 
 			return $twig->render($filename . '.twig', $this->data);
 		} catch (Exception $e) {

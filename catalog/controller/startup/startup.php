@@ -1,5 +1,17 @@
 <?php
 class ControllerStartupStartup extends Controller {
+
+	public function __isset($key) {
+		// To make sure that calls to isset also support dynamic properties from the registry
+		// See https://www.php.net/manual/en/language.oop5.overloading.php#object.isset
+		if ($this->registry) {
+			if ($this->registry->get($key)!==null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function index() {
 		// Store
 		if ($this->request->server['HTTPS']) {
@@ -20,8 +32,7 @@ class ControllerStartupStartup extends Controller {
 			$this->config->set('config_url', HTTP_SERVER);
 			$this->config->set('config_ssl', HTTPS_SERVER);
 		}
-
-		//TODO - NEED TO OVERRIDE THIS PART WITH OUR JSON FILE
+		
 		// Settings
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
 		
@@ -200,10 +211,4 @@ class ControllerStartupStartup extends Controller {
 		// Encryption
 		$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));
 	}
-
-	public function ReadConfig()
-    {
-        $tmp = TSG_CONFIG;
-        $tmp2 = $tmp;
-    }
 }

@@ -1,24 +1,71 @@
-<div class="row ssan-tabs" id="product-recent-tabs">
-        <div class="col">
-            <ul class="nav nav-tabs" id="recent-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="recent-tab" data-bs-toggle="tab" href="#recent" role="tab" aria-controls="bulk" aria-selected="true">Recently Viewed</a>
-                </li>
-            </ul>
-            <div class="tab-content" id="recent-tabs-content">
-                <div class="tab-pane fade show active" id="recent" role="tabpanel" aria-labelledby="recent-tab">
-                    <div class="owl-carousel">
-                        {% for product in products %}
 
-                            <a href="{{ product.href }}" ><img class="img-thumbnail p-2" alt="{{ product.title }}" src="{{ product.thumb }}"></a>
+    <div class="row ssan-tabs" id="product-recent-tabs">
+            <div class="col">
+                <ul class="nav nav-tabs" id="recent-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="recent-tab" data-bs-toggle="tab" href="#recent" role="tab" aria-controls="bulk" aria-selected="true">Recently Viewed</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="recent-tabs-content">
 
+                    <div class="swiper" id="recent_swiper">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper">
+                            <!-- Slides -->
 
-                        {% endfor %}
+                            {% for product in products %}
+                                <div class="swiper-slide">
+                                    <div class="card m-1 p-1">
+                                        <a href="{{ product.href }}" ><img class="" height="150px" alt="{{ product.title }}" src="{{ product.thumb }}"></a>
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+                        <!-- If we need pagination -->
+                        <div class="swiper-pagination"></div>
+
+                        <!-- If we need navigation buttons -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+
+                        <!-- If we need scrollbar -->
+                        <div class="swiper-scrollbar"></div>
                     </div>
                 </div>
             </div>
-        </div>
-</div>
+    </div>
+
+
+
+
+<script>
+    $(function () {
+        const swiper = new Swiper('#recent_swiper', {
+            // Optional parameters
+            direction: 'horizontal',
+            loop: true,
+            spaceBetween: 0,
+            slidesPerView: 'auto',
+            autoHeight: true,
+
+
+            // If we need pagination
+            pagination: false,
+
+            // Navigation arrows
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+
+            // And if we need scrollbar
+            scrollbar: false,
+        });
+    });
+</script>
 
 
 
@@ -27,7 +74,7 @@
 
 
 <script>
-    $('.owl-carousel').owlCarousel({
+  /*  $('.owl-carousel').owlCarousel({
         loop:true,
         margin:10,
         nav:true,
@@ -59,5 +106,5 @@
                 loop:( $('.item').length > 6 )
             }
         }
-    })
+    })*/
 </script>

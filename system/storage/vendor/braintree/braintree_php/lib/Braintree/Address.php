@@ -1,8 +1,6 @@
 <?php
 namespace Braintree;
 
-use DateTime;
-
 /**
  * Braintree Address module
  * PHP Version 5
@@ -16,7 +14,7 @@ use DateTime;
  *
  * @property-read string $company
  * @property-read string $countryName
- * @property-read DateTime $createdAt
+ * @property-read \DateTime $createdAt
  * @property-read string $customerId
  * @property-read string $extendedAddress
  * @property-read string $firstName
@@ -26,7 +24,7 @@ use DateTime;
  * @property-read string $postalCode
  * @property-read string $region
  * @property-read string $streetAddress
- * @property-read DateTime $updatedAt
+ * @property-read \DateTime $updatedAt
  */
 class Address extends Base
 {

@@ -1,7 +1,5 @@
 <?php
 namespace Cache;
-use Memcache;
-
 class Mem {
 	private $expire;
 	private $memcache;
@@ -11,7 +9,7 @@ class Mem {
 	public function __construct($expire) {
 		$this->expire = $expire;
 
-		$this->memcache = new Memcache();
+		$this->memcache = new \Memcache();
 		$this->memcache->pconnect(CACHE_HOSTNAME, CACHE_PORT);
 	}
 

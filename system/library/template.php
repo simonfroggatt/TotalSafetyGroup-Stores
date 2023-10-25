@@ -25,7 +25,7 @@ class Template {
 		if (class_exists($class)) {
 			$this->adaptor = new $class();
 		} else {
-			throw new Exception('Error: Could not load template adaptor ' . $adaptor . '!');
+			throw new \Exception('Error: Could not load template adaptor ' . $adaptor . '!');
 		}
 	}
 	

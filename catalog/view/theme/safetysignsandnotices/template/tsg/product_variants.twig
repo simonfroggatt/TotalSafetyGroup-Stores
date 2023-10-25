@@ -1,5 +1,5 @@
 
-    <div class="input-group input-group-xs mb-2">
+    <div class="input-group input-group-sm mb-2">
          <label class="input-group-text col-3 col-md-12 col-lg-3" for="posize">Size</label>
         <select name="posize" id="posize" class="form-select product-variants">
             {% for sizeval in vSizes %}
@@ -10,7 +10,7 @@
 
 
     </div>
-    <div class="input-group input-group-xs mb-2">
+    <div class="input-group input-group-sm mb-2">
         <label class="input-group-text col-3 col-md-12 col-lg-3" for="pomaterial">Material</label>
         <select name="pomaterial" id="pomaterial" class="form-select product-variants">
         </select>
@@ -22,7 +22,7 @@
         {% for classinfo in vOptClassesValues %}
             {% set classopts = classinfo.class_info %}
             {% set class_values = classinfo.class_values %}
-            <div class="input-group input-group-xs mb-2 class-options" id="optionclassid-{{ classopts.option_class_id }}" >
+            <div class="input-group input-group-sm mb-2 class-options" id="optionclassid-{{ classopts.option_class_id }}" >
                 <label class="input-group-text col-3 col-md-12 col-lg-3" for="tsg_po_{{ classopts.option_class_id }}">{{ classopts.label }}:</label>
                 {% set curr_classid = classopts.option_class_id %}
                 <select name="tsg_po_{{ classopts.option_class_id }}" id="tsg_po_{{ classopts.option_class_id }}" class="form-select tsg-option" data-optionclass-id="{{ classopts.option_class_id }}" >

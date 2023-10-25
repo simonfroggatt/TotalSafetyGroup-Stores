@@ -4,7 +4,7 @@
             {% if logged %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-ssan-yellow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-2x fa-user-check" style="color: green"></i>
+                        <i class="fa-regular fa-2x fa-user-check" style="color: green"></i>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{ account }}">{{ text_account }}</a></li>
@@ -16,7 +16,7 @@
             {% else %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-2x fa-user"></i>
+                        <i class="fa-regular fa-2x fa-user"></i>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{ login }}">{{ text_login }}</a></li>
@@ -26,7 +26,7 @@
                 </li>
             {% endif %}
             <li class="nav-item" id="cart_top_div">
-                <a class="nav-link active" data-bs-toggle="offcanvas" href="#offcanvasCart" role="button" aria-controls="offcanvasCart"><i class="fas fa-2x fa-shopping-cart cart_link">{{ cart_menu['xs']}}</i></a>
+                <a class="nav-link active" data-bs-toggle="offcanvas" href="#offcanvasCart" role="button" aria-controls="offcanvasCart"><i class="fa-2x fa-regular fa-cart-shopping cart_link">{{ cart_menu['xs']}}</i></a>
             </li>
         </ul>
 

@@ -9,6 +9,7 @@ class ModelTsgProductVariants extends Model{
         $sql = "SELECT ".DB_PREFIX . "tsg_product_variants.prod_variant_id,";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_core.size_material_id,";
         $sql .= " " . DB_PREFIX . "product.model,";
+        $sql .= " " . DB_PREFIX . "product.tax_class_id,";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_overide_price,";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_code,";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_core.supplier_code,";
@@ -29,6 +30,7 @@ class ModelTsgProductVariants extends Model{
         $sql .= " WHERE";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "'";
         $sql .= "  AND ".DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+        $sql .= "  AND ".DB_PREFIX . "tsg_size_material_comb_prices.store_id = '" . (int)$this->config->get('config_store_id') . "'";
         $sql .= " ORDER BY";
         $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_id ASC,";
         $sql .= " " . DB_PREFIX . "tsg_product_material.material_id ASC";
@@ -77,21 +79,25 @@ class ModelTsgProductVariants extends Model{
 
         return $v_mats->rows;
     }
+    
+    /*
+     * 
+     */
 
     public function getVariantOptionClasses($product_id)
     {
         //$v_opt_classes = array();
 
-        $sql = "SELECT DISTINCT " . DB_PREFIX . "tsg_dep_option_class.*, 0 as 'is_extra'";
+        $sql = "SELECT DISTINCT " . DB_PREFIX . "tsg_option_class.*, 0 as 'is_extra'";
         $sql .= " FROM " . DB_PREFIX . "tsg_product_variants";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "tsg_product_variants.prod_var_core_id = " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_options ON " . DB_PREFIX . "tsg_product_variants.prod_variant_id = " . DB_PREFIX . "tsg_product_variant_options.product_variant_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class ON " . DB_PREFIX . "tsg_product_variant_options.option_class_id = " . DB_PREFIX . "tsg_dep_option_class.option_class_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class ON " . DB_PREFIX . "tsg_product_variant_options.option_class_id = " . DB_PREFIX . "tsg_option_class.id ";
         $sql .= " WHERE";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '".(int)$product_id."'";
         $sql .= " AND " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " ORDER BY " . DB_PREFIX . "tsg_dep_option_class.order_by ASC";
+       // $sql .= " AND " . DB_PREFIX . "tsg_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+        $sql .= " ORDER BY " . DB_PREFIX . "tsg_option_class.order_by ASC";
 
 
         $v_classes = $this->db->query($sql);
@@ -114,13 +120,13 @@ class ModelTsgProductVariants extends Model{
         $sql .= " FROM " . DB_PREFIX . "tsg_product_variant_core";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_options ON " . DB_PREFIX . "tsg_product_variants.prod_variant_id = " . DB_PREFIX . "tsg_product_variant_options.product_variant_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class ON " . DB_PREFIX . "tsg_product_variant_options.option_class_id = " . DB_PREFIX . "tsg_dep_option_class.option_class_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_dep_option_class.option_class_id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class ON " . DB_PREFIX . "tsg_product_variant_options.option_class_id = " . DB_PREFIX . "tsg_option_class.id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_option_class.id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_option_xtra ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_xtra.option_options_id ";
         $sql .= " WHERE";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '".(int)$product_id."'";
         $sql .= " AND " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+      // $sql .= " AND " . DB_PREFIX . "tsg_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 
         $res = $this->db->query($sql);
         $extra_class = [];
@@ -132,7 +138,7 @@ class ModelTsgProductVariants extends Model{
 
     private function getClassDetails($class_id)
     {
-        $sql = "SELECT " . DB_PREFIX . "tsg_dep_option_class.* FROM " . DB_PREFIX . "tsg_dep_option_class WHERE " . DB_PREFIX . "tsg_dep_option_class.option_class_id = ".(int)$class_id;
+        $sql = "SELECT " . DB_PREFIX . "tsg_option_class.* FROM " . DB_PREFIX . "tsg_dep_option_class WHERE " . DB_PREFIX . "tsg_option_class.id = ".(int)$class_id;
         $v_classes = $this->db->query($sql);
 
         return $v_classes->row;
@@ -203,32 +209,32 @@ class ModelTsgProductVariants extends Model{
 
         $sql = " SELECT DISTINCT 0 as 'is_extra', ";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_options.option_class_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.label,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.descr,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.price_modifier,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_options_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.title,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.image,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.product_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_type_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.dropdown_title,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.default_dropdown_title, ";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.label,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.descr,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.price_modifier,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.image,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.product_id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.option_type_id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.dropdown_title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.default_dropdown_title, ";
         $sql .= " " . DB_PREFIX . "tsg_option_xtra.option_class_id as xtra_class_id ";
         $sql .= " FROM " . DB_PREFIX . "tsg_product_variant_core";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_options ON " . DB_PREFIX . "tsg_product_variants.prod_variant_id = " . DB_PREFIX . "tsg_product_variant_options.product_variant_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class ON " . DB_PREFIX . "tsg_product_variant_options.option_class_id = " . DB_PREFIX . "tsg_dep_option_class.option_class_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_dep_option_class.option_class_id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_dep_option_options.option_options_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class ON " . DB_PREFIX . "tsg_product_variant_options.option_class_id = " . DB_PREFIX . "tsg_option_class.id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_option_class.id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_values.id";
         $sql .= " LEFT JOIN " . DB_PREFIX . "tsg_option_xtra ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_xtra.option_options_id";
         $sql .= " WHERE";
         $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_options.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+       // $sql .= " AND " . DB_PREFIX . "tsg_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+        $sql .= " AND " . DB_PREFIX . "tsg_option_values.store_id = '" . (int)$this->config->get('config_store_id') . "'";
         $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class_values.store_id = '" . (int)$this->config->get('config_store_id') . "'";
         $sql .= " ORDER BY";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.order_by ASC,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.option_class_id ASC,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.order_by ASC,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.id ASC,";
         $sql .= " " . DB_PREFIX . "tsg_dep_option_class_values.order_by ASC";
 
         $class_val_res = $this->db->query($sql);
@@ -315,29 +321,29 @@ class ModelTsgProductVariants extends Model{
 
     private function GetDepXtraClass($xtra_class_id){
         $sql = "SELECT DISTINCT 1 as 'is_extra', ";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.option_class_id,";
-	    $sql .= " " . DB_PREFIX . "tsg_dep_option_class.label,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.descr,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.price_modifier,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_options_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.title,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.image,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.product_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_type_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.dropdown_title,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.default_dropdown_title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.id,";
+	    $sql .= " " . DB_PREFIX . "tsg_option_class.label,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.descr,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.price_modifier,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.image,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.product_id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.option_type_id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.dropdown_title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.default_dropdown_title,";
         $sql .= " " . DB_PREFIX . "tsg_option_xtra.option_class_id AS xtra_class_id ";
         $sql .= " FROM " . DB_PREFIX . "tsg_dep_option_class";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_dep_option_class.option_class_id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_dep_option_options.option_options_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_option_class.id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_values.id";
         $sql .= " LEFT JOIN " . DB_PREFIX . "tsg_option_xtra ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_xtra.option_options_id ";
         $sql .= " WHERE";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.option_class_id = ". (int)$xtra_class_id;
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_options.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.id = ". (int)$xtra_class_id;
+      //  $sql .= " AND " . DB_PREFIX . "tsg_option_class.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+        $sql .= " AND " . DB_PREFIX . "tsg_option_values.store_id = '" . (int)$this->config->get('config_store_id') . "'";
         $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class_values.store_id = '" . (int)$this->config->get('config_store_id') . "'";
         $sql .= " ORDER BY";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.order_by ASC,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.order_by ASC,";
         $sql .= " " . DB_PREFIX . "tsg_dep_option_class_values.order_by ASC";
 
         $class_val_res = $this->db->query($sql);
@@ -354,32 +360,32 @@ class ModelTsgProductVariants extends Model{
             * for example
             * Option class "with or without rail" -- calls the option class "clips" that requires the product information from clips
             */
-      /*  $sql = "SELECT " . DB_PREFIX . "tsg_dep_option_class.*, 1 as 'is_extra' ";
-        $sql .= " FROM " . DB_PREFIX . "tsg_dep_option_class WHERE " . DB_PREFIX . "tsg_dep_option_class.option_class_id = '" . (int)$class_id . "'";
+      /*  $sql = "SELECT " . DB_PREFIX . "tsg_option_class.*, 1 as 'is_extra' ";
+        $sql .= " FROM " . DB_PREFIX . "tsg_dep_option_class WHERE " . DB_PREFIX . "tsg_option_class.id = '" . (int)$class_id . "'";
 */
 
 
         $class_vals = array();
         $sql = " SELECT DISTINCT";
         $sql = "SELECT DISTINCT 1 as 'is_extra', ";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.option_class_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.label,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.descr,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.price_modifier,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_options_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.title,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.image,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.product_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.option_type_id,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_options.dropdown_title,";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.default_dropdown_title ";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.label,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.descr,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.price_modifier,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.image,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.product_id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.option_type_id,";
+        $sql .= " " . DB_PREFIX . "tsg_option_values.dropdown_title,";
+        $sql .= " " . DB_PREFIX . "tsg_option_class.default_dropdown_title ";
 
         $sql .= " FROM " . DB_PREFIX . "tsg_dep_option_class";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_dep_option_class.option_class_id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_dep_option_options.option_options_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_class_values ON " . DB_PREFIX . "tsg_option_class.id = " . DB_PREFIX . "tsg_dep_option_class_values.option_class_id";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_values.id";
         $sql .= " WHERE";
-        $sql .= " " . DB_PREFIX . "tsg_dep_option_class.option_class_id = '" . (int)$class_id . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class.store_id = " . (int)$this->config->get('config_store_id');
+        $sql .= " " . DB_PREFIX . "tsg_option_class.id = '" . (int)$class_id . "'";
+       // $sql .= " AND " . DB_PREFIX . "tsg_option_class.store_id = " . (int)$this->config->get('config_store_id');
         $sql .= " AND " . DB_PREFIX . "tsg_dep_option_class_values.store_id = " . (int)$this->config->get('config_store_id');
 
 
@@ -486,6 +492,7 @@ class ModelTsgProductVariants extends Model{
         //this function returns the list for the complete set of variants for the table tab
 
         $sql = "SELECT";
+        $sql .= " " . DB_PREFIX . "product.tax_class_id,";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.prod_variant_id,";
         $sql .= " IF ( " . DB_PREFIX . "tsg_product_variants.variant_overide_price > 0, " . DB_PREFIX . "tsg_product_variants.variant_overide_price, " . DB_PREFIX . "tsg_size_material_comb_prices.price ) AS variant_price,";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_code,";
@@ -495,6 +502,7 @@ class ModelTsgProductVariants extends Model{
         $sql .= " " . DB_PREFIX . "tsg_product_material.material_name,";
         $sql .= " " . DB_PREFIX . "tsg_orientation.orientation_name ";
         $sql .= " FROM " . DB_PREFIX . "tsg_product_variant_core";
+        $sql .= " INNER JOIN ".DB_PREFIX . "product ON ". DB_PREFIX . "tsg_product_variant_core.product_id = " . DB_PREFIX . "product.product_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb_prices ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_comb_prices.size_material_comb_id";

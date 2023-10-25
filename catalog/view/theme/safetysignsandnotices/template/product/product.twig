@@ -169,7 +169,7 @@
                         {% endif %}
 
                         <div class="input-group input-group-sm mb-3">
-                            <label class="input-group-text col-md-3" for="input-quantity">Qty</label>
+                            <label class="input-group-text col-md-3" for="qtyDropdown">Qty</label>
                             <input type="number" name="qtyDropdown" value="1" min="1" size="2" id="qtyDropdown" class="form-control col-md-1" />
                             <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-success btn-lg btn-block">{{ button_cart }}</button>
 
@@ -182,7 +182,7 @@
                             </div>
                             <div class="col-12 col-lg-7">
                                 {% if mib_logo %}
-                                    <img src="catalog/view/theme/safetysignsandnotices/image/MiB_Logo_Horizontal_Colour.svg" class="img-fluid">
+                                    <img src="image/3rdpartylogo/MiB_Logo_Horizontal_Colour.svg" class="img-fluid">
                                 {% endif %}
                             </div>
                         </div>
@@ -244,25 +244,31 @@
                     <div class="tab-pane fade" id="variant-specification" role="tabpanel" aria-labelledby="specification-tab"></div>
                     <div class="tab-pane fade" id="materials" role="tabpanel" aria-labelledby="materials-tab">
                         <h4>Materials available for this product</h4>
-                        {% for material_list in MaterialsDesc %}
-                        {{ material_list.material_name }}
-                        <table class="table table-sm table-bordered" id="tblmat_{{ material_list.material_id }}">
-                            <tr>
-                                <td class="col-md-10">
-                                <table class="table table-sm ">
-                                    <tr><td class="col-md-2">Description:</td><td>{{ material_list.material_desc_full }}</td></tr>
-                                    <tr><td class="col-md-2">Thickness:</td><td>{{ material_list.thickness_desc }}</td>
-                                    <tr><td>Fixing Options:</td><td>{{ material_list.fixing_desc }}</td>
-                                </table>
-                                </td>
-                                <td class="col-md-2"><img class="rounded mx-auto d-block" src="{{ material_list.image }}" height="100px" ></td>
-                            </tr>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                                {% for material_list in MaterialsDesc %}
+                                    <div class="col">
+                                            <div class="card h-100 material_cards" id="card_material_{{ material_list.material_id }}">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img class="img-fluid rounded-end" src="{{ material_list.image }}" height="100px" >
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h3 class="card-title">{{ material_list.material_name }}</h3>
+                                                                <dl class="row">
+                                                                    <dt>Description:</dt><dd>{{ material_list.material_desc_full }}</dd>
+                                                                <dt>Thickness:</dt><dd>{{ material_list.thickness_desc }}</dd>
+                                                                <dt>Fixing Options:</dt><dd>{{ material_list.fixing_desc }}</dd>
+                                                                </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                {% endfor %}
+                        </div>
+                        <p>*indicates your currently selected material</p>
 
-                        </table>
-                        {% endfor %}
-                        <table class="table table-sm table-success">
-                            <tr ><td>*indicates your currently selected material</td></tr>
-                        </table>
                     </div>
                     {% if extra_info %}
                         {% for extras in extra_info %}

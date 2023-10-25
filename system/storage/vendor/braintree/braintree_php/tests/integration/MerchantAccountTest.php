@@ -343,6 +343,7 @@ class MerchantAccountTest extends Setup
         $this->assertEquals($error[0]->code, Braintree\Error\Codes::MERCHANT_ACCOUNT_INDIVIDUAL_ADDRESS_REGION_IS_INVALID);
         $error = $result->errors->forKey("merchantAccount")->forKey("individual")->onAttribute("ssn");
         $this->assertEquals($error[0]->code, Braintree\Error\Codes::MERCHANT_ACCOUNT_INDIVIDUAL_SSN_IS_INVALID);
+        ;
         $error = $result->errors->forKey("merchantAccount")->forKey("business")->onAttribute("legalName");
         $this->assertEquals($error[0]->code, Braintree\Error\Codes::MERCHANT_ACCOUNT_BUSINESS_LEGAL_NAME_IS_INVALID);
         $error = $result->errors->forKey("merchantAccount")->forKey("business")->onAttribute("dbaName");

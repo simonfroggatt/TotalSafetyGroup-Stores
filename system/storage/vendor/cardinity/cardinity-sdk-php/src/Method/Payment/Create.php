@@ -3,7 +3,6 @@
 namespace Cardinity\Method\Payment;
 
 use Cardinity\Method\MethodInterface;
-use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Create implements MethodInterface
@@ -57,7 +56,11 @@ class Create implements MethodInterface
                 new Assert\Type(['type' => 'bool'])
             ]),
             'order_id' => new Assert\Optional([
-                new Assert\Type(['type' => 'string'])
+                new Assert\Type(['type' => 'string']),
+                new Assert\Length([
+                    'min' => 2,
+                    'max' => 50
+                ]),
             ]),
             'description' => new Assert\Optional([
                 new Assert\Type(['type' => 'string']),
@@ -114,6 +117,10 @@ class Create implements MethodInterface
                     'cvc' => new Assert\Required([
                         new Assert\NotBlank(),
                         new Assert\Type(['type' => 'string']),
+                        new Assert\Length([
+                            'min' => 3,
+                            'max' => 4
+                        ]),
                     ]),
                     'holder' => new Assert\Required([
                         new Assert\NotBlank(),
@@ -132,7 +139,7 @@ class Create implements MethodInterface
                 ]);
         }
 
-        throw new InvalidArgumentException(
+        throw new \InvalidArgumentException(
             sprintf(
                 'Payment instrument for payment method "%s" is not expected',
                 $method

@@ -1,7 +1,6 @@
 <?php
-namespace Cardinity\Method;
 
-use Symfony\Component\Validator\Constraints\Collection;
+namespace Cardinity\Method;
 
 /**
  * Method interface for building queries for API.
@@ -17,12 +16,12 @@ interface MethodInterface
      * HTTP method PATCH
      */
     const PATCH = 'PATCH';
-    
+
     /**
      * HTTP method GET
      */
     const GET = 'GET';
-    
+
     /**
      * HTTP method to use
      * @return string
@@ -40,10 +39,10 @@ interface MethodInterface
      * @return ResultObjectInterface
      */
     public function createResultObject();
-    
+
     /**
      * Validation constraints for fields
-     * @return Collection
+     * @return \Symfony\Component\Validator\Constraints\Collection
      */
     public function getValidationConstraints();
 

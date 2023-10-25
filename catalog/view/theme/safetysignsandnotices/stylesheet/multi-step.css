@@ -100,18 +100,18 @@
   font: 500 13px/1 "Roboto", sans-serif;
 }
 .multi_step_form #msform #progressbar li:nth-child(2):before {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Font Awesome 6 Pro";
   font-weight: 900;
   content: "\f041";
 }
 .multi_step_form #msform #progressbar li:nth-child(3):before {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Font Awesome 6 Pro";
   font-weight: 900;
   content: "\f48b";
 }
 
 .multi_step_form #msform #progressbar li:nth-child(4):before {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Font Awesome 6 Pro";
   font-weight: 900;
   content: "\f0ae";
 }
@@ -124,10 +124,10 @@
 }
 
 .multi_step_form #msform #progressbar li:before {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Font Awesome 6 Pro";
   font-weight: 900;
   content: "\f502";
-  font: normal 900 normal 30px/50px "Font Awesome 5 Free";
+  font: normal 900 normal 30px/50px "Font Awesome 6 Pro";
   width: 50px;
   height: 50px;
   line-height: 50px;

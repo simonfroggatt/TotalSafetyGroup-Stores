@@ -1531,3 +1531,6 @@
 2023-10-24 6:07:24 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/1d/1df7253d5f0a314b2016d4378566a0a3.php on line 255
 2023-10-24 6:07:24 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/1d/1df7253d5f0a314b2016d4378566a0a3.php on line 255
 2023-10-24 6:07:24 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/1d/1df7253d5f0a314b2016d4378566a0a3.php on line 255
+2023-10-26 9:46:34 - PHP Warning:  mysqli::query(): (42S02/1146): Table 'totalsafetygroup_oc.oc_product_discount' doesn't exist in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
+2023-10-26 9:54:07 - PHP Warning:  Undefined variable $discounts in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\product\product.php on line 306
+2023-10-26 9:54:07 - PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\product\product.php on line 306

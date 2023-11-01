@@ -151,7 +151,7 @@ class ControllerProductSearch extends Controller {
 		// 3 Level Category Search
 		$data['categories'] = array();
 
-		$categories_1 = $this->model_catalog_category->getCategories(0);
+		/*$categories_1 = $this->model_catalog_category->getCategories(0);
 
 		foreach ($categories_1 as $category_1) {
 			$level_2_data = array();
@@ -182,7 +182,7 @@ class ControllerProductSearch extends Controller {
 				'name'        => $category_1['name'],
 				'children'    => $level_2_data
 			);
-		}
+		}*/
 
 		$data['products'] = array();
 

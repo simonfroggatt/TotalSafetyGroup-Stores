@@ -10,11 +10,11 @@
             <h1>{{ heading_title }}</h1>
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <div id="search-product" class="input-group">
-                        <input type="text" name="search" value="{{ search }}" placeholder="{{ text_search }}"
+                    <div id="search-product" class="input-group product-search">
+                        <input type="text" name="product-search" value="{{ search }}" placeholder="{{ text_search }}"
                                class="form-control input-lg"/>
                         <span class="input-group-btn">
-                        <button type="button" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        <button class="btn btn-search" type="submit" id="product-button-search"><i class="fa-regular fa-magnifying-glass" ></i></button>
                     </span>
                     </div>
                 </div>
@@ -78,51 +78,23 @@
             {{ content_bottom }}</div>
     </div>
 </div>
-<script type="text/javascript"><!--
-    $('#button-search').bind('click', function () {
+<script type="text/javascript">
+    $('#product-button-search').bind('click', function () {
         url = 'index.php?route=product/search';
 
-        var search = $('#content input[name=\'search\']').prop('value');
+        var search = $('#content input[name=\'product-search\']').prop('value');
 
         if (search) {
             url += '&search=' + encodeURIComponent(search);
         }
-
-        var category_id = $('#content select[name=\'category_id\']').prop('value');
-
-        if (category_id > 0) {
-            url += '&category_id=' + encodeURIComponent(category_id);
-        }
-
-        var sub_category = $('#content input[name=\'sub_category\']:checked').prop('value');
-
-        if (sub_category) {
-            url += '&sub_category=true';
-        }
-
-        var filter_description = $('#content input[name=\'description\']:checked').prop('value');
-
-        if (filter_description) {
-            url += '&description=true';
-        }
-
         location = url;
     });
 
-    $('#content input[name=\'search\']').bind('keydown', function (e) {
+    $('#content input[name=\'product-search\']').bind('keydown', function (e) {
         if (e.keyCode == 13) {
-            $('#button-search').trigger('click');
+            $('#product-button-search').trigger('click');
         }
     });
 
-    $('select[name=\'category_id\']').on('change', function () {
-        if (this.value == '0') {
-            $('input[name=\'sub_category\']').prop('disabled', true);
-        } else {
-            $('input[name=\'sub_category\']').prop('disabled', false);
-        }
-    });
-
-    $('select[name=\'category_id\']').trigger('change');
-    --></script>
+</script>
 {{ footer }}

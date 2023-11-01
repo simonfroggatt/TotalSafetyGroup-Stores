@@ -986,3 +986,9 @@ span.product-variants  {
     box-shadow: none !important;
     border: none !important;
 }
+
+.product-search .btn-search {
+    font-size: 17px;
+    background-color: #ffd011;
+    border: none; !important;
+}

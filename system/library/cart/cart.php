@@ -46,7 +46,7 @@ class Cart {
 			
 			$sql = "SELECT DISTINCT ";
             $sql .= "". DB_PREFIX . "product.*, ";
-            $sql .= "". DB_PREFIX . "tsg_size_material_comb_prices.price AS var_price, ";
+            $sql .= "". DB_PREFIX . "tsg_size_material_store_combs.price AS var_price, ";
             $sql .= "". DB_PREFIX . "tsg_product_material.material_name, ";
             $sql .= "". DB_PREFIX . "tsg_product_sizes.size_name, ";
             $sql .= "". DB_PREFIX . "tsg_product_sizes.shipping_width, ";
@@ -76,7 +76,7 @@ class Cart {
             $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_variant_core.product_id ";
             $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variants ON ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = ". DB_PREFIX . "tsg_product_variants.prod_var_core_id ";
             $sql .= "INNER JOIN ". DB_PREFIX . "tsg_size_material_comb ON ". DB_PREFIX . "tsg_product_variant_core.size_material_id = ". DB_PREFIX . "tsg_size_material_comb.id ";
-            $sql .= "INNER JOIN ". DB_PREFIX . "tsg_size_material_comb_prices ON ". DB_PREFIX . "tsg_size_material_comb.id = ". DB_PREFIX . "tsg_size_material_comb_prices.size_material_comb_id ";
+            $sql .= "INNER JOIN ". DB_PREFIX . "tsg_size_material_store_combs ON ". DB_PREFIX . "tsg_size_material_comb.id = ". DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id ";
             $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_sizes ON ". DB_PREFIX . "tsg_size_material_comb.product_size_id = ". DB_PREFIX . "tsg_product_sizes.size_id ";
             $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_material ON ". DB_PREFIX . "tsg_size_material_comb.product_material_id = ". DB_PREFIX . "tsg_product_material.material_id ";
             $sql .= "INNER JOIN ". DB_PREFIX . "tsg_orientation ON ". DB_PREFIX . "tsg_product_sizes.orientation_id = ". DB_PREFIX . "tsg_orientation.orientation_id ";
@@ -89,7 +89,7 @@ class Cart {
             $sql .= " AND ". DB_PREFIX . "product_to_category.`status` = 1";
             $sql .= " AND ". DB_PREFIX . "product_to_store.product_id = '" . (int)$cart['product_id'] . "'";
             $sql .= " AND ". DB_PREFIX . "tsg_product_variants.prod_variant_id = '" . (int)$cart['product_variant_id'] . "'";
-            $sql .= " AND ". DB_PREFIX . "tsg_size_material_comb_prices.store_id = ". (int)$this->config->get('config_store_id');
+            $sql .= " AND ". DB_PREFIX . "tsg_size_material_store_combs.store_id = ". (int)$this->config->get('config_store_id');
 
 
             $product_query = $this->db->query($sql);
@@ -672,18 +672,18 @@ class Cart {
     private function getOptionProductVariant($product_var_id){
         $sql = "SELECT";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_code,";
-        $sql .= " " . DB_PREFIX . "tsg_size_material_comb_prices.price, ";
+        $sql .= " " . DB_PREFIX . "tsg_size_material_store_combs.price, ";
         $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_name, ";
 	    $sql .= " " . DB_PREFIX . "tsg_product_material.material_name ";
         $sql .= " FROM " . DB_PREFIX . "tsg_product_variants";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "tsg_product_variants.prod_var_core_id = " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb_prices ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_comb_prices.size_material_comb_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_store_combs ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id ";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_sizes ON " . DB_PREFIX . "tsg_size_material_comb.product_size_id = " . DB_PREFIX . "tsg_product_sizes.size_id ";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_size_material_comb.product_material_id = " . DB_PREFIX . "tsg_product_material.material_id ";
         $sql .= " WHERE";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.prod_variant_id = '".(int)$product_var_id ."'";
-        $sql .= " AND " . DB_PREFIX . "tsg_size_material_comb_prices.store_id = " . (int)$this->config->get('config_store_id');
+        $sql .= " AND " . DB_PREFIX . "tsg_size_material_store_combs.store_id = " . (int)$this->config->get('config_store_id');
 
         $class_prod_res = $this->db->query($sql);
         $class_row = $class_prod_res->row;

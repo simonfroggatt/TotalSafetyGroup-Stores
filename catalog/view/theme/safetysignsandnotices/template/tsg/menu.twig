@@ -30,14 +30,28 @@
           {% endif %}
         {% endfor %}
         </ul>
-          <a href="tel:{{ telephone }}"></a>
+          
+
           <ul class="navbar-nav d-none d-sm-block">
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="{{ symbol_search_url }}">
+                      <i class="fa-thin fa-magnifying-glass"><span class="header_text ps-2">{{ symbol_search_text }}</span></i>
+                  </a>
+              </li>  
+          </ul>
+
+
+          <ul class="navbar-nav d-none d-sm-block">
+              
               <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="tel:{{ telephone }}">
                       <i class="fa-regular fa-phone"><span class="header_text ps-2">{{ telephone }}</span></i>
                   </a>
               </li>
+              
           </ul>
+
+
 
       </div>
     </div>

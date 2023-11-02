@@ -1534,3 +1534,21 @@
 2023-10-26 9:46:34 - PHP Warning:  mysqli::query(): (42S02/1146): Table 'totalsafetygroup_oc.oc_product_discount' doesn't exist in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
 2023-10-26 9:54:07 - PHP Warning:  Undefined variable $discounts in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\product\product.php on line 306
 2023-10-26 9:54:07 - PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\product\product.php on line 306
+2023-11-01 11:31:51 - PHP Warning:  imagecreatefrompng(): gd-png: libpng warning: iCCP: known incorrect sRGB profile in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\image.php on line 45
+2023-11-02 13:51:20 - PHP Warning:  Undefined array key "accountCompany" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\model\account\customer.php on line 15
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$to is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$from is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$sender is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$reply_to is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$subject is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$text is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$html is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$attachments is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$parameter is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$adaptor is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_hostname is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_username is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_password is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_port is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:20 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_timeout is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail.php on line 139
+2023-11-02 13:51:22 - PHP Warning:  mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\mail\mail.php on line 77

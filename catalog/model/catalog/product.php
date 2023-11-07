@@ -462,13 +462,19 @@ class ModelCatalogProduct extends Model {
         //$sql = "SELECT " . DB_PREFIX . "product_image_base.image FROM " . DB_PREFIX . "product_image_base WHERE " . DB_PREFIX . "product_image_base.product_id=" . (int)$product_id . " ORDER BY " . DB_PREFIX . "product_image_base.sort_order ASC";
 
         //TODO - make this work
-        return [];
-
-        $sql = "SELECT " . DB_PREFIX . "product_image.image FROM " . DB_PREFIX . "product_image";
-	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_image_to_store ON oc_product_image.product_image_id = " . DB_PREFIX . "tsg_product_image_to_store.product_image_id";
-	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_image_type ON " . DB_PREFIX . "tsg_product_image_to_store.image_type = " . DB_PREFIX . "tsg_image_type.id ";
-        $sql .= " WHERE  " . DB_PREFIX . "tsg_product_image_to_store.`status` = 1 ";
-	    $sql .= " AND " . DB_PREFIX . "tsg_product_image_to_store.store_id = " . (int)$this->config->get('config_store_id');
+        $sql = "SELECT " . DB_PREFIX . "store_product_images.order_id, ";
+        $sql .= " " . DB_PREFIX . "product_image.product_image_id,";
+	    $sql .= " " . DB_PREFIX . "product_image.product_id,";
+	    $sql .= " " . DB_PREFIX . "product_image.image,";
+	    $sql .= " IF(ISNULL(" . DB_PREFIX . "store_product_images.alt_text)," . DB_PREFIX . "product_image.alt_text ," . DB_PREFIX . "store_product_images.alt_text) as alt_text";
+        $sql .= " FROM " . DB_PREFIX . "store_product_images";
+	    $sql .= " INNER JOIN " . DB_PREFIX . "product_to_store ON ( " . DB_PREFIX . "store_product_images.store_product_id = " . DB_PREFIX . "product_to_store.id )";
+	    $sql .= " INNER JOIN " . DB_PREFIX . "product_image ON ( " . DB_PREFIX . "store_product_images.image_id = " . DB_PREFIX . "product_image.product_image_id ) ";
+        $sql .= " WHERE";
+	    $sql .= " (";
+	    $sql .= " " . DB_PREFIX . "product_to_store.product_id = '" . (int)$product_id . "'";
+	    $sql .= " AND " . DB_PREFIX . "product_to_store.store_id = " . (int)$this->config->get('config_store_id') .")";
+        $sql .= " ORDER BY " . DB_PREFIX . "store_product_images.order_id";
 
         $query = $this->db->query($sql);
 		return $query->rows;

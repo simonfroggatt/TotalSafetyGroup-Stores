@@ -11,34 +11,29 @@
       <div class="row">
         <div class="col-12 col-md-5 col-lg-5 text-center align-self-center">
             <h2 class="d-block d-sm-none">{{ heading_title }}</h2>
-
             <div class="row align-middle">
-                {% if images %}
-                    <div class="col-2">
-                        <div class="row">
-                            {% for image in images %}
-                                <div class="col-12">
-                                    <a href="{{ image.popup }}" title="{{ heading_title }}" data-toggle="lightbox"
-                                       data-gallery="product-gallery"> <img class="img-thumbnail"
-                                                                            src="{{ image.thumb }}"
-                                                                            title="{{ heading_title }}"
-                                                                            alt="{{ heading_title }}"/></a>
-                                </div>
-                            {% endfor %}
 
-                        </div>
-                    </div>
-
-                <div class="col-10">
-                    {% else %}
                     <div class="col-12">
-                    {% endif %}
-                    <a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"
+                        <a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"
                        data-toggle="lightbox" data-gallery="product-gallery"><img id="main-image" src="{{ thumb }}"
                                                                                   title="{{ heading_title }}"
                                                                                   alt="{{ heading_title }}"
                                                                                   class="img-fluid"/></a>
-                </div>
+                    </div>
+                {% if images %}
+                    <div class="col-12">
+                        <div class="row">
+                        {% for image in images %}
+                            <div class="col-2">
+                                <a href="{{ image.popup }}" title="{{ heading_title }}" data-toggle="lightbox"
+                                   data-gallery="product-gallery" data-caption="{{ image.alt_text }}"> <img class="img-thumbnail img-fluid"
+                                                                        src="{{ image.thumb }}"
+                                                                        alt="{{ image.alt_text }}"/></a>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
 

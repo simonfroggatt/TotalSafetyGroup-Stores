@@ -1703,3 +1703,20 @@
 2023-11-02 7:33:14 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_password is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
 2023-11-02 7:33:14 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_port is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
 2023-11-02 7:33:14 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_timeout is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$to is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$from is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$sender is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$reply_to is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$subject is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$text is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$html is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$attachments is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$parameter is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$adaptor is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_hostname is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_username is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_password is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_port is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 11:51:40 - PHP Unknown:  Creation of dynamic property Mail\Mail::$smtp_timeout is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/mail.php on line 139
+2023-11-07 12:18:44 - PHP Unknown:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/engine/action.php on line 65
+2023-11-07 12:25:51 - PHP Unknown:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/engine/action.php on line 65

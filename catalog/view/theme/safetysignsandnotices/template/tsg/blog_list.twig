@@ -1,0 +1,22 @@
+{{ header }}
+<div id="blog-content" class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="row">
+        <div id="content" class="col-12">
+            <h1>{{ blog_header }}</h1>
+            this is where the list of blogs will be
+            <ul>
+                <li><a href="/index.php?route=blog/blog&blog_id=1">Blog 1</a></li>
+                <li>Blog 2</li>
+                <li>Blog 3</li>
+                <li>Blog 4</li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+{{ footer }}

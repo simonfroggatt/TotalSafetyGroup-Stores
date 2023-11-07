@@ -881,11 +881,13 @@ span.product-variants  {
     border-bottom-left-radius: 0;
 }
 
-.form-signin input[type="password"] {
-    margin-bottom: 10px;
+.form-signin input[type="password"], input[type="text"] {
+    margin-bottom: -1px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+
 
 .form-register {
     width: 100%;

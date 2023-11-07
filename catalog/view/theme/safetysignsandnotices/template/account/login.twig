@@ -18,9 +18,11 @@
       <label for="input-email">Email address</label>
     </div>
     <div class="form-floating">
-      <input type="password" class="form-control" id="input-password" placeholder="Password" name="password">
-      <label for="input-password">Password</label>
+      <div class="input-group mb-3">
+        <input type="password" class="form-control" id="input-password" placeholder="Password" name="password" >
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="showPassword()"><i class="fa fa-eye"></i></button>
     </div>
+      </div>
     <div class="checkbox mb-3">
       <p><a href="{{ forgotten }}">Forgot</a> your password?</p>
     </div>
@@ -30,3 +32,14 @@
 </main>
 </div>
 {{ footer }}
+
+<script> 
+function showPassword() {
+  var x = document.getElementById("input-password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+} 
+</script> 

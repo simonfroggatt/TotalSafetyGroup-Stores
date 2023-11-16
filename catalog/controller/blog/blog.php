@@ -54,6 +54,13 @@ class ControllerBlogBlog extends Controller
             );
 
             $data['blog_header'] = "List of blogs";
+            $data['blog_desc'] = "Some quick example text to build on the card title and make up the bulk of the card's content.";
+            $data['blog_image'] = "image/banner.jpg";
+            $data['blog_title'] = "Blog Title";
+            $data['blog_more'] = "index.php?route=blog/blog&blog_id=1";
+            $data['blog_back'] = "index.php?route=blog/blog&blog_id=0";
+        
+
 
             $data['column_left'] = $this->load->controller('common/column_left');
             $data['column_right'] = $this->load->controller('common/column_right');

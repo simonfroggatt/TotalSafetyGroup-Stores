@@ -11,86 +11,20 @@
           <!-- Cards Start -->  
             <div class="row row-cols-1 row-cols-md-4 g-4">
 
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
+                {% for blog in blog_list %}
+                    <div class="col">
+                        <div class="card h-100" style="width: 19rem;">
+                            <img src="{{ blog.image }}" class="card-img-top" alt="">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ blog.title }}</h5>
+                                <p class="card-text">{{ blog.sub_title }}</p>
+                                <a href="index.php?route=blog/blog&blog_id={{ blog.id }}" class="btn btn-primary">Read More</a>
+                                {{ blog.date_added }}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 19rem;">
-                        <img src="{{ blog_image }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ blog_title }}</h5>
-                        <p class="card-text">{{ blog_desc }}</p>
-                        <a href="{{ blog_more }}" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
+
 <!-- Cards End -->
 
             </div>

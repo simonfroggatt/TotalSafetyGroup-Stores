@@ -1725,3 +1725,12 @@
 2023-11-10 12:54:26 - PHP Warning:  mysqli::query(): (HY000/2006): MySQL server has gone away in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
 2023-11-13 5:05:16 - PHP Unknown:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\engine\action.php on line 65
 2023-11-13 5:05:50 - PHP Unknown:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\engine\action.php on line 65
+2023-11-16 6:15:27 - PHP Warning:  mysqli::query(): (42000/1064): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '* FROM oc_tsg_blogs WHERE oc_tsg_blogs.id = 1' at line 1 in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/db/mysqli.php on line 25
+2023-11-16 6:20:01 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/b3/b3b2c45c45b6957482ec97fe92fa1ff2.php on line 70
+2023-11-16 6:22:30 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/0e/0e61ad0f322d939f69af9215c881567d.php on line 70
+2023-11-16 6:22:41 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/0e/0e61ad0f322d939f69af9215c881567d.php on line 70
+2023-11-16 6:22:45 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/0e/0e61ad0f322d939f69af9215c881567d.php on line 70
+2023-11-16 6:23:35 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/9e/9e670d42fe8720964a601e79c33d283f.php on line 70
+2023-11-16 6:23:53 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/a4/a46d5ee68ba98931224692a6e0c5fb29.php on line 70
+2023-11-16 6:24:07 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/a5/a51a5f97a4ae5446953bcbfe3fda4f03.php on line 70
+2023-11-16 6:24:35 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/0d/0d58f30860c0791cfa0781477b6a4233.php on line 70

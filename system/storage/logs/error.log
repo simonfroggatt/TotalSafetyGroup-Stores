@@ -1734,3 +1734,6 @@
 2023-11-16 6:23:53 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/a4/a46d5ee68ba98931224692a6e0c5fb29.php on line 70
 2023-11-16 6:24:07 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/a5/a51a5f97a4ae5446953bcbfe3fda4f03.php on line 70
 2023-11-16 6:24:35 - PHP Warning:  Array to string conversion in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/storage/cache/template/0d/0d58f30860c0791cfa0781477b6a4233.php on line 70
+2023-11-16 7:57:04 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
+2023-11-16 7:57:06 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
+2023-11-16 7:57:39 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25

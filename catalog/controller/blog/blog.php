@@ -40,9 +40,19 @@ class ControllerBlogBlog extends Controller
             $data['content_bottom'] = $this->load->controller('common/content_bottom');
             $data['footer'] = $this->load->controller('common/footer');
             $data['header'] = $this->load->controller('common/header');
+            
+            $data['blog_header'] = "List of blogs";
+            $data['blog_desc'] = "Some quick example text to build on the card title and make up the bulk of the card's content.";
+            $data['blog_image'] = "image/banner.jpg";
+            $data['blog_title'] = "Blog Title";
+            $data['blog_more'] = "index.php?route=blog/blog&blog_id=1";
+            $data['blog_back'] = "index.php?route=blog/blog&blog_id=0";
+        
+
 
             $this->response->setOutput($this->load->view('tsg/blog', $data));
         }
+        
         else {
             $this->document->setTitle('blog title');
             $this->document->setDescription('blog desc');

@@ -43,7 +43,7 @@ class ControllerTsgMenu extends Controller {
 
 		$data['shopping_cart'] = $this->url->link('checkout/cart');
         $data['telephone'] = $this->config->get('config_telephone');
-		$data['symbol_search_text'] = 'Symbol Search';
+		$data['symbol_search_text'] = 'Search Symbols';
 		$data['symbol_search_url'] = 'index.php?route=tsg/symbol_search';
 
 

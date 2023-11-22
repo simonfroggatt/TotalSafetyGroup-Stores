@@ -1737,3 +1737,5 @@
 2023-11-16 7:57:04 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
 2023-11-16 7:57:06 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
 2023-11-16 7:57:39 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
+2023-11-21 9:06:26 - PHP Warning:  mysqli::query(): (42S02/1932): Table 'totalsafetygroup_oc.oc_translation' doesn't exist in engine in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
+2023-11-21 9:09:10 - PHP Warning:  mysqli::query(): (42S02/1146): Table 'totalsafetygroup_oc.oc_translation' doesn't exist in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25

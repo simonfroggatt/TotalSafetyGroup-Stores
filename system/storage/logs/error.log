@@ -1737,5 +1737,8 @@
 2023-11-16 7:57:04 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
 2023-11-16 7:57:06 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
 2023-11-16 7:57:39 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oc_tsg_blogs.image' in 'field list' in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
-2023-11-21 9:06:26 - PHP Warning:  mysqli::query(): (42S02/1932): Table 'totalsafetygroup_oc.oc_translation' doesn't exist in engine in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
-2023-11-21 9:09:10 - PHP Warning:  mysqli::query(): (42S02/1146): Table 'totalsafetygroup_oc.oc_translation' doesn't exist in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\library\db\mysqli.php on line 25
+2023-11-22 11:53:49 - PHP Unknown:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in /Users/simonfroggatt/Sites/totalsafetygroup_stores/catalog/model/account/address.php on line 179
+2023-11-22 11:54:09 - PHP Warning:  Undefined array key "payment_method" in /Users/simonfroggatt/Sites/totalsafetygroup_stores/catalog/model/account/order.php on line 70
+2023-11-22 11:54:09 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oh.order_status_id' in 'on clause' in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/db/mysqli.php on line 25
+2023-11-22 11:56:30 - PHP Warning:  Undefined array key "payment_method" in /Users/simonfroggatt/Sites/totalsafetygroup_stores/catalog/model/account/order.php on line 70
+2023-11-22 11:56:30 - PHP Warning:  mysqli::query(): (42S22/1054): Unknown column 'oh.order_status_id' in 'on clause' in /Users/simonfroggatt/Sites/totalsafetygroup_stores/system/library/db/mysqli.php on line 25

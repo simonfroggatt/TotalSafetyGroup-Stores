@@ -21,10 +21,41 @@
 
 
       <h2>{{ text_my_account }}</h2>
-      <ul class="list-unstyled">
-        <li><a href="{{ edit }}">{{ text_edit }}</a></li>
-        <li><a href="{{ password }}">{{ text_password }}</a></li>
-        <li><a href="{{ address }}">{{ text_address }}</a></li>
+      <ul>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+    <div class="card text-center ">
+        <div class="card-body">
+          <h2 class="card-title"><a href="{{ edit }}"><i class="fa-thin fa-pen-to-square"></i></a></h2>
+          <br>
+          <p class="card-text">Edit you account information</p>
+          <a href="{{ edit }}" class="btn btn-primary">Go</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+        <div class="card text-center ">
+            <div class="card-body">
+              <h2 class="card-title"><a href="{{ password }}"><i class="fa-thin fa-key"></i></a></h2>
+                <br>
+              <p class="card-text">Change you password</p>
+              <a href="{{ password }}" class="btn btn-primary">Go</a>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+            <div class="card text-center ">
+                <div class="card-body">
+                  <h2 class="card-title"><a href="{{ address }}"><i class="fa-thin fa-book"></i></a></h2>
+                  <br>
+                  <p class="card-text">Modify your address book entries</p>
+                  <a href="{{ address }}" class="btn btn-primary">Go</a>
+                </div>
+              </div>
+            </div>
+            </div>
+
       </ul>
       {% if credit_cards %}
       <h2>{{ text_credit_card }}</h2>
@@ -35,8 +66,15 @@
       </ul>
       {% endif %}
       <h2>{{ text_my_orders }}</h2>
-      <ul class="list-unstyled">
-        <li><a href="{{ order }}">{{ text_order }}</a></li>
+      <ul>
+          <div class="card text-center" style="width: 25rem;">
+            <div class="card-body">
+              <h2 class="card-title"><a href="{{ address }}"><i class="fa-thin fa-clock-rotate-left"></i></a></h2>
+            <br>
+          <p class="card-text">View your order history</p>
+        <a href="{{ order }}" class="btn btn-primary">Go</a>
+          </div>
+      </div>
       </ul>
       {{ content_bottom }}</div>
     {{ column_right }}</div>

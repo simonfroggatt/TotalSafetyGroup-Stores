@@ -23,6 +23,8 @@
               <td class="text-right">{{ column_order_id }}</td>
               <td class="text-left">{{ column_customer }}</td>
               <td class="text-right">{{ column_product }}</td>
+              <td class="text-left">{{ column_pstatus }}</td>
+              <td class="text-left">{{ column_pmethod }}</td>
               <td class="text-left">{{ column_status }}</td>
               <td class="text-right">{{ column_total }}</td>
               <td class="text-left">{{ column_date_added }}</td>
@@ -33,12 +35,18 @@
            {% for order in orders %}
             <tr>
               <td class="text-right">#{{ order.order_id }}</td>
-              <td class="text-left">{{ order.name }}</td>
+              <td class="text-left">{{ order.fullname }}</td>
               <td class="text-right">{{ order.products }}</td>
+              <td class="text-left">{{ order.payment_status }}</td>
+              <td class="text-left">{{ order.payment_method }}</td>
               <td class="text-left">{{ order.status }}</td>
               <td class="text-right">{{ order.total }}</td>
               <td class="text-left">{{ order.date_added }}</td>
-              <td class="text-right"><a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
+              <td class="text-center">
+                <a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-secondary"><i class="fa-light fa-eye"></i></a>  
+                <a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-secondary"><i class="fa-light fa-download"></i></a>  
+                <a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-secondary"><i class="fa-light fa-envelope"></i></a>  
+              </td>
             </tr>
             {% endfor %}
           </tbody>

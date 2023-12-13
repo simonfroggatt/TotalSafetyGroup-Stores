@@ -55,7 +55,10 @@ class ControllerAccountOrder extends Controller {
 			$data['orders'][] = array(
 				'order_id'   => $result['order_id'],
 				'name'       => $result['firstname'] . ' ' . $result['lastname'],
+				'fullname'   => $result['fullname'], 
 				'status'     => $result['status'],
+				'payment_method' => $result['payment_method'],
+				'payment_status' => $result['payment_status'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'products'   => ($product_total + $voucher_total),
 				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),

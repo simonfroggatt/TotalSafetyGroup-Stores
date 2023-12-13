@@ -111,9 +111,31 @@ class ModelAccountOrder extends Model {
 			$limit = 1;
 		}
 
-        $sql = "SELECT o.order_id, o.firstname, o.lastname, os.name as status, o.date_added, o.total, o.currency_code, o.currency_value FROM `" . DB_PREFIX . "order` o LEFT JOIN " . DB_PREFIX . "order_status os ON (o.order_status_id = os.order_status_id) WHERE o.customer_id = '" . (int)$this->customer->getId() . "' AND o.order_status_id > '0' AND o.store_id = '" . (int)$this->config->get('config_store_id') . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.order_id DESC LIMIT " . (int)$start;
-		echo $sql;
-		$query = $this->db->query("SELECT o.order_id, o.firstname, o.lastname, os.name as status, o.date_added, o.total, o.currency_code, o.currency_value FROM `" . DB_PREFIX . "order` o LEFT JOIN " . DB_PREFIX . "order_status os ON (o.order_status_id = os.order_status_id) WHERE o.customer_id = '" . (int)$this->customer->getId() . "' AND o.order_status_id > '0' AND o.store_id = '" . (int)$this->config->get('config_store_id') . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.order_id DESC LIMIT " . (int)$start . "," . (int)$limit);
+	$sql = "SELECT";
+	$sql .=	" oc_order.order_id,";
+	$sql .=	"oc_order.fullname,";
+	$sql .=	"oc_order.firstname,";
+	$sql .=	"oc_order.lastname,";
+	$sql .=	"oc_order_status.`name` AS `status`,";
+	$sql .=	"oc_order.date_added,";
+	$sql .=	"oc_order.total,";
+	$sql .=	"oc_order.currency_code,";
+	$sql .=	"oc_order.currency_value,";
+	$sql .=	"oc_tsg_payment_status.`name` AS payment_status,";
+	$sql .=	"oc_tsg_payment_method.payment_method_name AS payment_method ";
+	$sql .= " FROM";
+	$sql .=	" oc_order";
+	$sql .= " INNER JOIN oc_order_status ON oc_order.order_status_id = oc_order_status.order_status_id";
+	$sql .=	" INNER JOIN oc_tsg_payment_status ON oc_order.payment_status_id = oc_tsg_payment_status.payment_status_id";
+	$sql .=	" INNER JOIN oc_tsg_payment_method ON oc_order.payment_method_id = oc_tsg_payment_method.payment_method_id ";
+	$sql .= " WHERE";
+	$sql .=	" oc_order.customer_id = '" . (int)$this->customer->getId() . "'";
+	$sql .=	" AND oc_order.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
+	$sql .=	" AND oc_order_status.order_status_id > 0";
+	$sql .=	" AND oc_order_status.language_id = '" . (int)$this->config->get('config_language_id') . "'  ";
+	$sql .=	" ORDER BY oc_order.order_id DESC";
+	$sql .=	" LIMIT ". (int)$start . "," . (int)$limit;
+		$query = $this->db->query($sql);
 
 		return $query->rows;
 	}

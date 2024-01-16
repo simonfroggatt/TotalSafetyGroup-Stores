@@ -17,13 +17,13 @@
       <h2>{{ text_address_book }}</h2>
       {% if default_billing_id <= 0 %}
       <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <span>You have no default Billing address - Click the  </span><button class="btn btn-xs btn-secondary align-text-bottom"><i class="fas fa-pound-sign fa-2x"></i></button><span>  on an address to set it as your default billing address</span>
+        <span>You have no default Billing address - Click the  </span><button class="btn btn-primary btn-sm"><i class="fas fa-pound-sign fa-2x"></i></button><span>  on an address to set it as your default billing address</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
       {% endif %}
       {% if default_shipping_id <= 0 %}
       <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <span>You have no default Shipping address - Click the  </span><button class="btn btn-xs btn-secondary align-text-bottom"><i class="fas fa-shipping-fast fa-2x"></i></button><span>  on an address to set it as your default shipping address</span>
+        <span>You have no default Shipping address - Click the  </span><button class="btn btn-primary btn-sm"><i class="fas fa-shipping-fast fa-2x"></i></button><span>  on an address to set it as your default shipping address</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
       {% endif %}
@@ -32,53 +32,66 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
+<div class="row row-cols-1 row-cols-md-2  row-cols-xl-3 row-cols-xxl-4 ">
+    {% for address in address_book %}
+  <div class="col">
+<div class="card h-100">
+  <div class="card-header">
+    <ul class="nav nav-pills card-header-pills">
+      <li class="nav-item">
+        <a class="btn btn-primary" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ address.default_billing ? 'This is your default Billing' : 
+        'CLICK to set as Default Billing' }}"><i class="fa-thin fa-sterling-sign fa-2x"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-primary" href="#"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{ address.default_shipping ? 'This is your default Shipping' 
+        : 'CLICK to set as Default Shipping' }}"><i class="fa-thin fa-truck-front fa-2x"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-primary" href="{{ update }}&address_id={{ address.address_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Update Address"
+         ><i class="fa-thin fa-pen-to-square fa-2x"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-primary" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Address"><i class="fa-thin fa-trash fa-2x"></i></a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+<dl class="row text-nowrap" id="address_text_{{ address.address_id }}">
+    <dt class="col-3">Contact</dt>
+    <dd class="col-9">{{ address.fullname }}</dd>
+    <dt class="col-3">Company</dt>
+    <dd class="col-9">{{ address.company|default("&nbsp;")}}</dd>
+    <dt class="col-3">Address</dt>
+    <dd class="col-9">
+        <address>
+    {{ address.address_1|nl2br  }}<br>
+    {% if address.address_2 %}
+    {{ address.address_2|nl2br }}<br>
+    {% endif %}
+    {% if address.city %}
+    {{ address.city|nl2br }}<br>
+      {% endif %}
+    {% if address.area %}
+    {{ address.area|nl2br }}<br>
+      {% endif %}
+    <strong>{{ address.postcode }}</strong>
+    <br>{{ address.country_name }}
+    </address>
+    </dd>
+    <dt class="col-3">Email</dt>
+    <dd class="col-9"><a
+    href="mailto:{{ address.email }}">{{ address.email }}</a></dd>
+    <dt class="col-3">Phone</dt>
+    <dd class="col-9">{{ address.telephone|default("&nbsp;") }}</dd>
+      </dl>
+  </div>
+</div>
+</div>
+  {% endfor %}
+</div>
 
-      <div class="row row-cols-1 row-cols-md-2  row-cols-xl-3 row-cols-xxl-4 g-4">
-        {% for address in address_book %}
-          <div class="col">
-            <div class="card h-100 mb-0" id="card-address-{{ address.address_id }}">
-              <div class="card-header d-grid gap-1 d-flex justify-content-end">
-                <a class="btn btn-xs jsBtnDefault {{ address.default_billing ? 'btn-green' : 'btn-secondary' }}" data-bs-toggle="tooltip" data-bs-placement="top" data-address-id="{{ address.address_id }}" data-address-type="billing"
-                   title="{{ address.default_billing ? 'This is your default Billing' : 'CLICK to set as Default Billing' }}"  role="button"><i class="fas fa-pound-sign fa-2x"></i></a>
-                <a class="btn btn-xs jsBtnDefault {{ address.default_shipping ? 'btn-green' : 'btn-secondary' }}" data-bs-toggle="tooltip" data-bs-placement="top"  data-address-id="{{ address.address_id }}" data-address-type="shipping"
-                   title="{{ address.default_shipping ? 'This is your default Shipping' : 'CLICK to set as Default Shipping' }}"  role="button"><i class="fas fa-shipping-fast fa-2x"></i></a>
-                <a class="btn btn-primary btn-xs js-address-edit" href="{{ update }}&address_id={{ address.address_id }}" role="button"><i class="fas fa-edit fa-2x"></i></a>
-                <a class="btn btn-danger btn-xs js-address-delete" data-address-id="{{ address.address_id }}" role="button" data-bs-toggle="modal" data-bs-target="#modaldeleteaddress"><i class="fas fa-trash-alt fa-2x"></i></a>
-              </div>
-              <div class="card-body ">
-                <dl class="row text-nowrap" id="address_text_{{ address.address_id }}">
-                  <dt class="col-3">Contact</dt>
-                  <dd class="col-9">{{ address.fullname }}</dd>
-                  <dt class="col-3">Company</dt>
-                  <dd class="col-9">{{ address.company|default("&nbsp;")}}</dd>
-                  <dt class="col-3">Address</dt>
-                  <dd class="col-9">
-                    <address>
-                      {{ address.address_1|nl2br  }}<br>
-                      {% if address.address_2 %}
-                        {{ address.address_2|nl2br }}<br>
-                      {% endif %}
-                      {% if address.city %}
-                        {{ address.city|nl2br }}<br>
-                      {% endif %}
-                      {% if address.area %}
-                        {{ address.area|nl2br }}<br>
-                      {% endif %}
-                      <strong>{{ address.postcode }}</strong>
-                      <br>{{ address.country_name }}
-                    </address>
-                  </dd>
-                  <dt class="col-3">Email</dt>
-                  <dd class="col-9"><a
-                            href="mailto:{{ address.email }}">{{ address.email }}</a></dd>
-                  <dt class="col-3">Phone</dt>
-                  <dd class="col-9">{{ address.telephone|default("&nbsp;") }}</dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+
+
       <div class="pt-2">
         <a href="{{ back }}" type="button" class="btn btn-lg btn-default">{{ button_back }}</a>
         <a href="{{ add }}" type="button" class="btn btn-lg btn-success">{{ button_new_address }}</a>

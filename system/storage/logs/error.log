@@ -1851,3 +1851,31 @@
 2023-12-19 15:46:39 - PHP Unknown:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\model\account\address.php on line 179
 2023-12-19 15:49:00 - PHP Unknown:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\model\account\address.php on line 179
 2023-12-19 15:49:00 - PHP Unknown:  json_decode(): Passing null to parameter #1 ($json) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\model\account\address.php on line 179
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "order_id" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 460
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "firstname" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 464
+2024-01-18 12:11:14 - PHP Unknown:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 464
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "lastname" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 468
+2024-01-18 12:11:14 - PHP Unknown:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 468
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 472
+2024-01-18 12:11:14 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 472
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "telephone" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 476
+2024-01-18 12:11:14 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "product" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 480
+2024-01-18 12:11:14 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:14 - PHP Warning:  Undefined array key "model" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 484
+2024-01-18 12:11:14 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "order_id" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 460
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "firstname" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 464
+2024-01-18 12:11:22 - PHP Unknown:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 464
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "lastname" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 468
+2024-01-18 12:11:22 - PHP Unknown:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 468
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 472
+2024-01-18 12:11:22 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 472
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "telephone" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 476
+2024-01-18 12:11:22 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "product" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 480
+2024-01-18 12:11:22 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6
+2024-01-18 12:11:22 - PHP Warning:  Undefined array key "model" in C:\xampp\htdocs\TotalSafetyGroup-Stores\catalog\controller\account\return.php on line 484
+2024-01-18 12:11:22 - PHP Unknown:  mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\TotalSafetyGroup-Stores\system\helper\utf8.php on line 6

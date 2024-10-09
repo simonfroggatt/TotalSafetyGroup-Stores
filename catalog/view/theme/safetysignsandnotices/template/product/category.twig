@@ -9,7 +9,7 @@
     {% if column_left and column_right %}
     {% set class = 'col-sm-6' %}
     {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
+    {% set class = 'col-sm-10' %}
     {% else %}
     {% set class = 'col-sm-12' %}
     {% endif %}
@@ -75,12 +75,13 @@
         <div class="product-layout-grid row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2">
           {% for product in products %}
           <div class="col text-center">
-            <div class="card h-100">
+            <div class="card h-100 cat_cards">
              <!-- <span class="notify-bespoke" ><i class="fas fa-sliders-h" title="Customize this sign"></i></span> -->
-
-              <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="card-img-top p-2" /></a>
-              <div class="card-body">
-                <p class="card-title"><a href="{{ product.href }}">{{ product.title }}</a></p>
+              <div class="d-flex align-items-center justify-content-center">
+                  <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="card-img-top {{ product.thumb_css }}" /></a>
+              </div>
+              <div class="card-body align-text-bottom">
+                <p class="card-title"><a href="{{ product.href }}"> {{ (product.name|length > 50 ? product.name|slice(0, 50) ~ '…' : product.name)  }}</a></p>
               </div>
               <div class="card-footer">
                 From: {{ product.price }}

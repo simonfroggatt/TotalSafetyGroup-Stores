@@ -37,8 +37,8 @@ class ModelCheckoutOrder extends Model {
         $sql .= "payment_zone_id = '" . (int)$data['payment_zone_id'] . "', ";
         $sql .= "payment_address_format = '" . $this->db->escape($data['payment_address_format']) . "', ";
         $sql .= "payment_custom_field = '" . $this->db->escape(isset($data['payment_custom_field']) ? json_encode($data['payment_custom_field']) : '') . "', ";
-        $sql .= "payment_method = '" . $this->db->escape($data['payment_method']) . "', ";
-        $sql .= "payment_code = '" . $this->db->escape($data['payment_code']) . "', ";
+       // $sql .= "payment_method = '" . $this->db->escape($data['payment_method']) . "', ";
+      //  $sql .= "payment_code = '" . $this->db->escape($data['payment_code']) . "', ";
        // $sql .= "shipping_firstname = '" . $this->db->escape($data['shipping_firstname']) . "', ";
        // $sql .= "shipping_lastname = '" . $this->db->escape($data['shipping_lastname']) . "', ";
         $sql .= "shipping_fullname = '" . $this->db->escape($data['shipping_fullname']) . "', ";
@@ -290,7 +290,7 @@ class ModelCheckoutOrder extends Model {
 				'payment_iso_code_3'      => $payment_iso_code_3,
 				'payment_address_format'  => $order_query->row['payment_address_format'],
 				'payment_custom_field'    => json_decode($order_query->row['payment_custom_field'], true),
-				'payment_method'          => $order_query->row['payment_method'],
+				'payment_method'          => $order_query->row['payment_method_name'],
 				'payment_code'            => $order_query->row['payment_code'],
                 'shipping_fullname'      => $order_query->row['shipping_fullname'],
 				'shipping_firstname'      => $order_query->row['shipping_firstname'],

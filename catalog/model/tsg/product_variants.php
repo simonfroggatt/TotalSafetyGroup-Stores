@@ -6,60 +6,38 @@ class ModelTsgProductVariants extends Model{
     {
         $product_variant_data = array();
 
-     /*   $sql = "SELECT ".DB_PREFIX . "tsg_product_variants.prod_variant_id,";
-        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.size_material_id,";
-        $sql .= " " . DB_PREFIX . "product.model,";
-        $sql .= " " . DB_PREFIX . "product.tax_class_id,";
-        $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_overide_price,";
-        $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_code,";
-        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.supplier_code,";
-        $sql .= " " . DB_PREFIX . "tsg_product_sizes.*,";
-        $sql .= " " . DB_PREFIX . "tsg_product_material.*,";
-        $sql .= " " . DB_PREFIX . "tsg_size_material_store_combs.price, ";
-        $sql .= " " . DB_PREFIX . "tsg_orientation.orientation_name, ";
-        $sql .= " IFNULL(" . DB_PREFIX . "tsg_product_variants.alt_image, IFNULL(" . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image) ) as alternative_image";
-        $sql .= " FROM";
-        $sql .= " " . DB_PREFIX . "tsg_product_variant_core";
-        $sql .= " INNER JOIN ".DB_PREFIX . "tsg_product_variants ON ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = ". DB_PREFIX . "tsg_product_variants.prod_var_core_id";
-        $sql .= " INNER JOIN ".DB_PREFIX . "product ON ". DB_PREFIX . "tsg_product_variant_core.product_id = " . DB_PREFIX . "product.product_id";
-        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_size_material_comb ON ". DB_PREFIX . "tsg_product_variant_core.size_material_id = ". DB_PREFIX . "tsg_size_material_comb.id";
-        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_size_material_store_combs ON ". DB_PREFIX . "tsg_product_variant_core.size_material_id = ". DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id";
-        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_product_sizes ON ". DB_PREFIX . "tsg_product_sizes.size_id = ". DB_PREFIX . "tsg_size_material_comb.product_size_id";
-        $sql .= " INNER JOIN ". DB_PREFIX . "tsg_product_material ON ". DB_PREFIX . "tsg_product_material.material_id = ". DB_PREFIX . "tsg_size_material_comb.product_material_id ";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_orientation ON " . DB_PREFIX . "tsg_product_sizes.orientation_id = " . DB_PREFIX . "tsg_orientation.orientation_id ";
-        $sql .= " WHERE";
-        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "'";
-        $sql .= "  AND ".DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= "  AND ".DB_PREFIX . "tsg_size_material_store_combs.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " ORDER BY";
-        $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_id ASC,";
-        $sql .= " " . DB_PREFIX . "tsg_product_material.material_id ASC";
-*/
-      //  echo $sql;
 
-        $sql = " SELECT ";
-        $sql .= " " . DB_PREFIX . "tsg_size_material_store_combs.price,";
+        $sql = " SELECT";
+        //$sql .= " " . DB_PREFIX . "tsg_size_material_store_combs.price,";
+        $sql .= " IF( " . DB_PREFIX . "tsg_size_material_store_combs.price > 0, " . DB_PREFIX . "tsg_size_material_store_combs.price, " . DB_PREFIX . "tsg_size_material_comb.price) as price,";
 	    $sql .= " " . DB_PREFIX . "tsg_product_variants.*,";
         $sql .= " " . DB_PREFIX . "tsg_product_sizes.*,";
 	    $sql .= " " . DB_PREFIX . "tsg_product_material.*,";
 	    $sql .= " " . DB_PREFIX . "product.tax_class_id,";
 	    $sql .= " " . DB_PREFIX . "tsg_orientation.orientation_name, ";
-        $sql .= " IFNULL(" . DB_PREFIX . "tsg_product_variants.alt_image, IFNULL(" . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image) ) as alternative_image";
+
+        $sql .= " " ."IF( LENGTH( " . DB_PREFIX . "tsg_product_variants.alt_image ) > 1, " . DB_PREFIX . "tsg_product_variants.alt_image,  IF ( LENGTH(" . DB_PREFIX . "tsg_product_variant_core.variant_image) > 1, " . DB_PREFIX . "tsg_product_variant_core.variant_image, IF ( LENGTH(" . DB_PREFIX . "product_to_store.image) > 1, " . DB_PREFIX . "product_to_store.image, " . DB_PREFIX . "product.image ) )) AS alternative_image";
+        //$sql .= " " ."IF( " . DB_PREFIX . "tsg_product_variants.alt_image > '' , " . DB_PREFIX . "tsg_product_variants.alt_image, IF( " . DB_PREFIX . "tsg_product_variant_core.variant_image > '', " . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image)) as alternative_image";
+        //$sql .= " IFNULL(" . DB_PREFIX . "tsg_product_variants.alt_image, IFNULL(" . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image) ) as alternative_image";
         $sql .= " FROM " . DB_PREFIX . "product";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "product.product_id = " . DB_PREFIX . "tsg_product_variant_core.product_id";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
-	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_store_combs ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id";
+	    $sql .= " LEFT JOIN " . DB_PREFIX . "tsg_size_material_store_combs ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id AND";
+        $sql .= " " . DB_PREFIX . "tsg_size_material_store_combs.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_sizes ON " . DB_PREFIX . "tsg_size_material_comb.product_size_id = " . DB_PREFIX . "tsg_product_sizes.size_id";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_size_material_comb.product_material_id = " . DB_PREFIX . "tsg_product_material.material_id";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_orientation ON " . DB_PREFIX . "tsg_product_sizes.orientation_id = " . DB_PREFIX . "tsg_orientation.orientation_id ";
+        $sql .= " LEFT JOIN " . DB_PREFIX . "product_to_store ON " . DB_PREFIX . "product_to_store.product_id = " . DB_PREFIX . "tsg_product_variant_core.product_id ";
         $sql .= " WHERE";
 	    $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "'";
         $sql .= " AND " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1";
         $sql .= " AND " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
         $sql .= " AND " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "'";
-        $sql .= " AND " . DB_PREFIX . "tsg_size_material_store_combs.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+        $sql .= " AND " . DB_PREFIX . "product_to_store.store_id = '" . (int)$this->config->get('config_store_id') . "'";
+       // $sql .= " AND " . DB_PREFIX . "tsg_size_material_store_combs.store_id = '" . (int)$this->config->get('config_store_id') . "'";
 
+        //echo $sql;
         $product_variant_query = $this->db->query($sql);
         return $product_variant_query->rows;
 
@@ -84,10 +62,10 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
 
         $v_sizes = $this->db->query($sql);
 
@@ -102,10 +80,10 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_product_material.material_id = " . DB_PREFIX . "tsg_size_material_comb.product_material_id";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
 
         $v_mats = $this->db->query($sql);
 
@@ -127,10 +105,10 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core_options ON " . DB_PREFIX . "tsg_product_variant_options.product_var_core_option_id = " . DB_PREFIX . "tsg_product_variant_core_options.id ";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_option_class ON " . DB_PREFIX . "tsg_product_variant_core_options.option_class_id = " . DB_PREFIX . "tsg_option_class.id ";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
         $sql .= " ORDER BY " . DB_PREFIX . "tsg_option_class.order_by ASC";
 
 
@@ -164,16 +142,16 @@ class ModelTsgProductVariants extends Model{
         $sql .= " AND " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "'";
       */
 
-        $sql = "SELECT DISTINCT oc_tsg_option_values.id AS parent_class 
-                FROM oc_tsg_product_variant_core_options
-	            INNER JOIN oc_tsg_option_values ON oc_tsg_product_variant_core_options.option_value_id = oc_tsg_option_values.id
-	            INNER JOIN oc_tsg_product_variants
-	            INNER JOIN oc_tsg_product_variant_core ON oc_tsg_product_variants.prod_var_core_id = oc_tsg_product_variant_core.prod_variant_core_id 
-	            AND oc_tsg_product_variant_core_options.product_variant_id = oc_tsg_product_variant_core.prod_variant_core_id
-	            INNER JOIN oc_tsg_option_xtra ON oc_tsg_option_values.id = oc_tsg_option_xtra.option_class_id 
+        $sql = "SELECT DISTINCT " . DB_PREFIX . "tsg_option_values.id AS parent_class 
+                FROM " . DB_PREFIX . "tsg_product_variant_core_options
+	            INNER JOIN " . DB_PREFIX . "tsg_option_values ON " . DB_PREFIX . "tsg_product_variant_core_options.option_value_id = " . DB_PREFIX . "tsg_option_values.id
+	            INNER JOIN " . DB_PREFIX . "tsg_product_variants
+	            INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "tsg_product_variants.prod_var_core_id = " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id 
+	            AND " . DB_PREFIX . "tsg_product_variant_core_options.product_variant_id = " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id
+	            INNER JOIN " . DB_PREFIX . "tsg_option_xtra ON " . DB_PREFIX . "tsg_option_values.id = " . DB_PREFIX . "tsg_option_xtra.option_class_id 
                 WHERE
-	            oc_tsg_product_variant_core.product_id ='.(int)$product_id'
-	            AND oc_tsg_product_variants.store_id = '". (int)$this->config->get('config_store_id')."'";
+	            " . DB_PREFIX . "tsg_product_variant_core.product_id ='.(int)$product_id'
+	            AND " . DB_PREFIX . "tsg_product_variants.store_id = '". (int)$this->config->get('config_store_id')."'";
         
         
         
@@ -205,10 +183,10 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_options ON " . DB_PREFIX . "tsg_product_variants.prod_variant_id = " . DB_PREFIX . "tsg_product_variant_options.product_variant_id ";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
 
         $res = $this->db->query($sql);
 
@@ -282,10 +260,10 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_dep_option_options ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_values.id";
         $sql .= " LEFT JOIN " . DB_PREFIX . "tsg_option_xtra ON " . DB_PREFIX . "tsg_dep_option_class_values.option_value_id = " . DB_PREFIX . "tsg_option_xtra.option_options_id";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
         $sql .= " ORDER BY";
         $sql .= " " . DB_PREFIX . "tsg_option_class.order_by ASC,";
         $sql .= " " . DB_PREFIX . "tsg_option_class.id ASC,";
@@ -465,10 +443,10 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_sizes ON " . DB_PREFIX . "tsg_size_material_comb.product_size_id = " . DB_PREFIX . "tsg_product_sizes.size_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_size_material_comb.product_material_id = " . DB_PREFIX . "tsg_product_material.material_id ";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$class_row['product_id'] . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$class_row['product_id'] . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
         $sql .= " ORDER BY " . DB_PREFIX . "tsg_size_material_store_combs.price ASC";
 
         $class_prod_res = $this->db->query($sql);
@@ -549,7 +527,9 @@ class ModelTsgProductVariants extends Model{
         $sql = "SELECT";
         $sql .= " " . DB_PREFIX . "product.tax_class_id,";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.prod_variant_id,";
-        $sql .= " IF ( " . DB_PREFIX . "tsg_product_variants.variant_overide_price > 0, " . DB_PREFIX . "tsg_product_variants.variant_overide_price, " . DB_PREFIX . "tsg_size_material_store_combs.price ) AS variant_price,";
+        $sql .= " IF ( " . DB_PREFIX . "tsg_product_variants.variant_overide_price > 0, " . DB_PREFIX . "tsg_product_variants.variant_overide_price, ";
+	    $sql .= " IF ( " . DB_PREFIX . "tsg_size_material_store_combs.price > 0, " . DB_PREFIX . "tsg_size_material_store_combs.price, " . DB_PREFIX . "tsg_size_material_comb.price) ";
+	    $sql .= " ) AS variant_price, ";
         $sql .= " " . DB_PREFIX . "tsg_product_variants.variant_code,";
         $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_id,";
         $sql .= " " . DB_PREFIX . "tsg_product_sizes.size_name,";
@@ -560,17 +540,18 @@ class ModelTsgProductVariants extends Model{
         $sql .= " INNER JOIN ".DB_PREFIX . "product ON ". DB_PREFIX . "tsg_product_variant_core.product_id = " . DB_PREFIX . "product.product_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_comb ON " . DB_PREFIX . "tsg_product_variant_core.size_material_id = " . DB_PREFIX . "tsg_size_material_comb.id";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_size_material_store_combs ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id";
+        $sql .= " LEFT JOIN " . DB_PREFIX . "tsg_size_material_store_combs ON " . DB_PREFIX . "tsg_size_material_comb.id = " . DB_PREFIX . "tsg_size_material_store_combs.size_material_comb_id";
+        $sql .= " AND " . DB_PREFIX . "tsg_size_material_store_combs.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_size_material_comb.product_material_id = " . DB_PREFIX . "tsg_product_material.material_id";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_sizes ON " . DB_PREFIX . "tsg_size_material_comb.product_size_id = " . DB_PREFIX . "tsg_product_sizes.size_id ";
         $sql .= " INNER JOIN " . DB_PREFIX . "tsg_orientation ON " . DB_PREFIX . "tsg_product_sizes.orientation_id = " . DB_PREFIX . "tsg_orientation.orientation_id ";
         $sql .= " WHERE ";
-        $sql .= " oc_tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
-        $sql .= " oc_tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " oc_tsg_product_variant_core.bl_live = 1 AND ";
-        $sql .= " oc_tsg_product_variants.isdeleted = 0";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " " . DB_PREFIX . "tsg_product_variants.isdeleted = 0";
+       // $sql .= " AND " . DB_PREFIX . "tsg_size_material_store_combs.store_id = '" . (int)$this->config->get('config_store_id') . "'";
         $sql .= " ORDER BY variant_price ASC";
-
         $res = $this->db->query($sql);
         return $res->rows;
 
@@ -584,6 +565,7 @@ class ModelTsgProductVariants extends Model{
     }
 
     public function getProductForCart($product_id, $size_id, $material_id)
+        //TODO - check this
         //used to return the information for the cart and invoicing for chosen product, size, material combination.
     {
         $sql = "SELECT  " . DB_PREFIX . "tsg_size_material_store_combs.price, " . DB_PREFIX . "tsg_product_material.material_name, " . DB_PREFIX . "tsg_product_material.material_desc, " . DB_PREFIX . "tsg_product_sizes.size_name, ";

@@ -437,7 +437,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $order_data['payment_method_id'] = '8';  //not attempted
             $order_data['order_type_id'] = '1';   //website
             $order_data['payment_status_id'] = '6'; //cart - no payment tried yet
-            $order_data['order_status_id'] = '10';   //Open
+            $order_data['order_status_id'] = '1';   //Open
 
 
             if (!empty($this->request->server['HTTP_X_FORWARDED_FOR'])) {

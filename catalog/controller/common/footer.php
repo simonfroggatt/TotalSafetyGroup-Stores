@@ -4,6 +4,8 @@ class ControllerCommonFooter extends Controller {
 		$this->load->language('common/footer');
 
 		$this->load->model('catalog/information');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 		$data['informations'] = array();
 
@@ -32,6 +34,12 @@ class ControllerCommonFooter extends Controller {
 		//$data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time()));
 		//TSG
         $data['powered'] = sprintf($this->language->get('text_powered'), date('Y', time()));
+
+        $data['company_details'] = "&copy; 2008 - " . date('Y') . " " .  $store_info['url'] . " - " . $store_info['company_name'];
+        if($store_info['footer_text']) {
+            $data['company_details'] .= " " . $store_info['footer_text'];
+        }
+        $data['company_details'] .= " - Registration Number: " . $store_info['registration_number'] . " - VAT Number: " . $store_info['vat_number'];
 
 		// Whos Online
 		if ($this->config->get('config_customer_online')) {

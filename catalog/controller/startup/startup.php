@@ -210,5 +210,15 @@ class ControllerStartupStartup extends Controller {
 		
 		// Encryption
 		$this->registry->set('encryption', new Encryption($this->config->get('config_encryption')));
+
+        //add in our cart tracking PIN
+        if (!isset($this->session->data['cart_pin'])) {
+            if (function_exists('random_bytes')) {
+                $cart_pin = substr(bin2hex(random_bytes(6)), 0, 6);
+            } else {
+                $cart_pin = substr(bin2hex(openssl_random_pseudo_bytes(6)), 0, 6);
+            }
+            $this->session->data['cart_pin'] = $cart_pin;
+        }
 	}
 }

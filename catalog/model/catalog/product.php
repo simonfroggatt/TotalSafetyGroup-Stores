@@ -7,16 +7,16 @@ class ModelCatalogProduct extends Model {
 	public function getProduct($product_id) {
 
         $sql = "SELECT ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.`name` ), ". DB_PREFIX . "product_description_base.`name`, ". DB_PREFIX . "product_to_store.`name` ) AS `name`, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.title ), ". DB_PREFIX . "product_description_base.title, ". DB_PREFIX . "product_to_store.title ) AS title, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.tag ), ". DB_PREFIX . "product_description_base.tag, ". DB_PREFIX . "product_to_store.tag ) AS tag, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.description ), ". DB_PREFIX . "product_description_base.description, ". DB_PREFIX . "product_to_store.description ) AS description, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.meta_title ), ". DB_PREFIX . "product_description_base.meta_title, ". DB_PREFIX . "product_to_store.meta_title ) AS meta_title, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.meta_description ), ". DB_PREFIX . "product_description_base.meta_description, ". DB_PREFIX . "product_to_store.meta_description ) AS meta_description, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.meta_keywords ), ". DB_PREFIX . "product_description_base.meta_keyword, ". DB_PREFIX . "product_to_store.meta_keywords ) AS meta_keyword, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.long_description ), ". DB_PREFIX . "product_description_base.long_description, ". DB_PREFIX . "product_to_store.long_description ) AS long_description, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.sign_reads ), ". DB_PREFIX . "product_description_base.sign_reads, ". DB_PREFIX . "product_to_store.sign_reads ) AS sign_reads, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.tag ) > 1,  ". DB_PREFIX . "product_to_store.tag,  ". DB_PREFIX . "product_description_base.tag) AS tag, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.description ) > 1,  ". DB_PREFIX . "product_to_store.description,  ". DB_PREFIX . "product_description_base.description) AS description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_title ) > 1,  ". DB_PREFIX . "product_to_store.meta_title,  ". DB_PREFIX . "product_description_base.meta_title) AS meta_title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_description ) > 1,  ". DB_PREFIX . "product_to_store.meta_description,  ". DB_PREFIX . "product_description_base.meta_title) AS meta_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_keywords ) > 1,  ". DB_PREFIX . "product_to_store.meta_keywords,  ". DB_PREFIX . "product_description_base.meta_keyword ) AS meta_keyword, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads, ";
+        $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image, ";
         $sql .= "". DB_PREFIX . "product_to_store.price_from, ";
         $sql .= "". DB_PREFIX . "product.date_added, ";
         $sql .= "". DB_PREFIX . "product.date_modified, ";
@@ -34,6 +34,7 @@ class ModelCatalogProduct extends Model {
 
 
         $query = $this->db->query($sql);
+        //echo $sql;
 
 		if ($query->num_rows) {
 			return array(
@@ -73,11 +74,11 @@ class ModelCatalogProduct extends Model {
 
 
         $sql = "SELECT DISTINCT ". DB_PREFIX . "product.product_id, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.`name` ), ". DB_PREFIX . "product_description_base.`name`, ". DB_PREFIX . "product_to_store.`name` ) AS `name`, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.title ), ". DB_PREFIX . "product_description_base.title, ". DB_PREFIX . "product_to_store.title ) AS title, ";
-        $sql .= "IF( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image ";
 
-        // $sql .= DB_PREFIX . "product_to_store.price_from ";
+
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
+        $sql .= "IF( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image ";
         $sql .= "FROM ". DB_PREFIX . "product  ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_description_base ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description_base.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_variant_core.product_id ";
@@ -251,8 +252,8 @@ class ModelCatalogProduct extends Model {
     {
         $sql = "SELECT ";
         $sql .= "". DB_PREFIX . "product.product_id, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.title ), ". DB_PREFIX . "product_description_base.title, ". DB_PREFIX . "product_to_store.title ) AS title, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.`name` ), ". DB_PREFIX . "product_description_base.`name`, ". DB_PREFIX . "product_to_store.`name` ) AS `name`  ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title ";
         $sql .= "FROM ". DB_PREFIX . "product_to_store ";
 	    $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id ";
 	    $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_symbols ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_symbols.product_id ";
@@ -415,35 +416,73 @@ class ModelCatalogProduct extends Model {
 	public function getProductOptions($product_id) {
 		$product_option_data = array();
 
-		$product_option_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option po LEFT JOIN `" . DB_PREFIX . "option` o ON (po.option_id = o.option_id) LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE po.product_id = '" . (int)$product_id . "' AND od.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.sort_order");
+	/*	$sql = "SELECT po.*, od.*, o.*," . DB_PREFIX . "tsg_product_option_type.`name` as type FROM " . DB_PREFIX . "product_option po ";
+        $sql  .= "LEFT JOIN `" . DB_PREFIX . "option` o ON (po.option_id = o.option_id) ";
+        $sql  .= " LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) ";
+        $sql  .= " INNER JOIN " . DB_PREFIX . "tsg_product_option_type ON o.type_id = " . DB_PREFIX . "tsg_product_option_type.id ";
+        $sql  .= " WHERE po.product_id = '" . (int)$product_id . "' ";
+        $sql  .= " AND od.language_id = '" . (int)$this->config->get('config_language_id');
+        $sql  .= "' ORDER BY o.sort_order";
+        */
+
+        //NEW TSG model
+        $sql = " SELECT " . DB_PREFIX . "tsg_product_option.*, " . DB_PREFIX . "tsg_product_option_type.`name` AS type ";
+        $sql  .= "FROM " . DB_PREFIX . "tsg_product_option ";
+	    $sql  .= "INNER JOIN " . DB_PREFIX . "tsg_product_option_type ON " . DB_PREFIX . "tsg_product_option_type.id = " . DB_PREFIX . "tsg_product_option.option_type_id ";
+        $sql  .= "WHERE " . DB_PREFIX . "tsg_product_option.product_id = '" . (int)$product_id . "' ";
+        $sql  .= "ORDER BY " . DB_PREFIX . "tsg_product_option.sort_order ASC ";
+
+        $product_option_query = $this->db->query($sql);
+        
 
 		foreach ($product_option_query->rows as $product_option) {
 			$product_option_value_data = array();
+          //  echo "<br>";
+        //   echo "for loop options";
+         //   echo "<br>";
+            //$sql = "SELECT * FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order";
+            $sql = "SELECT " . DB_PREFIX . "tsg_product_option_values.id, ";
+            $sql  .= "" . DB_PREFIX . "tsg_product_option_values.product_option_id,  ";
+	        $sql  .= "" . DB_PREFIX . "option_values.`name`,  ";
+	        $sql  .= "" . DB_PREFIX . "tsg_product_option_values.option_value_id,  ";
+	        $sql  .= "" . DB_PREFIX . "tsg_product_option_values.sort_order ";
+            $sql  .= "FROM " . DB_PREFIX . "tsg_product_option_values ";
+	        $sql  .= "INNER JOIN " . DB_PREFIX . "option_values ";
+	        $sql  .= "ON " . DB_PREFIX . "tsg_product_option_values.option_value_id = " . DB_PREFIX . "option_values.id ";
+            $sql  .= "WHERE ";
+	        $sql  .= "" . DB_PREFIX . "tsg_product_option_values.product_option_id = '" . (int)$product_option['id'] . "'";
+	        $sql  .= "AND ";
+	        $sql  .= "" . DB_PREFIX . "tsg_product_option_values.isdeleted = 0 ";
+            $sql  .= "ORDER BY " . DB_PREFIX . "tsg_product_option_values.sort_order ASC";
+            
+           // echo $sql;
 
-			$product_option_value_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_id = '" . (int)$product_id . "' AND pov.product_option_id = '" . (int)$product_option['product_option_id'] . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY ov.sort_order");
+            $product_option_value_query = $this->db->query($sql);
 
-			foreach ($product_option_value_query->rows as $product_option_value) {
+
+
+            foreach ($product_option_value_query->rows as $product_option_value) {
 				$product_option_value_data[] = array(
-					'product_option_value_id' => $product_option_value['product_option_value_id'],
+					'product_option_value_id' => $product_option_value['id'],
 					'option_value_id'         => $product_option_value['option_value_id'],
 					'name'                    => $product_option_value['name'],
-					'image'                   => $product_option_value['image'],
-					'quantity'                => $product_option_value['quantity'],
-					'subtract'                => $product_option_value['subtract'],
-					'price'                   => $product_option_value['price'],
-					'price_prefix'            => $product_option_value['price_prefix'],
-					'weight'                  => $product_option_value['weight'],
-					'weight_prefix'           => $product_option_value['weight_prefix']
+					'image'                   => '',
+					'quantity'                => 0,
+					'subtract'                => 0,
+					'price'                   => 0,
+					'price_prefix'            => '',
+					'weight'                  => 0,
+					'weight_prefix'           => ''
 				);
 			}
 
 			$product_option_data[] = array(
-				'product_option_id'    => $product_option['product_option_id'],
+				'product_option_id'    => $product_option['id'],
 				'product_option_value' => $product_option_value_data,
-				'option_id'            => $product_option['option_id'],
-				'name'                 => $product_option['name'],
+				'option_id'            => 0,
+				'name'                 => $product_option['label'],
 				'type'                 => $product_option['type'],
-				'value'                => $product_option['value'],
+				'value'                => '',
 				'required'             => $product_option['required']
 			);
 		}
@@ -482,15 +521,18 @@ class ModelCatalogProduct extends Model {
 
 	public function getProductRelated($product_id) {
 		$product_data = array();
-        $sql = "SELECT " . DB_PREFIX . "product_related.related_id FROM " . DB_PREFIX . "product_related WHERE " .
-            DB_PREFIX . "product_related.product_id= " . (int)$product_id .
-            " ORDER BY " . DB_PREFIX . "product_related.`order` ASC";
 
+        $sql = "SELECT " . DB_PREFIX . "product_to_store.product_id FROM " . DB_PREFIX . "product_related ";
+        $sql .= " INNER JOIN ". DB_PREFIX . "product_to_store ON ". DB_PREFIX . "product_related.related_id = ". DB_PREFIX . "product_to_store.id  ";
+        $sql .= " WHERE ". DB_PREFIX . "product_to_store.store_id = ". (int)$this->config->get('config_store_id');
+        $sql .= " AND ". DB_PREFIX . "product_related.product_id = ". (int)$product_id;
+        $sql .= "  ORDER BY " . DB_PREFIX . "product_related.`order` ASC";
 
+      //  echo $sql;
         $query = $this->db->query($sql);
 
 		foreach ($query->rows as $result) {
-			$product_data[$result['related_id']] = $this->getProduct($result['related_id']);
+			$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
 		}
 
 		return $product_data;

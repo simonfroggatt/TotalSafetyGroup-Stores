@@ -494,7 +494,21 @@ function switchImage(ssan_var_info)
     {
         imageSrc = ssan_var_info.product_image;
     }
+
+    //get the image extension
+    var imageExt = imageSrc.split('.').pop();
+
     $('#main-image').attr('src',imageSrc);
+    $('#main-image-href').attr('href',imageSrc);
+
+    if (imageExt == 'svg' || imageExt == 'SVG')
+    {
+        //change the class to make the image responsive
+        $('#main-image').addClass('img-svg-border');
+    }
+    else {
+        $('#main-image').removeClass('img-svg-border');
+    }
 }
 
 function setSizeMaterialFromVariantID(variant_id)

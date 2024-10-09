@@ -6,6 +6,8 @@ class ControllerTsgMenu extends Controller {
 		// Menu
 		$this->load->model('catalog/category');
         $this->load->model('tsg/homepage_category');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 
 		$data['categories'] = array();
@@ -42,7 +44,7 @@ class ControllerTsgMenu extends Controller {
 		$data['offcanvas_menu'] = $this->load->controller('tsg/offcanvas_menu');
 
 		$data['shopping_cart'] = $this->url->link('checkout/cart');
-        $data['telephone'] = $this->config->get('config_telephone');
+        $data['telephone'] = $store_info['telephone'];
 		$data['symbol_search_text'] = 'Search Symbols';
 		$data['symbol_search_url'] = 'index.php?route=tsg/symbol_search';
 

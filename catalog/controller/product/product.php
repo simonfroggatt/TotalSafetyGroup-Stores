@@ -241,8 +241,19 @@ class ControllerProductProduct extends Controller {
 			$data['model'] = $product_info['model'];
 			$data['reward'] = ''; /*$product_info['reward'];*/
 			$data['points'] = 0; /*$product_info['points'];*/
-			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
-			$data['long_description'] = html_entity_decode($product_info['long_description'], ENT_QUOTES, 'UTF-8');
+            if($product_info['description']) {
+                $data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+            }
+            else {
+                $data['description'] = '';
+            }
+			if($product_info['long_description']){
+                $data['long_description']  = html_entity_decode($product_info['long_description'], ENT_QUOTES, 'UTF-8');
+            }
+            else {
+                $data['long_description']  = '';
+            }
+
             $data['mib_logo']  = $product_info['mib_logo'];
 
 			/*if ($product_info['quantity'] <= 0) {
@@ -258,6 +269,10 @@ class ControllerProductProduct extends Controller {
 
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+                if( pathinfo($product_info['image'], PATHINFO_EXTENSION) == 'svg')
+                {
+                    $data['thumb_css'] = 'img-svg-border';
+                }
 			} else {
 				$data['popup'] = '';
 			}
@@ -272,10 +287,14 @@ class ControllerProductProduct extends Controller {
 
 			$results = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
 			foreach ($results as $result) {
+                $additional_css = '';
+                if( pathinfo($result['image'], PATHINFO_EXTENSION) == 'svg')
+                    $additional_css = 'img-svg-border';
 				$data['images'][] = array(
 					'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
 					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')),
-				    'alt_text' => $result['alt_text']
+				    'alt_text' => $result['alt_text'],
+                    'additional_images_css' => $additional_css
                 );
 			}
 

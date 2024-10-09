@@ -264,6 +264,9 @@ var cart = {
 				} else {
 					$('#cart > ul').load('index.php?route=common/cart/info ul li');
 				}
+
+
+				$('#offcanvasCart').load('index.php?route=tsg/offcanvas_cart_ajax');
 			},
 			error: function(xhr, ajaxOptions, thrownError) {
 				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);

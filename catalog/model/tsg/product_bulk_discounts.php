@@ -5,18 +5,22 @@ class ModelTsgProductBulkDiscounts extends Model{
     public function GetDiscountPriceGroup($product_ID)
 {
 
-
-    $sql = "SELECT oc_tsg_bulkdiscount_group_breaks.qty_range_min,";
-    $sql .= " oc_tsg_bulkdiscount_group_breaks.discount_percent ";
-    $sql .= " FROM oc_tsg_bulkdiscount_group_breaks";
-    $sql .= " INNER JOIN oc_tsg_bulkdiscount_groups ON oc_tsg_bulkdiscount_group_breaks.bulk_discount_group_id = oc_tsg_bulkdiscount_groups.bulk_group_id";
-    $sql .= " INNER JOIN oc_tsg_product_to_bulk_discounts ON oc_tsg_bulkdiscount_groups.bulk_group_id = oc_tsg_product_to_bulk_discounts.bulk_discount_group_id ";
-    $sql .= " WHERE";
-    $sql .= " oc_tsg_product_to_bulk_discounts.product_id = ".(int)$product_ID;
-    $sql .= " AND oc_tsg_product_to_bulk_discounts.store_id = ". (int)$this->config->get('config_store_id');
-    $sql .= " AND oc_tsg_bulkdiscount_groups.is_active = 1 ";
-    $sql .= " ORDER BY oc_tsg_bulkdiscount_group_breaks.qty_range_min ASC";
-
+    $sql = "SELECT " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min, " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.discount_percent";
+    $sql .= " FROM";
+    $sql .= " " . DB_PREFIX . "tsg_bulkdiscount_group_breaks";
+	$sql .= " INNER JOIN " . DB_PREFIX . "tsg_bulkdiscount_groups ON " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.bulk_discount_group_id = " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id";
+	$sql .= " WHERE " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id = (";
+    	$sql .= " SELECT";
+		$sql .= " IF ( " . DB_PREFIX . "product_to_store.bulk_group_id > 0, " . DB_PREFIX . "product_to_store.bulk_group_id, " . DB_PREFIX . "product.bulk_group_id ) AS bulk_id";
+	    $sql .= " FROM";
+        $sql .= " " . DB_PREFIX . "product_to_store";
+		$sql .= " INNER JOIN " . DB_PREFIX . "product ON " . DB_PREFIX . "product_to_store.product_id = " . DB_PREFIX . "product.product_id";
+        $sql .= " WHERE";
+        $sql .= " " . DB_PREFIX . "product_to_store.product_id = ".(int)$product_ID;
+        $sql .= " AND " . DB_PREFIX . "product_to_store.store_id = ". (int)$this->config->get('config_store_id');
+        $sql .= " )";
+    $sql .= " ORDER BY";
+    $sql .= " " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min ASC";
     $results = $this->db->query($sql);
     $bulkRawData = $results->rows;
 

@@ -11,10 +11,13 @@ class ModelTsgProductSpec extends Model
         $sql .= "". DB_PREFIX . "tsg_product_material.*, ";
         $sql .= "". DB_PREFIX . "tsg_product_sizes.*, ";
         $sql .= "". DB_PREFIX . "tsg_orientation.orientation_name , ";
-        $sql .= "IF( ISNULL(". DB_PREFIX . "product_to_store.`name`),  ". DB_PREFIX . "product_description_base.`name`, ". DB_PREFIX . "product_to_store.`name`) as `name`, ";
-	    $sql .= "IF( ISNULL(". DB_PREFIX . "product_to_store.title),  ". DB_PREFIX . "product_description_base.title, ". DB_PREFIX . "product_to_store.title) as title, ";
-	    $sql .= "IF( ISNULL(". DB_PREFIX . "product_to_store.sign_reads),  ". DB_PREFIX . "product_description_base.sign_reads, ". DB_PREFIX . "product_to_store.sign_reads) as sign_reads, ";
-        $sql .= "IF( ISNULL(". DB_PREFIX . "product_to_store.long_description),  ". DB_PREFIX . "product_description_base.long_description, ". DB_PREFIX . "product_to_store.long_description) as long_description ";
+
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.description ) > 1,  ". DB_PREFIX . "product_to_store.description,  ". DB_PREFIX . "product_description_base.description) AS description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads ";
+
         $sql .= "FROM ". DB_PREFIX . "tsg_product_variants  ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "tsg_product_variants.prod_var_core_id = ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_size_material_comb ON ". DB_PREFIX . "tsg_product_variant_core.size_material_id = ". DB_PREFIX . "tsg_size_material_comb.id ";

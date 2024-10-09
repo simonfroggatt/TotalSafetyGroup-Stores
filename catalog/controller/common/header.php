@@ -3,6 +3,8 @@ class ControllerCommonHeader extends Controller {
 	public function index() {
 		// Analytics
 		$this->load->model('setting/extension');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 		$data['analytics'] = array();
 
@@ -39,8 +41,9 @@ class ControllerCommonHeader extends Controller {
 
 		$data['theme_css'] = 'catalog/view/theme/'. $this->config->get('theme_default_directory'). '/stylesheet/stylesheet.css';
 
-		if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
-			$data['logo'] = $server . 'image/' . $this->config->get('config_logo');
+        $tmp =  DIR_IMAGE . $store_info['logo'];
+		if (is_file(DIR_IMAGE . $store_info['logo'])) {
+			$data['logo'] = DIR_IMAGE . $store_info['logo'];
 		} else {
 			$data['logo'] = '';
 		}
@@ -71,7 +74,7 @@ class ControllerCommonHeader extends Controller {
 		$data['shopping_cart'] = $this->url->link('checkout/cart');
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);
 		$data['contact'] = $this->url->link('information/contact');
-		$data['telephone'] = $this->config->get('config_telephone');
+		$data['telephone'] = $store_info['telephone'];
 		
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');

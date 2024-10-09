@@ -63,12 +63,17 @@ class ModelTsgDynamicSearch extends Model{
     public function GetProductSearch($queryStr){
 
         $sql = "SELECT DISTINCT ". DB_PREFIX . "product.product_id, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.`name` ), ". DB_PREFIX . "product_description_base.`name`, ". DB_PREFIX . "product_to_store.`name` ) AS `name`, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.title ), ". DB_PREFIX . "product_description_base.title, ". DB_PREFIX . "product_to_store.title ) AS title, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.tag ), ". DB_PREFIX . "product_description_base.tag, ". DB_PREFIX . "product_to_store.tag ) AS tag, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.description ), ". DB_PREFIX . "product_description_base.description, ". DB_PREFIX . "product_to_store.description ) AS description, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.long_description ), ". DB_PREFIX . "product_description_base.long_description, ". DB_PREFIX . "product_to_store.long_description ) AS long_description, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.sign_reads ), ". DB_PREFIX . "product_description_base.sign_reads, ". DB_PREFIX . "product_to_store.sign_reads ) AS sign_reads, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.tag ) > 1,  ". DB_PREFIX . "product_to_store.tag,  ". DB_PREFIX . "product_description_base.tag) AS tag, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.description ) > 1,  ". DB_PREFIX . "product_to_store.description,  ". DB_PREFIX . "product_description_base.description) AS description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_title ) > 1,  ". DB_PREFIX . "product_to_store.meta_title,  ". DB_PREFIX . "product_description_base.meta_title) AS meta_title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_description ) > 1,  ". DB_PREFIX . "product_to_store.meta_description,  ". DB_PREFIX . "product_description_base.meta_title) AS meta_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_keywords ) > 1,  ". DB_PREFIX . "product_to_store.meta_keywords,  ". DB_PREFIX . "product_description_base.meta_keyword ) AS meta_keyword, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads, ";
+
+
         $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image ";
 
         // $sql .= DB_PREFIX . "product_to_store.price_from ";

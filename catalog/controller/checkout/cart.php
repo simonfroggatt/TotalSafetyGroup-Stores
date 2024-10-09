@@ -518,6 +518,7 @@ class ControllerCheckoutCart extends Controller {
 
 			$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
             $json['TSG_totals'] = $data['totals'];
+            $json['offcanvas_cart'] = $this->load->controller('tsg/offcanvas_cart');
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

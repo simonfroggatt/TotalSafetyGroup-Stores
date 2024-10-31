@@ -54,12 +54,19 @@ class ControllerAccountOrder extends Controller {
 
 			$data['orders'][] = array(
 				'order_id'   => $result['order_id'],
-				'name'       => $result['firstname'] . ' ' . $result['lastname'],
+				//'name'       => $result['firstname'] . ' ' . $result['lastname'],
+                'name'       => $result['fullname'],
 				'status'     => $result['status'],
+                'payment_status'    => $result['payment_status'],
+                'order_type'    => $result['order_type'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'products'   => ($product_total + $voucher_total),
 				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
 				'view'       => $this->url->link('account/order/info', 'order_id=' . $result['order_id'], true),
+				'download'       => TSG_MEDUSA_URL . 'paperwork/webstore_pdf/' . $result['order_id'] . '/'. $result['order_hash'],
+				'view2'       => TSG_MEDUSA_URL . 'paperwork/webstore_pdf_view/' . $result['order_id'] . '/'. $result['order_hash'],
+                'email'       => TSG_MEDUSA_URL . 'paperwork/webstore_pdf/' . $result['order_id'] . '/'. $result['order_hash'],
+                'invoice_email'   =>   $result['payment_email'] ,
 			);
 		}
 

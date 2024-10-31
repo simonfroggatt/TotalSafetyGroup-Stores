@@ -1,0 +1,34 @@
+<div class="row ">
+    <div class="col">
+        <ul class="nav flex-row float-end flex-nowrap g-0">
+            {% if logged %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-ssan-yellow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-regular fa-2x fa-user-check" style="color: green"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ account }}">{{ text_account }}</a></li>
+                        <li><a class="dropdown-item" href="{{ order }}">{{ text_order }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ logout }}">{{ text_logout }}</a></li>
+                    </ul>
+                </li>
+            {% else %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-regular fa-2x fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ login }}">{{ text_login }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ register }}">{{ text_register }}</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+            <li class="nav-item" id="cart_top_div">
+                <a class="nav-link active" data-bs-toggle="offcanvas" href="#offcanvasCart" role="button" aria-controls="offcanvasCart"><i class="fa-2x fa-regular fa-cart-shopping cart_link">{{ cart_menu['xs']}}</i></a>
+            </li>
+        </ul>
+
+    </div>
+</div>

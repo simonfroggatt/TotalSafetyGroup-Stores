@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-header p-0"><h3>Billing</h3></div>
+            <div class="card-body">
+                <strong>{{ payment_address.fullname }}</strong>
+                {% if payment_address.company %}
+            <br>{{ payment_address.company }}
+                {% endif %}<br>
+
+                {{ payment_address.address_1|nl2br }}<br>
+                {% if payment_address.address_2 %}
+                    {{ payment_address.address_2|nl2br }}<br>
+                {% endif %}
+                {% if payment_address.city %}
+                    {{ payment_address.city|nl2br }}<br>
+                {% endif %}
+                <strong>{{ payment_address.postcode }}</strong>
+                <br>{{ payment_address.country_name }}
+
+                {{ payment_address.email }}<br>
+                {{ payment_address.telephone }}
+            </div>
+        </div>
+
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-header p-0"><h3>Delivery</h3></div>
+            <div class="card-body">
+            <strong>{{ shipping_address.fullname }}</strong>
+            {% if shipping_address.company %}
+                <br>{{ shipping_address.company }}
+            {% endif %}
+            <br>
+            {{ shipping_address.address_1|nl2br }}<br>
+            {% if shipping_address.address_2 %}
+                {{ shipping_address.address_2|nl2br }}<br>
+            {% endif %}
+            {% if shipping_address.city %}
+                {{ shipping_address.city|nl2br }}<br>
+            {% endif %}
+            <strong>{{ shipping_address.postcode }}</strong>
+            <br>{{ shipping_address.country_name }}
+            {{ shipping_address.email }}<br>
+            {{ shipping_address.telephone }}
+            </div>
+        </div>
+    </div>
+</div>

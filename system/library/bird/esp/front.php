@@ -1,7 +1,7 @@
 <?php
 
 namespace Bird\ESP;
-final class Front {
+final class Front extends \stdClass {
     private $registry;
     public function __construct($registry, $dbi, $meta) {
         $this->registry = $registry;

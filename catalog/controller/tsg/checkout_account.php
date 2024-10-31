@@ -23,11 +23,39 @@ class ControllerTsgCheckoutAccount extends Controller {
             $data['account'] = '';
         }
 
-        unset($this->session->data['guest']);
+        //check if we have come from a cancelled checkout
+    /*    if (isset($this->session->data['payment_cancel'])) {
+            $payment_cancelled = $this->session->data['payment_cancel'];
+        }
+        else{
+            $payment_cancelled = 0;
+        }
+        if($payment_cancelled == 1)
+        {
+            //get the guest data from the session
+            if (isset($this->session->data['payment_cancel'])) {
+                $data['guest'] = $this->session->data['guest'];
+            }
+        }
+        else{
+            unset($this->session->data['guest']['shipping_address']);
+            unset($this->session->data['shipping_address']);
+            unset($this->session->data['payment_address']);
+            unset($this->session->data['guest']);
+        }
         unset($this->session->data['shipping_method']);
         unset($this->session->data['shipping_methods']);
         unset($this->session->data['payment_method']);
-        unset($this->session->data['payment_methods']);
+        unset($this->session->data['payment_methods']);*/
+        if (isset($this->session->data['payment_cancel'])) {
+            if (isset($this->session->data['guest'])) {
+                $data['guest'] = $this->session->data['guest'];
+            }
+                $data['show_guest'] = 1;
+        }
+        else{
+            $data['show_guest'] = 0;
+        }
 
         $data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), true), 'Terms and Conditions');
 
@@ -64,6 +92,8 @@ class ControllerTsgCheckoutAccount extends Controller {
         if (!$json) {
             $this->session->data['account'] = 'guest';
 
+
+
             $this->session->data['guest']['fullname'] = $this->request->post['guestFullname'];
             $this->session->data['guest']['email'] = $this->request->post['guestEmail'];
             $this->session->data['guest']['telephone'] = $this->request->post['guestPhone'];
@@ -71,10 +101,10 @@ class ControllerTsgCheckoutAccount extends Controller {
             $this->session->data['guest']['customer_group_id'] = $this->config->get('config_customer_group_id');
             $this->session->data['guest']['custom_field'] = '';
 
-            unset($this->session->data['guest']['shipping_address']);
+         /*   unset($this->session->data['guest']['shipping_address']);
             unset($this->session->data['shipping_address']);
             unset($this->session->data['payment_address']);
-
+*/
             unset($this->session->data['shipping_method']);
             unset($this->session->data['shipping_methods']);
             unset($this->session->data['payment_method']);

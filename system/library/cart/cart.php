@@ -23,7 +23,7 @@ class Cart {
 		if ($this->customer->getId()) {
 			// We want to change the session ID on all the old items in the customers cart
 			$this->db->query("UPDATE " . DB_PREFIX . "cart SET session_id = '" . $this->db->escape($this->session->getId()) . "' WHERE api_id = '0' AND customer_id = '" . (int)$this->customer->getId() . "'");
-			$this->db->query("UPDATE " . DB_PREFIX . "cart SET admin_pin = '" . $this->db->escape($this->session['cart_pin']) . "' WHERE api_id = '0' AND customer_id = '" . (int)$this->customer->getId() . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "cart SET admin_pin = '" . $this->db->escape($this->session->getPIN()) . "' WHERE api_id = '0' AND customer_id = '" . (int)$this->customer->getId() . "'");
 
 			// Once the customer is logged in we want to update the customers cart
 			$cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE api_id = '0' AND customer_id = '0' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
@@ -496,20 +496,27 @@ class Cart {
 
 	public function getTaxes() {
 		$tax_data = array();
+//TSG - get the TAX rate for the store - not by product
+//Also check if the customer is logged in and what their tax status is
+
+        //get the store tax rate
+        $store_tax_rate = $this->tax->getStoreTaxRate($this->config->get('config_store_id'));
+
 
 		foreach ($this->getProducts() as $product) {
-			if ($product['tax_class_id']) {
-				$tax_rates = $this->tax->getRates($product['price'], $product['tax_class_id']);
-
-				foreach ($tax_rates as $tax_rate) {
-					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
-						$tax_data[$tax_rate['tax_rate_id']] = ($tax_rate['amount'] * $product['quantity']);
-					} else {
-						$tax_data[$tax_rate['tax_rate_id']] += ($tax_rate['amount'] * $product['quantity']);
-					}
-				}
-			}
-		}
+            if ($product['tax_class_id']) {
+                $tax_rates = $this->tax->getRates($product['price'], $product['tax_class_id']);
+            } else {
+                $tax_rates = $this->tax->getRates($product['price'], $store_tax_rate['tax_class_id']);
+            }
+            foreach ($tax_rates as $tax_rate) {
+                if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
+                    $tax_data[$tax_rate['tax_rate_id']] = ($tax_rate['amount'] * $product['quantity']);
+                } else {
+                    $tax_data[$tax_rate['tax_rate_id']] += ($tax_rate['amount'] * $product['quantity']);
+                }
+            }
+        }
 
 		return $tax_data;
 	}
@@ -694,15 +701,23 @@ class Cart {
     }
 
     private function getProductPriceBulkDiscount($product_id, $qty, $price){
-	    $sql = "SELECT " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.discount_percent, " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min ";
-        $sql .= " FROM " . DB_PREFIX . "tsg_product_to_bulk_discounts ";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_bulkdiscount_groups ON " . DB_PREFIX . "tsg_product_to_bulk_discounts.bulk_discount_group_id = " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id ";
-        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_bulkdiscount_group_breaks ON " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id = " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.bulk_discount_group_id  ";
-        $sql .= " WHERE ";
-        $sql .= " " . DB_PREFIX . "tsg_product_to_bulk_discounts.product_id = ".$product_id;
-        $sql .= " AND " . DB_PREFIX . "tsg_product_to_bulk_discounts.store_id = ".(int)$this->config->get('config_store_id');
+        $sql = "SELECT " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min, " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.discount_percent";
+        $sql .= " FROM";
+        $sql .= " " . DB_PREFIX . "tsg_bulkdiscount_group_breaks";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_bulkdiscount_groups ON " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.bulk_discount_group_id = " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id";
+        $sql .= " WHERE " . DB_PREFIX . "tsg_bulkdiscount_groups.bulk_group_id = (";
+        $sql .= " SELECT";
+        $sql .= " IF ( " . DB_PREFIX . "product_to_store.bulk_group_id > 0, " . DB_PREFIX . "product_to_store.bulk_group_id, " . DB_PREFIX . "product.bulk_group_id ) AS bulk_id";
+        $sql .= " FROM";
+        $sql .= " " . DB_PREFIX . "product_to_store";
+        $sql .= " INNER JOIN " . DB_PREFIX . "product ON " . DB_PREFIX . "product_to_store.product_id = " . DB_PREFIX . "product.product_id";
+        $sql .= " WHERE";
+        $sql .= " " . DB_PREFIX . "product_to_store.product_id = ".(int)$product_id;
+        $sql .= " AND " . DB_PREFIX . "product_to_store.store_id = ". (int)$this->config->get('config_store_id');
         $sql .= " AND " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min <= ".(int)$qty;
-        $sql .= " ORDER BY " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min DESC LIMIT 1";
+        $sql .= " )";
+        $sql .= " ORDER BY";
+        $sql .= " " . DB_PREFIX . "tsg_bulkdiscount_group_breaks.qty_range_min DESC LIMIT 1";
 
         $query = $this->db->query($sql);
         $row = $query->row;

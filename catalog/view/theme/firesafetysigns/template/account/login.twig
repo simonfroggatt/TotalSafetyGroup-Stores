@@ -1,0 +1,45 @@
+{{ header }}
+<div id="account-login" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+      <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+  {% endif %}
+
+<main class="form-signin">
+  <form action="{{ action }}" method="post" enctype="multipart/form-data">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+    <div class="form-floating">
+      <input type="email" class="form-control" id="input-email" placeholder="name@example.com" name="email">
+      <label for="input-email">Email address</label>
+    </div>
+    <div class="form-floating">
+      <div class="input-group mb-3">
+        <input type="password" class="form-control" id="input-password" placeholder="Password" name="password" >
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="showPassword()"><i class="fa fa-eye"></i></button>
+    </div>
+      </div>
+    <div class="checkbox mb-3">
+      <p><a href="{{ forgotten }}">Forgot</a> your password?</p>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary mb-2" type="submit" value="{{ button_login }}">Sign in</button>
+    <a href="{{ register }}" class="w-100 btn btn-lg btn-success" type="button">Register</a>
+  </form>
+</main>
+</div>
+{{ footer }}
+
+<script> 
+function showPassword() {
+  var x = document.getElementById("input-password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+} 
+</script> 

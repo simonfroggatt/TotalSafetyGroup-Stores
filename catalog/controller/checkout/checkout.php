@@ -120,6 +120,14 @@ class ControllerCheckoutCheckout extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+        //check is cancel has neen passed as a url variable
+        if(isset($this->request->get['cancel'])){
+            //set a session variable
+            $this->session->data['payment_cancel'] = 1;
+        } else {
+            $this->session->data['payment_cancel'] = 0;
+        }
+
 		$this->response->setOutput($this->load->view('checkout/checkout', $data));
 	}
 

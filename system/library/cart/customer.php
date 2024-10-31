@@ -13,6 +13,7 @@ class Customer {
 	private $telephone;
 	private $newsletter;
 	private $address_id;
+    private $company_name;
 
 	public function __construct($registry) {
 		$this->config = $registry->get('config');
@@ -32,6 +33,7 @@ class Customer {
 				$this->telephone = $customer_query->row['telephone'];
 				$this->newsletter = $customer_query->row['newsletter'];
 				$this->address_id = $customer_query->row['address_id'];
+                $this->company_name = $customer_query->row['company'];
 
 				$this->db->query("UPDATE " . DB_PREFIX . "customer SET language_id = '" . (int)$this->config->get('config_language_id') . "', ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "' WHERE customer_id = '" . (int)$this->customer_id . "'");
 
@@ -70,6 +72,7 @@ class Customer {
 			$this->telephone = $customer_query->row['telephone'];
 			$this->newsletter = $customer_query->row['newsletter'];
 			$this->address_id = $customer_query->row['address_id'];
+            $this->company_name = $customer_query->row['company'];
 		
 			$this->db->query("UPDATE " . DB_PREFIX . "customer SET language_id = '" . (int)$this->config->get('config_language_id') . "', ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "' WHERE customer_id = '" . (int)$this->customer_id . "'");
 
@@ -90,6 +93,7 @@ class Customer {
 		$this->telephone = '';
 		$this->newsletter = '';
 		$this->address_id = '';
+        $this->company_name = '';
 	}
 
 	public function isLogged() {
@@ -119,6 +123,10 @@ class Customer {
 	public function getTelephone() {
 		return $this->telephone;
 	}
+
+    public function getCompany() {
+        return $this->company_name;
+    }
 
 	public function getNewsletter() {
 		return $this->newsletter;

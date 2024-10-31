@@ -1028,3 +1028,43 @@ span.product-variants  {
     box-shadow: 1px 1px 5px 4px #e9ecef;
 
 }
+
+
+.action-button {
+    background: #5cb85c;
+    color: white;
+    border: 0 none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 130px;
+    font: 700 14px/40px "Roboto", sans-serif;
+    border: 1px solid #5cb85c;
+    margin: 0 5px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.action-button:hover, .multi_step_form #msform .action-button:focus {
+    background: #405867;
+    border-color: #405867;
+}
+.previous_button {
+    background: transparent;
+    color: #99a2a8;
+    border-color: #99a2a8;
+}
+.previous_button:hover, .previous_button:focus {
+    background: #405867;
+    border-color: #405867;
+    color: #fff;
+}
+
+.success_message {
+    color: #454545;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.success_message_ordernum {
+    color: black;
+    font-weight: bold;
+}

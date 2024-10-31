@@ -14,8 +14,8 @@ class ModelCheckoutOrder extends Model {
         }
 
         $sql .= "customer_group_id = '" . (int)$data['customer_group_id'] . "', ";
-       // $sql .= "firstname = '" . $this->db->escape($data['firstname']) . "', ";
-        //$sql .= "lastname = '" . $this->db->escape($data['lastname']) . "', ";
+        $sql .= "firstname = '" . $this->db->escape($data['firstname']) . "', ";
+        $sql .= "lastname = '" . $this->db->escape($data['lastname']) . "', ";
         $sql .= "fullname = '" . $this->db->escape($data['fullname']) . "', ";
         $sql .= "email = '" . $this->db->escape($data['email']) . "', ";
         $sql .= "telephone = '" . $this->db->escape($data['telephone']) . "', ";
@@ -23,8 +23,8 @@ class ModelCheckoutOrder extends Model {
         $sql .= "payment_fullname = '" . $this->db->escape($data['payment_fullname']) . "', ";
         $sql .= "payment_email = '" . $this->db->escape($data['payment_email']) . "', ";
         $sql .= "payment_telephone = '" . $this->db->escape($data['payment_telephone']) . "', ";
-       // $sql .= "payment_firstname = '" . $this->db->escape($data['payment_firstname']) . "', ";
-       // $sql .= "payment_lastname = '" . $this->db->escape($data['payment_lastname']) . "', ";
+        $sql .= "payment_firstname = '" . $this->db->escape($data['payment_firstname']) . "', ";
+        $sql .= "payment_lastname = '" . $this->db->escape($data['payment_lastname']) . "', ";
         $sql .= "payment_company = '" . $this->db->escape($data['payment_company']) . "', ";
         $sql .= "payment_address_1 = '" . $this->db->escape($data['payment_address_1']) . "', ";
         $sql .= "payment_address_2 = '" . $this->db->escape($data['payment_address_2']) . "', ";
@@ -37,10 +37,10 @@ class ModelCheckoutOrder extends Model {
         $sql .= "payment_zone_id = '" . (int)$data['payment_zone_id'] . "', ";
         $sql .= "payment_address_format = '" . $this->db->escape($data['payment_address_format']) . "', ";
         $sql .= "payment_custom_field = '" . $this->db->escape(isset($data['payment_custom_field']) ? json_encode($data['payment_custom_field']) : '') . "', ";
-       // $sql .= "payment_method = '" . $this->db->escape($data['payment_method']) . "', ";
-      //  $sql .= "payment_code = '" . $this->db->escape($data['payment_code']) . "', ";
-       // $sql .= "shipping_firstname = '" . $this->db->escape($data['shipping_firstname']) . "', ";
-       // $sql .= "shipping_lastname = '" . $this->db->escape($data['shipping_lastname']) . "', ";
+        $sql .= "payment_method_name = '" . $this->db->escape($data['payment_method_name']) . "', ";
+        $sql .= "payment_code = '" . $this->db->escape($data['payment_code']) . "', ";
+        $sql .= "shipping_firstname = '" . $this->db->escape($data['shipping_firstname']) . "', ";
+        $sql .= "shipping_lastname = '" . $this->db->escape($data['shipping_lastname']) . "', ";
         $sql .= "shipping_fullname = '" . $this->db->escape($data['shipping_fullname']) . "', ";
         $sql .= "shipping_email = '" . $this->db->escape($data['shipping_email']) . "', ";
         $sql .= "shipping_telephone = '" . $this->db->escape($data['shipping_telephone']) . "', ";
@@ -57,7 +57,8 @@ class ModelCheckoutOrder extends Model {
         $sql .= "shipping_address_format = '" . $this->db->escape($data['shipping_address_format']) . "', ";
         $sql .= "shipping_custom_field = '" . $this->db->escape(isset($data['shipping_custom_field']) ? json_encode($data['shipping_custom_field']) : '') . "', ";
         $sql .= "shipping_method = '" . $this->db->escape($data['shipping_method']) . "',";
-        $sql .= " shipping_code = '" . $this->db->escape($data['shipping_code']) . "', ";
+        $sql .= "shipping_code = '" . $this->db->escape($data['shipping_code']) . "', ";
+        $sql .= "customer_order_ref = '" . $this->db->escape($data['customer_order_ref']) . "', ";
         $sql .= "comment = '" . $this->db->escape($data['comment']) . "', ";
         $sql .= "total = '" . (float)$data['total'] . "', ";
         $sql .= "affiliate_id = '" . (int)$data['affiliate_id'] . "', ";
@@ -79,6 +80,10 @@ class ModelCheckoutOrder extends Model {
         $sql .= "order_status_id = '" . (int)$data['order_status_id'] . "', ";
         $sql .= "printed = '" . (int)$data['printed'] . "', ";
         $sql .= "tax_rate = '" . (int)$data['tax_rate'] . "' ";
+
+        //crete a rendom hash for the order or using between medusa
+        $order_hash = md5(uniqid(rand(), true));
+        $sql .= " , order_hash = '" . $this->db->escape($order_hash) . "' ";
 
 
         $this->db->query($sql);
@@ -105,8 +110,21 @@ class ModelCheckoutOrder extends Model {
 				$this->db->query($sql_products);
 				$order_product_id = $this->db->getLastId();
 
+                //TSG - tsp options need adding in here
+
 				foreach ($product['option'] as $option) {
-					$this->db->query("INSERT INTO " . DB_PREFIX . "order_option SET order_id = '" . (int)$order_id . "', order_product_id = '" . (int)$order_product_id . "', product_option_id = '" . (int)$option['product_option_id'] . "', product_option_value_id = '" . (int)$option['product_option_value_id'] . "', name = '" . $this->db->escape($option['name']) . "', `value` = '" . $this->db->escape($option['value']) . "', `type` = '" . $this->db->escape($option['type']) . "'");
+                    $sql_options = "INSERT INTO " . DB_PREFIX . "tsg_order_option SET ";
+                    $sql_options .= " order_id = '" . (int)$order_id . "', ";
+                    $sql_options .= " order_product_id = '" . (int)$order_product_id . "', ";
+                    $sql_options .= " option_id = '" . (int)$option['product_option_id'] . "', ";
+                    $sql_options .= " value_id = '" . (int)$option['option_id'] . "', ";
+                    $sql_options .= " value_name = '" . $this->db->escape($option['value']) . "',  ";
+                    $sql_options .= " option_name = '" . $this->db->escape($option['name']) . "' ";
+
+                  //  $sql_options .= " value = '" . $this->db->escape($option['value']) . "', ";
+                 //   $sql_options .= " type = '" . $this->db->escape($option['type']) . "'";
+                    $this->db->query($sql_options);
+				//	$this->db->query("INSERT INTO " . DB_PREFIX . "order_option SET order_id = '" . (int)$order_id . "', order_product_id = '" . (int)$order_product_id . "', product_option_id = '" . (int)$option['product_option_id'] . "', product_option_value_id = '" . (int)$option['product_option_value_id'] . "', name = '" . $this->db->escape($option['name']) . "', `value` = '" . $this->db->escape($option['value']) . "', `type` = '" . $this->db->escape($option['type']) . "'");
 				}
 			}
 		}
@@ -290,6 +308,7 @@ class ModelCheckoutOrder extends Model {
 				'payment_iso_code_3'      => $payment_iso_code_3,
 				'payment_address_format'  => $order_query->row['payment_address_format'],
 				'payment_custom_field'    => json_decode($order_query->row['payment_custom_field'], true),
+
 				'payment_method'          => $order_query->row['payment_method_name'],
 				'payment_code'            => $order_query->row['payment_code'],
                 'shipping_fullname'      => $order_query->row['shipping_fullname'],
@@ -423,7 +442,7 @@ class ModelCheckoutOrder extends Model {
 				// Stock subtraction
 				$order_products = $this->getOrderProducts($order_id);
 
-				foreach ($order_products as $order_product) {
+				/*foreach ($order_products as $order_product) {
 					$this->db->query("UPDATE " . DB_PREFIX . "product SET quantity = (quantity - " . (int)$order_product['quantity'] . ") WHERE product_id = '" . (int)$order_product['product_id'] . "' AND subtract = '1'");
 
 					$order_options = $this->getOrderOptions($order_id, $order_product['order_product_id']);
@@ -431,7 +450,7 @@ class ModelCheckoutOrder extends Model {
 					foreach ($order_options as $order_option) {
 						$this->db->query("UPDATE " . DB_PREFIX . "product_option_value SET quantity = (quantity - " . (int)$order_product['quantity'] . ") WHERE product_option_value_id = '" . (int)$order_option['product_option_value_id'] . "' AND subtract = '1'");
 					}
-				}
+				}*/
 				
 				// Add commission if sale is linked to affiliate referral.
 				if ($order_info['affiliate_id'] && $this->config->get('config_affiliate_auto')) {
@@ -444,7 +463,8 @@ class ModelCheckoutOrder extends Model {
 			}
 
 			// Update the DB with the new statuses
-			$this->db->query("UPDATE `" . DB_PREFIX . "order` SET order_status_id = '" . (int)$order_status_id . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
+            $sql = "UPDATE `" . DB_PREFIX . "order` SET order_status_id = '" . (int)$order_status_id . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+			$this->db->query($sql);
 
 			$this->db->query("INSERT INTO " . DB_PREFIX . "order_history SET order_id = '" . (int)$order_id . "', order_status_id = '" . (int)$order_status_id . "', notify = '" . (int)$notify . "', comment = '" . $this->db->escape($comment) . "', date_added = NOW()");
 
@@ -453,7 +473,7 @@ class ModelCheckoutOrder extends Model {
 				// Restock
 				$order_products = $this->getOrderProducts($order_id);
 
-				foreach($order_products as $order_product) {
+				/*foreach($order_products as $order_product) {
 					$this->db->query("UPDATE `" . DB_PREFIX . "product` SET quantity = (quantity + " . (int)$order_product['quantity'] . ") WHERE product_id = '" . (int)$order_product['product_id'] . "' AND subtract = '1'");
 
 					$order_options = $this->getOrderOptions($order_id, $order_product['order_product_id']);
@@ -461,7 +481,7 @@ class ModelCheckoutOrder extends Model {
 					foreach ($order_options as $order_option) {
 						$this->db->query("UPDATE " . DB_PREFIX . "product_option_value SET quantity = (quantity + " . (int)$order_product['quantity'] . ") WHERE product_option_value_id = '" . (int)$order_option['product_option_value_id'] . "' AND subtract = '1'");
 					}
-				}
+				}*/
 
 				// Remove coupon, vouchers and reward points history
 				$order_totals = $this->getOrderTotals($order_id);
@@ -486,28 +506,42 @@ class ModelCheckoutOrder extends Model {
 		}
 	}
 
-	public function AddPaymentHistory($order_id, $payment_method_id, $payment_status_id, $comment)
+	public function addPaymentHistory($order_id, $payment_method_id, $payment_status_id, $comment)
     {
-        //1 - Failed, 2 - Paid, 6 - Cart (not attempted)
-        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
-        $sql .= " payment_status_id  = " . (int)$payment_status_id;
-        $sql .= " , payment_method_id  = " . (int)$payment_method_id;
-        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
-
-        $this->db->query($sql);
-
-
-
         //now add a payment history
         $sql = "INSERT INTO " . DB_PREFIX . "tsg_payment_history SET ";
         $sql .= " order_id = " . (int)$order_id;
-        $sql .= " , payment_status = " . $this->GetPaymentStatusByID($payment_status_id);
-        $sql .= " , payment_method = " . $this->GetPaymentMethodByID($payment_method_id);
+        $sql .= " , payment_status = " . $payment_status_id;
+        $sql .= " , payment_method = " . $payment_method_id;
         $sql .= " , comment = '" .$this->db->escape($comment) . "'";
         $sql .= " , date_added = NOW()";
 
         $this->db->query($sql);
     }
+
+    public function setPaymentStatus($order_id, $payment_method_id, $payment_status_id, $payment_ref)
+    {
+        //now add a payment history
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " payment_method_id  = " . (int)$payment_method_id;
+        $sql .= ", payment_status_id  = " . (int)$payment_status_id;
+        $sql .= ", payment_ref = '" . $this->db->escape($payment_ref) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+
+        //$this->db->query($sql);
+    }
+
+    public function setPaymentProvider($order_id, $payment_provider_id)
+    {
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " payment_method_id  = " . (int)$payment_provider_id;
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+
+    }
+
+
 
     private function GetPaymentStatusByID($payment_status_id){
 	    $sql = "SELECT name from " . DB_PREFIX . "tsg_payment_status WHERE payment_status_id = '" . (int)$payment_status_id . "'";
@@ -520,4 +554,52 @@ class ModelCheckoutOrder extends Model {
         $query = $this->db->query($sql);
         return $query->row['payment_method_name'];
     }
+
+    public function getOrderHash($order_id){
+        $sql = "SELECT order_hash from " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'";
+        $query = $this->db->query($sql);
+        //check if we have an order hash - might be an old order.
+        //In that case, make one and save it
+        if($query->row['order_hash'] == ""){
+            $order_hash = md5(uniqid(rand(), true));
+            $sql = "UPDATE `" . DB_PREFIX . "order` SET order_hash = '" . $order_hash . "' WHERE order_id = '" . (int)$order_id . "'";
+            $this->db->query($sql);
+            return $order_hash;
+        }
+        return $query->row['order_hash'];
+    }
+
+    public function getOrderCompany($order_id){
+        $sql = "SELECT company_id from " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'";
+        $query = $this->db->query($sql);
+        return $query->row['company_id'];
+    }
+
+    public function getOrderCustomer($order_id){
+        $sql = "SELECT customer_id from " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'";
+        $query = $this->db->query($sql);
+        return $query->row['customer_id'];
+    }
+
+    //set the due date
+    public function setDueDate($order_id, $due_date){
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " date_due = '" . $this->db->escape($due_date) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+    }
+
+    public function setCustomerRef($order_id, $customer_ref){
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " customer_order_ref = '" . $this->db->escape($customer_ref) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+    }
+
+    public function getOrderNumber($order_id){
+        $sql = "SELECT invoice_prefix from " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'";
+        $query = $this->db->query($sql);
+        return $query->row['invoice_prefix'] . '-'.$order_id;
+    }
+
 }

@@ -1,0 +1,14 @@
+<div class="row">
+    {%  for category in categories %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3 category-thumb">
+        <div class="cat-caption" >
+            <a href="{{ category['href'] }}">
+                <div class="">
+                    <img src="{{ category['image'] }}" alt="{{ category['name'] }}" title="{{ category['title'] }}" class="img-responsive" />
+                </div>
+                <div class="cat-caption-text">{{ category['name'] }}</div>
+            </a>
+        </div>
+    </div>
+    {%  endfor %}
+</div>

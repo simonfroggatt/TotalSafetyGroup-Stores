@@ -12,6 +12,7 @@ class ControllerTsgCheckoutAddress extends Controller {
             $data['customer_lastname'] = $this->customer->getLastName();
             $data['customer_email'] = $this->customer->getEmail();
             $data['customer_telephone'] =  $this->customer->getTelephone();
+            $data['customer_company'] =  $this->customer->getCompany();
 
 
             $customer_id = $this->customer->getId();
@@ -34,13 +35,24 @@ class ControllerTsgCheckoutAddress extends Controller {
                 }
             }
             $this->session->data['account'] = 'register';
+            $this->session->data['checkout_register'] = 1;
             $data['account'] = 'register';
 
         } else {
             $this->session->data['account'] = 'guest';
+            $this->session->data['checkout_register'] = 0;
             $data['account'] = 'guest';
+
             $data['logged'] = 0;
             $data['addressList'] = [];
+
+            //load from session
+            if(isset($this->session->data['payment_address'])){
+                $data['default_billing'] = $this->session->data['payment_address'];
+            }
+            if(isset($this->session->data['shipping_address'])){
+                $data['default_shipping'] = $this->session->data['shipping_address'];
+            }
         }
 
         $data['forgotten'] = $this->url->link('account/forgotten', '', true);
@@ -50,11 +62,13 @@ class ControllerTsgCheckoutAddress extends Controller {
         $data['countries'] = $this->model_localisation_country->TSGgetCountries();
 
 
+
         return $this->load->view('checkout/address', $data);
     }
 
     public function save(){
         //this passed when he hit the next button
+        //if register, then we need to save the address to the database
         $this->load->language('checkout/checkout');
         $account_type = null;
 
@@ -143,29 +157,32 @@ class ControllerTsgCheckoutAddress extends Controller {
             //if this is a register account, then we need to add this address as a new address
 
             if(isset($this->session->data['checkout_register'])){
-                $new_address = [];
                 $customer_id = $this->customer->getID();
-                $new_address['customerID'] = $customer_id;
-                $new_address['fullname'] = $this->request->post['billingFullname'];
-                $new_address['telephone'] = $this->request->post['billingPhone'];
-                $new_address['email'] = $this->request->post['billingEmail'];
-                $new_address['address'] = $this->request->post['billingAddress'];
-                $new_address['city'] = $this->request->post['billingCity'];
-                $new_address['area'] = $this->request->post['billingArea'];
-                $new_address['postcode'] = $this->request->post['billingPostcode'];
-                $new_address['country_id'] = $this->request->post['billing_country_id'];
-                $new_address['company'] = $this->request->post['billingCompany'];
-                $new_address['defaultBilling'] = 1;
+                //check if billingSaveaddress is set
+                if(isset($this->request->post['billingSaveaddress'])){
+                    $new_address = [];
+                    $customer_id = $this->customer->getID();
+                    $new_address['customerID'] = $customer_id;
+                    $new_address['fullname'] = $this->request->post['billingFullname'];
+                    $new_address['telephone'] = $this->request->post['billingPhone'];
+                    $new_address['email'] = $this->request->post['billingEmail'];
+                    $new_address['address'] = $this->request->post['billingAddress'];
+                    $new_address['city'] = $this->request->post['billingCity'];
+                    $new_address['area'] = $this->request->post['billingArea'];
+                    $new_address['postcode'] = $this->request->post['billingPostcode'];
+                    $new_address['country_id'] = $this->request->post['billing_country_id'];
+                    $new_address['company'] = $this->request->post['billingCompany'];
+                    $new_address['defaultBilling'] = 1;
 
-                if(isset($this->request->post['checkShippingSame'])){
-                    $new_address['defaultShipping'] = 1;
+                    if(isset($this->request->post['checkShippingSame'])) {
+                        $new_address['defaultShipping'] = 1;
+                    }
                     $new_id =  $this->model_account_address->TSGAddAddress($customer_id, $new_address);
                     if($new_id <= 0) {
                         $json['error'] = 'Error whilst saving new address';
                     }
-
                 }
-                else {
+                if(isset($this->request->post['shippingSaveaddress']) && !isset($this->request->post['checkShippingSame'])){
                     $new_address['customerID'] = $customer_id;
                     $new_address['fullname'] = $this->request->post['shippingFullname'];
                     $new_address['telephone'] = $this->request->post['shippingPhone'];
@@ -184,43 +201,6 @@ class ControllerTsgCheckoutAddress extends Controller {
                     }
                 }
             }
-
-            if (isset($this->request->post['billingSaveaddress'])) {
-                $new_address = [];
-                $customer_id = $this->customer->getID();
-                $new_address['customerID'] = $customer_id;
-                $new_address['fullname'] = $this->request->post['billingFullname'];
-                $new_address['telephone'] = $this->request->post['billingPhone'];
-                $new_address['email'] = $this->request->post['billingEmail'];
-                $new_address['address'] = $this->request->post['billingAddress'];
-                $new_address['city'] = $this->request->post['billingCity'];
-                $new_address['area'] = $this->request->post['billingArea'];
-                $new_address['postcode'] = $this->request->post['billingPostcode'];
-                $new_address['country_id'] = $this->request->post['billing_country_id'];
-                $new_address['company'] = $this->request->post['billingCompany'];
-
-            }
-
-            if (isset($this->request->post['shippingSaveaddress'])) {
-                $new_address = [];
-                $customer_id = $this->customer->getID();
-                $new_address['customerID'] = $customer_id;
-                $new_address['fullname'] = $this->request->post['shippingFullname'];
-                $new_address['telephone'] = $this->request->post['shippingPhone'];
-                $new_address['email'] = $this->request->post['shippingEmail'];
-                $new_address['address'] = $this->request->post['shippingAddress'];
-                $new_address['city'] = $this->request->post['shippingCity'];
-                $new_address['area'] = $this->request->post['shippingArea'];
-                $new_address['postcode'] = $this->request->post['shippingPostcode'];
-                $new_address['country_id'] = $this->request->post['shipping_country_id'];
-                $new_address['company'] = $this->request->post['shippingCompany'];
-
-                $new_id =  $this->model_account_address->TSGAddAddress($customer_id, $new_address);
-                if($new_id <= 0) {
-                    $json['error'] = 'Error whilst saving new address';
-                }
-            }
-
 
             unset($this->session->data['shipping_method']);
             unset($this->session->data['shipping_methods']);

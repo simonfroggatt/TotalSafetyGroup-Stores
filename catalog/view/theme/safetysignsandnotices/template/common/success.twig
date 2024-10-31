@@ -14,10 +14,33 @@
     {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {{ text_message }}
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <img class="img-svg-border" src="image/stores/branding/order_success.svg">
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="row">
+            <div class="col-12 text-center">
+              <h1>Thank you for your order</h1>
+            </div>
+            <hr>
+            <div class="col-12 text-center">
+              <p class="success_message">Your order number is <span class="success_message_ordernum">{{ order_number }}</span></p>
+              <hr class="pt-2 pe-2">
+              {% if is_logged %}
+              <p class="success_message">You can view this and past orders in the your <a href="{{ account_link }}">account section</a>
+                <a href="{{ account_link }}" type="button" class="btn btn-lg btn-outline-success"><i class="fa-regular fa-2x fa-user-check" style="color: green" aria-hidden="true"></i></a></p>
+                <hr class="pt-2 pe-2">
+              {% endif %}
+
+              <p class="success_message">Your VAT invoice is ready to be viewed.</p>
+              <a href="{{ invoice_pdf }}" type="button" class="btn btn-lg previous_button" target="_blank"><i class="fa-solid fa-file-pdf"></i> Download PDF VAT invoice</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="buttons">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        <div class="pull-right"><a href="{{ continue }}" class="btn previous_button">Home</a></div>
       </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>

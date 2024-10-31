@@ -1,0 +1,8 @@
+<table class="table table-borderless table-responsive"
+{% for total in totals %}
+    <tr>
+        <td class="text-end col-9"><strong>{{ total.title }}:</strong></td>
+        <td class="text-end col-3">{{ total.text }}</td>
+    </tr>
+{% endfor %}
+</table>

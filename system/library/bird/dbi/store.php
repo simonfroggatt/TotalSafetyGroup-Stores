@@ -1,6 +1,6 @@
 <?php
 namespace Bird\DBI;
-final class Store {
+final class Store extends \stdClass {
     public $storePrefix;
     public function __construct($registry) {
         $this->config = $registry->get('config');

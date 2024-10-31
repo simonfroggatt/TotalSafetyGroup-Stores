@@ -1,0 +1,70 @@
+{{ header }}
+<div id="account-order" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      {% if orders %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <td class="text-end">{{ column_order_id }}</td>
+              <td class="text-start">{{ column_customer }}</td>
+              <td class="text-end">{{ column_product }}</td>
+              <td class="text-start">Order Method</td>
+              <td class="text-start">{{ column_status }}</td>
+              <td class="text-start">Payment Status</td>
+              <td class="text-end">{{ column_total }}</td>
+              <td class="text-start">{{ column_date_added }}</td>
+              <td class="col-1"></td>
+            </tr>
+          </thead>
+          <tbody>
+           {% for order in orders %}
+            <tr class="align-middle">
+              <td class="text-end ">#{{ order.order_id }}</td>
+              <td class="text-start">{{ order.name }}</td>
+              <td class="text-end ">{{ order.products }}</td>
+              <td class="text-start">{{ order.order_type }}</td>
+              <td class="text-start">{{ order.status }}</td>
+              <td class="text-start">{{ order.payment_status }}</td>
+              <td class="text-end">{{ order.total }}</td>
+              <td class="text-start">{{ order.date_added }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a href="{{ order.view2 }}" data-toggle="tooltip" title="View" target="_blank" class="btn btn-info"><i class="fa-solid fa-eye"></i></a>
+                  <a href="{{ order.download }}" data-toggle="tooltip" title="Download" class="btn btn-info"><i class="fa-solid fa-arrow-down-to-line "></i></a>
+                  <a href="{{ order.email }}" data-toggle="tooltip" title="Email" class="btn btn-info"><i class="fa-solid fa-envelope "></i></a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 text-start">{{ pagination }}</div>
+        <div class="col-sm-6 text-end">{{ results }}</div>
+      </div>
+      {% else %}
+      <p>{{ text_empty }}</p>
+      {% endif %}
+      <div class="buttons clearfix">
+        <div class="text-center"><a href="{{ continue }}" class="btn previous_button float-start">Back</a></div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

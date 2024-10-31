@@ -136,6 +136,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $redirect = $this->url->link('checkout/checkout', '', true);
         }*/
 
+        //save the order ref
+        if(isset($this->request->post['customer_order_ref']))
+            $this->session->data['customer_order_ref'] = $this->request->post['customer_order_ref'];
+
         // Validate cart has products and has stock.
         if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
             $redirect = $this->url->link('checkout/cart');
@@ -207,9 +211,15 @@ class ControllerTsgCheckoutConfirm extends Controller {
 
             $this->load->language('checkout/checkout');
 
-            $order_data['invoice_prefix'] = $this->config->get('config_invoice_prefix');
             $order_data['store_id'] = $this->config->get('config_store_id');
             $order_data['store_name'] = $this->config->get('config_name');
+
+            $this->load->model('setting/store');
+            $storeSettings = $this->model_setting_store->getStoreInfo($order_data['store_id']);
+
+            $order_data['invoice_prefix'] = $storeSettings['prefix'];
+
+
 
             if ($order_data['store_id']) {
                 $order_data['store_url'] = $this->config->get('config_url');
@@ -238,8 +248,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
             } elseif (isset($this->session->data['guest'])) {
                 $order_data['customer_id'] = 0;
                 $order_data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
-                //$order_data['firstname'] = $this->session->data['guest']['firstname'];
-                //$order_data['lastname'] = $this->session->data['guest']['lastname'];
+                $fullname_str = $this->session->data['guest']['fullname'];
+                $fullname = explode(' ', $fullname_str);
+                $order_data['firstname'] = $fullname[0];
+                $order_data['lastname'] = $fullname[sizeof($fullname)-1];
                 $order_data['fullname'] = $this->session->data['guest']['fullname'];
                 $order_data['company'] = $this->session->data['guest']['company'];
                 $order_data['email'] = $this->session->data['guest']['email'];
@@ -247,8 +259,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['custom_field'] = $this->session->data['guest']['custom_field'];
             }
 
-            //$order_data['payment_firstname'] = $this->session->data['payment_address']['firstname'];
-            //$order_data['payment_lastname'] = $this->session->data['payment_address']['lastname'];
+            $payment_fullname_str = $this->session->data['payment_address']['fullname'];
+            $payment_fullname = explode(' ', $payment_fullname_str);
+            $order_data['payment_firstname'] = $payment_fullname[0];
+            $order_data['payment_lastname'] = $payment_fullname[sizeof($payment_fullname)-1];
             $order_data['payment_fullname'] = $this->session->data['payment_address']['fullname'];
             $order_data['payment_telephone'] = $this->session->data['payment_address']['telephone'];
             $order_data['payment_email'] = $this->session->data['payment_address']['email'];
@@ -267,9 +281,9 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $order_data['payment_custom_field'] = (isset($this->session->data['payment_address']['custom_field']) ? $this->session->data['payment_address']['custom_field'] : array());
 
             if (isset($this->session->data['payment_method']['title'])) {
-                $order_data['payment_method'] = $this->session->data['payment_method']['title'];
+                $order_data['payment_method_name'] = $this->session->data['payment_method']['title'];
             } else {
-                $order_data['payment_method'] = '';
+                $order_data['payment_method_name'] = '';
             }
 
             if (isset($this->session->data['payment_method']['code'])) {
@@ -279,6 +293,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
             }
 
             $order_data['printed'] = 0;
+
             $order_data['tax_rate'] = 86; //TODO -- make tax rate global for website and customer
 
 
@@ -287,8 +302,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['shipping_telephone'] = $this->session->data['shipping_address']['telephone'];
                 $order_data['shipping_email'] = $this->session->data['shipping_address']['email'];
 
-               // $order_data['shipping_firstname'] = $this->session->data['shipping_address']['firstname'];
-                //$order_data['shipping_lastname'] = $this->session->data['shipping_address']['lastname'];
+                $shipping_fullname_str = $this->session->data['shipping_address']['fullname'];
+                $shipping_fullname = explode(' ', $shipping_fullname_str);
+                $order_data['shipping_firstname'] = $shipping_fullname[0];
+                $order_data['shipping_lastname'] = $shipping_fullname[sizeof($shipping_fullname)-1];
                 $order_data['shipping_company'] = $this->session->data['shipping_address']['company'];
                 $order_data['shipping_address_1'] = $this->session->data['shipping_address']['address_1'];
                 $order_data['shipping_address_2'] = (isset($this->session->data['shipping_address']['address_2']) ? $this->session->data['shipping_address']['address_2']:'');
@@ -392,6 +409,8 @@ class ControllerTsgCheckoutConfirm extends Controller {
             }
 
             $order_data['comment'] = $this->request->post['comment'];
+            $order_data['customer_order_ref'] = $this->request->post['customer_order_ref'];
+
             $order_data['total'] = $total_data['total'];
 
             if (isset($this->request->cookie['tracking'])) {
@@ -572,7 +591,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $json['redirect'] = $redirect;
         }
 
-        if($this->session->data['order_id'] <= 0) {
+        if (!isset($this->session->data['order_id'])) {
             $json['error'] = 'error whilst creating order';
         }
 

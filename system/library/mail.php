@@ -138,7 +138,7 @@ class Mail extends \stdClass {
 		foreach (get_object_vars($this) as $key => $value) {
 			$this->adaptor->$key = $value;
 		}
-		
-		$this->adaptor->send();
+	//TODO - get emails working
+	//	$this->adaptor->send();
 	}
 }

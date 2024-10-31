@@ -1,6 +1,6 @@
 <?php
 namespace Bird\DBI;
-final class Catalog {
+final class Catalog extends \stdClass {
     private $registry;
     public function __construct($registry, $meta) {
         $this->registry = $registry;

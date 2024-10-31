@@ -100,7 +100,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			$data['lc'] = $this->session->data['language'];
 			$data['return'] = $this->url->link('checkout/success');
 			$data['notify_url'] = $this->url->link('extension/payment/pp_standard/callback', '', true);
-			$data['cancel_return'] = $this->url->link('checkout/checkout', '', true);
+			$data['cancel_return'] = $this->url->link('checkout/failure', 'pm_id=1', true);
 
 
 			if (!$this->config->get('payment_pp_standard_transaction')) {
@@ -110,6 +110,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			}
 
 			$data['custom'] = $this->session->data['order_id'];
+            $data['img_path'] = $this->config->get('config_ssl') . 'image/stores/3rdpartylogo/payment/checkout_PayPal.svg';
 
 			return $this->load->view('extension/payment/pp_standard', $data);
 		}
@@ -189,6 +190,12 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 						break;
 					case 'Failed':
 						$order_status_id = $this->config->get('payment_pp_standard_failed_status_id');
+                        $payment_status_id = 1;  //set to paid
+                        $payment_method_id = 1; //PAYPAL
+                        $payment_ref = '';
+                        $this->model_checkout_order->setPaymentStatus($order_id, $payment_method_id, $payment_status_id, $payment_ref);
+                        $this->model_checkout_order->addPaymentHistory($order_id, $payment_method_id, $payment_status_id,'Faileed order: '.$payment_ref);
+
 						break;
 					case 'Pending':
 						$order_status_id = $this->config->get('payment_pp_standard_pending_status_id');
@@ -197,6 +204,10 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 						$order_status_id = $this->config->get('payment_pp_standard_processed_status_id');
                         //SSAN
                         $payment_status_id = 2;  //set to paid
+                        $payment_method_id = 1;
+                        $payment_ref = '';
+                        $this->model_checkout_order->setPaymentStatus($order_id, $payment_method_id, $payment_status_id, $payment_ref);
+                        $this->model_checkout_order->addPaymentHistory($order_id, $payment_method_id, $payment_status_id,'user paid ref: '.$payment_ref);
 						break;
 					case 'Refunded':
 						$order_status_id = $this->config->get('payment_pp_standard_refunded_status_id');

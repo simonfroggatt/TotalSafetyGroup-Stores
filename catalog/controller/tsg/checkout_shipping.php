@@ -110,6 +110,9 @@ class ControllerTsgCheckoutShipping extends Controller {
                 $json['error'] = 'Error whilst trying to set shipping';
             }
             else {
+                if($shipping_method_data['method_type_id'] == 5){
+                    $shipping_method_data['cost'] = $this->cart->getProductMaxShipping();
+                }
                 $this->session->data['shipping_method'] = $shipping_method_data;
             }
         }
@@ -170,12 +173,41 @@ class ControllerTsgCheckoutShipping extends Controller {
             }
 
         }
+
+
+
         if($size_set){
             //remove the price option
             foreach ($shipping_methods as $key => $ship){
                 if($ship['type_id'] == 1){
                     unset($shipping_methods[$key]);
                 }
+            }
+        }
+
+        //now price shipping
+        $keys = array_keys(array_column($shipping_methods_rows, 'method_type_id'), 5);
+        $item_array = array_map(function($k) use ($shipping_methods_rows){return $shipping_methods_rows[$k];}, $keys);
+        $max_single_shipping = $this->cart->getProductMaxShipping();
+        $icount = sizeof($item_array);
+        for($i = 0; $i < $icount; $i++){
+            $shipping_data = [];
+            if ($max_single_shipping > 0) {
+                $shipping_data = [];
+                $shipping_data['shipping_method_id'] = $item_array[$i]['shipping_method_id'];
+                $shipping_data['type_id'] = $item_array[$i]['method_type_id'];
+                $shipping_data['title'] = $item_array[$i]['title'];
+                $shipping_data['code'] = $item_array[$i]['code'];
+                $shipping_data['cost'] = $max_single_shipping;
+                $shipping_data['description'] = $item_array[$i]['description'];
+                $shipping_data['tax_class_id'] = 9;
+
+                foreach ($shipping_methods as $key => $ship) {
+                    if ($ship['cost'] < $max_single_shipping) {
+                        unset($shipping_methods[$key]);
+                    }
+                }
+                $shipping_methods[] = $shipping_data;
             }
         }
 

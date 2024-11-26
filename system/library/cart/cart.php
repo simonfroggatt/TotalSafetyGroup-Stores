@@ -39,8 +39,8 @@ class Cart {
 
 	public function getProducts() {
 		$product_data = array();
-
-		$cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
+     
+        $cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
 
 		foreach ($cart_query->rows as $cart) {
 			$stock = true;
@@ -121,22 +121,22 @@ class Cart {
 
 				foreach (json_decode($cart['option']) as $product_option_id => $value) {
 
-                    $sql = "SELECT oc_tsg_product_option.label, ";
-                    $sql .= "oc_tsg_product_option_type.`name` as type,   ";
-                    $sql .= "oc_option_values.`name`,  ";
-                    $sql .= "oc_tsg_product_option.product_id,  ";
-                    $sql .= "oc_tsg_product_option_values.option_value_id ";
-                    $sql .= "FROM oc_tsg_product_option ";
-                    $sql .= "INNER JOIN oc_tsg_product_option_type ";
-                    $sql .= "ON oc_tsg_product_option.option_type_id = oc_tsg_product_option_type.id ";
-                    $sql .= "INNER JOIN oc_tsg_product_option_values ";
-                    $sql .= "ON oc_tsg_product_option.id = oc_tsg_product_option_values.product_option_id ";
-                    $sql .= "INNER JOIN oc_option_values ";
-                    $sql .= "ON oc_tsg_product_option_values.option_value_id = oc_option_values.id ";
+                    $sql = "SELECT " . DB_PREFIX . "tsg_product_option.label, ";
+                    $sql .= "" . DB_PREFIX . "tsg_product_option_type.`name` as type,   ";
+                    $sql .= "" . DB_PREFIX . "option_values.`name`,  ";
+                    $sql .= "" . DB_PREFIX . "tsg_product_option.product_id,  ";
+                    $sql .= "" . DB_PREFIX . "tsg_product_option_values.option_value_id ";
+                    $sql .= "FROM " . DB_PREFIX . "tsg_product_option ";
+                    $sql .= "INNER JOIN " . DB_PREFIX . "tsg_product_option_type ";
+                    $sql .= "ON " . DB_PREFIX . "tsg_product_option.option_type_id = " . DB_PREFIX . "tsg_product_option_type.id ";
+                    $sql .= "INNER JOIN " . DB_PREFIX . "tsg_product_option_values ";
+                    $sql .= "ON " . DB_PREFIX . "tsg_product_option.id = " . DB_PREFIX . "tsg_product_option_values.product_option_id ";
+                    $sql .= "INNER JOIN " . DB_PREFIX . "option_values ";
+                    $sql .= "ON " . DB_PREFIX . "tsg_product_option_values.option_value_id = " . DB_PREFIX . "option_values.id ";
                     $sql .= "WHERE ";
-                    $sql .= "oc_tsg_product_option.product_id = '" . (int)$cart['product_id'] . "'";
+                    $sql .= "" . DB_PREFIX . "tsg_product_option.product_id = '" . (int)$cart['product_id'] . "'";
                     $sql .= "and ";
-                    $sql .= "oc_tsg_product_option_values.product_option_id = '" . (int)$product_option_id . "'";
+                    $sql .= "" . DB_PREFIX . "tsg_product_option_values.product_option_id = '" . (int)$product_option_id . "'";
 
 					//$option_query = $this->db->query("SELECT po.product_option_id, po.option_id, od.name, o.type FROM " . DB_PREFIX . "product_option po LEFT JOIN `" . DB_PREFIX . "option` o ON (po.option_id = o.option_id) LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE po.product_option_id = '" . (int)$product_option_id . "' AND po.product_id = '" . (int)$cart['product_id'] . "' AND od.language_id = '" . (int)$this->config->get('config_language_id') . "'");
                     $option_query = $this->db->query($sql);
@@ -149,7 +149,7 @@ class Cart {
                             //$option_value_query = $this->db->query("SELECT pov.option_value_id, ovd.name, pov.quantity, pov.subtract, pov.price, pov.price_prefix, pov.points, pov.points_prefix, pov.weight, pov.weight_prefix FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_value ov ON (pov.option_value_id = ov.option_value_id) LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ov.option_value_id = ovd.option_value_id) WHERE pov.product_option_value_id = '" . (int)$value . "' AND pov.product_option_id = '" . (int)$product_option_id . "' AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
                             //$option_value_query = $this->db->query($sql);
 
-                            $sql = "SELECT oc_option_values.`name`, oc_option_values.id FROM oc_option_values INNER JOIN oc_tsg_product_option_values ON oc_option_values.id = oc_tsg_product_option_values.option_value_id WHERE oc_tsg_product_option_values.id = '" . (int)$value . "'";
+                            $sql = "SELECT " . DB_PREFIX . "option_values.`name`, " . DB_PREFIX . "option_values.id FROM " . DB_PREFIX . "option_values INNER JOIN " . DB_PREFIX . "tsg_product_option_values ON " . DB_PREFIX . "option_values.id = " . DB_PREFIX . "tsg_product_option_values.option_value_id WHERE " . DB_PREFIX . "tsg_product_option_values.id = '" . (int)$value . "'";
                             $option_value_query = $this->db->query($sql);
 							if ($option_value_query->num_rows) {
 								/*if ($option_value_query->row['price_prefix'] == '+') {
@@ -748,6 +748,26 @@ class Cart {
         }
 
 
+    }
+
+    public function getProductMaxShipping(){
+        $sql = "SELECT MAX( " . DB_PREFIX . "tsg_product_variant_core.shipping_cost ) as item_shipping";
+        $sql .= " FROM " . DB_PREFIX . "product_to_store  ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "product ON " . DB_PREFIX . "product.product_id = " . DB_PREFIX . "product_to_store.product_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "product_to_category ON " . DB_PREFIX . "product.product_id = " . DB_PREFIX . "product_to_category.product_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "category_to_store ON " . DB_PREFIX . "product_to_category.category_store_id = " . DB_PREFIX . "category_to_store.category_store_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variant_core ON " . DB_PREFIX . "product.product_id = " . DB_PREFIX . "tsg_product_variant_core.product_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_variants ON " . DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = " . DB_PREFIX . "tsg_product_variants.prod_var_core_id ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "cart ON " . DB_PREFIX . "tsg_product_variants.prod_variant_id = " . DB_PREFIX . "cart.product_variant_id  ";
+        $sql .= " WHERE ";
+        $sql .= " " . DB_PREFIX . "product_to_store.`status` = 1  ";
+        $sql .= " AND " . DB_PREFIX . "product_to_store.store_id = 1  ";
+        $sql .= " AND " . DB_PREFIX . "category_to_store.store_id = 1  ";
+        $sql .= " AND " . DB_PREFIX . "product_to_category.`status` = 1  ";
+        $sql .= " AND " . DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND " . DB_PREFIX . "cart.customer_id = '" . (int)$this->customer->getId() . "' AND " . DB_PREFIX . "cart.session_id = '" . $this->db->escape($this->session->getId()) . "'";
+        $query = $this->db->query($sql);
+        $row = $query->row;
+        return $row['item_shipping'];
     }
 
 }

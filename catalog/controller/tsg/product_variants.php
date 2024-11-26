@@ -23,7 +23,7 @@ class ControllerTsgProductVariants extends Controller {
             $options_arr = explode(':',$options_string);
             $select_option_arr = [];
             foreach($options_arr as $option){
-                $select_option_arr[] = explode(',',$option);
+                $select_option_arr[] = explode('_',$option);
             }
             $data['options_selected'] = $select_option_arr;
         }
@@ -48,14 +48,19 @@ class ControllerTsgProductVariants extends Controller {
        // $data['vMaterials'] = array();
         $data['vMaterials'] =  $this->model_tsg_product_variants->getVMaterials($product_id);
 
+        $data['selectOptions'] = array();
+        $data['selectOptions'] = $this->model_tsg_product_variants->getProductVariantSelects($product_id);
+
+        $data['variantClasses'] = $this->model_tsg_product_variants->getProductVariantClasses($product_id);
+
         $data['vOptionClasses'] = array();
-        $data['vOptionClasses'] = $this->model_tsg_product_variants->getVariantOptionClasses($product_id);
+      //  $data['vOptionClasses'] = $this->model_tsg_product_variants->getVariantOptionClasses($product_id);
 
         $data['vSizeMatClasses'] = array();
-  //      $data['vSizeMatClasses'] = $this->model_tsg_product_variants->getVariantSizeMatClasses($product_id);
+      //  $data['vSizeMatClasses'] = $this->model_tsg_product_variants->getVariantSizeMatClasses($product_id);
 
         $data['vOptClassesValues'] = array();
-    //   $data['vOptClassesValues'] = $this->model_tsg_product_variants->getOptionClassValues($product_id);
+     //  $data['vOptClassesValues'] = $this->model_tsg_product_variants->getOptionClassValues($product_id);
 
         $allVariants = $this->model_tsg_product_variants->getProductVariantList($product_id);
         $bulkgroupdata = $this->model_tsg_product_bulk_discounts->GetDiscountPriceGroup($product_id);

@@ -1007,8 +1007,13 @@ span.product-variants  {
 
 .product-card-svg-border {
     background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+    margin: 2%;
 
-    /* box-shadow: 0px 0px 20px #666; */
+   /* border: solid 1px black;*/
+   /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;*/
 }
 
 /*.card-img-top {
@@ -1067,4 +1072,18 @@ span.product-variants  {
 .success_message_ordernum {
     color: black;
     font-weight: bold;
+}
+
+.prod_image_gallery{
+    position:relative;
+    overflow:hidden;
+    padding-bottom:100%;
+}
+.prod_image_gallery img{
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }

@@ -78,18 +78,21 @@ class ModelCatalogProduct extends Model {
 
         $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
         $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
-        $sql .= "IF( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image ";
+        $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image ";
         $sql .= "FROM ". DB_PREFIX . "product  ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_description_base ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description_base.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_variant_core.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variants ON ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = ". DB_PREFIX . "tsg_product_variants.prod_var_core_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_to_store ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id  ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_to_category ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_category.product_id ";
-        $sql .= "WHERE ";
-        $sql .= " ". DB_PREFIX . "tsg_product_variants.store_id = " . (int)$this->config->get('config_store_id');
-        $sql .= " AND ". DB_PREFIX . "product_to_store.store_id = " . (int)$this->config->get('config_store_id');
-        $sql .= " AND ". DB_PREFIX . "product_to_store.`status` = 1 ";
-      //  $sql .= " AND ". DB_PREFIX . "product_to_category.`status` = 1 ";
+        $sql .= "INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "product_to_category.category_store_id = ". DB_PREFIX . "category_to_store.category_store_id ";
+        $sql .= " WHERE ";
+        $sql .= " (". DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " ". DB_PREFIX . "product_to_store.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " ". DB_PREFIX . "category_to_store.store_id = '" . (int)$this->config->get('config_store_id'). "' AND ";
+        $sql .= " ". DB_PREFIX . "product_to_category.`status` = '1'" . " AND ";
+        $sql .= " ". DB_PREFIX . "tsg_product_variant_core.bl_live = '1' AND ";
+        $sql .= " ". DB_PREFIX . "tsg_product_variants.isdeleted = 0 ) ";
 
         if (isset($data['filter_category_id'])){
             if($data['filter_category_id'] > 0 )

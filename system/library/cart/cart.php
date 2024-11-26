@@ -67,7 +67,7 @@ class Cart {
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_keywords ) > 1,  ". DB_PREFIX . "product_to_store.meta_keywords,  ". DB_PREFIX . "product_description_base.meta_keyword ) AS meta_keyword, ";
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads, ";
-            $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image, ";
+            $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image, ";
 
             $sql .= "1 as shipping, ";
             $sql .= "0 as points, ";
@@ -340,19 +340,9 @@ class Cart {
                 //TSG get out options and class info here
                 $tsg_option_data_txt = array();
                 $tsg_option_data = json_decode($cart['tsg_options'], true);
-                $option_price_add = 0;
-                $selected_options= array();
 
-                foreach ($tsg_option_data as $value) {
-                    $optionData = $this->getTSGOptionData($value['option_class_id'], $value['option_class_val'], $cart['product_variant_id'], $variant_price);
-                    $selected_options[] = $optionData;
-                    $price += $optionData['price'];
-                    /*$tsg_option_data_txt[] = array(
-                        'name' => $tsg_sel_options['label'],
-                        'value' => $tsg_sel_options['value'],
-                        'class_id' => $value['option_class_id'],
-                        'value_id' => $value['option_class_val']
-                    );*/
+                if($tsg_option_data){
+                    $option_price += $cart['tsg_option_price'];
                 }
 
                // $this->load->model('tsg/product_bulk_discounts');
@@ -392,7 +382,8 @@ class Cart {
                     'shipping_height'    => $product_query->row['shipping_height'],
                     'orientation_name' => $product_query->row['orientation_name'],
                     'material_name' => $product_query->row['material_name'],
-                    'tsg_options'   => $selected_options
+                    'tsg_options'   => $tsg_option_data,
+                    'tsg_option_price' => $option_price,
 				);
 			} else {
 				$this->remove($cart['cart_id']);
@@ -402,7 +393,7 @@ class Cart {
 		return $product_data;
 	}
 
-	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0, $product_variant_id = 0, $tsg_option_array = []) {
+	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0, $product_variant_id = 0, $tsg_option_array = [], $option_addon_price = 0) {
 		//$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
         $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart ";
         $sql .= " WHERE " . DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' ";
@@ -414,6 +405,7 @@ class Cart {
         $sql .= " AND " . DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "'";
         $sql .= " AND " . DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id');
         $sql .= " AND " . DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "'";
+
 
         $query = $this->db->query($sql);
 
@@ -429,7 +421,8 @@ class Cart {
             $sql .= DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "', ";
             $sql .= DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id') . ",";
             $sql .= DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "', ";
-            $sql .= DB_PREFIX . "cart.admin_pin = '".$this->session->data['cart_pin']. "'";
+            $sql .= DB_PREFIX . "cart.admin_pin = '".$this->session->data['cart_pin']. "', ";
+            $sql .= DB_PREFIX . "cart.tsg_option_price = '". $option_addon_price. "'";
 
 			$this->db->query($sql);
         } else {

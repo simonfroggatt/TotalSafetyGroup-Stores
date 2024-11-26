@@ -180,7 +180,7 @@
                             </div>
                             <div class="col-6 col-lg-6">
                                 {% if mib_logo %}
-                                    <img src="image/stores/3rdpartylogo/MiB_Logo_Horizontal_Colour.svg" class="img-fluid">
+                                    <img src="{{ image_path }}stores/3rdpartylogo/MiB_Logo_Horizontal_Colour.svg" class="img-fluid">
                                 {% endif %}
                             </div>
                         </div>
@@ -189,6 +189,7 @@
                         <div class="form-group">
                             <input type="hidden" name="product_id" value="{{ product_id }}" />
                             <input type="hidden" name="prod_variant_id" id="prod_variant_id" value="" />
+                            <input type="hidden" name="form_selected_option_values" id="form_selected_option_values" value="" />
                         </div>
                     </div>
                 </div>
@@ -248,7 +249,8 @@
                                             <div class="card h-100 material_cards" id="card_material_{{ material_list.material_id }}">
                                                 <div class="row g-0">
                                                     <div class="col-4">
-                                                        <img class="img-fluid rounded-end" src="image/{{ material_list.image }}" height="100px" >
+                                                        <img class="img-fluid rounded-end" src="{{ image_path }}{{ material_list.image }}" height="100px"
+                                                             onerror="this.src='{{ image_path }}stores/no-image.png';" alt="{{ material_list.material_name }}" title="{{ material_list.material_name }}" />
                                                     </div>
                                                     <div class="col-8">
                                                         <div class="card-body">
@@ -309,11 +311,15 @@ $('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
 //--></script> 
 <script type="text/javascript"><!--
 $('#button-cart').on('click', function() {
+
+    let temp_data  = $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']');
+   // let data_post = JSON.stringify(temp_data);
 	$.ajax({
 		url: 'index.php?route=checkout/cart/add',
 		type: 'post',
-		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']'),
-		dataType: 'json',
+		//data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']'),
+		data: temp_data,
+        dataType: 'json',
 		beforeSend: function() {
 			$('#button-cart').button('loading');
 		},

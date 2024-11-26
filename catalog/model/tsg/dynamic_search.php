@@ -72,9 +72,7 @@ class ModelTsgDynamicSearch extends Model{
         $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_keywords ) > 1,  ". DB_PREFIX . "product_to_store.meta_keywords,  ". DB_PREFIX . "product_description_base.meta_keyword ) AS meta_keyword, ";
         $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
         $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads, ";
-
-
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image ";
+        $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image  ";
 
         // $sql .= DB_PREFIX . "product_to_store.price_from ";
         $sql .= "FROM ". DB_PREFIX . "product  ";
@@ -82,10 +80,16 @@ class ModelTsgDynamicSearch extends Model{
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_variant_core.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variants ON ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = ". DB_PREFIX . "tsg_product_variants.prod_var_core_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_to_store ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id  ";
+        $sql .= "INNER JOIN ". DB_PREFIX . "product_to_category ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_category.product_id ";
+        $sql .= "INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "product_to_category.category_store_id = ". DB_PREFIX . "category_to_store.category_store_id ";
+
+
         $sql .= " WHERE ";
         $sql .= " (". DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
         $sql .= " ". DB_PREFIX . "product_to_store.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
-        $sql .= " ". DB_PREFIX . "tsg_product_variant_core.bl_live = 1 AND ";
+        $sql .= " ". DB_PREFIX . "category_to_store.store_id = '" . (int)$this->config->get('config_store_id'). "' AND ";
+        $sql .= " ". DB_PREFIX . "product_to_category.`status` = '1'" . " AND ";
+        $sql .= " ". DB_PREFIX . "tsg_product_variant_core.bl_live = '1' AND ";
         $sql .= " ". DB_PREFIX . "tsg_product_variants.isdeleted = 0 )";
 
         if (!empty($queryStr)) {

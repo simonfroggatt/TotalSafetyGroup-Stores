@@ -42,11 +42,12 @@ class ControllerCommonHeader extends Controller {
 		$data['theme_css'] = 'catalog/view/theme/'. $this->config->get('theme_default_directory'). '/stylesheet/stylesheet.css';
 
         $tmp =  DIR_IMAGE . $store_info['logo'];
-		if (is_file(DIR_IMAGE . $store_info['logo'])) {
-			$data['logo'] = DIR_IMAGE . $store_info['logo'];
-		} else {
-			$data['logo'] = '';
-		}
+        if (USE_CDN) {
+            $data['logo'] = TSG_CDN_URL . $store_info['logo'];
+        } else {
+            $data['logo'] = $server . 'image/' . $store_info['logo'];
+        }
+        $data['store_name'] = $store_info['name'];
 
 		$this->load->language('common/header');
 

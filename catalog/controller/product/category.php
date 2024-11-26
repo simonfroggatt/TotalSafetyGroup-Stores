@@ -39,6 +39,8 @@ class ControllerProductCategory extends Controller {
 			$limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
 		}
 
+        $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
+
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -145,7 +147,7 @@ class ControllerProductCategory extends Controller {
 					'title' => $result['title'],
 				    'name' => $result['name'],// . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
 					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_store_id'] . $url),
-                    'image' => $result['image']
+                    'image' =>  $result['image']
 				);
 			}
 
@@ -171,7 +173,12 @@ class ControllerProductCategory extends Controller {
                         $thumb_css = 'product-card-svg-border';
                        // $image = $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
 
-                        $image = $this->model_tool_image->category_list_svg($result['image']);
+                        if(USE_CDN){
+                            $image = TSG_CDN_URL. $result['image'];
+                        } else {
+                            $image = 'image/'. $result['image'];
+                        }
+                       // $image = $this->model_tool_image->category_list_svg($result['image']);
                     }
                     else
                     {
@@ -181,14 +188,15 @@ class ControllerProductCategory extends Controller {
 
 				} else {
                     $thumb_css = '';
-					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+					$image = $this->model_tool_image->resize('stores/no-image.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
 				}
 
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
+                $price = $this->currency->format($result['price'], $this->session->data['currency']);
+                /*if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+                        $price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+                    } else {
+                        $price = false;
+                    }*/
 
 				/*if (!is_null($result['special']) && (float)$result['special'] >= 0) {
 					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);

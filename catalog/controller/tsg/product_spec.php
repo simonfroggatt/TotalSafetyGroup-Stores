@@ -18,6 +18,8 @@ class ControllerTsgProductSpec extends Controller
 
         $data['symbology'] = $this->model_tsg_product_spec->getProductSymbols($variant_id);
 
+        $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
+
         $output = $this->load->view('tsg/product_spec', $data);
         $this->response->setOutput($output);
     }

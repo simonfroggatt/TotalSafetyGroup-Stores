@@ -4,3 +4,6 @@
 /config.php
 /admin/config.php
 
+/system/storage_php7/
+/image/
+/image_old/

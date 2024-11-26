@@ -29,7 +29,7 @@
           {% for category in categories %}
             <div class="col">
               <div class="card h-100 text-center">
-                <a href="{{ category.href }}"><img src="image/{{ category.image }}" alt="{{ category.name }}" title="{{ product.title }}" class="card-img-top" /></a>
+                <a href="{{ category.href }}"><img src="{{ image_path }}{{ category.image }}" alt="{{ category.name }}" title="{{ product.title }}" class="card-img-top" /></a>
                 <div class="card-footer h-100">
                  <a href="{{ category.href }}">{{ category.name }}</a>
                 </div>
@@ -77,10 +77,16 @@
           <div class="col text-center">
             <div class="card h-100 cat_cards">
              <!-- <span class="notify-bespoke" ><i class="fas fa-sliders-h" title="Customize this sign"></i></span> -->
-              <div class="d-flex align-items-center justify-content-center">
-                  <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="card-img-top {{ product.thumb_css }}" /></a>
-              </div>
               <div class="card-body align-text-bottom">
+                <div class="prod_image_gallery">
+                  <a href="{{ product.href }}">
+                    <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}"
+                         class="img img-fluid {{ product.thumb_css }} full-width"
+                         onerror="this.src='{{ image_path }}stores/no-image.png';"/></a>
+                </div>
+
+
+
                 <p class="card-title"><a href="{{ product.href }}"> {{ (product.name|length > 50 ? product.name|slice(0, 50) ~ '…' : product.name)  }}</a></p>
               </div>
               <div class="card-footer">

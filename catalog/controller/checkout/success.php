@@ -75,7 +75,7 @@ class ControllerCheckoutSuccess extends Controller {
 		}
 
 
-
+        $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
 		$data['continue'] = $this->url->link('common/home');
 
 		$data['column_left'] = $this->load->controller('common/column_left');

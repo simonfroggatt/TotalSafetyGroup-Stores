@@ -11,12 +11,12 @@ class ControllerCommonHeaderSubheader extends Controller {
         $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 
-		if (is_file(DIR_IMAGE . $store_info['logo'])) {
-
-			$data['logo'] = $server . 'image/'. $store_info['logo'];
-		} else {
-			$data['logo'] = '';
-		}
+        if (USE_CDN) {
+            $data['logo'] = TSG_CDN_URL . $store_info['logo'];
+        } else {
+            $data['logo'] = $server . 'image/' . $store_info['logo'];
+        }
+        $data['store_name'] = $store_info['name'];
 
 		$this->load->language('common/header');
 

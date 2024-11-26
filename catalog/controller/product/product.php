@@ -255,6 +255,7 @@ class ControllerProductProduct extends Controller {
             }
 
             $data['mib_logo']  = $product_info['mib_logo'];
+            $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
 
 			/*if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
@@ -409,7 +410,7 @@ class ControllerProductProduct extends Controller {
 				if ($result['image']) {
 					$image =  $this->model_tool_image->resize($result['image'], 500,500 );// $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
 				} else {
-					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
+					$image = $this->model_tool_image->resize('stores/no-image.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {

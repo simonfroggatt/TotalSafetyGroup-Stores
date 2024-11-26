@@ -68,6 +68,12 @@ class ControllerCommonFooter extends Controller {
 
 		$data['scripts'] = $this->document->getScripts('footer');
 		$data['styles'] = $this->document->getStyles('footer');
+
+        //our footer images
+        $data['footer_mib_living_wage_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/mib_living_wage.svg' : 'image/3rdpartylogo/mib_living_wage.svg';
+        $data['footer_security_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/comodo-security.svg' : 'image/3rdpartylogo/comodo-security.svg';
+        $data['footer_fsb_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/fsb.svg' : 'image/3rdpartylogo/fsb.svg';
+
 		
 		return $this->load->view('common/footer', $data);
 	}

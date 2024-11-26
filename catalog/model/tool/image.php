@@ -3,19 +3,19 @@ class ModelToolImage extends Model
 {
     public function resize($filename, $width, $height)
     {
-        $test1 = is_file(DIR_IMAGE . $filename);
-        $test2 = substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE));
-        $test3 = str_replace('\\', '/', DIR_IMAGE);
+        //$test1 = is_file(DIR_IMAGE . $filename);
+       // $test2 = substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE));
+       // $test3 = str_replace('\\', '/', DIR_IMAGE);
         //$cleaned_url = DIR_IMAGE. str_replace(DJANGO_DROP_DIR, '', $filename);
         //if (!is_file(DIR_IMAGE . $filename) || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE)) != str_replace('\\', '/', DIR_IMAGE)) {
-        if (!is_file(DIR_IMAGE . $filename)) {
-            return;
+       /* if (!is_file(DIR_IMAGE . $filename)) {
+            return TSG_CDN_URL. 'store/' . 'no_image.png';
         }
-
+*/
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
         //SSAN - cut in here
-        if ($extension == 'svg') {
+      /*  if ($extension == 'svg') {
             $image_new = 'image/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '.' . $extension;
 
             if ($this->request->server['HTTPS']) {
@@ -24,7 +24,17 @@ class ModelToolImage extends Model
                 return $this->config->get('config_url') . $image_new;
             }
 
+        }*/
+
+        if(USE_CDN){
+            $image = TSG_CDN_URL. $filename;
+        } else {
+            $image = 'image/'. $filename;
         }
+
+
+
+        return $image;
 
         $image_old = $filename;
         $image_new = 'cache/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . (int)$width . 'x' . (int)$height . '.' . $extension;

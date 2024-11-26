@@ -111,6 +111,23 @@ class ModelCheckoutOrder extends Model {
 				$order_product_id = $this->db->getLastId();
 
                 //TSG - tsp options need adding in here
+                foreach ($product['tsg_options'] as $tsg_option){
+                    $sql_tsg_options = "INSERT INTO " . DB_PREFIX . "tsg_order_product_options SET ";
+                  // $sql_tsg_options .= " order_id = '" . (int)$order_id . "', ";
+                    $sql_tsg_options .= " order_product_id = '" . (int)$order_product_id . "', ";
+
+                    $sql_tsg_options .= " class_id = '" . (int)$tsg_option['class_id'] . "', ";
+                    $sql_tsg_options .= " class_name = '" . $tsg_option['class_label'] . "', ";
+                    $sql_tsg_options .= " value_id = '" . (int)$tsg_option['value_id'] . "',  ";
+                    $sql_tsg_options .= " value_name = '" . $this->db->escape($tsg_option['value_label']) . "',  ";
+
+                    $sql_tsg_options .= " bl_dynamic = '" . (int)$tsg_option['bl_dynamic'] . "', ";
+                    $sql_tsg_options .= " dynamic_class_id = '" . (int)$tsg_option['bl_dynamac_class_id']  . "', ";
+                    $sql_tsg_options .= " dynamic_value_id = '" . (int)$tsg_option['bl_dynamic_value_id']  . "', ";
+                    $sql_tsg_options .= " class_type_id = '" . (int)$tsg_option['addontype']  . "' ";
+
+                    $this->db->query($sql_tsg_options);
+                }
 
 				foreach ($product['option'] as $option) {
                     $sql_options = "INSERT INTO " . DB_PREFIX . "tsg_order_option SET ";

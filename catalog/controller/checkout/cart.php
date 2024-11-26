@@ -294,6 +294,22 @@ class ControllerCheckoutCart extends Controller {
             $product_variant_id = 0;
         }
 
+        if (isset($this->request->post['form_selected_option_values'])) {
+            $form_post_temp = $this->request->post['form_selected_option_values'];
+            $tmp = html_entity_decode($form_post_temp);
+            $selected_option_values_frm = json_decode($tmp, true);
+        }else {
+            $selected_option_values_frm = [];
+        }
+
+        if (isset($this->request->post['option_addon_price'])) {
+            $option_addon_price = $this->request->post['option_addon_price'];
+        }else {
+            $option_addon_price = 0;
+        }
+
+
+
 
 		$this->load->model('catalog/product');
 
@@ -342,9 +358,9 @@ class ControllerCheckoutCart extends Controller {
 
 			if (!$json) {
 
-                $tsg_product_class_options = $this->TSGextractOPTS($this->request->post);
+                //$tsg_product_class_options = $this->TSGextractOPTS($this->request->post);
 
-				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $tsg_product_class_options);
+				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $selected_option_values_frm, $option_addon_price);
 
 				//$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
 
@@ -371,6 +387,9 @@ class ControllerCheckoutCart extends Controller {
 				);
 
 				// Display prices
+                $tmp = $this->customer->isLogged();
+                $tmp2 = $this->config->get('config_customer_price');
+
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 					$sort_order = array();
 
@@ -556,7 +575,7 @@ class ControllerCheckoutCart extends Controller {
         if($options != []){
             $urlstr .= '&ops=';
             foreach($options as $option){
-                $urlstr .= $option['class_id'] .','.$option['value_id'].":";
+                $urlstr .= $option['class_id'] .'_'.$option['value_id'].":";
             }
             $urlstr = substr($urlstr, 0 , -1);
         }

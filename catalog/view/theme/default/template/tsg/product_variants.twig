@@ -17,6 +17,8 @@
         <button class="btn btn-outline-secondary" type="button" id="material-info" onclick="ShowMaterial(); return false;"><i class="fa fa-info" aria-hidden="true"></i></button>
     </div>
 
+
+
     <!--TSG addin for our options stuff --START -- -->
     {% if vOptClassesValues %}
         {% for classinfo in vOptClassesValues %}
@@ -48,6 +50,8 @@ var variant_classes_values_tsg = {{ vOptClassesValues | json_encode | raw}};
 var discount_group_data = {{ bulk_discount_group | json_encode | raw}};
 
 var variant_selected = new Array();
+
+console.log({{ selectOptions }})
 
 
 

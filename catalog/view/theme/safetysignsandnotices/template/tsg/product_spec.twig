@@ -51,7 +51,7 @@
                     {% for symbol_info in symbology %}
                 <div class="row outer_row">
                     <div class="col-12 col-md-3 col-lg-2 align-self-center text-center">
-                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="image/{{ symbol_info.svg_path }}" title="{{ symbol_info.function }}" alt="{{ symbol_info.function }}" class="mx-auto d-block symbol_thumb"><small class="text-muted">Click to search by
+                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ image_path }}{{ symbol_info.svg_path }}" title="{{ symbol_info.function }}" alt="{{ symbol_info.function }}" class="mx-auto d-block symbol_thumb"><small class="text-muted">Click to search by
                                 symbol</small></a>
 
                     </div>

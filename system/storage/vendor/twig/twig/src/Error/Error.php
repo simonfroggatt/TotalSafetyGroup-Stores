@@ -11,14 +11,8 @@
 
 namespace Twig\Error;
 
-use Exception;
-use ReflectionObject;
 use Twig\Source;
 use Twig\Template;
-use Twig_Source;
-use function get_class;
-use function is_object;
-use function is_string;
 
 /**
  * Twig base exception.
@@ -42,7 +36,7 @@ use function is_string;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Error extends Exception
+class Error extends \Exception
 {
     private $lineno;
     private $name;
@@ -53,23 +47,18 @@ class Error extends Exception
     /**
      * Constructor.
      *
-     * Set the line number to -1 to enable its automatic guessing.
-     * Set the name to null to enable its automatic guessing.
+     * By default, automatic guessing is enabled.
      *
-     * @param string             $message  The error message
-     * @param int                $lineno   The template line where the error occurred
-     * @param Source|string|null $source   The source context where the error occurred
-     * @param Exception         $previous The previous exception
+     * @param string      $message The error message
+     * @param int         $lineno  The template line where the error occurred
+     * @param Source|null $source  The source context where the error occurred
      */
-    public function __construct(string $message, int $lineno = -1, $source = null, Exception $previous = null)
+    public function __construct(string $message, int $lineno = -1, Source $source = null, \Exception $previous = null)
     {
         parent::__construct('', 0, $previous);
 
         if (null === $source) {
             $name = null;
-        } elseif (!$source instanceof Source && !$source instanceof Twig_Source) {
-            @trigger_error(sprintf('Passing a string as a source to %s is deprecated since Twig 2.6.1; pass a Twig\Source instance instead.', __CLASS__), E_USER_DEPRECATED);
-            $name = $source;
         } else {
             $name = $source->getName();
             $this->sourceCode = $source->getCode();
@@ -82,52 +71,29 @@ class Error extends Exception
         $this->updateRepr();
     }
 
-    /**
-     * Gets the raw message.
-     *
-     * @return string The raw message
-     */
-    public function getRawMessage()
+    public function getRawMessage(): string
     {
         return $this->rawMessage;
     }
 
-    /**
-     * Gets the template line where the error occurred.
-     *
-     * @return int The template line
-     */
-    public function getTemplateLine()
+    public function getTemplateLine(): int
     {
         return $this->lineno;
     }
 
-    /**
-     * Sets the template line where the error occurred.
-     *
-     * @param int $lineno The template line
-     */
-    public function setTemplateLine($lineno)
+    public function setTemplateLine(int $lineno): void
     {
         $this->lineno = $lineno;
 
         $this->updateRepr();
     }
 
-    /**
-     * Gets the source context of the Twig template where the error occurred.
-     *
-     * @return Source|null
-     */
-    public function getSourceContext()
+    public function getSourceContext(): ?Source
     {
         return $this->name ? new Source($this->sourceCode, $this->name, $this->sourcePath) : null;
     }
 
-    /**
-     * Sets the source context of the Twig template where the error occurred.
-     */
-    public function setSourceContext(Source $source = null)
+    public function setSourceContext(Source $source = null): void
     {
         if (null === $source) {
             $this->sourceCode = $this->name = $this->sourcePath = null;
@@ -140,19 +106,19 @@ class Error extends Exception
         $this->updateRepr();
     }
 
-    public function guess()
+    public function guess(): void
     {
         $this->guessTemplateInfo();
         $this->updateRepr();
     }
 
-    public function appendMessage($rawMessage)
+    public function appendMessage($rawMessage): void
     {
         $this->rawMessage .= $rawMessage;
         $this->updateRepr();
     }
 
-    private function updateRepr()
+    private function updateRepr(): void
     {
         $this->message = $this->rawMessage;
 
@@ -176,7 +142,7 @@ class Error extends Exception
         }
 
         if ($this->name) {
-            if (is_string($this->name) || (is_object($this->name) && method_exists($this->name, '__toString'))) {
+            if (\is_string($this->name) || (\is_object($this->name) && method_exists($this->name, '__toString'))) {
                 $name = sprintf('"%s"', $this->name);
             } else {
                 $name = json_encode($this->name);
@@ -197,19 +163,19 @@ class Error extends Exception
         }
     }
 
-    private function guessTemplateInfo()
+    private function guessTemplateInfo(): void
     {
         $template = null;
         $templateClass = null;
 
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS | DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        $backtrace = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS | \DEBUG_BACKTRACE_PROVIDE_OBJECT);
         foreach ($backtrace as $trace) {
-            if (isset($trace['object']) && $trace['object'] instanceof Template && 'Twig_Template' !== get_class($trace['object'])) {
-                $currentClass = get_class($trace['object']);
-                $isEmbedContainer = 0 === strpos($templateClass, $currentClass);
+            if (isset($trace['object']) && $trace['object'] instanceof Template) {
+                $currentClass = \get_class($trace['object']);
+                $isEmbedContainer = null === $templateClass ? false : 0 === strpos($templateClass, $currentClass);
                 if (null === $this->name || ($this->name == $trace['object']->getTemplateName() && !$isEmbedContainer)) {
                     $template = $trace['object'];
-                    $templateClass = get_class($trace['object']);
+                    $templateClass = \get_class($trace['object']);
                 }
             }
         }
@@ -230,7 +196,7 @@ class Error extends Exception
             return;
         }
 
-        $r = new ReflectionObject($template);
+        $r = new \ReflectionObject($template);
         $file = $r->getFileName();
 
         $exceptions = [$e = $this];
@@ -259,5 +225,3 @@ class Error extends Exception
         }
     }
 }
-
-class_alias('Twig\Error\Error', 'Twig_Error');

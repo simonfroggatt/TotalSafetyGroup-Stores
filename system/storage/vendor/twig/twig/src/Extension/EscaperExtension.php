@@ -14,10 +14,8 @@ use Twig\FileExtensionEscapingStrategy;
 use Twig\NodeVisitor\EscaperNodeVisitor;
 use Twig\TokenParser\AutoEscapeTokenParser;
 use Twig\TwigFilter;
-    use function call_user_func;
-    use function is_string;
 
-    final class EscaperExtension extends AbstractExtension
+final class EscaperExtension extends AbstractExtension
 {
     private $defaultStrategy;
     private $escapers = [];
@@ -38,17 +36,17 @@ use Twig\TwigFilter;
         $this->setDefaultStrategy($defaultStrategy);
     }
 
-    public function getTokenParsers()
+    public function getTokenParsers(): array
     {
         return [new AutoEscapeTokenParser()];
     }
 
-    public function getNodeVisitors()
+    public function getNodeVisitors(): array
     {
         return [new EscaperNodeVisitor()];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('escape', 'twig_escape_filter', ['needs_environment' => true, 'is_safe_callback' => 'twig_escape_filter_is_safe']),
@@ -65,7 +63,7 @@ use Twig\TwigFilter;
      *
      * @param string|false|callable $defaultStrategy An escaping strategy
      */
-    public function setDefaultStrategy($defaultStrategy)
+    public function setDefaultStrategy($defaultStrategy): void
     {
         if ('name' === $defaultStrategy) {
             $defaultStrategy = [FileExtensionEscapingStrategy::class, 'guess'];
@@ -81,12 +79,12 @@ use Twig\TwigFilter;
      *
      * @return string|false The default strategy to use for the template
      */
-    public function getDefaultStrategy($name)
+    public function getDefaultStrategy(string $name)
     {
         // disable string callables to avoid calling a function named html or js,
         // or any other upcoming escaping strategy
-        if (!is_string($this->defaultStrategy) && false !== $this->defaultStrategy) {
-            return call_user_func($this->defaultStrategy, $name);
+        if (!\is_string($this->defaultStrategy) && false !== $this->defaultStrategy) {
+            return \call_user_func($this->defaultStrategy, $name);
         }
 
         return $this->defaultStrategy;
@@ -135,14 +133,11 @@ use Twig\TwigFilter;
         }
     }
 }
-
-class_alias('Twig\Extension\EscaperExtension', 'Twig_Extension_Escaper');
 }
 
 namespace {
 use Twig\Environment;
 use Twig\Error\RuntimeError;
-use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
 use Twig\Markup;
 use Twig\Node\Expression\ConstantExpression;
@@ -152,8 +147,6 @@ use Twig\Node\Node;
  * Marks a variable as being safe.
  *
  * @param string $string A PHP variable
- *
- * @return string
  */
 function twig_raw_filter($string)
 {
@@ -176,10 +169,10 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
         return $string;
     }
 
-    if (!is_string($string)) {
-        if (is_object($string) && method_exists($string, '__toString')) {
+    if (!\is_string($string)) {
+        if (\is_object($string) && method_exists($string, '__toString')) {
             if ($autoescape) {
-                $c = get_class($string);
+                $c = \get_class($string);
                 $ext = $env->getExtension(EscaperExtension::class);
                 if (!isset($ext->safeClasses[$c])) {
                     $ext->safeClasses[$c] = [];
@@ -198,7 +191,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
             }
 
             $string = (string) $string;
-        } elseif (in_array($strategy, ['html', 'js', 'css', 'html_attr', 'url'])) {
+        } elseif (\in_array($strategy, ['html', 'js', 'css', 'html_attr', 'url'])) {
             return $string;
         }
     }
@@ -213,7 +206,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
 
     switch ($strategy) {
         case 'html':
-            // see https://secure.php.net/htmlspecialchars
+            // see https://www.php.net/htmlspecialchars
 
             // Using a static variable to avoid initializing the array
             // each time the function is called. Moving the declaration on the
@@ -236,18 +229,18 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
             ];
 
             if (isset($htmlspecialcharsCharsets[$charset])) {
-                return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
+                return htmlspecialchars($string, \ENT_QUOTES | \ENT_SUBSTITUTE, $charset);
             }
 
             if (isset($htmlspecialcharsCharsets[strtoupper($charset)])) {
                 // cache the lowercase variant for future iterations
                 $htmlspecialcharsCharsets[$charset] = true;
 
-                return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
+                return htmlspecialchars($string, \ENT_QUOTES | \ENT_SUBSTITUTE, $charset);
             }
 
             $string = twig_convert_encoding($string, 'UTF-8', $charset);
-            $string = htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $string = htmlspecialchars($string, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
 
             return iconv('UTF-8', $charset, $string);
 
@@ -284,15 +277,18 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
                     return $shortMap[$char];
                 }
 
-                // \uHHHH
-                $char = twig_convert_encoding($char, 'UTF-16BE', 'UTF-8');
-                $char = strtoupper(bin2hex($char));
-
-                if (4 >= strlen($char)) {
-                    return sprintf('\u%04s', $char);
+                $codepoint = mb_ord($char, 'UTF-8');
+                if (0x10000 > $codepoint) {
+                    return sprintf('\u%04X', $codepoint);
                 }
 
-                return sprintf('\u%04s\u%04s', substr($char, 0, -4), substr($char, -4));
+                // Split characters outside the BMP into surrogate pairs
+                // https://tools.ietf.org/html/rfc2781.html#section-2.1
+                $u = $codepoint - 0x10000;
+                $high = 0xD800 | ($u >> 10);
+                $low = 0xDC00 | ($u & 0x3FF);
+
+                return sprintf('\u%04X\u%04X', $high, $low);
             }, $string);
 
             if ('UTF-8' !== $charset) {
@@ -313,7 +309,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
             $string = preg_replace_callback('#[^a-zA-Z0-9]#Su', function ($matches) {
                 $char = $matches[0];
 
-                return sprintf('\\%X ', 1 === strlen($char) ? ord($char) : mb_ord($char, 'UTF-8'));
+                return sprintf('\\%X ', 1 === \strlen($char) ? \ord($char) : mb_ord($char, 'UTF-8'));
             }, $string);
 
             if ('UTF-8' !== $charset) {
@@ -339,7 +335,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
                  * @license   https://framework.zend.com/license/new-bsd New BSD License
                  */
                 $chr = $matches[0];
-                $ord = ord($chr);
+                $ord = \ord($chr);
 
                 /*
                  * The following replaces characters undefined in HTML with the
@@ -353,7 +349,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
                  * Check if the current character to escape has a name entity we should
                  * replace it with while grabbing the hex value of the character.
                  */
-                if (1 === strlen($chr)) {
+                if (1 === \strlen($chr)) {
                     /*
                      * While HTML supports far more named entities, the lowest common denominator
                      * has become HTML5's XML Serialisation which is restricted to the those named
@@ -391,17 +387,8 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
             return rawurlencode($string);
 
         default:
-            static $escapers;
-
-            if (null === $escapers) {
-                // merge the ones set on CoreExtension for BC (to be removed in 3.0)
-                $escapers = array_merge(
-                    $env->getExtension(CoreExtension::class)->getEscapers(false),
-                    $env->getExtension(EscaperExtension::class)->getEscapers()
-                );
-            }
-
-            if (isset($escapers[$strategy])) {
+            $escapers = $env->getExtension(EscaperExtension::class)->getEscapers();
+            if (array_key_exists($strategy, $escapers)) {
                 return $escapers[$strategy]($env, $string, $charset);
             }
 

@@ -10,6 +10,7 @@ class ControllerExtensionModuleHomepageCategory extends Controller {
         $data['categories'] = array();
 
         $categories = $this->model_tsg_homepage_category->getHomeCategories();
+        $image_path = USE_CDN ? TSG_CDN_URL : 'image/';
 
         foreach ($categories as $category) {
             $data['categories'][] = array(
@@ -17,7 +18,7 @@ class ControllerExtensionModuleHomepageCategory extends Controller {
                 'name'        => $category['name'],
                 'title'        => $category['title'],
                 'href'        => $this->url->link('product/category', 'path=' . $category['category_store_id']),
-                'image' =>  'image/'.$category['image']
+                'image' =>  $image_path.$category['image']
             );
         }
 

@@ -241,9 +241,21 @@ class ControllerProductProduct extends Controller {
 			$data['model'] = $product_info['model'];
 			$data['reward'] = ''; /*$product_info['reward'];*/
 			$data['points'] = 0; /*$product_info['points'];*/
-			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
-			$data['long_description'] = html_entity_decode($product_info['long_description'], ENT_QUOTES, 'UTF-8');
+            if($product_info['description']) {
+                $data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+            }
+            else {
+                $data['description'] = '';
+            }
+			if($product_info['long_description']){
+                $data['long_description']  = html_entity_decode($product_info['long_description'], ENT_QUOTES, 'UTF-8');
+            }
+            else {
+                $data['long_description']  = '';
+            }
+
             $data['mib_logo']  = $product_info['mib_logo'];
+            $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
 
 			/*if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
@@ -258,6 +270,10 @@ class ControllerProductProduct extends Controller {
 
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+                if( pathinfo($product_info['image'], PATHINFO_EXTENSION) == 'svg')
+                {
+                    $data['thumb_css'] = 'img-svg-border';
+                }
 			} else {
 				$data['popup'] = '';
 			}
@@ -272,10 +288,15 @@ class ControllerProductProduct extends Controller {
 
 			$results = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
 			foreach ($results as $result) {
+                $additional_css = '';
+                if( pathinfo($result['image'], PATHINFO_EXTENSION) == 'svg')
+                    $additional_css = 'img-svg-border';
 				$data['images'][] = array(
 					'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
-					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
-				);
+					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')),
+				    'alt_text' => $result['alt_text'],
+                    'additional_images_css' => $additional_css
+                );
 			}
 
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
@@ -299,16 +320,18 @@ class ControllerProductProduct extends Controller {
 				$data['tax'] = false;
 			}
 
-			$discounts = $this->model_catalog_product->getProductDiscounts($this->request->get['product_id']);
+			//$discounts = $this->model_catalog_product->getProductDiscounts($this->request->get['product_id']);
 
-			$data['discounts'] = array();
+			
 
-			foreach ($discounts as $discount) {
+			/*foreach ($discounts as $discount) {
 				$data['discounts'][] = array(
 					'quantity' => $discount['quantity'],
 					'price'    => $this->currency->format($this->tax->calculate($discount['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency'])
 				);
-			}
+			}*/
+
+			$data['discounts'] = array();
 
 			$data['options'] = array();
 
@@ -387,7 +410,7 @@ class ControllerProductProduct extends Controller {
 				if ($result['image']) {
 					$image =  $this->model_tool_image->resize($result['image'], 500,500 );// $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
 				} else {
-					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
+					$image = $this->model_tool_image->resize('stores/no-image.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {

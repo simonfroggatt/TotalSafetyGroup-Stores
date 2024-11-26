@@ -63,33 +63,52 @@ class ModelTsgDynamicSearch extends Model{
     public function GetProductSearch($queryStr){
 
         $sql = "SELECT DISTINCT ". DB_PREFIX . "product.product_id, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_description.`name` ), ". DB_PREFIX . "product_description_base.`name`, ". DB_PREFIX . "product_description.`name` ) AS `name`, ";
-        $sql .= "IF ( ISNULL( ". DB_PREFIX . "product_description.title ), ". DB_PREFIX . "product_description_base.title, ". DB_PREFIX . "product_description.title ) AS title, ";
-        $sql .= "IF( ISNULL( ". DB_PREFIX . "product_to_store.image ), ". DB_PREFIX . "product.image, ". DB_PREFIX . "product_to_store.image ) AS image ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.tag ) > 1,  ". DB_PREFIX . "product_to_store.tag,  ". DB_PREFIX . "product_description_base.tag) AS tag, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.description ) > 1,  ". DB_PREFIX . "product_to_store.description,  ". DB_PREFIX . "product_description_base.description) AS description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_title ) > 1,  ". DB_PREFIX . "product_to_store.meta_title,  ". DB_PREFIX . "product_description_base.meta_title) AS meta_title, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_description ) > 1,  ". DB_PREFIX . "product_to_store.meta_description,  ". DB_PREFIX . "product_description_base.meta_title) AS meta_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_keywords ) > 1,  ". DB_PREFIX . "product_to_store.meta_keywords,  ". DB_PREFIX . "product_description_base.meta_keyword ) AS meta_keyword, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
+        $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads, ";
+        $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image  ";
 
-       // $sql .= DB_PREFIX . "product_to_store.price_from ";
+        // $sql .= DB_PREFIX . "product_to_store.price_from ";
         $sql .= "FROM ". DB_PREFIX . "product  ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_description_base ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description_base.product_id ";
-        $sql .= "LEFT JOIN ". DB_PREFIX . "product_description ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variant_core ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "tsg_product_variant_core.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "tsg_product_variants ON ". DB_PREFIX . "tsg_product_variant_core.prod_variant_core_id = ". DB_PREFIX . "tsg_product_variants.prod_var_core_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_to_store ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id  ";
-        $sql .= "WHERE ";
-        $sql .= " ". DB_PREFIX . "tsg_product_variants.store_id = " . (int)$this->config->get('config_store_id');
-        $sql .= " AND ". DB_PREFIX . "product_to_store.store_id = " . (int)$this->config->get('config_store_id');
-        $sql .= " AND ". DB_PREFIX . "product_to_store.`status` = 1";
+        $sql .= "INNER JOIN ". DB_PREFIX . "product_to_category ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_category.product_id ";
+        $sql .= "INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "product_to_category.category_store_id = ". DB_PREFIX . "category_to_store.category_store_id ";
+
+
+        $sql .= " WHERE ";
+        $sql .= " (". DB_PREFIX . "tsg_product_variants.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " ". DB_PREFIX . "product_to_store.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ";
+        $sql .= " ". DB_PREFIX . "category_to_store.store_id = '" . (int)$this->config->get('config_store_id'). "' AND ";
+        $sql .= " ". DB_PREFIX . "product_to_category.`status` = '1'" . " AND ";
+        $sql .= " ". DB_PREFIX . "tsg_product_variant_core.bl_live = '1' AND ";
+        $sql .= " ". DB_PREFIX . "tsg_product_variants.isdeleted = 0 )";
 
         if (!empty($queryStr)) {
             $words = explode(' ', trim(preg_replace('/\s+/', ' ', $queryStr)));
-            $nextcondition = " AND ";
+            $nextcondition = " AND ( ";
             //DESCRIPTION
             foreach ($words as $word) {
                 $implodeNameBase[] = DB_PREFIX . "product_description_base.name LIKE '%" . $this->db->escape($word) . "%'";
                 $implodeTitleBase[] = DB_PREFIX . "product_description_base.title LIKE '%" . $this->db->escape($word) . "%'";
-                $implodeName[] = DB_PREFIX . "product_description.name LIKE '%" . $this->db->escape($word) . "%'";
-                $implodeTitle[] = DB_PREFIX . "product_description.title LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeDescBase[] = DB_PREFIX . "product_description_base.description LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeLongDescBase[] = DB_PREFIX . "product_description_base.long_description LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeSignreeadBase[] = DB_PREFIX . "product_description_base.sign_reads LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeName[] = DB_PREFIX . "product_to_store.name LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeTitle[] = DB_PREFIX . "product_to_store.title LIKE '%" . $this->db->escape($word) . "%'";
                 $implodeCode[] = "REPLACE(".DB_PREFIX . "tsg_product_variants.variant_code,' ','') LIKE '%" . $this->db->escape($word) . "%'";
-        //        $implodeSupplierCode[] = "REPLACE(".DB_PREFIX . "tsg_product_variant_core.supplier_code,' ','') LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeDesc[] = DB_PREFIX . "product_to_store.description LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeLongDesc[] = DB_PREFIX . "product_to_store.long_description LIKE '%" . $this->db->escape($word) . "%'";
+                $implodeSignreead[] = DB_PREFIX . "product_to_store.sign_reads LIKE '%" . $this->db->escape($word) . "%'";
+                //        $implodeSupplierCode[] = "REPLACE(".DB_PREFIX . "tsg_product_variant_core.supplier_code,' ','') LIKE '%" . $this->db->escape($word) . "%'";
             }
             if ($implodeNameBase) {
                 $sql .= $nextcondition;
@@ -101,6 +120,22 @@ class ModelTsgDynamicSearch extends Model{
                 $sql .= " (" . implode(" AND ", $implodeTitleBase) . " )";
                 $nextcondition = " OR ";
             }
+            if ($implodeDescBase) {
+                $sql .= $nextcondition;
+                $sql .= " (" . implode(" AND ", $implodeDescBase) . " )";
+                $nextcondition = " OR ";
+            }
+            if ($implodeLongDescBase) {
+                $sql .= $nextcondition;
+                $sql .= " (" . implode(" AND ", $implodeLongDescBase) . " )";
+                $nextcondition = " OR ";
+            }
+            if ($implodeSignreeadBase) {
+                $sql .= $nextcondition;
+                $sql .= " (" . implode(" AND ", $implodeSignreeadBase) . " )";
+                $nextcondition = " OR ";
+            }
+
             if ($implodeName) {
                 $sql .= $nextcondition;
                 $sql .= " (" . implode(" AND ", $implodeName) . " )";
@@ -116,6 +151,23 @@ class ModelTsgDynamicSearch extends Model{
                 $sql .= " (" . implode(" AND ", $implodeCode) . " )";
                 $nextcondition = " OR ";
             }
+
+            if ($implodeDesc) {
+                $sql .= $nextcondition;
+                $sql .= " (" . implode(" AND ", $implodeDesc) . " )";
+                $nextcondition = " OR ";
+            }
+            if ($implodeLongDesc) {
+                $sql .= $nextcondition;
+                $sql .= " (" . implode(" AND ", $implodeLongDesc) . " )";
+                $nextcondition = " OR ";
+            }
+            if ($implodeSignreead) {
+                $sql .= $nextcondition;
+                $sql .= " (" . implode(" AND ", $implodeSignreead) . " )";
+                $nextcondition = " OR ";
+            }
+
            /* if ($implodeSupplierCode) {
                 $sql .= $nextcondition;
                 $sql .= " (" . implode(" AND ", $implodeSupplierCode) . " )";
@@ -129,7 +181,7 @@ class ModelTsgDynamicSearch extends Model{
             $sql .= $nextcondition . "( REPLACE (".DB_PREFIX."tsg_product_variant_core.supplier_code,' ','') LIKE '%" . $this->db->escape($queryStr) . "%' )";
         }
 
-            $sql .= " LIMIT 30";
+            $sql .= ") LIMIT 30";
 
         //echo $sql;
         $query = $this->db->query($sql);

@@ -5,7 +5,8 @@ class ControllerExtensionPaymentStripePro extends Controller {
         'l_id'     => 'oc_stripe_pro',
         'type'     => 'payment',
         'route'    => 'extension/payment/',
-        'stripe_path' => './system/library/stripe-php-7.46.1/init.php',
+        //'stripe_path' => './system/library/stripe-php-7.46.1/init.php',
+        'stripe_path' => './system/library/stripe-php/init.php',
         'mode'     => 'demo1',
     );
 

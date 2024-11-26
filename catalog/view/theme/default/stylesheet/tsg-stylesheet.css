@@ -76,3 +76,15 @@
     -webkit-transition: opacity .3s ease-in-out;
     transition: opacity .3s ease-in-out;
 }
+
+.swiper-slide {
+    width: auto;
+}
+
+.cart_values {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.header_text {
+    font-family: 'Open Sans', sans-serif;
+}

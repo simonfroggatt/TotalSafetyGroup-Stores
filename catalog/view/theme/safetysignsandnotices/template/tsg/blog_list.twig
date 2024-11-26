@@ -1,0 +1,38 @@
+{{ header }}
+<div id="blog-content" class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="row">
+        <div id="content" class="col-12">
+            <h1>{{ blog_header }}</h1>
+          <!-- Cards Start -->  
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+
+                {% for blog in blog_list %}
+                    <div class="col">
+                        <div class="card h-100" style="width: 19rem;">
+                            <img src="{{ blog.image }}" class="card-img-top" alt="">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ blog.title }}</h5>
+                                <p class="card-text">{{ blog.sub_title }}</p>
+                                <a href="index.php?route=blog/blog&blog_id={{ blog.id }}" class="btn btn-primary">Read More</a>
+                            </div>
+                            <div class="card-footer text-end">
+                                <small class="text-body-secondary">Created on: {{ blog.date_added }}</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+<!-- Cards End -->
+
+            </div>
+        </div>
+    </div>
+</div> 
+
+   
+{{ footer }}

@@ -1,0 +1,107 @@
+{{ header }}
+<div id="symbol-search" class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="row">
+        <div id="content" class="col-12">{{ content_top }}
+            <h1>Search for symbols</h1>
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div id="search-symbols" class="input-group">
+                        <input type="text" name="searchsymbol" value="{{ search }}" placeholder="{{ text_search }}"
+                               class="form-control input-lg"/>
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <p>
+                {% if combineSymbol %}
+            <div class="row" id="product-symbols-tabs">
+                <div class="container">
+
+                    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2 text-center g-2">
+
+                        {% for symbol_info in category_symbols[0]%}
+                            <div class="col ">
+                                <div class="card h-100 symbols">
+                                    <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ image_path }}{{ symbol_info.svg_path }}" class="card-img-top mt-2"
+                                                    alt="{{ symbol_info.referent }}" height="50px"></a>
+                                    <div class="card-body">
+                                        <p class="card-text"><b>{{ symbol_info.refenceno }}</b>
+                                            : {{ symbol_info.referent }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><small class="text-muted">Click to search by symbol</small></a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="row" id="product-symbols-tabs">
+                <div class="col">
+
+                    <ul class="nav nav-tabs" id="category-symbols-tabs" role="tablist">
+                        {% for cat_info in category_symbols %}
+                            <li class="nav-item" role="presentation">
+
+                                <button class="nav-link {{ loop.index0 == 0 ? 'active' }}" id="symbols-cat-content-{{ cat_info.category_type_id }}-tab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#symbols-cat-content-{{ cat_info.category_type_id }}"
+                                        type="button" role="tab"
+                                        aria-controls="symbols-cat-content-{{ cat_info.category_type_id }}"
+                                        aria-selected="true">
+                                    <img src="{{ image_path }}{{ cat_info.symbols[0].svg_path }}" height="20px">
+                                    {{ cat_info.title }}</button>
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="tab-content" id="product-tabs-content">
+                        {% for cat_info in category_symbols %}
+                            <div class="tab-pane fade {{ loop.index0 == 0 ? 'show active' }}" id="symbols-cat-content-{{ cat_info.category_type_id }}"
+                                 role="tabpanel"
+                                 aria-labelledby="symbols-cat-content-{{ cat_info.category_type_id }}-tab">
+                                <div class="container">
+
+                                    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2 text-center g-2">
+
+                                        {% for symbol_info in cat_info.symbols %}
+                                            <div class="col ">
+                                                <div class="card h-100 symbols">
+                                                    <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ image_path }}{{ symbol_info.svg_path }}"
+                                                                    class="card-img-top mt-2"
+                                                                    alt="{{ symbol_info.referent }}" height="50px"></a>
+                                                    <div class="card-body">
+                                                        <p class="card-text"><b>{{ symbol_info.refenceno }}</b>
+                                                            : {{ symbol_info.referent }}</p>
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><small class="text-muted">Click to search by
+                                                                symbol</small></a>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+    </div>
+</div>
+{{ footer }}

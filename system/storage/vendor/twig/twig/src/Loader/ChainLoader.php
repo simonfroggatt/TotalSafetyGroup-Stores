@@ -12,14 +12,14 @@
 namespace Twig\Loader;
 
 use Twig\Error\LoaderError;
-use function get_class;
+use Twig\Source;
 
 /**
  * Loads templates from other loaders.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, SourceContextLoaderInterface
+final class ChainLoader implements LoaderInterface
 {
     private $hasSourceCache = [];
     private $loaders = [];
@@ -34,7 +34,7 @@ final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, Sourc
         }
     }
 
-    public function addLoader(LoaderInterface $loader)
+    public function addLoader(LoaderInterface $loader): void
     {
         $this->loaders[] = $loader;
         $this->hasSourceCache = [];
@@ -43,12 +43,12 @@ final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, Sourc
     /**
      * @return LoaderInterface[]
      */
-    public function getLoaders()
+    public function getLoaders(): array
     {
         return $this->loaders;
     }
 
-    public function getSourceContext($name)
+    public function getSourceContext(string $name): Source
     {
         $exceptions = [];
         foreach ($this->loaders as $loader) {
@@ -66,7 +66,7 @@ final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, Sourc
         throw new LoaderError(sprintf('Template "%s" is not defined%s.', $name, $exceptions ? ' ('.implode(', ', $exceptions).')' : ''));
     }
 
-    public function exists($name)
+    public function exists(string $name): bool
     {
         if (isset($this->hasSourceCache[$name])) {
             return $this->hasSourceCache[$name];
@@ -81,7 +81,7 @@ final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, Sourc
         return $this->hasSourceCache[$name] = false;
     }
 
-    public function getCacheKey($name)
+    public function getCacheKey(string $name): string
     {
         $exceptions = [];
         foreach ($this->loaders as $loader) {
@@ -92,14 +92,14 @@ final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, Sourc
             try {
                 return $loader->getCacheKey($name);
             } catch (LoaderError $e) {
-                $exceptions[] = get_class($loader).': '.$e->getMessage();
+                $exceptions[] = \get_class($loader).': '.$e->getMessage();
             }
         }
 
         throw new LoaderError(sprintf('Template "%s" is not defined%s.', $name, $exceptions ? ' ('.implode(', ', $exceptions).')' : ''));
     }
 
-    public function isFresh($name, $time)
+    public function isFresh(string $name, int $time): bool
     {
         $exceptions = [];
         foreach ($this->loaders as $loader) {
@@ -110,12 +110,10 @@ final class ChainLoader implements LoaderInterface, ExistsLoaderInterface, Sourc
             try {
                 return $loader->isFresh($name, $time);
             } catch (LoaderError $e) {
-                $exceptions[] = get_class($loader).': '.$e->getMessage();
+                $exceptions[] = \get_class($loader).': '.$e->getMessage();
             }
         }
 
         throw new LoaderError(sprintf('Template "%s" is not defined%s.', $name, $exceptions ? ' ('.implode(', ', $exceptions).')' : ''));
     }
 }
-
-class_alias('Twig\Loader\ChainLoader', 'Twig_Loader_Chain');

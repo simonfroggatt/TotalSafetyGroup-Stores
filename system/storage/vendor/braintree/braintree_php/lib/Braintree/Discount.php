@@ -1,11 +1,9 @@
 <?php
 namespace Braintree;
 
-use DateTime;
-
 /**
  * @property-read string $amount
- * @property-read DateTime $createdAt
+ * @property-read \DateTime $createdAt
  * @property-read int|null $currentBillingCycle
  * @property-read string $description
  * @property-read string $id
@@ -15,7 +13,7 @@ use DateTime;
  * @property-read boolean $neverExpires
  * @property-read int|null $numberOfBillingCycles
  * @property-read int|null $quantity
- * @property-read DateTime $updatedAt
+ * @property-read \DateTime $updatedAt
  */
 class Discount extends Modification
 {

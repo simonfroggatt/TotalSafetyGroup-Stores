@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -13,18 +14,18 @@ namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
-use function count;
-use function strlen;
 
 /**
  * Base formatter
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @internal
  */
 abstract class Formatter
 {
     /**
-     * @var integer
+     * @var int
      */
     public $indentLevel;
 
@@ -59,27 +60,27 @@ abstract class Formatter
     public $assignSeparator;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $keepSemicolons;
 
     /**
-     * @var OutputBlock
+     * @var \ScssPhp\ScssPhp\Formatter\OutputBlock
      */
     protected $currentBlock;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $currentLine;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $currentColumn;
 
     /**
-     * @var SourceMapGenerator
+     * @var \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator|null
      */
     protected $sourceMapGenerator;
 
@@ -139,7 +140,9 @@ abstract class Formatter
     /**
      * Output lines inside a block
      *
-     * @param OutputBlock $block
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function blockLines(OutputBlock $block)
     {
@@ -156,10 +159,14 @@ abstract class Formatter
     /**
      * Output block selectors
      *
-     * @param OutputBlock $block
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function blockSelectors(OutputBlock $block)
     {
+        assert(! empty($block->selectors));
+
         $inner = $this->indentStr();
 
         $this->write($inner
@@ -170,7 +177,9 @@ abstract class Formatter
     /**
      * Output block children
      *
-     * @param OutputBlock $block
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function blockChildren(OutputBlock $block)
     {
@@ -182,7 +191,9 @@ abstract class Formatter
     /**
      * Output non-empty block
      *
-     * @param OutputBlock $block
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function block(OutputBlock $block)
     {
@@ -226,9 +237,9 @@ abstract class Formatter
     /**
      * Test and clean safely empty children
      *
-     * @param OutputBlock $block
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
      *
-     * @return boolean
+     * @return bool
      */
     protected function testEmptyChildren($block)
     {
@@ -254,12 +265,12 @@ abstract class Formatter
     /**
      * Entry point to formatting a block
      *
-     * @param OutputBlock $block              An abstract syntax tree
-     * @param SourceMapGenerator|null $sourceMapGenerator Optional source map generator
+     * @api
+     *
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock             $block              An abstract syntax tree
+     * @param \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator|null $sourceMapGenerator Optional source map generator
      *
      * @return string
-     *@api
-     *
      */
     public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null)
     {
@@ -275,9 +286,18 @@ abstract class Formatter
 
         ob_start();
 
-        $this->block($block);
+        try {
+            $this->block($block);
+        } catch (\Exception $e) {
+            ob_end_clean();
+            throw $e;
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        }
 
         $out = ob_get_clean();
+        assert($out !== false);
 
         return $out;
     }
@@ -286,6 +306,8 @@ abstract class Formatter
      * Output content
      *
      * @param string $str
+     *
+     * @return void
      */
     protected function write($str)
     {
@@ -299,7 +321,8 @@ abstract class Formatter
          * Maybe Strip semi-colon appended by property(); it's a separator, not a terminator
          * will be striped for real before a closing, otherwise displayed unchanged starting the next write
          */
-        if (! $this->keepSemicolons &&
+        if (
+            ! $this->keepSemicolons &&
             $str &&
             (strpos($str, ';') !== false) &&
             (substr($str, -1) === ';')
@@ -310,22 +333,43 @@ abstract class Formatter
         }
 
         if ($this->sourceMapGenerator) {
-            $this->sourceMapGenerator->addMapping(
-                $this->currentLine,
-                $this->currentColumn,
-                $this->currentBlock->sourceLine,
-                //columns from parser are off by one
-                $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
-                $this->currentBlock->sourceName
-            );
-
             $lines = explode("\n", $str);
-            $lineCount = count($lines);
-            $this->currentLine += $lineCount-1;
-
             $lastLine = array_pop($lines);
 
-            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
+            foreach ($lines as $line) {
+                // If the written line starts is empty, adding a mapping would add it for
+                // a non-existent column as we are at the end of the line
+                if ($line !== '') {
+                    assert($this->currentBlock->sourceLine !== null);
+                    assert($this->currentBlock->sourceName !== null);
+                    $this->sourceMapGenerator->addMapping(
+                        $this->currentLine,
+                        $this->currentColumn,
+                        $this->currentBlock->sourceLine,
+                        //columns from parser are off by one
+                        $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
+                        $this->currentBlock->sourceName
+                    );
+                }
+
+                $this->currentLine++;
+                $this->currentColumn = 0;
+            }
+
+            if ($lastLine !== '') {
+                assert($this->currentBlock->sourceLine !== null);
+                assert($this->currentBlock->sourceName !== null);
+                $this->sourceMapGenerator->addMapping(
+                    $this->currentLine,
+                    $this->currentColumn,
+                    $this->currentBlock->sourceLine,
+                    //columns from parser are off by one
+                    $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
+                    $this->currentBlock->sourceName
+                );
+            }
+
+            $this->currentColumn += \strlen($lastLine);
         }
 
         echo $str;

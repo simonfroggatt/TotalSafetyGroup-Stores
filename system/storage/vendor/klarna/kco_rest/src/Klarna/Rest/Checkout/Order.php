@@ -20,12 +20,9 @@
 namespace Klarna\Rest\Checkout;
 
 use GuzzleHttp\Exception\RequestException;
-use InvalidArgumentException;
 use Klarna\Rest\Resource;
 use Klarna\Rest\Transport\Connector;
 use Klarna\Rest\Transport\Exception\ConnectorException;
-use LogicException;
-use RuntimeException;
 
 /**
  * Checkout order resource.
@@ -70,9 +67,9 @@ class Order extends Resource
      *
      * @throws ConnectorException When the API replies with an error response
      * @throws RequestException   When an error is encountered
-     * @throws RuntimeException  If the location header is missing
-     * @throws RuntimeException  If the API replies with an unexpected response
-     * @throws LogicException    When Guzzle cannot populate the response
+     * @throws \RuntimeException  If the location header is missing
+     * @throws \RuntimeException  If the API replies with an unexpected response
+     * @throws \LogicException    When Guzzle cannot populate the response
      *
      * @return self
      */
@@ -94,10 +91,10 @@ class Order extends Resource
      *
      * @throws ConnectorException        When the API replies with an error response
      * @throws RequestException          When an error is encountered
-     * @throws RuntimeException         On an unexpected API response
-     * @throws RuntimeException         If the response content type is not JSON
-     * @throws InvalidArgumentException If the JSON cannot be parsed
-     * @throws LogicException           When Guzzle cannot populate the response
+     * @throws \RuntimeException         On an unexpected API response
+     * @throws \RuntimeException         If the response content type is not JSON
+     * @throws \InvalidArgumentException If the JSON cannot be parsed
+     * @throws \LogicException           When Guzzle cannot populate the response
      *
      * @return self
      */

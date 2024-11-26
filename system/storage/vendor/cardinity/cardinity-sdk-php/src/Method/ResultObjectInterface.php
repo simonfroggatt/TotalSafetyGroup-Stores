@@ -2,12 +2,10 @@
 
 namespace Cardinity\Method;
 
-use Serializable;
-
 /**
  * Represents value object to store response result data
  */
-interface ResultObjectInterface extends Serializable
+interface ResultObjectInterface extends \Serializable
 {
     /**
      * Return errors

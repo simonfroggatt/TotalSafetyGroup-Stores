@@ -4,6 +4,8 @@ class ControllerCommonFooter extends Controller {
 		$this->load->language('common/footer');
 
 		$this->load->model('catalog/information');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 		$data['informations'] = array();
 
@@ -33,6 +35,12 @@ class ControllerCommonFooter extends Controller {
 		//TSG
         $data['powered'] = sprintf($this->language->get('text_powered'), date('Y', time()));
 
+        $data['company_details'] = "&copy; 2008 - " . date('Y') . " " .  $store_info['url'] . " - " . $store_info['company_name'];
+        if($store_info['footer_text']) {
+            $data['company_details'] .= " " . $store_info['footer_text'];
+        }
+        $data['company_details'] .= " - Registration Number: " . $store_info['registration_number'] . " - VAT Number: " . $store_info['vat_number'];
+
 		// Whos Online
 		if ($this->config->get('config_customer_online')) {
 			$this->load->model('tool/online');
@@ -60,6 +68,12 @@ class ControllerCommonFooter extends Controller {
 
 		$data['scripts'] = $this->document->getScripts('footer');
 		$data['styles'] = $this->document->getStyles('footer');
+
+        //our footer images
+        $data['footer_mib_living_wage_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/mib_living_wage.svg' : 'image/3rdpartylogo/mib_living_wage.svg';
+        $data['footer_security_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/comodo-security.svg' : 'image/3rdpartylogo/comodo-security.svg';
+        $data['footer_fsb_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/fsb.svg' : 'image/3rdpartylogo/fsb.svg';
+
 		
 		return $this->load->view('common/footer', $data);
 	}

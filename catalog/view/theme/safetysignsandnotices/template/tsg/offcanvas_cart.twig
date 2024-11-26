@@ -1,8 +1,8 @@
-
-    <div class="offcanvas-header">
-        <a href="index.php?route=checkout/cart" type="button" class="btn btn-lg btn-danger"><i class="fas fa-shopping-cart"></i> View Cart</a>
-        <a href="index.php?route=checkout/checkout" type="button" class="btn btn-lg btn-success">checkout <i class="fas fa-sign-out-alt"></i></a>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+   <div class="offcanvas-header ">
+       <div class="d-grid gap-2 d-flex">
+           <a role="button" href="index.php?route=checkout/cart" class="btn btn-outline-danger" type="button"><i class="fa-regular fa-shopping-cart"></i> View Cart</a>
+           <a role="button" href="index.php?route=checkout/checkout"  class="btn btn-outline-success">checkout <i class="fa-regular fa-credit-card"></i></a>
+       </div>
     </div>
     <div class="offcanvas-body">
         <div id="offcanvas_totals" class="text-end">
@@ -28,6 +28,13 @@
                                 {% for option in product.option %} <br />
                                     <small>{{ option.name }}: {{ option.value }}</small> {% endfor %}
                             {% endif %}
+                            {% if product.tsg_options %}
+                                {% for tsg_option in product.tsg_options %}
+                                    {% if tsg_option.show_at_checkout == 0 %} <br />
+                                        <span class="product-variants">{{ tsg_option.value_label }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                             {% if product.reward %} <br />
                                 <small>{{ product.reward }}</small> {% endif %}
                             {% if product.recurring %} <br />
@@ -39,7 +46,7 @@
                             <br>
                             <strong>{{ product.total }}</strong>
                         </td>
-                        <td class="text-end col-1"><button type="button" class="btn btn-outline-danger btn btnRemove" data-cartid="{{ product.cart_id }}"><i class="fas fa-times"></i></button></td>
+                        <td class="text-end col-1"><button type="button" class="btn btn-outline-danger btn btnRemove" data-cartid="{{ product.cart_id }}" onclick="cart.remove('{{ product.cart_id }}');"><i class="fa-regular fa-trash fa-lg"></i></button></td>
                     </tr>
                 {% endfor %}
                 </tbody>

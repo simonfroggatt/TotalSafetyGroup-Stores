@@ -1,0 +1,34 @@
+<form id="checkout_confirm" method="post" data-action-url="tsg/checkout_confirm/save" data-action-function="getPaymentMethods" data-action-block="true">
+    <div class="row">
+        <div id="address_confirm" class="col-12 col-lg-6">
+            <div class="col-12">
+                <h3>Order Details</h3>
+                <div class="col-12">
+                    <div id="checkout_confirm_address">{{ confirm_address }}</div>
+                </div>
+                <div class="form-floating col-12 pt-2">
+                    <input type="text" class="form-control" placeholder="YOUR order reference" id="customer_order_ref" name="customer_order_ref">
+                    <label for="orderNotes">YOUR order reference...</label>
+                </div>
+                <div class="form-floating col-12 pt-2">
+                    <textarea class="form-control" placeholder="Notes" id="orderNotes" name="comment" style="height: 75px"></textarea>
+                    <label for="orderNotes">Order notes...</label>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="cart_confirm" class="col-12 col-lg-6">{{ content_top }}
+            {{ confirm_cart }}
+            <div class="form-check col-12">
+                <input class="form-check-input" type="checkbox" value="1" id="agree" name="agree" required>
+                <label class="form-check-label" for="agree">
+                    {{ text_agree }}
+                </label>
+            </div>
+        </div>
+
+    </div>
+    <button type="button" class="action-button previous previous_button float-start">Back</button>
+    <button type="button" class="next action-button float-end button-block" id="checkout-confirm-btn">Continue</button>
+</form>

@@ -82,8 +82,12 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			}
 
 			$data['currency_code'] = $order_info['currency_code'];
-			$data['first_name'] = html_entity_decode($order_info['payment_firstname'], ENT_QUOTES, 'UTF-8');
-			$data['last_name'] = html_entity_decode($order_info['payment_lastname'], ENT_QUOTES, 'UTF-8');
+            $fullname_str = $order_info['payment_fullname'];
+            $fullname = explode(' ', $fullname_str);
+            $data['first_name'] = html_entity_decode($fullname[0], ENT_QUOTES, 'UTF-8');
+            $data['last_name'] = html_entity_decode($fullname[sizeof($fullname)-1], ENT_QUOTES, 'UTF-8');
+			//$data['first_name'] = html_entity_decode($order_info['payment_firstname'], ENT_QUOTES, 'UTF-8');
+			//$data['last_name'] = html_entity_decode($order_info['payment_lastname'], ENT_QUOTES, 'UTF-8');
 			$data['address1'] = html_entity_decode($order_info['payment_address_1'], ENT_QUOTES, 'UTF-8');
 			$data['address2'] = html_entity_decode($order_info['payment_address_2'], ENT_QUOTES, 'UTF-8');
 			$data['city'] = html_entity_decode($order_info['payment_city'], ENT_QUOTES, 'UTF-8');
@@ -92,11 +96,11 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 
 			$data['country'] = $order_info['payment_iso_code_2'];
 			$data['email'] = $order_info['email'];
-			$data['invoice'] = $this->session->data['order_id'] . ' - ' . html_entity_decode($order_info['payment_firstname'], ENT_QUOTES, 'UTF-8') . ' ' . html_entity_decode($order_info['payment_lastname'], ENT_QUOTES, 'UTF-8');
+			$data['invoice'] = $this->session->data['order_id'] . ' - ' . html_entity_decode($data['first_name'], ENT_QUOTES, 'UTF-8') . ' ' . html_entity_decode($data['last_name'], ENT_QUOTES, 'UTF-8');
 			$data['lc'] = $this->session->data['language'];
 			$data['return'] = $this->url->link('checkout/success');
 			$data['notify_url'] = $this->url->link('extension/payment/pp_standard/callback', '', true);
-			$data['cancel_return'] = $this->url->link('checkout/checkout', '', true);
+			$data['cancel_return'] = $this->url->link('checkout/failure', 'pm_id=1', true);
 
 
 			if (!$this->config->get('payment_pp_standard_transaction')) {
@@ -106,6 +110,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			}
 
 			$data['custom'] = $this->session->data['order_id'];
+            $data['img_path'] = $this->config->get('config_ssl') . 'image/stores/3rdpartylogo/payment/checkout_PayPal.svg';
 
 			return $this->load->view('extension/payment/pp_standard', $data);
 		}
@@ -185,6 +190,12 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 						break;
 					case 'Failed':
 						$order_status_id = $this->config->get('payment_pp_standard_failed_status_id');
+                        $payment_status_id = 1;  //set to paid
+                        $payment_method_id = 1; //PAYPAL
+                        $payment_ref = '';
+                        $this->model_checkout_order->setPaymentStatus($order_id, $payment_method_id, $payment_status_id, $payment_ref);
+                        $this->model_checkout_order->addPaymentHistory($order_id, $payment_method_id, $payment_status_id,'Faileed order: '.$payment_ref);
+
 						break;
 					case 'Pending':
 						$order_status_id = $this->config->get('payment_pp_standard_pending_status_id');
@@ -193,6 +204,10 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 						$order_status_id = $this->config->get('payment_pp_standard_processed_status_id');
                         //SSAN
                         $payment_status_id = 2;  //set to paid
+                        $payment_method_id = 1;
+                        $payment_ref = '';
+                        $this->model_checkout_order->setPaymentStatus($order_id, $payment_method_id, $payment_status_id, $payment_ref);
+                        $this->model_checkout_order->addPaymentHistory($order_id, $payment_method_id, $payment_status_id,'user paid ref: '.$payment_ref);
 						break;
 					case 'Refunded':
 						$order_status_id = $this->config->get('payment_pp_standard_refunded_status_id');

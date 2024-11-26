@@ -100,9 +100,13 @@ class ControllerCheckoutConfirm extends Controller {
 
 			$this->load->language('checkout/checkout');
 
-			$order_data['invoice_prefix'] = $this->config->get('config_invoice_prefix');
 			$order_data['store_id'] = $this->config->get('config_store_id');
 			$order_data['store_name'] = $this->config->get('config_name');
+
+            $this->load->model('setting/store');
+            $storeSettings = $this->model_setting_store->getStoreInfo($order_data['store_id']);
+
+            $order_data['invoice_prefix'] = $storeSettings['prefix'];
 
 			if ($order_data['store_id']) {
 				$order_data['store_url'] = $this->config->get('config_url');
@@ -129,15 +133,19 @@ class ControllerCheckoutConfirm extends Controller {
 			} elseif (isset($this->session->data['guest'])) {
 				$order_data['customer_id'] = 0;
 				$order_data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
-				$order_data['firstname'] = $this->session->data['guest']['firstname'];
-				$order_data['lastname'] = $this->session->data['guest']['lastname'];
+                $fullname_str = $this->session->data['guest']['fullname'];
+                $fullname = explode(' ', $fullname_str);
+				$order_data['firstname'] = $fullname[0];
+				$order_data['lastname'] = $fullname[sizeof($fullname)-1];
 				$order_data['email'] = $this->session->data['guest']['email'];
 				$order_data['telephone'] = $this->session->data['guest']['telephone'];
 				$order_data['custom_field'] = $this->session->data['guest']['custom_field'];
 			}
 
-			$order_data['payment_firstname'] = $this->session->data['payment_address']['firstname'];
-			$order_data['payment_lastname'] = $this->session->data['payment_address']['lastname'];
+            $payment_fullname_str = $this->session->data['payment_address']['fullname'];
+            $payment_fullname = explode(' ', $payment_fullname_str);
+			$order_data['payment_firstname'] = $payment_fullname[0];
+			$order_data['payment_lastname'] = $payment_fullname[sizeof($payment_fullname)-1];
 			$order_data['payment_company'] = $this->session->data['payment_address']['company'];
 			$order_data['payment_address_1'] = $this->session->data['payment_address']['address_1'];
 			$order_data['payment_address_2'] = $this->session->data['payment_address']['address_2'];
@@ -163,6 +171,11 @@ class ControllerCheckoutConfirm extends Controller {
 			}
 
 			if ($this->cart->hasShipping()) {
+                $shipping_fullname_str = $this->session->data['shipping_address']['fullname'];
+                $shipping_fullname = explode(' ', $shipping_fullname_str);
+                $order_data['payment_firstname'] = $shipping_fullname[0];
+                $order_data['payment_lastname'] = $shipping_fullname[sizeof($shipping_fullname)-1];
+
 				$order_data['shipping_firstname'] = $this->session->data['shipping_address']['firstname'];
 				$order_data['shipping_lastname'] = $this->session->data['shipping_address']['lastname'];
 				$order_data['shipping_company'] = $this->session->data['shipping_address']['company'];

@@ -12,13 +12,9 @@
 
 namespace Twig;
 
-use Exception;
-use LogicException;
-use Throwable;
 use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
-use function is_array;
 
 /**
  * Default base class for compiled templates.
@@ -33,9 +29,9 @@ use function is_array;
  */
 abstract class Template
 {
-    const ANY_CALL = 'any';
-    const ARRAY_CALL = 'array';
-    const METHOD_CALL = 'method';
+    public const ANY_CALL = 'any';
+    public const ARRAY_CALL = 'array';
+    public const METHOD_CALL = 'method';
 
     protected $parent;
     protected $parents = [];
@@ -49,14 +45,6 @@ abstract class Template
     {
         $this->env = $env;
         $this->extensions = $env->getExtensions();
-    }
-
-    /**
-     * @internal this method will be removed in 3.0 and is only used internally to provide an upgrade path from 1.x to 2.0
-     */
-    public function __toString()
-    {
-        return $this->getTemplateName();
     }
 
     /**
@@ -78,10 +66,7 @@ abstract class Template
      *
      * @return Source
      */
-    public function getSourceContext()
-    {
-        return new Source('', $this->getTemplateName());
-    }
+    abstract public function getSourceContext();
 
     /**
      * Returns the parent template.
@@ -178,7 +163,7 @@ abstract class Template
 
         // avoid RCEs when sandbox is enabled
         if (null !== $template && !$template instanceof self) {
-            throw new LogicException('A block must be a method on a \Twig\Template instance.');
+            throw new \LogicException('A block must be a method on a \Twig\Template instance.');
         }
 
         if (null !== $template) {
@@ -196,7 +181,7 @@ abstract class Template
                 }
 
                 throw $e;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $e = new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $template->getSourceContext(), $e);
                 $e->guess();
 
@@ -317,7 +302,7 @@ abstract class Template
     protected function loadTemplate($template, $templateName = null, $line = null, $index = null)
     {
         try {
-            if (is_array($template)) {
+            if (\is_array($template)) {
                 return $this->env->resolveTemplate($template);
             }
 
@@ -330,11 +315,11 @@ abstract class Template
                 if (false !== $pos = strrpos($class, '___', -1)) {
                     $class = substr($class, 0, $pos);
                 }
-
-                return $this->env->loadClass($class, $template, $index);
+            } else {
+                $class = $this->env->getTemplateClass($template);
             }
 
-            return $this->env->loadTemplate($template, $index);
+            return $this->env->loadTemplate($class, $template, $index);
         } catch (Error $e) {
             if (!$e->getSourceContext()) {
                 $e->setSourceContext($templateName ? new Source('', $templateName) : $this->getSourceContext());
@@ -359,7 +344,7 @@ abstract class Template
      *
      * @return Template
      */
-    protected function unwrap()
+    public function unwrap()
     {
         return $this;
     }
@@ -392,7 +377,7 @@ abstract class Template
         }
         try {
             $this->display($context);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
             }
@@ -419,7 +404,7 @@ abstract class Template
             }
 
             throw $e;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $e = new RuntimeError(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $this->getSourceContext(), $e);
             $e->guess();
 
@@ -435,5 +420,3 @@ abstract class Template
      */
     abstract protected function doDisplay(array $context, array $blocks = []);
 }
-
-class_alias('Twig\Template', 'Twig_Template');

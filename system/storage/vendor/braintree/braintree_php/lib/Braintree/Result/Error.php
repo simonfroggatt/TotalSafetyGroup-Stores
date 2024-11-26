@@ -30,8 +30,8 @@ use Braintree\Error\ErrorCollection;
  * @subpackage Result
  *
  * @property-read array $params original passed params
- * @property-read ErrorCollection $errors
- * @property-read CreditCardVerification $creditCardVerification credit card verification data
+ * @property-read \Braintree\Error\ErrorCollection $errors
+ * @property-read \Braintree\Result\CreditCardVerification $creditCardVerification credit card verification data
  */
 class Error extends Base
 {

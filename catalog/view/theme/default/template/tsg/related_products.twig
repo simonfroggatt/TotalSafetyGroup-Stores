@@ -1,0 +1,44 @@
+<div class="">
+    {% for product in products %}
+
+        <a href="{{ product.href }}" ><img class=" p-2" height="50px" alt="{{ product.title }}" src="{{ product.thumb }}"></a>
+
+
+    {% endfor %}
+</div>
+
+<script>
+   /* $('.owl-carousel').owlCarousel({
+        loop:false,
+        margin:10,
+        nav:true,
+        dots: false,
+        navText: ['<i class="fas fa-chevron-left fa-5x"></i>', '<i class="fas fa-chevron-right fa-5x"></i>'] ,
+        responsive:{
+                0:{
+                        items:2,
+                        slideBy: 2,
+                        nav:true,
+                        loop:( $('.item').length > 2 )
+                },
+                600:{
+                        items: 4,
+                        slideBy: 4,
+                        nav:true,
+                        loop:( $('.item').length > 4 )
+                },
+                800:{
+                        items: 4,
+                        slideBy: 4,
+                        nav:true,
+                        loop:( $('.item').length > 4 )
+                },
+                1000:{
+                        items: 8,
+                        slideBy: 6,
+                        nav:true,
+                        loop:( $('.item').length > 6 )
+                }
+        }
+    })*/
+</script>

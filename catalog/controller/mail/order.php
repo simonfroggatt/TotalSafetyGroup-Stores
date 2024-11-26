@@ -471,4 +471,23 @@ class ControllerMailOrder extends Controller {
 			}
 		}
 	}
+
+    public function emailInvoice($hash)
+    {
+        //get the post data
+        $json = array();
+        $json['success'] = false;
+
+        $post = $this->request->post;
+        $order_id = $post['order_id'];
+        $order_info_hash = $this->model_checkout_order->getOrderHash($order_id);
+        //check the hash is valid
+        if($order_info_hash != $hash){
+            return $json;
+        }
+        else{
+            //create the email with the invoice
+        }
+
+    }
 }

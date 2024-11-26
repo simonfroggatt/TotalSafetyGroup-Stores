@@ -1,0 +1,54 @@
+
+    <div class="offcanvas-header">
+        <a href="index.php?route=checkout/cart" type="button" class="btn btn-lg btn-danger"><i class="fas fa-shopping-cart"></i> View Cart</a>
+        <a href="index.php?route=checkout/checkout" type="button" class="btn btn-lg btn-success">checkout <i class="fas fa-sign-out-alt"></i></a>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="offcanvas_totals" class="text-end">
+            {{ cart_totals }}
+        </div>
+        <hr>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody >
+                {% for product in products %}
+                    <tr id="row_cartid_{{ product.cart_id }}">
+                        <td class="text-center text-nowrap"><strong>{{ product.model }}</strong>{% if product.thumb %} <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block pt-2" /></a> {% endif %}</td>
+                        <td class="text-start"><a href="{{ product.href }}">{{ (product.name |length > 30) ? product.name|slice(0, 30) ~ '...' : product.name }}</a> {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
+                            <br><span class="product-variants">{{ product.size_name }}<br>{{ product.material_name }}</span>
+                            {% if product.tsg_options %}
+                                {% for tsg_option in product.tsg_options %}
+                                    {% if tsg_option.show_at_checkout == 1 %} <br />
+                                        <span class="product-variants">{{ tsg_option.label }}: {{ tsg_option.value }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if product.option %}
+                                {% for option in product.option %} <br />
+                                    <small>{{ option.name }}: {{ option.value }}</small> {% endfor %}
+                            {% endif %}
+                            {% if product.reward %} <br />
+                                <small>{{ product.reward }}</small> {% endif %}
+                            {% if product.recurring %} <br />
+                                <span class="label label-info">{{ text_recurring_item }}</span> <small>{{ product.recurring }}</small> {% endif %}</td>
+
+
+                        <td class="text-end col-2 text-nowrap">
+                            {{ product.quantity }} @ {{ product.pre_tax }}
+                            <br>
+                            <strong>{{ product.total }}</strong>
+                        </td>
+                        <td class="text-end col-1"><button type="button" class="btn btn-outline-danger btn btnRemove" data-cartid="{{ product.cart_id }}"><i class="fas fa-times"></i></button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+
+
+
+

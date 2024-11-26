@@ -3,7 +3,6 @@ namespace Test\Unit;
 
 require_once dirname(__dir__) . '/Setup.php';
 
-use DateTime;
 use Test\Setup;
 use Braintree;
 
@@ -20,7 +19,7 @@ class AuthorizationAdjustmentTest extends Setup
     {
         $authorizationAdjustmentParams = [
             'amount' => '100.00',
-            'timestamp' => new DateTime('2017-07-12 01:02:03'),
+            'timestamp' => new \DateTime('2017-07-12 01:02:03'),
             'success' => true,
             'processorResponseCode' => '1000',
             'processorResponseText' => 'Approved',

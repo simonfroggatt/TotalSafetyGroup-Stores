@@ -1,7 +1,8 @@
 <?php
 
 class ControllerTsgProductVariants extends Controller {
-    public function index(){
+    public function index(): array
+    {
         $this->load->model('tsg/product_variants');
         $this->load->model('tsg/product_bulk_discounts');
         $this->load->model('tool/image');
@@ -22,40 +23,44 @@ class ControllerTsgProductVariants extends Controller {
             $options_arr = explode(':',$options_string);
             $select_option_arr = [];
             foreach($options_arr as $option){
-                $select_option_arr[] = explode(',',$option);
+                $select_option_arr[] = explode('_',$option);
             }
             $data['options_selected'] = $select_option_arr;
         }
         else {
             $data['options_selected']  = [];
         }
-
-        $data['variants'] = array();
+        
         $variant_data = $this->model_tsg_product_variants->getProductVariants($product_id);
         $product_variant_data = [];
         foreach ($variant_data as $key => $value) {
-            $value['product_image'] = "image/". $value['alternative_image']; //$this->model_tool_image->resize($value['alternative_image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+            $value['product_image'] = $this->model_tool_image->resize($value['alternative_image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+           // $value['product_image'] = "image/". $value['alternative_image']; //$this->model_tool_image->resize($value['alternative_image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
             $product_variant_data[(int)$value['size_id']][(int)$value['material_id']] = $value;
         }
+      //  $data['variants'] = array();
         $data['variants'] = $product_variant_data;
 
-
-
-        $data['vSizes'] = array();
+       // $data['vSizes'] = array();
         $data['vSizes'] = $this->model_tsg_product_variants->getVSizes($product_id);
 
 
-        $data['vMaterials'] = array();
+       // $data['vMaterials'] = array();
         $data['vMaterials'] =  $this->model_tsg_product_variants->getVMaterials($product_id);
 
+        $data['selectOptions'] = array();
+        $data['selectOptions'] = $this->model_tsg_product_variants->getProductVariantSelects($product_id);
+
+        $data['variantClasses'] = $this->model_tsg_product_variants->getProductVariantClasses($product_id);
+
         $data['vOptionClasses'] = array();
-        $data['vOptionClasses'] = $this->model_tsg_product_variants->getVariantOptionClasses($product_id);
+      //  $data['vOptionClasses'] = $this->model_tsg_product_variants->getVariantOptionClasses($product_id);
 
         $data['vSizeMatClasses'] = array();
-        $data['vSizeMatClasses'] = $this->model_tsg_product_variants->getVariantSizeMatClasses($product_id);
+      //  $data['vSizeMatClasses'] = $this->model_tsg_product_variants->getVariantSizeMatClasses($product_id);
 
         $data['vOptClassesValues'] = array();
-        $data['vOptClassesValues'] = $this->model_tsg_product_variants->getOptionClassValues($product_id);
+     //  $data['vOptClassesValues'] = $this->model_tsg_product_variants->getOptionClassValues($product_id);
 
         $allVariants = $this->model_tsg_product_variants->getProductVariantList($product_id);
         $bulkgroupdata = $this->model_tsg_product_bulk_discounts->GetDiscountPriceGroup($product_id);
@@ -89,25 +94,30 @@ class ControllerTsgProductVariants extends Controller {
     }
 
     // This is a long list of all the variants for the table
-    private function CreateVariantBulkArray($product_variants, $arrayOfDiscounts){
-        $variantBulkArray = array();
+    private function CreateVariantBulkArray($product_variants, $arrayOfDiscounts): array
+    {
         foreach($product_variants as $index => $item){
-            $bulkArray = $this->GetBulkPriceArray($item['variant_price'], $arrayOfDiscounts);
+            $bulkArray = $this->GetBulkPriceArray($item['variant_price'], $arrayOfDiscounts, $item['tax_class_id']);
             $product_variants[$index]['discount_array'] = $bulkArray;
+           // $product_variants[$index]['discount_array_withtax'] = $bulkArray[1];
         }
         return $product_variants;
 
     }
 
-    private function GetBulkPriceArray($price, $bulkArray)
+    private function GetBulkPriceArray($price, $bulkArray, $taxclass): array
     {
-        $singlePriceArray = [];
 
+        $singlePriceArray = [];
+        $singlePrice = array();
         foreach ($bulkArray as $item) {
             $discountPerc = 1 - ($item['discount']/100);
-            $singlePriceArray[] = number_format($price * $discountPerc,2);
+            $discountPrice = number_format($price * $discountPerc,2);
+            $singlePrice['price'] = $discountPrice;
+            $taxprice = number_format($this->tax->calculate($discountPrice, $taxclass, $this->config->get('config_tax')), 2);
+            $singlePrice['price_tax'] = $taxprice;
+            $singlePriceArray[] = $singlePrice;
         }
-
         return $singlePriceArray;
     }
 }

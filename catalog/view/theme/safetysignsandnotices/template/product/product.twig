@@ -11,34 +11,29 @@
       <div class="row">
         <div class="col-12 col-md-5 col-lg-5 text-center align-self-center">
             <h2 class="d-block d-sm-none">{{ heading_title }}</h2>
-
             <div class="row align-middle">
-                {% if images %}
-                    <div class="col-2">
-                        <div class="row">
-                            {% for image in images %}
-                                <div class="col-12">
-                                    <a href="{{ image.popup }}" title="{{ heading_title }}" data-toggle="lightbox"
-                                       data-gallery="product-gallery"> <img class="img-thumbnail"
-                                                                            src="{{ image.thumb }}"
-                                                                            title="{{ heading_title }}"
-                                                                            alt="{{ heading_title }}"/></a>
-                                </div>
-                            {% endfor %}
 
-                        </div>
-                    </div>
-
-                <div class="col-10">
-                    {% else %}
                     <div class="col-12">
-                    {% endif %}
-                    <a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"
+                        <a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"
                        data-toggle="lightbox" data-gallery="product-gallery"><img id="main-image" src="{{ thumb }}"
                                                                                   title="{{ heading_title }}"
                                                                                   alt="{{ heading_title }}"
-                                                                                  class="img-fluid"/></a>
-                </div>
+                                                                                  class="img-fluid {{ thumb_css }}"/></a>
+                    </div>
+                {% if images %}
+                    <div class="col-12 pt-3">
+                        <div class="row">
+                        {% for image in images %}
+                            <div class="col-2">
+                                <a href="{{ image.popup }}" title="{{ heading_title }}" data-toggle="lightbox"
+                                   data-gallery="product-gallery" data-caption="{{ image.alt_text }}"> <img class="img-thumbnail img-fluid {{ additional_images_css }}"
+                                                                        src="{{ image.thumb }}"
+                                                                        alt="{{ image.alt_text }}"/></a>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
 
@@ -47,15 +42,15 @@
           <h2 class="d-none d-md-block">{{ heading_title }}</h2>
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <p class="product-description d-none d-lg-block">
-                        {{ (description|length > 500 ? description|slice(0, 500) ~ '… <a href="#" onclick="ShowDetails(); return false;">full description</a>' : description)  }}
-                    </p>
-                    <p class="product-description d-none d-md-block d-lg-none">
-                        {{ (description|length > 250 ? description|slice(0, 250) ~ '… <a href="#" onclick="ShowDetails(); return false;">full description</a>' : description)  }}
-                    </p>
-                    <p class="product-description d-block d-md-none">
-                        {{ (description|length > 100 ? description|slice(0, 100) ~ '… <a href="#" onclick="ShowDetails(); return false;">full description</a>' : description)  }}
-                    </p>
+                    <span class="product-description d-none d-lg-block">
+                        {{ (description|length > 500 ? description|slice(0, 500) ~ '… <a href="#" onclick="ShowDetails(); return false;">full description</a></p>' : description)  }}
+                    </span>
+                    <span class="product-description d-none d-md-block d-lg-none">
+                        {{ (description|length > 250 ? description|slice(0, 250) ~ '… <a href="#" onclick="ShowDetails(); return false;">full description</a></p>' : description)  }}
+                    </span>
+                    <span class="product-description d-block d-md-none">
+                        {{ (description|length > 100 ? description|slice(0, 100) ~ '… <a href="#" onclick="ShowDetails(); return false;">full description</a></p>' : description)  }}
+                    </span>
                     <dl class="row pull-left">
                         <dt class="col-4 col-sm-6 col-md-5 col-lg-4">Model Code:</dt><dd id="dd-model-code" class="col-8 col-sm-6 col-md-7 col-lg-8">{{ model }}</dd>
                         <dt class="col-4 col-sm-6 col-md-5 col-lg-4">Size:</dt><dd id="dd-model-size" class="col-8 col-sm-6 col-md-7 col-lg-8">200x300mm</dd>
@@ -71,9 +66,9 @@
                             <h3>{{ text_option }}</h3>
                             {% for option in options %}
                                 {% if option.type == 'select' %}
-                                    <div class="form-group{% if option.required %} required {% endif %}">
-                                        <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-                                        <select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-control">
+                                    <div class="input-group input-group-sm mb-2" >
+                                        <label class="input-group-text  for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+                                        <select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-select" {% if option.required %} required {% endif %}>
                                             <option value="">{{ text_select }}</option>
                                             {% for option_value in option.product_option_value %}
                                                 <option value="{{ option_value.product_option_value_id }}">{{ option_value.name }}
@@ -117,9 +112,9 @@
                                     </div>
                                 {% endif %}
                                 {% if option.type == 'text' %}
-                                    <div class="form-group{% if option.required %} required {% endif %}">
-                                        <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-                                        <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control" />
+                                    <div class="input-group input-group-sm mb-2 {% if option.required %} required {% endif %}">
+                                        <label class="input-group-text col-3 col-md-12 col-lg-3" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+                                        <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control col-9 col-md-12 col-lg-9" {% if option.required %} required {% endif %} />
                                     </div>
                                 {% endif %}
                                 {% if option.type == 'textarea' %}
@@ -168,21 +163,24 @@
                             {% endfor %}
                         {% endif %}
 
-                        <div class="input-group input-group-sm mb-3">
-                            <label class="input-group-text col-md-3" for="input-quantity">Qty</label>
+
+
+
+                        <div class="input-group input-group-sm mb-3 mt-3">
+                            <label class="input-group-text col-md-3" for="qtyDropdown">Qty</label>
                             <input type="number" name="qtyDropdown" value="1" min="1" size="2" id="qtyDropdown" class="form-control col-md-1" />
                             <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-success btn-lg btn-block">{{ button_cart }}</button>
 
                         </div>
                         <div class="row">
-                            <div class="col-12 col-lg-5">
+                            <div class="col-6 col-lg-6">
                                 <div class="product-price">£<span class="product-price" id="product-price"></span>
                                     <span id="tax-type" class="product-tax-price">Incl Tax £</span><span class="product-tax-price" id="product-tax-price"></span>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-7">
+                            <div class="col-6 col-lg-6">
                                 {% if mib_logo %}
-                                    <img src="catalog/view/theme/safetysignsandnotices/image/MiB_Logo_Horizontal_Colour.svg" class="img-fluid">
+                                    <img src="{{ image_path }}stores/3rdpartylogo/MiB_Logo_Horizontal_Colour.svg" class="img-fluid">
                                 {% endif %}
                             </div>
                         </div>
@@ -191,6 +189,7 @@
                         <div class="form-group">
                             <input type="hidden" name="product_id" value="{{ product_id }}" />
                             <input type="hidden" name="prod_variant_id" id="prod_variant_id" value="" />
+                            <input type="hidden" name="form_selected_option_values" id="form_selected_option_values" value="" />
                         </div>
                     </div>
                 </div>
@@ -244,25 +243,32 @@
                     <div class="tab-pane fade" id="variant-specification" role="tabpanel" aria-labelledby="specification-tab"></div>
                     <div class="tab-pane fade" id="materials" role="tabpanel" aria-labelledby="materials-tab">
                         <h4>Materials available for this product</h4>
-                        {% for material_list in MaterialsDesc %}
-                        {{ material_list.material_name }}
-                        <table class="table table-sm table-bordered" id="tblmat_{{ material_list.material_id }}">
-                            <tr>
-                                <td class="col-md-10">
-                                <table class="table table-sm ">
-                                    <tr><td class="col-md-2">Description:</td><td>{{ material_list.material_desc_full }}</td></tr>
-                                    <tr><td class="col-md-2">Thickness:</td><td>{{ material_list.thickness_desc }}</td>
-                                    <tr><td>Fixing Options:</td><td>{{ material_list.fixing_desc }}</td>
-                                </table>
-                                </td>
-                                <td class="col-md-2"><img class="rounded mx-auto d-block" src="{{ material_list.image }}" height="100px" ></td>
-                            </tr>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                                {% for material_list in MaterialsDesc %}
+                                    <div class="col">
+                                            <div class="card h-100 material_cards" id="card_material_{{ material_list.material_id }}">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img class="img-fluid rounded-end" src="{{ image_path }}{{ material_list.image }}" height="100px"
+                                                             onerror="this.src='{{ image_path }}stores/no-image.png';" alt="{{ material_list.material_name }}" title="{{ material_list.material_name }}" />
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h3 class="card-title">{{ material_list.material_name }}</h3>
+                                                                <dl class="row">
+                                                                    <dt>Description:</dt><dd>{{ material_list.material_desc_full }}</dd>
+                                                                <dt>Thickness:</dt><dd>{{ material_list.thickness_desc }}</dd>
+                                                                <dt>Fixing Options:</dt><dd>{{ material_list.fixing_desc }}</dd>
+                                                                </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                {% endfor %}
+                        </div>
+                        <p>*indicates your currently selected material</p>
 
-                        </table>
-                        {% endfor %}
-                        <table class="table table-sm table-success">
-                            <tr ><td>*indicates your currently selected material</td></tr>
-                        </table>
                     </div>
                     {% if extra_info %}
                         {% for extras in extra_info %}
@@ -305,11 +311,15 @@ $('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
 //--></script> 
 <script type="text/javascript"><!--
 $('#button-cart').on('click', function() {
+
+    let temp_data  = $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']');
+   // let data_post = JSON.stringify(temp_data);
 	$.ajax({
 		url: 'index.php?route=checkout/cart/add',
 		type: 'post',
-		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']'),
-		dataType: 'json',
+		//data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']'),
+		data: temp_data,
+        dataType: 'json',
 		beforeSend: function() {
 			$('#button-cart').button('loading');
 		},

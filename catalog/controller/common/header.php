@@ -3,6 +3,8 @@ class ControllerCommonHeader extends Controller {
 	public function index() {
 		// Analytics
 		$this->load->model('setting/extension');
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
 
 		$data['analytics'] = array();
 
@@ -39,11 +41,13 @@ class ControllerCommonHeader extends Controller {
 
 		$data['theme_css'] = 'catalog/view/theme/'. $this->config->get('theme_default_directory'). '/stylesheet/stylesheet.css';
 
-		if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
-			$data['logo'] = $server . 'image/' . $this->config->get('config_logo');
-		} else {
-			$data['logo'] = '';
-		}
+        $tmp =  DIR_IMAGE . $store_info['logo'];
+        if (USE_CDN) {
+            $data['logo'] = TSG_CDN_URL . $store_info['logo'];
+        } else {
+            $data['logo'] = $server . 'image/' . $store_info['logo'];
+        }
+        $data['store_name'] = $store_info['name'];
 
 		$this->load->language('common/header');
 
@@ -71,15 +75,13 @@ class ControllerCommonHeader extends Controller {
 		$data['shopping_cart'] = $this->url->link('checkout/cart');
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);
 		$data['contact'] = $this->url->link('information/contact');
-		$data['telephone'] = $this->config->get('config_telephone');
+		$data['telephone'] = $store_info['telephone'];
 		
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');
 		$data['search'] = $this->load->controller('common/search');
 		$data['cart'] = '';//$this->load->controller('common/cart');
 		//$data['menu'] = $this->load->controller('common/menu');
-
-		$data['load_local'] = LOAD_LOCAL;
         $data['subheader'] = $this->load->controller('common/header_subheader');
 
 		return $this->load->view('common/header', $data);

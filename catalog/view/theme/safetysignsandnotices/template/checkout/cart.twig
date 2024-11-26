@@ -57,6 +57,15 @@
                 {% for option in product.option %} <br />
                 <small>{{ option.name }}: {{ option.value }}</small> {% endfor %}
                 {% endif %}
+                {% if product.tsg_options %}
+                    {% for tsg_option in product.tsg_options %}
+                        {% if tsg_option.show_at_checkout == 0 %} <br />
+                        <span class="product-variants">{{ tsg_option.class_label }}: <strong>{{ tsg_option.value_label }}</strong></span>
+                        {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% if product.reward %} <br />
+                {% endif %}
                 {% if product.reward %} <br />
                 <small>{{ product.reward }}</small> {% endif %}
                 {% if product.recurring %} <br />
@@ -72,10 +81,9 @@
                   <div class="col-12 col-md-12 col-lg-6">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                       <button type="submit" data-toggle="tooltip" title="{{ button_update }}"
-                              class="btn btn-success btn-sm"><i class="fas fa-sync-alt"></i></button>
+                              class="btn btn-outline-success"><i class="fa-solid fa-arrows-rotate"></i></button>
                       <button type="button" data-toggle="tooltip" title="{{ button_remove }}"
-                              class="btn btn-danger btn-sm" onclick="cart.remove('{{ product.cart_id }}');"><i
-                                class="fa fa-times-circle"></i></button>
+                              class="btn btn-outline-danger btn-sm" onclick="cart.remove('{{ product.cart_id }}');"><i class="fa-regular fa-trash fa-lg"></i></button>
                     </div>
                   </div>
                 </div>
@@ -95,8 +103,8 @@
           <table class="table table-bordered table-responsive"
             {% for total in totals %}
             <tr>
-              <td class="text-right"><strong>{{ total.title }}:</strong></td>
-              <td class="text-right">{{ total.text }}</td>
+              <td class="text-end"><strong>{{ total.title }}:</strong></td>
+              <td class="text-end">{{ total.text }}</td>
             </tr>
             {% endfor %}
           </table>

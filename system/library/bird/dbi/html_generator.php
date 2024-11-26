@@ -1,6 +1,6 @@
 <?php
 namespace Bird\DBI;
-final class Html_generator {
+final class Html_generator extends \stdClass {
     private $registry;
     public function __construct($registry) {
         $this->registry = $registry;

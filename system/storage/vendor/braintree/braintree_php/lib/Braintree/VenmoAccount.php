@@ -1,8 +1,6 @@
 <?php
 namespace Braintree;
 
-use DateTime;
-
 /**
  * Braintree VenmoAccount module
  * Creates and manages Braintree Venmo accounts
@@ -14,14 +12,14 @@ use DateTime;
  * @package    Braintree
  * @category   Resources
  *
- * @property-read DateTime $createdAt
+ * @property-read \DateTime $createdAt
  * @property-read string $customerId
  * @property-read boolean $default
  * @property-read string $imageUrl
  * @property-read string $sourceDescription
- * @property-read Subscription[] $subscriptions
+ * @property-read \Braintree\Subscription[] $subscriptions
  * @property-read string $token
- * @property-read DateTime $updatedAt
+ * @property-read \DateTime $updatedAt
  * @property-read string $username
  * @property-read string $venmoUserId
  */

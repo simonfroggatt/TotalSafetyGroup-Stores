@@ -1,0 +1,37 @@
+<header>
+        <div class="container-fluid mb-0 pb-0">
+            <div class="row " id="nav-belt">
+                <div class="nav flex-row col-6 col-md-3 col-lg-2 order-0">
+                    <ul class="navbar-nav nav-logo ps-2">
+                        <li class="nav-item nav-off d-block d-md-none">
+                            <a class="nav-link active text-white" data-bs-toggle="offcanvas" href="#offcanvasSSAN" role="button" aria-controls="offcanvasSSAN"><i class="fas fa-bars fa-3x me-3" ></i></a>
+                        </li>
+                        <li class="nav-item"><a href="{{ home }}"><img id="logo" src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-8 order-2 order-md-1 pb-2 pb-md-0 p-sm-0" id="nav-search" >
+                    {{ search }}
+                </div>
+                <div class="col-6 col-md-3 col-lg-2 order-1 order-md-2" id="top-links">
+                    {{ header_links }}
+                </div>
+            </div>
+            <div class="search_results_container">
+            <div class="container ">
+                <div class="row">
+                    <div class="container" id="search_results_grid">
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+        {{ menu_tsg }}
+    <script src="https://js.stripe.com/v3/"></script>
+</header>
+
+
+
+

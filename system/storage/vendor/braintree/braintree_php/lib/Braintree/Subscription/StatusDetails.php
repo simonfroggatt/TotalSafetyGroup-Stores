@@ -2,7 +2,6 @@
 namespace Braintree\Subscription;
 
 use Braintree\Instance;
-use DateTime;
 
 /**
  * Status details from a subscription
@@ -15,7 +14,7 @@ use DateTime;
  * @property-read string $planId
  * @property-read string $balance
  * @property-read string $status
- * @property-read DateTime $timestamp
+ * @property-read \DateTime $timestamp
  * @property-read string $subscriptionSource
  * @property-read string $user
  */

@@ -23,9 +23,6 @@
 <script>
 
 
-
-
-
     $(function() {
         $('#shipping_type_options .shipping-card').on('click',function(event)
         {
@@ -34,7 +31,7 @@
             //get the option inside this card, set it and set the highligh class
         });
         /* <![CDATA[ */
-        let first_shipping = {{ shipping_options[0]['type_id'] }}
+        let first_shipping = {{ shipping_options[0]['shipping_method_id'] }};
             /* ]]> */
         let firstcard = $('#card_'+first_shipping);
         setCard(firstcard);
@@ -42,6 +39,7 @@
     })
 
     function setCard(card_id){
+
         $('#shipping_type_options .shipping-card').removeClass('border-success');
         $('#shipping_type_options .shipping-card .card-header').removeClass('card-header-green');
         card_id.addClass('border-success');
@@ -49,6 +47,7 @@
         card_id.children('h3').addClass('card-header-green')
         //card_id.data('shipping-option')  let shipping_code = '#shipping_optiom_'+card_id.data('shipping-option');
         $('#shipping_option').val(shipping_code);
+        $('#checkout-shipping-btn').prop('disabled', false);
     }
 
 

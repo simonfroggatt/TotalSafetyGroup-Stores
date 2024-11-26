@@ -20,12 +20,11 @@
 namespace Klarna\Rest\Tests\Unit\Transport;
 
 use Klarna\Rest\Transport\ResponseValidator;
-use PHPUnit_Framework_TestCase;
 
 /**
  * Unit test cases for the ResponseValidator class.
  */
-class ResponseValidatorTest extends PHPUnit_Framework_TestCase
+class ResponseValidatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var GuzzleHttp\Message\ResponseInterface

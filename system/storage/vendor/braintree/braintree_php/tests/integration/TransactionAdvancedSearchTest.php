@@ -5,7 +5,6 @@ require_once dirname(__DIR__) . '/Setup.php';
 
 use DateTime;
 use DateTimeZone;
-use Exception;
 use Test\Setup;
 use Braintree;
 
@@ -903,7 +902,7 @@ class TransactionAdvancedSearchTest extends Setup
             }
         }
 
-        throw new Exception('Unable to find the disputed transaction.');
+        throw new \Exception('Unable to find the disputed transaction.');
     }
 
     private function rundisputeDateSearchTests($comparison)

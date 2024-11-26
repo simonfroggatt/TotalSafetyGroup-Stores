@@ -17,10 +17,10 @@ namespace Braintree;
  * @package    Braintree
  * @category   Resources
  * 
- * @property-read BinData $binData
+ * @property-read \Braintree\BinData $binData
  * @property-read boolean $default
  * @property-read string $nonce
- * @property-read ThreeDSecureInfo $threeDSecureInfo
+ * @property-read \Braintree\ThreeDSecureInfo $threeDSecureInfo
  * @property-read string $type
  */
 class PaymentMethodNonce extends Base

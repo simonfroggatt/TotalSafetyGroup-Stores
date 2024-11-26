@@ -19,86 +19,59 @@
     <div id="content" class="{{ class }}"> {{ content_top }}
       <h1>{{ heading_title }}</h1>
       <p>{{ text_description }}</p>
-      <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
-        <fieldset>
-          <legend>{{ text_order }}</legend>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-firstname">{{ entry_firstname }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="firstname" value="{{ firstname }}" placeholder="{{ entry_firstname }}" id="input-firstname" class="form-control" />
-              {% if error_firstname %}
-              <div class="text-danger">{{ error_firstname }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-lastname">{{ entry_lastname }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="lastname" value="{{ lastname }}" placeholder="{{ entry_lastname }}" id="input-lastname" class="form-control" />
-              {% if error_lastname %}
-              <div class="text-danger">{{ error_lastname }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-email">{{ entry_email }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="input-email" class="form-control" />
-              {% if error_email %}
-              <div class="text-danger">{{ error_email }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-telephone">{{ entry_telephone }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="telephone" value="{{ telephone }}" placeholder="{{ entry_telephone }}" id="input-telephone" class="form-control" />
-              {% if error_telephone %}
-              <div class="text-danger">{{ error_telephone }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-order-id">{{ entry_order_id }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="order_id" value="{{ order_id }}" placeholder="{{ entry_order_id }}" id="input-order-id" class="form-control" />
-              {% if error_order_id %}
-              <div class="text-danger">{{ error_order_id }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-date-ordered">{{ entry_date_ordered }}</label>
-            <div class="col-sm-3">
-              <div class="input-group date">
-                <input type="text" name="date_ordered" value="{{ date_ordered }}" placeholder="{{ entry_date_ordered }}" data-date-format="YYYY-MM-DD" id="input-date-ordered" class="form-control" />
-                <span class="input-group-btn">
-                <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                </span></div>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend>{{ text_product }}</legend>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-product">{{ entry_product }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="product" value="{{ product }}" placeholder="{{ entry_product }}" id="input-product" class="form-control" />
-              <input type="hidden" name="product_id" value="{{ product_id }}" />
-              {% if error_product %}
-              <div class="text-danger">{{ error_product }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-model">{{ entry_model }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="model" value="{{ model }}" placeholder="{{ entry_model }}" id="input-model" class="form-control" />
-              {% if error_model %}
-              <div class="text-danger">{{ error_model }}</div>
-              {% endif %} </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-quantity">{{ entry_quantity }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="quantity" value="{{ quantity }}" placeholder="{{ entry_quantity }}" id="input-quantity" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group required">
+      
+<form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+<form class="row g-3 needs-validation" novalidate>
+<div class="mb-3">
+  <label for="input-name" class="form-label">{{ entry_name }}</label>
+  <input type="text" class="form-control" id="input-name" required>
+  <div class="invalid-feedback">
+      Please enter your name.
+    </div>
+</div>
+<div class="mb-3">
+  <label for="input-email" class="form-label">{{ entry_email }}</label>
+  <input type="email" class="form-control" id="input-email" placeholder="name@example.com" required>
+  <div class="invalid-feedback">
+      Please enter a valid email address.
+    </div>
+</div>
+<div class="mb-3">
+  <label for="input-telephone" class="form-label">{{ entry_telephone }}</label>
+  <input type="text" class="form-control" id="input-telephone" placeholder="" required>
+  <div class="invalid-feedback">
+      Please enter a valid phone number.
+    </div>
+</div>
+<div class="mb-3">
+  <label for="input-order-id" class="form-label">{{ entry_order_id }}</label>
+  <input type="text" class="form-control" id="input-order-id" placeholder="" required>
+  <div class="invalid-feedback">
+      Please enter your order ID.
+    </div>
+</div>
+<div class="mb-3">
+  <label for="input-product" class="form-label">{{ entry_product }}</label>
+  <input type="text" class="form-control" id="input-product" placeholder="" required>
+  <div class="invalid-feedback">
+      Please input your product.
+    </div>
+</div>
+<div class="mb-3">
+  <label for="input-model" class="form-label">{{ entry_model }}</label>
+  <input type="text" class="form-control" id="input-model" placeholder="" required>
+  <div class="invalid-feedback">
+      Please input your product.
+    </div>
+</div>
+<div class="mb-3">
+  <label for="input-quantity" class="form-label">{{ entry_quantity }}</label>
+  <input type="text" class="form-control" id="input-quantity" placeholder="" required>
+  <div class="invalid-feedback">
+      Please input your product.
+    </div>
+</div>
+<div class="form-group required">
             <label class="col-sm-2 control-label">{{ entry_reason }}</label>
             <div class="col-sm-10"> {% for return_reason in return_reasons %}
               {% if return_reason.return_reason_id == return_reason_id %}
@@ -119,7 +92,7 @@
               <div class="text-danger">{{ error_reason }}</div>
               {% endif %} </div>
           </div>
-          <div class="form-group required">
+<div class="form-group required">
             <label class="col-sm-2 control-label">{{ entry_opened }}</label>
             <div class="col-sm-10">
               <label class="radio-inline"> {% if opened %}
@@ -136,42 +109,47 @@
                 {{ text_no }}</label>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-comment">{{ entry_fault_detail }}</label>
-            <div class="col-sm-10">
-              <textarea name="comment" rows="10" placeholder="{{ entry_fault_detail }}" id="input-comment" class="form-control">{{ comment }}</textarea>
-            </div>
-          </div>
-          {{ captcha }}
-        </fieldset>
-        {% if text_agree %}
-        <div class="buttons clearfix">
-          <div class="pull-left"><a href="{{ back }}" class="btn btn-danger">{{ button_back }}</a></div>
-          <div class="pull-right">{{ text_agree }}
-            {% if agree %}
-            <input type="checkbox" name="agree" value="1" checked="checked" />
-            {% else %}
-            <input type="checkbox" name="agree" value="1" />
-            {% endif %}
-            <input type="submit" value="{{ button_submit }}" class="btn btn-primary" />
-          </div>
-        </div>
-        {% else %}
-        <div class="buttons clearfix">
-          <div class="pull-left"><a href="{{ back }}" class="btn btn-default">{{ button_back }}</a></div>
-          <div class="pull-right">
-            <input type="submit" value="{{ button_submit }}" class="btn btn-primary" />
-          </div>
-        </div>
-        {% endif %}
-      </form>
-      {{ content_bottom }}</div>
+<div class="mb-3">
+  <label for="input-comment" class="form-label">{{ entry_fault_detail }}</label>
+      <textarea class="form-control" rows="8" id="input-comment" placeholder="" required></textarea>
+    <div class="invalid-feedback">
+      Please enter a message in the textarea.
+    </div>
+</div>
+  <div class="col-12">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+      <label class="form-check-label" for="invalidCheck">
+        Agree to terms and conditions
+      </label>
+      <div class="invalid-feedback">
+        You must agree before submitting.
+      </div>
+    </div>
+  </div>
+
+<div class="col-12">
+    <button class="btn btn-primary" type="submit">Submit form</button>
+  </div>
+</div>
+{{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
-<script type="text/javascript"><!--
-$('.date').datetimepicker({
-	language: '{{ datepicker }}',
-	pickTime: false
-});
-//--></script> 
+</form>
 {{ footer }} 
+
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>

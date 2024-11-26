@@ -34,6 +34,8 @@ class ControllerTsgSymbolSearch extends Controller
 
         }
 
+        $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
+
         $filter_data['filter_name'] = $search;
 
 

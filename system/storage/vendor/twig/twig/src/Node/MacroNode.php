@@ -13,7 +13,6 @@ namespace Twig\Node;
 
 use Twig\Compiler;
 use Twig\Error\SyntaxError;
-use function count;
 
 /**
  * Represents a macro node.
@@ -22,7 +21,7 @@ use function count;
  */
 class MacroNode extends Node
 {
-    const VARARGS_NAME = 'varargs';
+    public const VARARGS_NAME = 'varargs';
 
     public function __construct(string $name, Node $body, Node $arguments, int $lineno, string $tag = null)
     {
@@ -35,14 +34,14 @@ class MacroNode extends Node
         parent::__construct(['body' => $body, 'arguments' => $arguments], ['name' => $name], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->addDebugInfo($this)
             ->write(sprintf('public function macro_%s(', $this->getAttribute('name')))
         ;
 
-        $count = count($this->getNode('arguments'));
+        $count = \count($this->getNode('arguments'));
         $pos = 0;
         foreach ($this->getNode('arguments') as $name => $default) {
             $compiler
@@ -112,5 +111,3 @@ class MacroNode extends Node
         ;
     }
 }
-
-class_alias('Twig\Node\MacroNode', 'Twig_Node_Macro');

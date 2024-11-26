@@ -333,6 +333,7 @@ $(document).ready(function () {
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    bsOverlay.hide();
                 }
             });
 
@@ -449,7 +450,7 @@ $(document).ready(function () {
                 let form = $("#"+btn_form);
                 var form_data = form.serializeArray();
                 var target = form.data('action-url');
-                bsOverlay.show();
+              //  bsOverlay.show();
 
                 $.ajax({
                     url: 'index.php?route='+target,
@@ -475,6 +476,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
+                        bsOverlay.hide();
                         alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
                     }
                 });
@@ -672,6 +674,7 @@ $(document).ready(function () {
                 $('#billingFullname').val(customer_firstname + ' ' +customer_lastname);
                 $('#billingEmail').val(customer_email);
                 $('#billingPhone').val(customer_telephone);
+                $('#billingCompany').val(customer_company);
             }
             else {
                 $('#billingFullname').val($('#guestFullname').val());

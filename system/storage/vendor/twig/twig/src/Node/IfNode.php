@@ -13,7 +13,6 @@
 namespace Twig\Node;
 
 use Twig\Compiler;
-use function count;
 
 /**
  * Represents an if node.
@@ -32,10 +31,10 @@ class IfNode extends Node
         parent::__construct($nodes, [], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
-        for ($i = 0, $count = count($this->getNode('tests')); $i < $count; $i += 2) {
+        for ($i = 0, $count = \count($this->getNode('tests')); $i < $count; $i += 2) {
             if ($i > 0) {
                 $compiler
                     ->outdent()
@@ -51,8 +50,11 @@ class IfNode extends Node
                 ->subcompile($this->getNode('tests')->getNode($i))
                 ->raw(") {\n")
                 ->indent()
-                ->subcompile($this->getNode('tests')->getNode($i + 1))
             ;
+            // The node might not exists if the content is empty
+            if ($this->getNode('tests')->hasNode($i + 1)) {
+                $compiler->subcompile($this->getNode('tests')->getNode($i + 1));
+            }
         }
 
         if ($this->hasNode('else')) {
@@ -69,5 +71,3 @@ class IfNode extends Node
             ->write("}\n");
     }
 }
-
-class_alias('Twig\Node\IfNode', 'Twig_Node_If');

@@ -11,10 +11,6 @@
 
 namespace Twig\Util;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RegexIterator;
-use Traversable;
 use Twig\Environment;
 use Twig\Error\SyntaxError;
 use Twig\Source;
@@ -39,11 +35,11 @@ final class DeprecationCollector
      *
      * @return array An array of deprecations
      */
-    public function collectDir($dir, $ext = '.twig')
+    public function collectDir(string $dir, string $ext = '.twig'): array
     {
-        $iterator = new RegexIterator(
-            new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY
+        $iterator = new \RegexIterator(
+            new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::LEAVES_ONLY
             ), '{'.preg_quote($ext).'$}'
         );
 
@@ -53,15 +49,15 @@ final class DeprecationCollector
     /**
      * Returns deprecations for passed templates.
      *
-     * @param Traversable $iterator An iterator of templates (where keys are template names and values the contents of the template)
+     * @param \Traversable $iterator An iterator of templates (where keys are template names and values the contents of the template)
      *
      * @return array An array of deprecations
      */
-    public function collect(Traversable $iterator)
+    public function collect(\Traversable $iterator): array
     {
         $deprecations = [];
         set_error_handler(function ($type, $msg) use (&$deprecations) {
-            if (E_USER_DEPRECATED === $type) {
+            if (\E_USER_DEPRECATED === $type) {
                 $deprecations[] = $msg;
             }
         });
@@ -79,5 +75,3 @@ final class DeprecationCollector
         return $deprecations;
     }
 }
-
-class_alias('Twig\Util\DeprecationCollector', 'Twig_Util_DeprecationCollector');

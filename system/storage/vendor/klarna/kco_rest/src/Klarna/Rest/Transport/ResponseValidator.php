@@ -20,8 +20,6 @@
 namespace Klarna\Rest\Transport;
 
 use GuzzleHttp\Message\ResponseInterface;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * HTTP response validator helper class.
@@ -60,7 +58,7 @@ class ResponseValidator
      *
      * @param string|string[] $status Expected status code(s)
      *
-     * @throws RuntimeException If status code does not match
+     * @throws \RuntimeException If status code does not match
      *
      * @return self
      */
@@ -68,13 +66,13 @@ class ResponseValidator
     {
         $httpStatus = (string) $this->response->getStatusCode();
         if (is_array($status) && !in_array($httpStatus, $status)) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 "Unexpected response status code: {$httpStatus}"
             );
         }
 
         if (is_string($status) && $httpStatus !== $status) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 "Unexpected response status code: {$httpStatus}"
             );
         }
@@ -87,20 +85,20 @@ class ResponseValidator
      *
      * @param string $mediaType Expected media type
      *
-     * @throws RuntimeException If Content-Type header is missing
-     * @throws RuntimeException If Content-Type header does not match
+     * @throws \RuntimeException If Content-Type header is missing
+     * @throws \RuntimeException If Content-Type header does not match
      *
      * @return self
      */
     public function contentType($mediaType)
     {
         if (!$this->response->hasHeader('Content-Type')) {
-            throw new RuntimeException('Response is missing a Content-Type header');
+            throw new \RuntimeException('Response is missing a Content-Type header');
         }
 
         $contentType = $this->response->getHeader('Content-Type');
         if ($contentType !== $mediaType) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 "Unexpected Content-Type header received: {$contentType}"
             );
         }
@@ -111,8 +109,8 @@ class ResponseValidator
     /**
      * Get the decoded JSON response.
      *
-     * @throws RuntimeException         If the response body is not in JSON format
-     * @throws InvalidArgumentException If the JSON cannot be parsed
+     * @throws \RuntimeException         If the response body is not in JSON format
+     * @throws \InvalidArgumentException If the JSON cannot be parsed
      *
      * @return array
      */
@@ -124,14 +122,14 @@ class ResponseValidator
     /**
      * Gets the Location header.
      *
-     * @throws RuntimeException If the Location header is missing
+     * @throws \RuntimeException If the Location header is missing
      *
      * @return string
      */
     public function getLocation()
     {
         if (!$this->response->hasHeader('Location')) {
-            throw new RuntimeException('Response is missing a Location header');
+            throw new \RuntimeException('Response is missing a Location header');
         }
 
         return $this->response->getHeader('Location');

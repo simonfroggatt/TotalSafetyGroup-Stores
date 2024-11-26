@@ -1,0 +1,22 @@
+
+<table id="product_option_table" class="table table-sm caption-top">
+    <caption>Bulk pricing for selection options</caption>
+        <thead>
+        <tr>
+            {% for bulk_discount_value in bulk_discount_group %}
+                <th data-field="bulk_price[{{loop.index0}}]" >
+                    {{ bulk_discount_value.columnTitleShort }}
+                </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for bulk_discount_value in bulk_discount_group %}
+                <td id="discount_cell_{{loop.index0}}" name="discount_cell_{{loop.index0}}">
+               0.00
+                </td>
+            {% endfor %}
+        </tr>
+        </tbody>
+</table>

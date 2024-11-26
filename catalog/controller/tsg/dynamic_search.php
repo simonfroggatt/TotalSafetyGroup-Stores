@@ -75,7 +75,18 @@ class ControllerTsgDynamicSearch extends Controller
         foreach ($productData as $rawProduct) {
             $tempProductData = [];
             $tempProductData['title'] = mb_strimwidth($rawProduct['title'],0,70,"...") ;
+            $tempProductData['href']        = $this->url->link('product/product', 'product_id=' . $rawProduct['product_id'] );
             $tempProductData['path'] = $rawProduct['product_id'];
+
+            if( pathinfo($rawProduct['image'], PATHINFO_EXTENSION) == 'svg') {
+                $thumb_css = 'product-card-svg-border';
+            }
+            else {
+                $thumb_css = '';
+            }
+            $tempProductData['thumb_css'] = $thumb_css;
+
+
             $tempProductData['image'] = $this->model_tool_image->resize($rawProduct['image'], 75, 75);
 
            // $tempProductData['image'] =  '/image/'.$rawProduct['image'];

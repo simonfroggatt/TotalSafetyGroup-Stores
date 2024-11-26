@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -12,8 +13,7 @@
 namespace ScssPhp\ScssPhp;
 
 use Exception;
-use function is_array;
-use function is_null;
+use ScssPhp\ScssPhp\Version;
 
 /**
  * The scss cache manager.
@@ -30,30 +30,54 @@ use function is_null;
  * SCSS cache
  *
  * @author Cedric Morin <cedric@yterium.com>
+ *
+ * @internal
  */
 class Cache
 {
     const CACHE_VERSION = 1;
 
-    // directory used for storing data
+    /**
+     * directory used for storing data
+     *
+     * @var string|false
+     */
     public static $cacheDir = false;
 
-    // prefix for the storing data
+    /**
+     * prefix for the storing data
+     *
+     * @var string
+     */
     public static $prefix = 'scssphp_';
 
-    // force a refresh : 'once' for refreshing the first hit on a cache only, true to never use the cache in this hit
+    /**
+     * force a refresh : 'once' for refreshing the first hit on a cache only, true to never use the cache in this hit
+     *
+     * @var bool|string
+     */
     public static $forceRefresh = false;
 
-    // specifies the number of seconds after which data cached will be seen as 'garbage' and potentially cleaned up
+    /**
+     * specifies the number of seconds after which data cached will be seen as 'garbage' and potentially cleaned up
+     *
+     * @var int
+     */
     public static $gcLifetime = 604800;
 
-    // array of already refreshed cache if $forceRefresh==='once'
+    /**
+     * array of already refreshed cache if $forceRefresh==='once'
+     *
+     * @var array<string, bool>
+     */
     protected static $refreshed = [];
 
     /**
      * Constructor
      *
      * @param array $options
+     *
+     * @phpstan-param array{cacheDir?: string, prefix?: string, forceRefresh?: string} $options
      */
     public function __construct($options)
     {
@@ -85,31 +109,33 @@ class Cache
      * Get the cached result of $operation on $what,
      * which is known as dependant from the content of $options
      *
-     * @param string  $operation    parse, compile...
-     * @param mixed   $what         content key (e.g., filename to be treated)
-     * @param array   $options      any option that affect the operation result on the content
-     * @param integer $lastModified last modified timestamp
+     * @param string   $operation    parse, compile...
+     * @param mixed    $what         content key (e.g., filename to be treated)
+     * @param array    $options      any option that affect the operation result on the content
+     * @param int|null $lastModified last modified timestamp
      *
      * @return mixed
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function getCache($operation, $what, $options = [], $lastModified = null)
     {
         $fileCache = self::$cacheDir . self::cacheName($operation, $what, $options);
 
-        if (((self::$forceRefresh === false) || (self::$forceRefresh === 'once' &&
+        if (
+            ((self::$forceRefresh === false) || (self::$forceRefresh === 'once' &&
             isset(self::$refreshed[$fileCache]))) && file_exists($fileCache)
         ) {
             $cacheTime = filemtime($fileCache);
 
-            if ((is_null($lastModified) || $cacheTime > $lastModified) &&
+            if (
+                (\is_null($lastModified) || $cacheTime > $lastModified) &&
                 $cacheTime + self::$gcLifetime > time()
             ) {
                 $c = file_get_contents($fileCache);
                 $c = unserialize($c);
 
-                if (is_array($c) && isset($c['value'])) {
+                if (\is_array($c) && isset($c['value'])) {
                     return $c['value'];
                 }
             }
@@ -126,6 +152,8 @@ class Cache
      * @param mixed  $what
      * @param mixed  $value
      * @param array  $options
+     *
+     * @return void
      */
     public function setCache($operation, $what, $value, $options = [])
     {
@@ -155,6 +183,7 @@ class Cache
     {
         $t = [
           'version' => self::CACHE_VERSION,
+          'scssphpVersion' => Version::VERSION,
           'operation' => $operation,
           'what' => $what,
           'options' => $options
@@ -171,7 +200,9 @@ class Cache
     /**
      * Check that the cache dir exists and is writeable
      *
-     * @throws Exception
+     * @return void
+     *
+     * @throws \Exception
      */
     public static function checkCacheDir()
     {
@@ -179,9 +210,7 @@ class Cache
         self::$cacheDir = rtrim(self::$cacheDir, '/') . '/';
 
         if (! is_dir(self::$cacheDir)) {
-            if (! mkdir(self::$cacheDir)) {
-                throw new Exception('Cache directory couldn\'t be created: ' . self::$cacheDir);
-            }
+            throw new Exception('Cache directory doesn\'t exist: ' . self::$cacheDir);
         }
 
         if (! is_writable(self::$cacheDir)) {
@@ -191,6 +220,8 @@ class Cache
 
     /**
      * Delete unused cached files
+     *
+     * @return void
      */
     public static function cleanCache()
     {

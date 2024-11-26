@@ -1,13 +1,12 @@
 <header>
-    <div class="full-width-header">
-        <div class="container mb-0 pb-0">
+        <div class="container-fluid mb-0 pb-0">
             <div class="row " id="nav-belt">
                 <div class="nav flex-row col-6 col-md-3 col-lg-2 order-0">
-                    <ul class="navbar-nav nav-logo">
+                    <ul class="navbar-nav nav-logo ps-2">
                         <li class="nav-item nav-off d-block d-md-none">
                             <a class="nav-link active text-white" data-bs-toggle="offcanvas" href="#offcanvasSSAN" role="button" aria-controls="offcanvasSSAN"><i class="fas fa-bars fa-3x me-3" ></i></a>
                         </li>
-                        <li class="nav-item"><a href="{{ home }}"><img id="logo" src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>
+                        <li class="nav-item"><a href="{{ home }}"><img id="logo" src="{{ logo }}" title="{{ store_name }}" alt="{{ store_name }}" class="img-responsive"/></a>
                         </li>
                     </ul>
                 </div>
@@ -30,12 +29,7 @@
             </div>
         </div>
         {{ menu_tsg }}
-    </div>
-   <!-- <div class="overlay position-absolute vh-100 flex-fill">
-        asdasda
-        asd
-        as
-    </div> -->
+    <script src="https://js.stripe.com/v3/"></script>
 </header>
 
 

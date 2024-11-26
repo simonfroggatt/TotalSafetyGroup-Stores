@@ -1,5 +1,5 @@
 
-    <div class="input-group input-group-xs mb-2">
+    <div class="input-group input-group-sm mb-2">
          <label class="input-group-text col-3 col-md-12 col-lg-3" for="posize">Size</label>
         <select name="posize" id="posize" class="form-select product-variants">
             {% for sizeval in vSizes %}
@@ -10,7 +10,7 @@
 
 
     </div>
-    <div class="input-group input-group-xs mb-2">
+    <div class="input-group input-group-sm mb-2">
         <label class="input-group-text col-3 col-md-12 col-lg-3" for="pomaterial">Material</label>
         <select name="pomaterial" id="pomaterial" class="form-select product-variants">
         </select>
@@ -18,28 +18,42 @@
     </div>
 
     <!--TSG addin for our options stuff --START -- -->
-    {% if vOptClassesValues %}
-        {% for classinfo in vOptClassesValues %}
-            {% set classopts = classinfo.class_info %}
-            {% set class_values = classinfo.class_values %}
-            <div class="input-group input-group-xs mb-2 class-options" id="optionclassid-{{ classopts.option_class_id }}" >
-                <label class="input-group-text col-3 col-md-12 col-lg-3" for="tsg_po_{{ classopts.option_class_id }}">{{ classopts.label }}:</label>
-                {% set curr_classid = classopts.option_class_id %}
-                <select name="tsg_po_{{ classopts.option_class_id }}" id="tsg_po_{{ classopts.option_class_id }}" class="form-select tsg-option" data-optionclass-id="{{ classopts.option_class_id }}" >
-                    {% for key, value in class_values %}
-                        <option value="{{ key }}">{{ value.dropdown_title }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-    {% endfor %}
-    {% endif %}
+    {% if selectOptions %}
 
+        <div id="tsg_variabt_options">
+
+            <input type="hidden" value="{{ base_price }}" name='base_price' id="base_price">
+            <input type="hidden" value="" name='option_addon_price' id="option_addon_price">
+
+
+            {% for select in selectOptions %}
+                <div class="input-group input-group-sm mb-2 class-options" id="div_select_{{ select.id }}" style="display: none"
+                     data-option={{ select.id }}>
+                    <label for="option_class_{{ select.id }}"
+                           class="input-group-text col-3 col-md-12 col-lg-3">{{ select.label }}</label>
+                    <select id="option_class_{{ select.id }}" data-selectclass="{{ select.id }}"
+                            class=" form-select tsg_option_class {% if select.is_dynamic %}  {% endif %}"
+                            name="option_class_{{ select.id }}_{{ select.parent_class_id }}_{{ select.dynamic_class_id }}">
+                        <option value="0"  data-class={{ select.id }} data-addontype=0
+                                data-option=0>{{ select.default }}</option>
+                        {% for class_values in select.values %}
+                            <option id="option_select_{{ class_values.id }}" value="{{ class_values.id }}"
+                                    data-class={{ select.id }} data-addontype={{ class_values.option_type }} >{{ class_values.drop_down }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
 
     <script type="text/javascript">
 var prod_variants = {{ variants | json_encode | raw }};
 
-var variant_classes_tsg = {{ vOptionClasses | json_encode | raw }};
+var variant_classes_tsg = {{ selectOptions | json_encode | raw }};
+
+var variant_to_class = {{  variantClasses | json_encode | raw }};
+//store as multu array [sizeid][materialid][classid][classvalueid]
 
 var product_size_mat_classes_tsg = {{ vSizeMatClasses | json_encode | raw }};
 
@@ -49,20 +63,27 @@ var discount_group_data = {{ bulk_discount_group | json_encode | raw}};
 
 var variant_selected = new Array();
 
-
-
-console.log('variant_classes_values_tsg');
-console.log(variant_classes_values_tsg);
+var selected_option_values_frm = [];
 
 
 var prod_var_options = [];  //this is the variable that holds all the infomation to rebuild the selected product with it's options
 
 var chosen_options = [];
+var dynamic_options = [];
 
-var class_count = {{ vOptClassesValues|length }};
+var class_count = {{ selectOptions|length }};
 
 var init_variant_id = {{ variant_id_selected }};
 
 var init_tsg_options = {{ options_selected | json_encode | raw}};
+
+console.log('variant_to_class')
+console.log(variant_to_class)
+
+console.log('variant_classes_tsg')
+console.log(variant_classes_tsg)
+
+console.log('product_size_mat_classes_tsg')
+console.log(product_size_mat_classes_tsg)
 
     </script>

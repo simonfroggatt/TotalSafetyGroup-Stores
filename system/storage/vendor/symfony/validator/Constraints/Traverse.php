@@ -13,7 +13,6 @@ namespace Symfony\Component\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
-use function is_array;
 
 /**
  * @Annotation
@@ -26,8 +25,8 @@ class Traverse extends Constraint
 
     public function __construct($options = null)
     {
-        if (is_array($options) && array_key_exists('groups', $options)) {
-            throw new ConstraintDefinitionException(sprintf('The option "groups" is not supported by the constraint %s', __CLASS__));
+        if (\is_array($options) && \array_key_exists('groups', $options)) {
+            throw new ConstraintDefinitionException(sprintf('The option "groups" is not supported by the constraint "%s".', __CLASS__));
         }
 
         parent::__construct($options);

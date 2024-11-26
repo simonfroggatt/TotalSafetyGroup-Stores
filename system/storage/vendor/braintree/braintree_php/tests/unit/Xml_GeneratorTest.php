@@ -3,8 +3,6 @@ namespace Test\Unit\Xml;
 
 require_once dirname(__DIR__) . '/Setup.php';
 
-use DateTime;
-use DateTimeZone;
 use Test\Setup;
 use Braintree;
 
@@ -112,9 +110,9 @@ XML;
 
     public function testDoesNotModifyDateTime()
     {
-        $date = new DateTime();
+        $date = new \DateTime();
         $date->setTimestamp(strtotime('2016-05-17T21:22:26Z'));
-        $date->setTimezone(new DateTimeZone('Europe/Paris'));
+        $date->setTimezone(new \DateTimeZone('Europe/Paris'));
 
         $originalDate = clone $date;
 

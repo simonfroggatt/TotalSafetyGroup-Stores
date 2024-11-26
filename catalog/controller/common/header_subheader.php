@@ -7,11 +7,16 @@ class ControllerCommonHeaderSubheader extends Controller {
 			$server = $this->config->get('config_url');
 		}
 
-		if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
-			$data['logo'] = $server . 'image/' . $this->config->get('config_logo');
-		} else {
-			$data['logo'] = '';
-		}
+        $this->load->model('setting/store');
+        $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
+
+
+        if (USE_CDN) {
+            $data['logo'] = TSG_CDN_URL . $store_info['logo'];
+        } else {
+            $data['logo'] = $server . 'image/' . $store_info['logo'];
+        }
+        $data['store_name'] = $store_info['name'];
 
 		$this->load->language('common/header');
 
@@ -39,7 +44,9 @@ class ControllerCommonHeaderSubheader extends Controller {
 		$data['shopping_cart'] = $this->url->link('checkout/cart');
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);
 		$data['contact'] = $this->url->link('information/contact');
-		$data['telephone'] = $this->config->get('config_telephone');
+		//$data['telephone'] = $this->config->get('config_telephone');
+		$data['telephone'] = $store_info['telephone'];
+
 		
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');
@@ -49,9 +56,6 @@ class ControllerCommonHeaderSubheader extends Controller {
         $data['menu_tsg'] = $this->load->controller('tsg/menu');
         $data['header_links'] = $this->load->controller('tsg/header_links');
 		$data['customer_name'] = $this->customer->getFirstName();
-
-		//TSG
-		$data['load_local'] = LOAD_LOCAL;
 
 		return $this->load->view('common/header_subheader', $data);
 	}

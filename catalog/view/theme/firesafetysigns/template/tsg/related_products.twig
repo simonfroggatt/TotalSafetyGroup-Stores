@@ -1,0 +1,52 @@
+<div class="swiper" id="related_swiper">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for product in products %}
+                <div class="swiper-slide">
+                        <div class="card m-1 p-1">
+                                <a href="{{ product.href }}" ><img class="" height="150px" alt="{{ product.title }}" src="{{ product.thumb }}"></a>
+                        </div>
+
+                </div>
+
+                {% endfor %}
+
+        </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- If we need navigation buttons -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+        <!-- If we need scrollbar -->
+        <div class="swiper-scrollbar"></div>
+</div>
+
+<script>
+        $(function () {
+                const swiper = new Swiper('#related_swiper', {
+                        // Optional parameters
+                        direction: 'horizontal',
+                        loop: true,
+                        spaceBetween: 0,
+                        slidesPerView: 'auto',
+                        autoHeight: true,
+
+
+                        // If we need pagination
+                        pagination: false,
+
+                        // Navigation arrows
+                        navigation: {
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                        },
+
+                        // And if we need scrollbar
+                        scrollbar: false,
+                });
+        });
+</script>

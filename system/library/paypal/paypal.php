@@ -1,8 +1,7 @@
 <?php
 class PayPal {
 	private $server = array(
-        'sandbox' => 'https://api-m.sandbox.paypal.com',
-		//'sandbox' => 'https://api.sandbox.paypal.com',
+		'sandbox' => 'https://api-m.sandbox.paypal.com',
 		'production' => 'https://api.paypal.com'
 	);
 	private $environment = 'sandbox';
@@ -48,11 +47,9 @@ class PayPal {
 		
 		if (!empty($result['access_token'])) {
 			$this->access_token = $result['access_token'];
-			
-			return $this->access_token;
-		} else {
-			$this->errors[] = $result;
 						
+			return $result;
+		} else {
 			return false;
 		}
 	}
@@ -71,8 +68,23 @@ class PayPal {
 		if (!empty($result['client_token'])) {
 			return $result['client_token'];
 		} else {
-			$this->errors[] = $result;
-			
+			return false;
+		}
+	}
+	
+	//OUT: merchant info, if no return - check errors
+	public function getUserInfo() {
+		$command = '/v1/identity/oauth2/userinfo';
+		
+		$params = array(
+			'schema' => 'paypalv1.1'
+		);
+										
+		$result = $this->execute('GET', $command, $params);
+		
+		if (!empty($result['user_id'])) {
+			return $result;
+		} else {
 			return false;
 		}
 	}
@@ -81,18 +93,30 @@ class PayPal {
 	//OUT: merchant info, if no return - check errors
 	public function getSellerCredentials($partner_id) {
 		$command = '/v1/customer/partners/' . $partner_id . '/merchant-integrations/credentials';
-				
+						
 		$result = $this->execute('GET', $command);
 		
 		if (!empty($result['client_id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
+	
+	//IN:  partner id, merchant id
+	//OUT: merchant info, if no return - check errors
+	public function getSellerStatus($partner_id, $merchant_id) {
+		$command = '/v1/customer/partners/' . $partner_id . '/merchant-integrations/' . $merchant_id;
+						
+		$result = $this->execute('GET', $command);
 		
+		if (!empty($result['merchant_id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+			
 	//IN:  webhook info
 	public function createWebhook($webhook_info) {
 		$command = '/v1/notifications/webhooks';
@@ -104,8 +128,6 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
@@ -122,8 +144,6 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
@@ -147,8 +167,6 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
@@ -162,12 +180,10 @@ class PayPal {
 		if (!empty($result['webhooks'])) {
 			return $result['webhooks'];
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
-	
+
 	//IN:  webhook event id
 	//OUT: webhook event info, if no return - check errors
 	public function getWebhookEvent($webhook_event_id) {
@@ -178,8 +194,6 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
@@ -193,8 +207,89 @@ class PayPal {
 		if (!empty($result['events'])) {
 			return $result['events'];
 		} else {
-			$this->errors[] = $result;
-			
+			return false;
+		}
+	}
+	
+	//IN:  payment token info
+	public function createPaymentToken($payment_token_info) {
+		$command = '/v3/vault/payment-tokens';
+		
+		$params = $payment_token_info;
+				
+		$result = $this->execute('POST', $command, $params, true);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+		
+	//IN:  payment token id
+	public function deletePaymentToken($payment_token_id) {
+		$command = '/v3/vault/payment-tokens/' . $payment_token_id;
+				
+		$result = $this->execute('DELETE', $command);
+		
+		return true;
+	}
+	
+	//IN:  payment token id
+	//OUT: payment token info, if no return - check errors
+	public function getPaymentToken($payment_token_id) {
+		$command = '/v3/vault/payment-tokens/' . $payment_token_id;
+				
+		$result = $this->execute('GET', $command);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  customer id
+	//OUT: payment tokens info, if no return - check errors
+	public function getPaymentTokens($customer_id) {
+		$command = '/v3/vault/payment-tokens';
+		
+		$params = array('customer_id' => $customer_id);
+				
+		$result = $this->execute('GET', $command, $params);
+		
+		if (!empty($result['payment_tokens'])) {
+			return $result['payment_tokens'];
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  setup token info
+	public function createSetupToken($setup_token_info) {
+		$command = '/v3/vault/setup-tokens';
+		
+		$params = $setup_token_info;
+				
+		$result = $this->execute('POST', $command, $params, true);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+		
+	//IN:  setup token id
+	//OUT: setup token info, if no return - check errors
+	public function getSetupToken($setup_token_id) {
+		$command = '/v3/vault/setup-tokens/' . $setup_token_id;
+				
+		$result = $this->execute('GET', $command);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
 			return false;
 		}
 	}
@@ -210,14 +305,11 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
 	
-	//IN:  order id
-	//OUT: order info, if no return - check errors
+	//IN:  order id, order info
 	public function updateOrder($order_id, $order_info) {
 		$command = '/v2/checkout/orders/' . $order_id;
 		
@@ -238,8 +330,6 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
@@ -253,8 +343,6 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
 	}
@@ -268,10 +356,135 @@ class PayPal {
 		if (!empty($result['id'])) {
 			return $result;
 		} else {
-			$this->errors[] = $result;
-			
 			return false;
 		}
+	}
+	
+	//IN:  transaction id
+	public function setPaymentCapture($transaction_id, $transaction_info) {
+		$command = '/v2/payments/authorizations/' . $transaction_id . '/capture';
+		
+		$params = $transaction_info;
+						
+		$result = $this->execute('POST', $command, $params, true);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  transaction id
+	public function setPaymentReauthorize($transaction_id, $transaction_info) {
+		$command = '/v2/payments/authorizations/' . $transaction_id . '/reauthorize';
+						
+		$params = $transaction_info;
+						
+		$result = $this->execute('POST', $command, $params, true);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  transaction id
+	public function setPaymentVoid($transaction_id) {
+		$command = '/v2/payments/authorizations/' . $transaction_id . '/void';
+						
+		$result = $this->execute('POST', $command);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  transaction id
+	public function setPaymentRefund($transaction_id, $transaction_info) {
+		$command = '/v2/payments/captures/' . $transaction_id . '/refund';
+						
+		$params = $transaction_info;
+		
+		$result = $this->execute('POST', $command, $params, true);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+		
+	//IN:  transaction id
+	//OUT: transaction info, if no return - check errors
+	public function getPaymentAuthorize($transaction_id) {
+		$command = '/v2/payments/authorizations/' . $transaction_id;
+				
+		$result = $this->execute('GET', $command);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  transaction id
+	//OUT: transaction info, if no return - check errors
+	public function getPaymentCapture($transaction_id) {
+		$command = '/v2/payments/captures/' . $transaction_id;
+				
+		$result = $this->execute('GET', $command);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  transaction id
+	//OUT: transaction info, if no return - check errors
+	public function getPaymentRefund($transaction_id) {
+		$command = '/v2/payments/refunds/' . $transaction_id;
+				
+		$result = $this->execute('GET', $command);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  order id, tracker info
+	public function createOrderTracker($order_id, $tracker_info) {
+		$command = '/v2/checkout/orders/' . $order_id . '/track';
+		
+		$params = $tracker_info;
+				
+		$result = $this->execute('POST', $command, $params, true);
+		
+		if (!empty($result['id'])) {
+			return $result;
+		} else {
+			return false;
+		}
+	}
+	
+	//IN:  order id, tracker id
+	//OUT: tracker info, if no return - check errors
+	public function updateOrderTracker($order_id, $tracker_id, $tracker_info) {
+		$command = '/v2/checkout/orders/' . $order_id . '/trackers/' . $tracker_id;
+		
+		$params = $tracker_info;
+				
+		$result = $this->execute('PATCH', $command, $params, true);
+		
+		return true;
 	}
 				
 	//OUT: number of errors
@@ -300,7 +513,10 @@ class PayPal {
 				CURLOPT_INFILESIZE => Null,
 				CURLOPT_HTTPHEADER => array(),
 				CURLOPT_CONNECTTIMEOUT => 10,
-				CURLOPT_TIMEOUT => 10
+				CURLOPT_TIMEOUT => 10,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_SSL_VERIFYHOST => 0,
+				CURLOPT_SSL_VERIFYPEER => 0
 			);
 			
 			$curl_options[CURLOPT_HTTPHEADER][] = 'Accept-Charset: utf-8';
@@ -364,11 +580,11 @@ class PayPal {
 				default:
 					$curl_options[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
 			}
-			
+						
 			$ch = curl_init();
 			curl_setopt_array($ch, $curl_options);
 			$response = curl_exec($ch);
-			
+				
 			if (curl_errno($ch)) {
 				$curl_code = curl_errno($ch);
 				
@@ -377,25 +593,7 @@ class PayPal {
 				
 				$this->errors[] = array('name' => $curl_constant[$curl_code], 'message' => curl_strerror($curl_code));
 			}
-	
-            /*$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			
-			if (($status_code >= 0) && ($status_code < 200)) {
-				$this->errors[] = 'Server Not Found (' . $status_code . ')';
-			}
-			
-			if (($status_code >= 300) && ($status_code < 400)) {
-				$this->errors[] = 'Page Redirect (' . $status_code . ')';
-			}
-			
-			if (($status_code >= 400) && ($status_code < 500)) {
-				$this->errors[] = 'Page not found (' . $status_code . ')';
-			}
-			
-			if ($status_code >= 500) {
-				$this->errors[] = 'Server Error (' . $status_code . ')';
-			}*/
-			
+				
 			$head = '';
 			$body = '';
 			
@@ -426,7 +624,11 @@ class PayPal {
 
 			$this->last_response = json_decode($body, true);
 			
-			return $this->last_response;		
+			if (!empty($this->last_response['message'])) {
+				$this->errors[] = (array)$this->last_response;
+			}
+			
+			return (array)$this->last_response;		
 		}
 	}
 	

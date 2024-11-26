@@ -13,7 +13,6 @@ namespace Twig\Node;
 
 use Twig\Compiler;
 use Twig\Node\Expression\ConstantExpression;
-use function count;
 
 /**
  * Represents a set node.
@@ -42,11 +41,11 @@ class SetNode extends Node implements NodeCaptureInterface
         }
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
 
-        if (count($this->getNode('names')) > 1) {
+        if (\count($this->getNode('names')) > 1) {
             $compiler->write('list(');
             foreach ($this->getNode('names') as $idx => $node) {
                 if ($idx) {
@@ -78,7 +77,7 @@ class SetNode extends Node implements NodeCaptureInterface
         if (!$this->getAttribute('capture')) {
             $compiler->raw(' = ');
 
-            if (count($this->getNode('names')) > 1) {
+            if (\count($this->getNode('names')) > 1) {
                 $compiler->write('[');
                 foreach ($this->getNode('values') as $idx => $value) {
                     if ($idx) {
@@ -104,5 +103,3 @@ class SetNode extends Node implements NodeCaptureInterface
         $compiler->raw(";\n");
     }
 }
-
-class_alias('Twig\Node\SetNode', 'Twig_Node_Set');

@@ -1,6 +1,6 @@
 <?php
 namespace Bird\DBI;
-final class Bird {
+final class Bird extends \stdClass {
     private $registry;
     public function __construct($registry, $meta) {
         $this->dbi_meta = $meta;

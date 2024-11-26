@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -11,13 +12,13 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
-use Exception;
-
 /**
  * Compiler exception
  *
  * @author Oleksandr Savchenko <traveltino@gmail.com>
+ *
+ * @internal
  */
-class CompilerException extends Exception
+class CompilerException extends \Exception implements SassException
 {
 }

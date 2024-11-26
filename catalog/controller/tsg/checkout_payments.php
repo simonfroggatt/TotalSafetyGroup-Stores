@@ -4,7 +4,9 @@ class ControllerTsgCheckoutPayments extends Controller
 {
     public function index()
     {
-
+        //save form data into a session
+       // $this->session->data['payment_address'] = $this->request->post['payment_address'];
+        //$this->session->data['shipping_address'] = $this->request->post['payment_method'];
 
         // Payment Methods
         $method_data = array();

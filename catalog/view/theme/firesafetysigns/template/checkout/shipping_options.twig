@@ -1,0 +1,59 @@
+{% if shipping_options|length > 2 %}
+    {% set class = 'row-cols-md-3' %}
+{% else %}
+    {% set class = 'row-cols-md-2' %}
+{% endif %}
+
+<div class="row row-cols-1 {{ class }} g-4">
+{% for shipping in shipping_options %}
+    <div class="col">
+        <div class="card h-100 shipping-card" id="card_{{ shipping.shipping_method_id }}" data-shipping-option="{{ shipping.shipping_method_id }}">
+        <h3 class="card-header">{{ shipping.title }}</h3>
+        <div class="card-body">
+            <div class="form-check text-center">
+                <h2>£{{ shipping.cost }}</h2>
+                <p class="card-text">{{ shipping.description }}</p>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endfor %}
+</div>
+
+<script>
+
+
+
+
+
+    $(function() {
+        $('#shipping_type_options .shipping-card').on('click',function(event)
+        {
+
+            setCard($(this));
+            //get the option inside this card, set it and set the highligh class
+        });
+        /* <![CDATA[ */
+        let first_shipping = {{ shipping_options[0]['type_id'] }}
+            /* ]]> */
+        let firstcard = $('#card_'+first_shipping);
+        setCard(firstcard);
+
+    })
+
+    function setCard(card_id){
+        $('#shipping_type_options .shipping-card').removeClass('border-success');
+        $('#shipping_type_options .shipping-card .card-header').removeClass('card-header-green');
+        card_id.addClass('border-success');
+        let shipping_code = card_id.data('shipping-option');
+        card_id.children('h3').addClass('card-header-green')
+        //card_id.data('shipping-option')  let shipping_code = '#shipping_optiom_'+card_id.data('shipping-option');
+        $('#shipping_option').val(shipping_code);
+    }
+
+
+
+
+</script>
+
+

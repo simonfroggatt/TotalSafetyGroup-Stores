@@ -1,0 +1,113 @@
+
+{% if categories %}
+<div class="container-fluid d-none d-md-block ps-0 pe-0">
+  <nav id="menu" class="navbar pt-0 pb-0 navbar-expand-md" role="navigation">
+    <div class="container-fluid navbar-tsg" >
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item d-none d-md-block">
+                <a class="nav-link active" data-bs-toggle="offcanvas" href="#offcanvasSSAN" role="button" aria-controls="offcanvasSSAN"><i class="fas fa-bars"></i> All</a>
+            </li>
+        {% for category in categories %}
+          {% if category.children %}
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle " href="{{ category.href }}" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ category.name }}</a>
+                <div class="dropdown-menu shadow" aria-labelledby="navbarDropdownMenuLink">
+
+                  {% for children in category.children %}
+                      <a class="dropdown-item" href="{{ children.href }}">{{ children.name }}</a>
+                  {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{ category.href }}">All {{ category.name }}</a>
+                </div>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{ category.href }}">{{ category.name }}</a>
+            </li>
+            <li><a href=""></a></li>
+          {% endif %}
+        {% endfor %}
+        </ul>
+          
+
+
+
+          <ul class="navbar-nav flex-row float-end flex-nowrap g-0 d-none d-sm-flex">
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="{{ symbol_search_url }}">
+                      <i class="fa-regular fa-magnifying-glass"><span class="header_text ps-2">{{ symbol_search_text }}</span></i>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="tel:{{ telephone }}">
+                      <i class="fa-regular fa-phone"><span class="header_text ps-2">{{ telephone }}</span></i>
+                  </a>
+              </li>
+          </ul>
+
+      </div>
+    </div>
+  </nav>
+</div>
+{% endif %}
+
+{{ offcanvas_menu }}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCart">
+{{ offcanvas_cart }}
+</div>
+
+<script>
+    //we will use ajax to remove from the cart, but dom to make it look like it's gone
+    //105
+    $(function() {
+
+        $('.btnRemove').on('click', function(event){
+            let cart_id = $(this).data('cartid');
+            deleteFromCart(cart_id);
+        })
+
+        function deleteFromCart(cart_id){
+            //ajax call in here,but needs to synchronous just incase it doesn't work
+            $.ajax({
+                url: 'index.php?route=checkout/cart/remove',
+                type: 'post',
+                data: 'key=' + cart_id,
+                dataType: 'json',
+                async: false,
+                beforeSend: function() {
+
+                },
+                complete: function() {
+
+                },
+                success: function(json) {
+                    if(json['TSG_totals']){
+                        let total_array = json['TSG_totals'];
+                        total_array.forEach( function (value, index ){
+                            let cart_menu_id = '#total_'+value['code'];
+                            $(cart_menu_id).html(value['text']);
+                        })
+                    // Need to set timeout otherwise it wont update the total
+                        updateSide(cart_id)
+                     }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+
+        }
+
+        function updateSide(cart_id){
+            //update the total
+
+            //remove the row
+            let row_hide = $('#row_cartid_'+cart_id);
+            row_hide.fadeOut( 1000 );
+        }
+
+    })
+
+</script>

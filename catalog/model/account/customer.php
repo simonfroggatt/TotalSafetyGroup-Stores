@@ -12,7 +12,23 @@ class ModelAccountCustomer extends Model {
 		$customer_group_info = $this->model_account_customer_group->getCustomerGroup($customer_group_id);
 
 		//$sql = "INSERT INTO " . DB_PREFIX . "customer SET customer_group_id = '" . (int)$customer_group_id . "', store_id = '" . (int)$this->config->get('config_store_id') . "', language_id = '" . (int)$this->config->get('config_language_id') . "', firstname = '" . $this->db->escape($data['accountFirstname']) . "', lastname = '" . $this->db->escape($data['accountLastname']) . "', email = '" . $this->db->escape($data['accountEmail']) . "', telephone = '" . $this->db->escape($data['accountPhone']) . "', custom_field = '" . $this->db->escape(isset($data['custom_field']['account']) ? json_encode($data['custom_field']['account']) : '') . "', salt = '" . $this->db->escape($salt = token(9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($data['input-password-account'])))) . "', newsletter = '" . (isset($data['newsletter']) ? (int)$data['newsletter'] : 0) . "', ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "', status = '" . (int)!$customer_group_info['approval'] . "', date_added = NOW()";
-		$sql = "INSERT INTO " . DB_PREFIX . "customer SET customer_group_id = '" . (int)$customer_group_id . "', store_id = '" . (int)$this->config->get('config_store_id') . "', language_id = '" . (int)$this->config->get('config_language_id') . ";', firstname = '" . $this->db->escape($data['accountFirstname']) . "', lastname = '" . $this->db->escape($data['accountLastname']) ."', company = '" . $this->db->escape($data['accountCompany']) . "', email = '" . $this->db->escape($data['accountEmail']) . "', telephone = '" . $this->db->escape($data['accountPhone']) . "', custom_field = '" . $this->db->escape(isset($data['custom_field']['account']) ? json_encode($data['custom_field']['account']) : '') . "', salt = '" . $this->db->escape($salt = token(9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($data['password'])))) . "', newsletter = '" . (isset($data['newsletter']) ? (int)$data['newsletter'] : 0) . "', ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "', status = '" . (int)!$customer_group_info['approval'] . "', date_added = NOW()";
+		$sql = "INSERT INTO " . DB_PREFIX . "customer SET ";
+        $sql .= " customer_group_id = '" . (int)$customer_group_id;
+        $sql .= " ', store_id = '" . (int)$this->config->get('config_store_id') ."'";
+        $sql .= " , language_id = '" . (int)$this->config->get('config_language_id') ."'";
+        $sql .= " , firstname = '" . $this->db->escape($data['accountFirstname']) ."'";
+        $sql .= " , lastname = '" . $this->db->escape($data['accountLastname']) ."'";
+        $sql .= " , fullname = '" . $this->db->escape($data['accountFirstname']) . ' ' . $this->db->escape($data['accountLastname']) ."'";
+        $sql .= " , company = '" . $this->db->escape($data['accountCompany'])."'";
+        $sql .= " , email = '" . $this->db->escape($data['accountEmail'])."'";
+        $sql .= " , telephone = '" . $this->db->escape($data['accountPhone'])."'";
+        $sql .= " , custom_field = '" . $this->db->escape(isset($data['custom_field']['account']) ? json_encode($data['custom_field']['account']) : '')."'";
+        $sql .= " , salt = '" . $this->db->escape($salt = token(9))."'";
+        $sql .= " , password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($data['password']))))."'";
+        $sql .= " , newsletter = '" . (isset($data['newsletter']) ? (int)$data['newsletter'] : 0)."'";
+        $sql .= " , ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR'])."'";
+        $sql .= " , status = '" . (int)!$customer_group_info['approval']."'";
+        $sql .= " , date_added = NOW()";
 
 		$this->db->query($sql);
 
@@ -151,5 +167,34 @@ class ModelAccountCustomer extends Model {
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "customer_affiliate` WHERE `tracking` = '" . $this->db->escape($tracking) . "'");
 
 		return $query->row;
-	}			
+	}
+
+    //check if the customer has a PO accoount, and also get the status of this account,I.E if on hold, approved or disapproved
+    public function getCompanyAccountDetails($customer_id)
+    {
+        $sql = "SELECT " . DB_PREFIX . "tsg_company.payment_terms, ";
+	    $sql .= "" . DB_PREFIX . "tsg_company.payment_days, ";
+        $sql .= "" . DB_PREFIX . "tsg_company.credit_limit, ";
+        $sql .= "" . DB_PREFIX . "tsg_company.account_type, ";
+        $sql .= "" . DB_PREFIX . "tsg_company.`status`, ";
+        $sql .= "" . DB_PREFIX . "tsg_payment_terms.term_title, ";
+        $sql .= "" . DB_PREFIX . "tsg_account_type.account_type_name, ";
+        $sql .= "" . DB_PREFIX . "tsg_customer_status.status_title, ";
+        $sql .= "" . DB_PREFIX . "tsg_customer_status.status_description, ";
+        $sql .= "" . DB_PREFIX . "tsg_payment_terms.terms_id, ";
+        $sql .= "" . DB_PREFIX . "tsg_payment_terms.shortcode ";
+	    $sql .= "FROM " . DB_PREFIX . "customer ";
+		$sql .= "INNER JOIN " . DB_PREFIX . "tsg_company ON " . DB_PREFIX . "customer.company_id = " . DB_PREFIX . "tsg_company.company_id ";
+		$sql .= "INNER JOIN " . DB_PREFIX . "tsg_payment_terms ON " . DB_PREFIX . "tsg_company.payment_terms = " . DB_PREFIX . "tsg_payment_terms.terms_id ";
+		$sql .= "INNER JOIN " . DB_PREFIX . "tsg_account_type ON " . DB_PREFIX . "customer.account_type = " . DB_PREFIX . "tsg_account_type.account_type_id ";
+    	$sql .= "AND " . DB_PREFIX . "tsg_company.account_type = " . DB_PREFIX . "tsg_account_type.account_type_id ";
+		$sql .= "INNER JOIN " . DB_PREFIX . "tsg_customer_status ON " . DB_PREFIX . "tsg_company.`status` = " . DB_PREFIX . "tsg_customer_status.status_id  ";
+	    $sql .= "WHERE ";
+		$sql .= "" . DB_PREFIX . "customer.customer_id = '" . (int)$customer_id . "'";
+		
+        $query = $this->db->query($sql);
+
+        return $query->row;
+
+    }
 }

@@ -24,12 +24,11 @@ use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Subscriber\Mock;
 use Klarna\Rest\Transport\Connector;
-use PHPUnit_Framework_TestCase;
 
 /**
  * Base component test case class.
  */
-class TestCase extends PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit_Framework_TestCase
 {
     const MERCHANT_ID = '1234';
 

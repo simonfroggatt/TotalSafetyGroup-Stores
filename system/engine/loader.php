@@ -86,7 +86,7 @@ final class Loader {
 				
 				$this->registry->set('model_' . str_replace('/', '_', (string)$route), $proxy);
 			} else {
-				throw new Exception('Error: Could not load model ' . $route . '!');
+				throw new \Exception('Error: Could not load model ' . $route . '!');
 			}
 		}
 	}
@@ -152,7 +152,7 @@ final class Loader {
 
 			$this->registry->set(basename($route), new $class($this->registry));
 		} else {
-			throw new Exception('Error: Could not load library ' . $route . '!');
+			throw new \Exception('Error: Could not load library ' . $route . '!');
 		}
 	}
 
@@ -167,7 +167,7 @@ final class Loader {
 		if (is_file($file)) {
 			include_once($file);
 		} else {
-			throw new Exception('Error: Could not load helper ' . $route . '!');
+			throw new \Exception('Error: Could not load helper ' . $route . '!');
 		}
 	}
 
@@ -193,11 +193,6 @@ final class Loader {
 	 * @return	array
  	*/
 	public function language($route, $key = '') {
-
-	    //TSG
-        $store_id = 0;
-        $store_lang_path = '';
-
 		// Sanitize the call
 		$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
 		
@@ -211,19 +206,8 @@ final class Loader {
 		} else {
 			$output = $this->registry->get('language')->load($route, $key);
 		}
-
-		/** - TSG start changes for multi sites  **/
-        if($this->registry->has('config')) {
-            $config_data = $this->registry->get('config');
-            $config_data->has('config_store_id') ? $store_id = $config_data->get('config_store_id') : $store_id = 0;
-            if($store_id > 0){
-                $config_data->has('theme_default_directory') ? $store_lang_path = $config_data->get('theme_default_directory') : $store_lang_path = '';
-                $output = $this->registry->get('language')->load($route, $key, $store_lang_path);
-            }
-        }
-        /** - TSG end changes for multi sites  **/
-
-        $result = $this->registry->get('event')->trigger('language/' . $trigger . '/after', array(&$route, &$key, &$output));
+		
+		$result = $this->registry->get('event')->trigger('language/' . $trigger . '/after', array(&$route, &$key, &$output));
 		
 		if ($result && !$result instanceof Exception) {
 			$output = $result;
@@ -263,7 +247,7 @@ final class Loader {
 				if (is_callable($callable)) {
 					$output = call_user_func_array($callable, $args);
 				} else {
-					throw new Exception('Error: Could not call model/' . $route . '!');
+					throw new \Exception('Error: Could not call model/' . $route . '!');
 				}					
 			}
 			

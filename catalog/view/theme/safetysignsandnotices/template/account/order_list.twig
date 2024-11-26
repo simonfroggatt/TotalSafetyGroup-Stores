@@ -1,0 +1,142 @@
+{{ header }}
+<div id="account-order" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      {% if orders %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <td class="text-end">{{ column_order_id }}</td>
+              <td class="text-start">{{ column_customer }}</td>
+              <td class="text-end">{{ column_product }}</td>
+              <td class="text-start">Order Method</td>
+              <td class="text-start">{{ column_status }}</td>
+              <td class="text-start">Payment Status</td>
+              <td class="text-end">{{ column_total }}</td>
+              <td class="text-start">{{ column_date_added }}</td>
+              <td class="col-1 text-center">Invoice</td>
+            </tr>
+          </thead>
+          <tbody>
+           {% for order in orders %}
+            <tr class="align-middle">
+              <td class="text-end ">#{{ order.order_id }}</td>
+              <td class="text-start">{{ order.name }}</td>
+              <td class="text-end ">{{ order.products }}</td>
+              <td class="text-start">{{ order.order_type }}</td>
+              <td class="text-start">{{ order.status }}</td>
+              <td class="text-start">{{ order.payment_status }}</td>
+              <td class="text-end">{{ order.total }}</td>
+              <td class="text-start">{{ order.date_added }}</td>
+              <td class="text-center">
+                <div class="btn-group ">
+                  <a href="{{ order.view2 }}" data-toggle="tooltip" title="View" target="_blank" class="btn btn-info"><i class="fa-solid fa-eye"></i></a>
+                  <a href="{{ order.download }}" data-toggle="tooltip" title="Download" class="btn btn-info"><i class="fa-solid fa-arrow-down-to-line "></i></a>
+                  <!--<a href="#" data-toggle="tooltip" title="Email" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#emailModal" data-bs-orderid={{ order.order_id }} data-bs-emailto="{{order.invoice_email}}"><i class="fa-solid fa-envelope "></i></a> -->
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 text-start">{{ pagination }}</div>
+        <div class="col-sm-6 text-end">{{ results }}</div>
+      </div>
+      {% else %}
+      <p>{{ text_empty }}</p>
+      {% endif %}
+      <div class="buttons clearfix">
+        <div class="text-center"><a href="{{ continue }}" class="btn previous_button float-start">Back</a></div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+
+
+
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="sendEmailModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="sendEmailModalLabel">Email Invoice copy</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="sendInvoiceForm">
+      <div class="modal-body">
+
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="email" class="form-control" id="recipient-name" name="recipient-name" required>
+            <input type="hidden" id="order_id" name="order_id">
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn previous_button" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success" id="btnSendInvoice">Send message</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{{ footer }}
+
+<script>
+    var myModal = document.getElementById('emailModal')
+    myModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget
+        var recipient = button.getAttribute('data-bs-emailto')
+        var order_id = button.getAttribute('data-bs-orderid')
+        var modalBodyInput = myModal.querySelector('.modal-body input')
+        var order_id_hidden = myModal.querySelector('#order_id')
+
+        modalBodyInput.value = recipient
+      order_id_hidden.value = order_id
+    })
+    //add the code to send the email on submit
+    var emailForm = document.getElementById('btnSendInvoice')
+    emailForm.addEventListener('click', function (event) {
+      event.preventDefault()
+      let form = document.getElementById('sendInvoiceForm')
+      let url = 'some url to submit the email'
+      var recipient = form.querySelector('#recipient-name').value
+      var order_id = form.querySelector('#order_id').value
+      let data = {
+        recipient: recipient,
+        order_id: order_id
+      }
+      $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          if (data.form_is_valid) {
+            myModal.modal("hide");  // <-- Close the modal
+          } else {
+            $("#modal-base .modal-content").html(data.html_form);
+          }
+        }
+      });
+
+      //serialize the form data
+    })
+</script>

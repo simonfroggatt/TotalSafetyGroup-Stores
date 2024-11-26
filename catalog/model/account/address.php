@@ -176,7 +176,7 @@ class ModelAccountAddress extends Model {
                 'area'           => $result['area'],
                 'country_id'     => $result['country_id'],
                 'country_name'     => $result['country_name'],
-                'custom_field'   => json_decode($result['custom_field'], true),
+                //'custom_field'   => json_decode($result['custom_field'], true),
                 'default_billing' =>  $result['default_billing'],
                 'default_shipping' =>  $result['default_shipping'],
                 'company' =>  $result['company']

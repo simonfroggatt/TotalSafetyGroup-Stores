@@ -1,8 +1,8 @@
 <?php
+
 namespace Cardinity\Tests;
 
 use Cardinity\Client;
-use Cardinity\Exception\ValidationFailed;
 use Cardinity\Method\Payment;
 
 class ErrorTest extends ClientTestCase
@@ -20,7 +20,7 @@ class ErrorTest extends ClientTestCase
 
         try {
             $this->client->call($method);
-        } catch (ValidationFailed $e) {
+        } catch (\Cardinity\Exception\ValidationFailed $e) {
             $result = $e->getResult();
             $this->assertInstanceOf('Cardinity\Method\Error', $result);
             $this->assertSame('https://developers.cardinity.com/api/v1/#400', $result->getType());

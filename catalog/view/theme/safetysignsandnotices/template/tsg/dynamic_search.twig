@@ -11,7 +11,7 @@
                 <div class="card h-100">
                     <!-- <span class="notify-bespoke" ><i class="fas fa-sliders-h" title="Customize this sign"></i></span> -->
                         <div class="prod_image_gallery">
-                            <a href="{{ product.href }}"><img src="{{ product.image }}" alt="{{ product.image }}" title="{{ product.title }}" class="img img-responsive {{ product.thumb_css }} full-width" /></a>
+                            <a href="{{ product.href }}"><img src="{{ product.image }}" alt="{{ product.image }}" title="{{ product.title }}" class="img img-fluid {{ product.thumb_css }} full-width" /></a>
                         </div>
                         <div class="card-body">
                             <p class="card-text">
@@ -29,7 +29,7 @@
         {% for cat in category %}
             <div class="col ">
                 <div class="card h-100">
-                    <a href="index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-responsive mt-2"
+                    <a href="index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-fluid mt-2"
                                                                                                alt="{{ cat.title }}" height="75" width="75"></a>
                     <div class="card-body">
                         <p class="card-text">

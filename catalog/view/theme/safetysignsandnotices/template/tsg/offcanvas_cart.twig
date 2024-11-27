@@ -3,6 +3,7 @@
            <a role="button" href="index.php?route=checkout/cart" class="btn btn-outline-danger" type="button"><i class="fa-regular fa-shopping-cart"></i> View Cart</a>
            <a role="button" href="index.php?route=checkout/checkout"  class="btn btn-outline-success">checkout <i class="fa-regular fa-credit-card"></i></a>
        </div>
+       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <div id="offcanvas_totals" class="text-end">
@@ -14,7 +15,7 @@
                 <tbody >
                 {% for product in products %}
                     <tr id="row_cartid_{{ product.cart_id }}">
-                        <td class="text-center text-nowrap"><strong>{{ product.model }}</strong>{% if product.thumb %} <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block pt-2" /></a> {% endif %}</td>
+                        <td class="text-center text-nowrap"><strong>{{ product.model }}</strong>{% if product.thumb %} <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block pt-2 img-fluid" /></a> {% endif %}</td>
                         <td class="text-start"><a href="{{ product.href }}">{{ (product.name |length > 30) ? product.name|slice(0, 30) ~ '...' : product.name }}</a> {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
                             <br><span class="product-variants">{{ product.size_name }}<br>{{ product.material_name }}</span>
                             {% if product.tsg_options %}

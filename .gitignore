@@ -7,3 +7,5 @@
 /system/storage_php7/
 /image/
 /image_old/
+/system/storage/cache/
+/system/storage/logs/

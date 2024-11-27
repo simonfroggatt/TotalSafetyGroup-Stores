@@ -5,7 +5,7 @@
         {% for product in products %}
             <div class="col ">
                 <div class="card h-100">
-                    <a href="index.php?route=product/product&product_id={{ product.path }}"><img src="{{ product.image }}" class="img-responsive mt-2"
+                    <a href="index.php?route=product/product&product_id={{ product.path }}"><img src="{{ product.image }}" class="img-fluid mt-2"
                                                                                                  alt="{{ product.title }}"></a>
                     <div class="card-body">
                         <p class="card-text">
@@ -25,7 +25,7 @@
         {% for cat in category %}
             <div class="col ">
                 <div class="card h-100">
-                    <a href="index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-responsive mt-2"
+                    <a href="index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-fluid mt-2"
                                                                                                alt="{{ cat.title }}" height="75" width="75"></a>
                     <div class="card-body">
                         <p class="card-text">

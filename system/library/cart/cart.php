@@ -67,7 +67,9 @@ class Cart {
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.meta_keywords ) > 1,  ". DB_PREFIX . "product_to_store.meta_keywords,  ". DB_PREFIX . "product_description_base.meta_keyword ) AS meta_keyword, ";
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.long_description ) > 1,  ". DB_PREFIX . "product_to_store.long_description,  ". DB_PREFIX . "product_description_base.long_description) AS long_description, ";
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.sign_reads ) > 1,  ". DB_PREFIX . "product_to_store.sign_reads,  ". DB_PREFIX . "product_description_base.sign_reads) AS sign_reads, ";
-            $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image, ";
+           // $sql .= " IF ( length( ". DB_PREFIX . "product_to_store.image ) > 1, ". DB_PREFIX . "product_to_store.image, ". DB_PREFIX . "product.image ) AS image, ";
+            $sql .= " IF( LENGTH( " . DB_PREFIX . "tsg_product_variants.alt_image ) > 1, " . DB_PREFIX . "tsg_product_variants.alt_image,  IF ( LENGTH(" . DB_PREFIX . "tsg_product_variant_core.variant_image) > 1, " . DB_PREFIX . "tsg_product_variant_core.variant_image, IF ( LENGTH(" . DB_PREFIX . "product_to_store.image) > 1, " . DB_PREFIX . "product_to_store.image, " . DB_PREFIX . "product.image ) )) AS image, ";
+
 
             $sql .= "1 as shipping, ";
             $sql .= "0 as points, ";

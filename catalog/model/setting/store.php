@@ -17,7 +17,7 @@ class ModelSettingStore extends Model {
 	public function getStoreInfo($store_id) {
 	    $sql = "SELECT * FROM " . DB_PREFIX . "store WHERE store_id = " . $store_id;
         $query = $this->db->query($sql);
-        echo $sql;
+       // echo $sql;
         return  $query->row;
     }
 }

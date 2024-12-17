@@ -1622,9 +1622,9 @@ class ControllerExtensionPaymentStripe extends Controller {
 			$charge_amount = $charge['amount'] / $decimal_factor / $three_decimal_factor;
 			
 			if (version_compare(VERSION, '4.0', '<')) {
-				$comment .= '<script type="text/javascript" src="view/javascript/' . $this->name . '.js"></script>';
+			//	$comment .= '<script type="text/javascript" src="view/javascript/' . $this->name . '.js"></script>';
 			} else {
-				$comment .= '<script type="text/javascript" src="../extension/' . $this->name . '/admin/view/javascript/' . $this->name . '.js"></script>';
+			//	$comment .= '<script type="text/javascript" src="../extension/' . $this->name . '/admin/view/javascript/' . $this->name . '.js"></script>';
 			}
 			
 			// Get balance_transaction data
@@ -1876,7 +1876,7 @@ class ControllerExtensionPaymentStripe extends Controller {
 		if (!empty($payment_intent['last_payment_error']['message'])) {
 			if (!empty($settings['error_status_id'])) {
 				$comment = $strong . 'Stripe Payment Error:</strong>' . $payment_intent['last_payment_error']['message'] . '<br>';
-				$comment .= $strong . 'PaymentIntent ID:</strong><a target="_blank" href="https://dashboard.stripe.com/' . ($payment_intent['livemode'] ? '' : 'test/') . 'payments/' . $payment_intent['id'] . '">' . $payment_intent['id'] . '</a><br>';
+				//$comment .= $strong . 'PaymentIntent ID:</strong><a target="_blank" href="https://dashboard.stripe.com/' . ($payment_intent['livemode'] ? '' : 'test/') . 'payments/' . $payment_intent['id'] . '">' . $payment_intent['id'] . '</a><br>';
 				$this->db->query("INSERT INTO " . DB_PREFIX . "order_history SET order_id = " . (int)$order_id . ", order_status_id = " . (int)$settings['error_status_id'] . ", notify = 0, comment = '" . $this->db->escape($comment) . "', date_added = NOW()");
 			}
 			
@@ -1892,12 +1892,13 @@ class ControllerExtensionPaymentStripe extends Controller {
 			$payment_amount = $payment_intent['amount'] / $decimal_factor;
 			
 			if (version_compare(VERSION, '4.0', '<')) {
-				$comment = '<script type="text/javascript" src="view/javascript/' . $this->name . '.js"></script>';
+			//	$comment = '<script type="text/javascript" src="view/javascript/' . $this->name . '.js"></script>';
 			} else {
-				$comment = '<script type="text/javascript" src="../extension/' . $this->name . '/admin/view/javascript/' . $this->name . '.js"></script>';
+			//	$comment = '<script type="text/javascript" src="../extension/' . $this->name . '/admin/view/javascript/' . $this->name . '.js"></script>';
 			}
+            $comment = '';
 			
-			$comment .= $strong . 'PaymentIntent ID:</strong><a target="_blank" href="https://dashboard.stripe.com/' . ($payment_intent['livemode'] ? '' : 'test/') . 'payments/' . $payment_intent['id'] . '">' . $payment_intent['id'] . '</a><br>';
+			//$comment .= $strong . 'PaymentIntent ID:</strong><a target="_blank" href="https://dashboard.stripe.com/' . ($payment_intent['livemode'] ? '' : 'test/') . 'payments/' . $payment_intent['id'] . '">' . $payment_intent['id'] . '</a><br>';
 			$comment .= $strong . 'Payment Method:</strong>' . $payment_method['type'] . '<br>';
 			$comment .= $strong . 'Payment Status:</strong>' . $payment_intent['status'] . '<br>';
 			$comment .= $strong . 'Captured:</strong>' . (!empty($payment_intent['charges']['data'][0]['captured']) ? 'Yes' : '<span>No &nbsp;</span> <a href="javascript:void(0)" onclick="stripeCapture($(this), ' . number_format($payment_amount, 2, '.', '') . ', \'' . $payment_intent['id'] . '\')">(Capture)</a>');
@@ -2255,7 +2256,7 @@ class ControllerExtensionPaymentStripe extends Controller {
 				$strong = '<strong style="display: inline-block; width: 180px; padding: 2px 5px">';
 				$comment = $strong . 'Stripe Event:</strong>' . $event['type'] . '<br>';
 				$comment .= $strong . 'Stripe Payment Error:</strong>' . $webhook['last_payment_error']['message'] . '<br>';
-				$comment .= $strong . 'PaymentIntent ID:</strong><a target="_blank" href="https://dashboard.stripe.com/' . ($event['livemode'] ? '' : 'test/') . 'payments/' . $webhook['id'] . '">' . $webhook['id'] . '</a>';
+				//$comment .= $strong . 'PaymentIntent ID:</strong><a target="_blank" href="https://dashboard.stripe.com/' . ($event['livemode'] ? '' : 'test/') . 'payments/' . $webhook['id'] . '">' . $webhook['id'] . '</a>';
 
                 $this->load->model('checkout/order');
                 $payment_method_id = 2; //TODO - get payment type

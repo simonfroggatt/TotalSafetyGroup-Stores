@@ -96,6 +96,9 @@ class ControllerExtensionPaymentPurchaseOrder extends Controller {
         $payment_status = $order_info['payment_status_id'];
         $payment_method = $order_info['payment_method_id'];
 
+        echo $payment_status . ' - ' . $payment_method;
+        echo $payment_method = $order_info['payment_method_id'];
+
         if($payment_status == 3 && $payment_method == 5)
         {
             //this is a purchase order

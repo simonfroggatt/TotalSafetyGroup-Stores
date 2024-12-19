@@ -734,7 +734,8 @@ class ControllerMailOrder extends Controller {
 
         $this->load->model('setting/setting');
 
-        $from = $this->model_setting_setting->getSettingValue('config_email', $order_info['store_id']);
+        //$from = $this->model_setting_setting->getSettingValue('config_email', $order_info['store_id']);
+        $from = $store_info['email_address'];
 
         if (!$from) {
             $from = $this->config->get('config_email');
@@ -760,6 +761,9 @@ class ControllerMailOrder extends Controller {
             $bl_return = $mail->send();
             echo $order_info['payment_email'];
             echo $this->load->view('mail/order_paid', $data);
+        }
+        else {
+            echo('no mail settings');
         }
     }
 }

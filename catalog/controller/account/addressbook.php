@@ -23,6 +23,8 @@ class ControllerAccountAddressbook extends Controller
         $data['default_shipping_id'] = 0;
         $data['default_billing_id'] = 0;
 
+        $data['address_book_count'] = sizeof($data['address_book']);
+
         if(sizeof($defaults_shipping) > 0){
             $data['default_shipping_id'] = $defaults_shipping['address_id'];
         }

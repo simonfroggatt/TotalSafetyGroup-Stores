@@ -81,4 +81,37 @@ class ControllerExtensionPaymentPurchaseOrder extends Controller {
 
         return $date->format('Y-m-d');
     }
+
+    public function testemail()
+    {
+        $order_id = 97010;
+        $this->load->model('checkout/order');
+        $order_info = $this->model_checkout_order->getOrder($order_id);
+        //now check the payment method and status
+        //we need payment status of
+        // 2 - Paid
+        // 3 - waiting (if proforma)
+        //Payment method
+        // 1 - paypal, 2 - card, 3 - apple, 5 - PO
+        $payment_status = $order_info['payment_status_id'];
+        $payment_method = $order_info['payment_method_id'];
+
+        if($payment_status == 3 && $payment_method == 5)
+        {
+            //this is a purchase order
+            $this->load->model('account/customer');
+            $customer_id = $order_info['customer_id'];
+            $customer_accounts_details = $this->model_account_customer->getCompanyAccountDetails($customer_id);
+            $account_email = $customer_accounts_details['email'];
+            $order_email = $order_info['payment_email'];
+            //send the purchase order email
+        }
+
+        //now check the payment methods
+        if( ($payment_method == 1 || $payment_method == 2 || $payment_method == 3 || $payment_method == 5) && $payment_status == 2)
+        {
+            $email_to = $order_info['payment_email'];
+            //send order email
+        }
+    }
 }

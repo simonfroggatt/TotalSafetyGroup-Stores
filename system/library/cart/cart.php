@@ -57,6 +57,8 @@ class Cart {
             $sql .= "". DB_PREFIX . "tsg_product_sizes.shipping_height, ";
             $sql .= "". DB_PREFIX . "tsg_orientation.orientation_name, ";
             $sql .= "". DB_PREFIX . "tsg_product_variants.variant_code, ";
+            $sql .= "". DB_PREFIX . "tsg_product_sizes.size_width, ";
+            $sql .= "". DB_PREFIX . "tsg_product_sizes.size_height, ";
 
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.`name` ) > 1,  ". DB_PREFIX . "product_to_store.`name`,  ". DB_PREFIX . "product_description_base.`name`) AS `name`, ";
             $sql .= " IF( length(". DB_PREFIX . "product_to_store.title ) > 1,  ". DB_PREFIX . "product_to_store.title,  ". DB_PREFIX . "product_description_base.title) AS title, ";
@@ -81,6 +83,7 @@ class Cart {
             $sql .= "0 as width, ";
             $sql .= "0 as height, ";
             $sql .= "0 as length_class_id ";
+
 
             $sql .= "FROM ". DB_PREFIX . "product_to_store ";
             $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id ";
@@ -386,6 +389,9 @@ class Cart {
                     'material_name' => $product_query->row['material_name'],
                     'tsg_options'   => $tsg_option_data,
                     'tsg_option_price' => $option_price,
+                    'size_width'    => $product_query->row['size_width'],
+                    'size_height'    => $product_query->row['size_height'],
+                    'single_unit_price' => $product_query->row['var_price'],
 				);
 			} else {
 				$this->remove($cart['cart_id']);
@@ -425,6 +431,7 @@ class Cart {
             $sql .= DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "', ";
             $sql .= DB_PREFIX . "cart.admin_pin = '".$this->session->data['cart_pin']. "', ";
             $sql .= DB_PREFIX . "cart.tsg_option_price = '". $option_addon_price. "'";
+
 
 			$this->db->query($sql);
         } else {

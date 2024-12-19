@@ -23,6 +23,9 @@ function getURLVar(key) {
 }
 
 $(document).ready(function() {
+
+
+
 	// Highlight any found errors
 	$('.text-danger').each(function() {
 		var element = $(this).parent().parent();
@@ -405,6 +408,7 @@ $(document).delegate('.agree', 'click', function(e) {
 
 // Autocomplete */
 (function($) {
+
 	$.fn.autocomplete = function(option) {
 		return this.each(function() {
 			this.timer = null;
@@ -529,3 +533,7 @@ $(document).delegate('.agree', 'click', function(e) {
 		});
 	}
 })(window.jQuery);
+
+
+
+

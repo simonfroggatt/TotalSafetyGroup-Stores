@@ -20,7 +20,7 @@
             {% set class = 'col-sm-12' %}
         {% endif %}
         <div id="content" class="{{ class }}">{{ content_top }}
-            <h2>{{ text_address_book }}</h2>
+            <h2>{{ text_address_add }}</h2>
             <form id="address_form" method="post">
                 <input type="hidden" id="addressID" name="addressID" value="{{ address_id }}">
                 <input type="hidden" id="customerID" name="customerID" value="{{ customer_id }}">
@@ -28,6 +28,7 @@
                     <div class="form-floating col-12 col-sm-6 col-md-6">
                         <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Fullname" required {% if address.fullname %} value="{{ address.fullname }}" {% endif %}>
                         <label for="fullname">Fullname (required)</label>
+
                     </div>
                     <div class="form-floating col-12 col-sm-6 col-md-6">
                         <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="0123 345 6789" required {% if address.telephone %} value="{{ address.telephone }}" {% endif %}>
@@ -35,7 +36,7 @@
                     </div>
                     <div class="form-floating col-12">
                         <input type="email" class="form-control" id="email" name="email" placeholder="someone@example.com" required {% if address.email %} value="{{ address.email }}" {% endif %}>
-                        <label for="email">Invoice Email (required)</label>
+                        <label for="email">Email (required)</label>
                     </div>
                     {% if address_id > 0 %}
                         {% set classSearch = 'd-none' %}
@@ -45,8 +46,9 @@
                         {% set classFull = 'd-none' %}
                     {% endif %}
                     <div class="form-floating col-12 {{ classSearch }}">
-                        <input type="text" class="form-control" id="addressLookupBilling"  placeholder="Start typing to find your" >
-                        <label for="addressLookupBilling">Start typing to find your address</label>
+                        <input type="text" class="form-control" id="addressLookup"  placeholder="Start typing to find your" >
+                        <label for="addressLookup">Start typing to find your address</label>
+                        <span class="text-sm-start"><a href="javascript: showFullAddress('js-fulladdress', 'addressLookup')">Enter address manually</a></span>
                     </div>
                     <div id="js-fulladdress" class="col-12 {{ classFull }}">
                         <div class="row g-2">
@@ -219,6 +221,11 @@
         });
 
     });
+
+    function showFullAddress(divName, searchName){
+        $('#'+divName).removeClass('d-none');
+        $('#'+searchName).attr('required', false);
+    }
 
 </script>
 {{ footer }}

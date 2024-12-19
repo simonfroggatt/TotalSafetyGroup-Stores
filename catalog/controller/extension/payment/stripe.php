@@ -72,6 +72,7 @@ class ControllerExtensionPaymentStripe extends Controller {
 		$data['error'] = '';
 		$data['language'] = (!empty($this->session->data['language'])) ? $this->session->data['language'] : $this->config->get('config_language');
 		$data['checkout_success_url'] = $this->url->link('checkout/success', version_compare(VERSION, '4.0', '<') ? '' : 'language=' . $data['language'], 'SSL');
+        $data['stripe_logos'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/stripe_poweredby_large.svg' : 'image/3rdpartylogo/stripe_poweredby_large.svg';
 		
 		// Get order info
 		$this->load->model($settings['extension_route']);

@@ -39,19 +39,19 @@
   <div class="card-header">
     <ul class="nav nav-pills card-header-pills">
       <li class="nav-item">
-        <a class="btn btn-primary" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ address.default_billing ? 'This is your default Billing' : 
-        'CLICK to set as Default Billing' }}"><i class="fa-thin fa-sterling-sign fa-2x"></i></a>
+        <a class="btn {{ address.default_billing ? 'btn-green' : 'btn-primary' }} jsBtnDefault" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ address.default_billing ? 'This is your default Billing' :
+        'CLICK to set as Default Billing' }}" data-address-id="{{ address.address_id }}" data-address-type="billing"><i class="fas fa-pound-sign fa-2x"></i></a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-primary" href="#"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{ address.default_shipping ? 'This is your default Shipping' 
-        : 'CLICK to set as Default Shipping' }}"><i class="fa-thin fa-truck-front fa-2x"></i></a>
+        <a class="btn {{ address.default_shipping ? 'btn-green' : 'btn-primary' }} jsBtnDefault" href="#"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{ address.default_shipping ? 'This is your default Shipping'
+        : 'CLICK to set as Default Shipping' }}" data-address-id="{{ address.address_id }}" data-address-type="shipping"><i class="fas fa-shipping-fast fa-2x"></i></a>
       </li>
       <li class="nav-item">
         <a class="btn btn-primary" href="{{ update }}&address_id={{ address.address_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Update Address"
-         ><i class="fa-thin fa-pen-to-square fa-2x"></i></a>
+         ><i class="fas fa-pen-to-square fa-2x"></i></a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-primary" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Address"><i class="fa-thin fa-trash fa-2x"></i></a>
+        <a class="btn btn-primary js-address-delete" data-address-id="{{ address.address_id }}" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove Address"><i class="fas fa-trash fa-2x"></i></a>
       </li>
     </ul>
   </div>
@@ -94,7 +94,7 @@
 
       <div class="pt-2">
         <a href="{{ back }}" type="button" class="btn previous_button btn-block">{{ button_back }}</a>
-        <a href="{{ add }}" type="button" class="btn  btn-success">{{ button_new_address }}</a>
+        <a href="{{ add }}" type="button" class="btn  btn-success" >{{ button_new_address }}</a>
 
       </div>
 
@@ -122,10 +122,6 @@
 </div>
 
 <script>
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
 
   $('.jsBtnDefault').on('click', function (event) {
       let add_id = $(this).data("addressId");
@@ -176,17 +172,28 @@
 
 
 
-  /*$('.js-address-delete').on('click', function (event) {
-      let add_id = $(this).data("addressId");
+  $('.js-address-delete').on('click', function (event) {
+      event.preventDefault();
+
+      let address_count = {{ address_book|length }};
+      if(address_count <= 1) {
+        $('#address_alert_content').html("<strong>OOOPS!</strong> You can't delete your last address");
+        $('#address_alert').removeClass('d-none').addClass('alert alert-danger alert-dismissible').fadeIn().show();
+        return;
+      }
 
       let deleteModalDOM = document.getElementById('modaldeleteaddress');
       var deleteModal = new bootstrap.Modal(deleteModalDOM);
       var modalBody = deleteModalDOM.querySelector('.modal-body')
 
-      modalBody.textContent = 'this is our test'
+      var addressid = $(this).data("addressId");
+      var addressText = document.getElementById('address_text_'+addressid).outerHTML;
+      var delBtn = document.getElementById('modalConfirmDelete');
+      delBtn.setAttribute('data-address-id', addressid);
+      modalBody.innerHTML = addressText
 
       deleteModal.show()
-  })*/
+  })
 
 
 
@@ -197,13 +204,10 @@
       // Button that triggered the modal
       var button = event.relatedTarget
       // Extract info from data-bs-* attributes
-      var addressid = button.getAttribute('data-address-id')
-      var addressText = document.getElementById('address_text_'+addressid).outerHTML;
-      var modalBody = deleteModal.querySelector('.modal-body')
-      var delBtn = document.getElementById('modalConfirmDelete');
+
       delBtn.setAttribute('data-address-id', addressid)
 
-      modalBody.outerHTML ='<div class="row p-4">' + addressText + '</div>';
+     // modalBody.html ='<div class="row p-4">' + addressText + '</div>';
     })
 
     $('#modalConfirmDelete').on('click', function (event) {
@@ -243,6 +247,10 @@
       modal.hide();
 
     })
+
+    $(function() {
+      $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+    });
 
   })
 </script>

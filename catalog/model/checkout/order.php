@@ -105,7 +105,12 @@ class ModelCheckoutOrder extends Model {
                 $sql_products .= " size_name = '" . $this->db->escape($product['size_name']) . "', ";
                 $sql_products .= " orientation_name = '" . $this->db->escape($product['orientation_name']) . "', ";
                 $sql_products .= " material_name = '" . $this->db->escape($product['material_name']) . "', ";
-                $sql_products .= " product_variant_id = '" . (float)$product['product_variant_id'] . "'";
+                $sql_products .= " product_variant_id = '" . (float)$product['product_variant_id'] . "', ";
+                $sql_products .= " single_unit_price = '" . (float)$product['single_unit_price'] . "', ";
+                $sql_products .= " base_unit_price = '" . (float)$product['single_unit_price'] . "', ";
+                $sql_products .= " width = '" . (float)$product['size_width'] . "', ";
+                $sql_products .= " height = '" . (float)$product['size_height'] . "'";
+
 
 				$this->db->query($sql_products);
 				$order_product_id = $this->db->getLastId();
@@ -316,6 +321,7 @@ class ModelCheckoutOrder extends Model {
 				'payment_address_2'       => $order_query->row['payment_address_2'],
 				'payment_postcode'        => $order_query->row['payment_postcode'],
 				'payment_city'            => $order_query->row['payment_city'],
+				'payment_area'            => $order_query->row['payment_area'],
 				'payment_zone_id'         => $order_query->row['payment_zone_id'],
 				'payment_zone'            => $order_query->row['payment_zone'],
 				'payment_zone_code'       => $payment_zone_code,
@@ -336,6 +342,7 @@ class ModelCheckoutOrder extends Model {
 				'shipping_address_2'      => $order_query->row['shipping_address_2'],
 				'shipping_postcode'       => $order_query->row['shipping_postcode'],
 				'shipping_city'           => $order_query->row['shipping_city'],
+				'shipping_area'           => $order_query->row['shipping_area'],
 				'shipping_zone_id'        => $order_query->row['shipping_zone_id'],
 				'shipping_zone'           => $order_query->row['shipping_zone'],
 				'shipping_zone_code'      => $shipping_zone_code,
@@ -363,13 +370,15 @@ class ModelCheckoutOrder extends Model {
 				'user_agent'              => $order_query->row['user_agent'],
 				'accept_language'         => $order_query->row['accept_language'],
 				'date_added'              => $order_query->row['date_added'],
+				'date_due'              => $order_query->row['date_due'],
 				'payment_method_id'           => $order_query->row['payment_method_id'],
 				'order_type_id'           => $order_query->row['order_type_id'],
 				'payment_status_id'           => $order_query->row['payment_status_id'],
 				'payment_email'           => $order_query->row['payment_email'],
 				'payment_telephone'           => $order_query->row['payment_telephone'],
                 'shipping_email'           => $order_query->row['shipping_email'],
-                'shipping_telephone'           => $order_query->row['shipping_telephone']
+                'shipping_telephone'           => $order_query->row['shipping_telephone'],
+                'customer_order_ref'           => $order_query->row['customer_order_ref']
 			);
 		} else {
 			return false;
@@ -566,10 +575,10 @@ class ModelCheckoutOrder extends Model {
         return $query->row['name'];
     }
 
-    private function GetPaymentMethodByID($payment_method_id){
-        $sql = "SELECT payment_method_name from " . DB_PREFIX . "tsg_payment_method WHERE payment_method_id = '" . (int)$payment_method_id . "'";
+    public function GetPaymentMethodByID($payment_method_id){
+        $sql = "SELECT method_name from " . DB_PREFIX . "tsg_payment_method WHERE payment_method_id = '" . (int)$payment_method_id . "'";
         $query = $this->db->query($sql);
-        return $query->row['payment_method_name'];
+        return $query->row['method_name'];
     }
 
     public function getOrderHash($order_id){

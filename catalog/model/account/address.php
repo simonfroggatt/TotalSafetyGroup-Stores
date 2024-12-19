@@ -74,7 +74,7 @@ class ModelAccountAddress extends Model {
 				'iso_code_2'     => $iso_code_2,
 				'iso_code_3'     => $iso_code_3,
 				'address_format' => $address_format,
-				'custom_field'   => json_decode($address_query->row['custom_field'], true),
+				'custom_field'   => '',
                 'fullname'      => $address_query->row['fullname'],
                 'default_shipping'      => $address_query->row['default_shipping'],
                 'default_billing'      => $address_query->row['default_billing'],
@@ -155,7 +155,7 @@ class ModelAccountAddress extends Model {
 
         $sql = "SELECT *, " . DB_PREFIX . "tsg_country_iso.`name` as country_name FROM " . DB_PREFIX . "address ";
         $sql .= "INNER JOIN " . DB_PREFIX . "tsg_country_iso ON " . DB_PREFIX . "address.country_id = " . DB_PREFIX . "tsg_country_iso.iso_id";
-        $sql .= " WHERE customer_id = '" . (int)$this->customer->getId() . "' ORDER BY default_billing desc, default_shipping desc";
+        $sql .= " WHERE customer_id = '" . (int)$this->customer->getId() . "' ORDER BY address_id DESC";
         $query = $this->db->query($sql);
 
         foreach ($query->rows as $result) {

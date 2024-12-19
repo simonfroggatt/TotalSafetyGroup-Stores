@@ -753,11 +753,13 @@ class ControllerMailOrder extends Controller {
             $mail = new \Mail($this->config->get('config_mail_engine'), $mail_option);
 
             $mail->setTo($order_info['payment_email']);
-            $mail->setFrom($from);
+            $mail->setFrom($store_info['email_address']);
             $mail->setSender(html_entity_decode($order_info['store_name'], ENT_QUOTES, 'UTF-8'));
             $mail->setSubject(html_entity_decode(sprintf($language->get('text_subject'), $order_info['store_name'], $order_info['order_id']), ENT_QUOTES, 'UTF-8'));
             $mail->setHtml($this->load->view('mail/order_paid', $data));
             $bl_return = $mail->send();
+            echo $order_info['payment_email'];
+            echo $this->load->view('mail/order_paid', $data);
         }
     }
 }

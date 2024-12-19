@@ -385,7 +385,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
                     'orientation_name' => $product['orientation_name'],
                     'material_name' => $product['material_name'],
                     'tsg_options'  => $product['tsg_options'],
-                    'product_variant_id'  => $product['product_variant_id']
+                    'product_variant_id'  => $product['product_variant_id'],
+                    'single_unit_price'     => $product['single_unit_price'],
+                    'size_width'    => $product['size_width'],
+                    'size_height'   => $product['size_height'],
                 );
             }
 

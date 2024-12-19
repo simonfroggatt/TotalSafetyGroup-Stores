@@ -1,11 +1,11 @@
 
     <div class="table-responsive">
         <h3>Cart contents</h3>
-        <table class="table table-bordered">
+        <table class="table table-bordered table-responsive">
             <thead>
             <tr>
                 <td class="text-center col-1">{{ column_image }}</td>
-                <td class="text-start col-auto">{{ column_name }}</td>
+                <td class="text-start col-8">{{ column_name }}</td>
                 <td class="text-start col-1">Qty</td>
                 <td class="text-end col-1 text-nowrap">{{ column_price }}</td>
                 <td class="text-end col-1">{{ column_total }}</td>
@@ -14,7 +14,7 @@
             <tbody>
             {% for product in products %}
                 <tr>
-                    <td class="text-center">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block" /> {% endif %}</td>
+                    <td class="text-center">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" /> {% endif %}</td>
                     <td class="text-start">{{ product.name }} {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
                         <br><span class="product-variants">Model : <strong>{{ product.model }}</strong></span>
                         <br><span class="product-variants">{{ product.size_name }} ( <strong>{{ product.orientation_name}}*</strong> ) - {{ product.material_name }}</span>

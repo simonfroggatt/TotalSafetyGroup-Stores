@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<head>
+  <title>Order confirmation</title>
+  <style type="text/css">
+    body,
+    table,
+    td,
+    a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+    }
+
+    h1,
+    h2,
+    p,
+    a {
+      font-family: Arial, sans-serif;
+      line-height: 1.3;
+    }
+
+    img {
+      max-width: 600px;
+      width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .content {
+      display: block;
+      padding: 1em;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+    }
+
+    .order_summary {
+      text-align: center;
+    }
+
+    dl {
+      margin-left: 50px;
+      font-size: 12px;
+    }
+
+    dt {
+      float: left;
+      clear: left;
+      width: 180px;
+      font-weight: bold;
+      color: black;
+    }
+
+    dt::after {
+      content: ":";
+    }
+
+    dd {
+      margin: 0 0 0 00px;
+      padding: 0 0 0.5em 0;
+    }
+
+    .footer-text{
+      font-size: 8px;
+      text-align: center;
+    }
+
+    @media only screen and (min-width: 600px) {
+      .container {
+        width: 100% !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+        display: block !important;
+      }
+
+
+      .content {
+        width: 50% !important;
+        font-size: 16px !important;
+        display: table-cell !important;
+      }
+    }
+  </style>
+</head>
+<html lang="en">
+<body>
+<div lang="en" dir="ltr" style="padding:0; margin:0;">
+  <table class="container" role="presentation" width="600" cellspacing="0" cellpadding="0" align="center" style="border-collapse:collapse;max-width:600px;width:100%;">
+    <tr>
+      <td align="center">
+        <h1><img src="https://cdn.totalsafetygroup.com/stores/branding/email/ssan-email-header.svg" alt="Safety Signs and Notices" width="600" /></h1>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <!--[if mso]>
+        <table role="presentation" align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+          <tr>
+            <td>
+        <![endif]-->
+        <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;max-width:600px;width:100%" width="600">
+
+          <tr>
+            <th style="width:30%; height: 20px"></th>
+            <th ></th>
+          </tr>
+          <tr >
+            <td colspan="2" style="border-bottom:thin solid #000;">
+          </tr>
+          <tr>
+            <th style="width:30%; height: 20px"></th>
+            <th ></th>
+          </tr>
+          <tr>
+            <td >
+              <img src="https://cdn.totalsafetygroup.com/stores/branding/order_success_ssan.svg" alt="Order Confirmed"/>
+            </td>
+            <td >
+              <h2 class="order_summary">Order Summary</h2>
+              <dl>
+                <dt>Order Ref</dt>
+                <dd>{{ store_prefix }}-{{ order_id }}</dd>
+                {% if customer_order_ref %}
+                  <dt>Your reference</dt>
+                  <dd>{{ customer_order_ref }}</dd>
+                {% endif %}
+                <dt>Date</dt>
+                <dd>{{ date_added }}</dd>
+                <dt>Payment Method</dt>
+                <dd>{{ payment_method }}</dd>
+                <dt>Shipping Method</dt>
+                <dd>{{ shipping_method }}</dd>
+
+              </dl>
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <!--[if mso]>
+        <table role="presentation" align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+          <tr>
+            <td>
+        <![endif]-->
+        <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse ;max-width:600px;width:100%" width="600">
+          <caption style="text-align: left"><h3>Products ordered</h3></caption>
+          <tr >
+            <th style="text-align: left; margin-right: 10px">Code</th>
+            <th style="text-align: left">Product</th>
+            <th>Qty</th>
+            <th style="text-align: right">Price</th>
+            <th style="text-align: right">Total</th>
+          </tr>
+          {% for product in products %}
+          <tr style="border-top:thin solid #000; margin-top: 10px" >
+            <td>{{ product['model'] }}</td>
+            <td>{{ product['name'] }}<br>{{ product['description'] }}</td>
+            <td style="text-align: center">{{ product['quantity'] }}</td>
+            <td style="text-align: right">{{ product['price'] }}</td>
+            <td style="text-align: right">{{ product['total'] }}</td>
+          </tr>
+          {% endfor %}
+          {% for total in totals %}
+          <tr>
+            <td colspan="4" style="text-align: right">{{ total['title'] }}</td>
+            <td style="text-align: right">{{ total['text'] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <!--[if mso]>
+        <table role="presentation" align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+          <tr>
+            <td>
+        <![endif]-->
+        <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;max-width:600px;width:100%" width="600">
+          <tr>
+            <td class="content">
+              <h3>Billing Address</h3>
+              {{ payment_address }}
+            </td>
+            <td class="content">
+              <h3>Delivery Address</h3>
+              {{ shipping_address }}
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center" style="border-collapse:collapse;">
+          <tr>
+            <td class="content " style="border-top:thin solid #000;">
+              <p style="text-align: center; font-size: 12px">{{store_name }} - {{ store_vat }} - {{ store_reg }}</p>
+              <p style="text-align: center; font-size: 12px">You are receiving this email as {{ customer_email }} is registered or used this email to place an order on {{ store_url }}. To ensure you receive these emails in your inbox, please add accounts@safetysignsandnotices.co.uk to your address book.</p>
+              <p style="text-align: center; font-size: 12px"> © {{ copyright_year }} {{store_name }}</p>
+              <p style="text-align: center; font-size: 12px"><a href="{{ store_url }}">{{ store_url }}</a></p>
+              <p style="text-align: center; font-size: 12px"><a href="mailto:"{{ store_email }}>{{ store_email }}</a></p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

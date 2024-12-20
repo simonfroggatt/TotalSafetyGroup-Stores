@@ -730,8 +730,9 @@ function setTSGOptions(options){
     if(options.length > 0){
         $.each(options, function(index,item) {
             //split the item into class and value
-            $.each(item, function(index2, value_pair) {
-                let items = value_pair.split(',');
+           // $.each(item, function(index2, value_pair) {
+                //let items = value_pair.split(',');
+                let items = item;
 
                 let class_id = parseInt(items[0]);
                 let value_id = parseInt(items[1]);
@@ -739,7 +740,7 @@ function setTSGOptions(options){
                 $('#div_select_-'+class_id ).show();
                 $('#option_class_' + class_id).val(value_id);
                 $('#option_class_' + class_id).trigger('change');
-            });
+        //    });
         })
     }
 

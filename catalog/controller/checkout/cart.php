@@ -575,7 +575,7 @@ class ControllerCheckoutCart extends Controller {
         if($options != []){
             $urlstr .= '&ops=';
             foreach($options as $option){
-                $urlstr .= $option['class_id'] .'_'.$option['value_id'].":";
+                $urlstr .= $option['class_id'] .','.$option['value_id'].":";
             }
             $urlstr = substr($urlstr, 0 , -1);
         }

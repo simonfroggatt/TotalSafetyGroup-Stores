@@ -1669,22 +1669,27 @@ class ControllerExtensionPaymentStripe extends Controller {
 			
 			// Card fields
 			if ($charge['payment_method_details']['type'] == 'card') {
+                $this->log->write('Stripe Payment Method Details: ');
+                $this->log->write($charge);
 				$card = $charge['payment_method_details']['card'];
 				
 				// Apple Pay fields
 				if (!empty($card['wallet']['type']) && $card['wallet']['type'] == 'apple_pay') {
 					$comment .= $strong . 'Payment Method:</strong>Apple Pay<br>';
 					$comment .= $strong . 'Device Number:</strong>**** **** **** ' . $card['wallet']['dynamic_last4'] . '<br>';
+                    $payment_method_id = 3;
 				}
 
                 // Apple Pay fields
                 if (!empty($card['wallet']['type']) && $card['wallet']['type'] == 'pay_with_google') {
                     $comment .= $strong . 'Payment Method:</strong>Google Payy<br>';
                     $comment .= $strong . 'Device Number:</strong>**** **** **** ' . $card['wallet']['dynamic_last4'] . '<br>';
+                    $payment_method_id = 9;
                 }
 
                 if (!empty($card['wallet']['type']) && $card['wallet']['type'] == 'paypal') {
                     $comment .= $strong . 'Payment Method:</strong>PayPal<br>';
+                    $payment_method_id = 1;
                 }
 				
 				$comment .= $strong . 'Card Type:</strong>' . (!empty($card['description']) ? $card['description'] : ucwords($card['brand'])) . '<br>';
@@ -2117,6 +2122,8 @@ class ControllerExtensionPaymentStripe extends Controller {
             $payment_method_id = 2; //purchase order  //TODO - find out how to find if it's paypal / card / Apple Pay Etc
             $order_status_id = 3;
             $payment_ref = ''; //TODO - get the purhcase order ref
+
+
 
             $this->load->model('checkout/order');
             $this->model_checkout_order->setPaymentStatus($order_id, $payment_method_id, $payment_status_id, $payment_ref);

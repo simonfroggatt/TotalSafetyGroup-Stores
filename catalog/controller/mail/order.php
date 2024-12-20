@@ -480,7 +480,7 @@ class ControllerMailOrder extends Controller {
             $order_id = 0;
         }
 
-        $order_id = 97010;
+       // $order_id = 97010;
         $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($order_id);
         //now check the payment method and status
@@ -759,8 +759,8 @@ class ControllerMailOrder extends Controller {
             $mail->setSubject(html_entity_decode(sprintf($language->get('text_subject'), $order_info['store_name'], $order_info['order_id']), ENT_QUOTES, 'UTF-8'));
             $mail->setHtml($this->load->view('mail/order_paid', $data));
             $bl_return = $mail->send();
-            echo $order_info['payment_email'];
-            echo $this->load->view('mail/order_paid', $data);
+            //echo $order_info['payment_email'];
+           // echo $this->load->view('mail/order_paid', $data);
         }
         else {
             echo('no mail settings');

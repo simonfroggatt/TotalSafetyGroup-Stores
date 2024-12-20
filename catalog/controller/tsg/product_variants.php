@@ -23,7 +23,7 @@ class ControllerTsgProductVariants extends Controller {
             $options_arr = explode(':',$options_string);
             $select_option_arr = [];
             foreach($options_arr as $option){
-                $select_option_arr[] = explode('_',$option);
+                $select_option_arr[] = explode(',',$option);
             }
             $data['options_selected'] = $select_option_arr;
         }

@@ -439,7 +439,7 @@ class Compiler
      */
     public function compile($code, $path = null)
     {
-        @trigger_error(sprintf('The "%s" method is deprecated. Use "compileString" instead.', __METHOD__), E_USER_DEPRECATED);
+       // @trigger_error(sprintf('The "%s" method is deprecated. Use "compileString" instead.', __METHOD__), E_USER_DEPRECATED);
 
         $result = $this->compileString($code, $path);
 

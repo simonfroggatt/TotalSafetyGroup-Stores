@@ -1,7 +1,7 @@
 <?php
 class PayPal {
 	private $server = array(
-		'sandbox' => 'https://api-m.sandbox.paypal.com',
+		'sandbox' => 'https://api.sandbox.paypal.com',
 		'production' => 'https://api.paypal.com'
 	);
 	private $environment = 'sandbox';
@@ -514,9 +514,9 @@ class PayPal {
 				CURLOPT_HTTPHEADER => array(),
 				CURLOPT_CONNECTTIMEOUT => 10,
 				CURLOPT_TIMEOUT => 10,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 				CURLOPT_SSL_VERIFYHOST => 0,
-				CURLOPT_SSL_VERIFYPEER => 0
+				CURLOPT_SSL_VERIFYPEER => 0,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1
 			);
 			
 			$curl_options[CURLOPT_HTTPHEADER][] = 'Accept-Charset: utf-8';

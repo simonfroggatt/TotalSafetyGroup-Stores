@@ -211,7 +211,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 		);
 								
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
-		$data['partner_url'] = str_replace('&amp;', '%26', $this->url->link('extension/payment/paypal', 'user_token=' . $this->session->data['user_token'], true));
+		$data['partner_url'] = str_replace(array('&amp;', '?'), array('%26', '%3F'), $this->url->link('extension/payment/paypal', 'user_token=' . $this->session->data['user_token'], true));
 		$data['callback_url'] = str_replace('&amp;', '&', $this->url->link('extension/payment/paypal/callback', 'user_token=' . $this->session->data['user_token'], true));
 		$data['connect_url'] = str_replace('&amp;', '&', $this->url->link('extension/payment/paypal/connect', 'user_token=' . $this->session->data['user_token'], true));
 		$data['agree_url'] = str_replace('&amp;', '&', $this->url->link('extension/payment/paypal/agree', 'user_token=' . $this->session->data['user_token'], true));
@@ -1665,6 +1665,9 @@ class ControllerExtensionPaymentPayPal extends Controller {
 			$server = HTTP_SERVER;
 			$catalog = HTTP_CATALOG;
 		}
+        //REMOVE - just testing
+        $catalog = 'https://just-natural-fish.ngrok-free.app/';
+
 			
 		$_config = new Config();
 		$_config->load('paypal');
@@ -1702,7 +1705,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 				$callback_token = sha1(uniqid(mt_rand(), 1));
 				$webhook_token = sha1(uniqid(mt_rand(), 1));
 				$cron_token = sha1(uniqid(mt_rand(), 1));
-			
+
 				$webhook_info = array(
 					'url' => $catalog . 'index.php?route=extension/payment/paypal&webhook_token=' . $webhook_token,
 					'event_types' => array(
@@ -1725,7 +1728,7 @@ class ControllerExtensionPaymentPayPal extends Controller {
 				if (isset($result['id'])) {
 					$webhook_id = $result['id'];
 				}
-			
+
 				if ($paypal->hasErrors()) {
 					$error_messages = array();
 				
@@ -2123,6 +2126,8 @@ class ControllerExtensionPaymentPayPal extends Controller {
 					'content' => $content
 				);
 			}	
+			
+			$this->load->language('sale/order');
 		}
 	}
 	

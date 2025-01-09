@@ -254,11 +254,14 @@ class ModelCheckoutOrder extends Model {
 		$order_query = $this->db->query("SELECT *, (SELECT os.name FROM `" . DB_PREFIX . "order_status` os WHERE os.order_status_id = o.order_status_id AND os.language_id = o.language_id) AS order_status FROM `" . DB_PREFIX . "order` o WHERE o.order_id = '" . (int)$order_id . "'");
 
 		if ($order_query->num_rows) {
-			$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$order_query->row['payment_country_id'] . "'");
+			//$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$order_query->row['payment_country_id'] . "'");
+            $country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "tsg_country_iso` WHERE iso_id = '" . (int)$order_query->row['payment_country_id'] . "'");
 
 			if ($country_query->num_rows) {
-				$payment_iso_code_2 = $country_query->row['iso_code_2'];
-				$payment_iso_code_3 = $country_query->row['iso_code_3'];
+				//$payment_iso_code_2 = $country_query->row['iso_code_2'];
+				//$payment_iso_code_3 = $country_query->row['iso_code_3'];
+                $payment_iso_code_2 = $country_query->row['iso2'];
+				$payment_iso_code_3 = $country_query->row['iso3'];
 			} else {
 				$payment_iso_code_2 = '';
 				$payment_iso_code_3 = '';
@@ -272,11 +275,14 @@ class ModelCheckoutOrder extends Model {
 				$payment_zone_code = '';
 			}
 
-			$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$order_query->row['shipping_country_id'] . "'");
+			//$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$order_query->row['shipping_country_id'] . "'");
+			$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "tsg_country_iso` WHERE iso_id = '" . (int)$order_query->row['shipping_country_id'] . "'");
 
 			if ($country_query->num_rows) {
-				$shipping_iso_code_2 = $country_query->row['iso_code_2'];
-				$shipping_iso_code_3 = $country_query->row['iso_code_3'];
+				//$shipping_iso_code_2 = $country_query->row['iso_code_2'];
+				$shipping_iso_code_2 = $country_query->row['iso2'];
+				//$shipping_iso_code_3 = $country_query->row['iso_code_3'];
+				$shipping_iso_code_3 = $country_query->row['iso3'];
 			} else {
 				$shipping_iso_code_2 = '';
 				$shipping_iso_code_3 = '';
@@ -532,7 +538,7 @@ class ModelCheckoutOrder extends Model {
 		}
 	}
 
-	public function addPaymentHistory($order_id, $payment_method_id, $payment_status_id, $comment)
+	public function addPaymentHistory($order_id, $payment_method_id, $payment_status_id, $comment = '')
     {
         //now add a payment history
         $sql = "INSERT INTO " . DB_PREFIX . "tsg_payment_history SET ";

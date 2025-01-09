@@ -32,12 +32,15 @@ class ModelAccountAddress extends Model {
 		$address_query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "address WHERE address_id = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
 
 		if ($address_query->num_rows) {
-			$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$address_query->row['country_id'] . "'");
+			//$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$address_query->row['country_id'] . "'");
+            $country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "tsg_country_iso` WHERE iso_id = '" . (int)$address_query->row['country_id'] . "'");
 
 			if ($country_query->num_rows) {
 				$country = $country_query->row['name'];
-				$iso_code_2 = $country_query->row['iso_code_2'];
-				$iso_code_3 = $country_query->row['iso_code_3'];
+				//$iso_code_2 = $country_query->row['iso_code_2'];
+				//$iso_code_3 = $country_query->row['iso_code_3'];
+                $iso_code_2 = $country_query->row['iso2'];
+				$iso_code_3 = $country_query->row['iso3'];
 				$address_format = $country_query->row['address_format'];
 			} else {
 				$country = '';
@@ -94,12 +97,16 @@ class ModelAccountAddress extends Model {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "address WHERE customer_id = '" . (int)$this->customer->getId() . "'");
 
 		foreach ($query->rows as $result) {
-			$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$result['country_id'] . "'");
+			//$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$result['country_id'] . "'");
+            $country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "tsg_country_iso` WHERE iso_id = '" . (int)$result['country_id'] . "'");
 
 			if ($country_query->num_rows) {
 				$country = $country_query->row['name'];
-				$iso_code_2 = $country_query->row['iso_code_2'];
-				$iso_code_3 = $country_query->row['iso_code_3'];
+				//$iso_code_2 = $country_query->row['iso_code_2'];
+				//$iso_code_3 = $country_query->row['iso_code_3'];
+                $iso_code_2 = $country_query->row['iso2'];
+                $iso_code_3 = $country_query->row['iso3'];
+
 				$address_format = $country_query->row['address_format'];
 			} else {
 				$country = '';

@@ -23,7 +23,9 @@ class ModelCatalogProduct extends Model {
         $sql .= "". DB_PREFIX . "product.model,  ";
         $sql .= "". DB_PREFIX . "product.product_id,  ";
         $sql .= "". DB_PREFIX . "product.mib_logo,  ";
-        $sql .= "". DB_PREFIX . "product.tax_class_id  ";
+        $sql .= "". DB_PREFIX . "product.tax_class_id,  ";
+        $sql .= DB_PREFIX . "product.is_bespoke,  ";
+        $sql .= DB_PREFIX . "product.template_id  ";
         $sql .= "FROM ". DB_PREFIX . "product_to_store ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product_to_store.product_id = ". DB_PREFIX . "product.product_id ";
         $sql .= "INNER JOIN ". DB_PREFIX . "product_description_base ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_description_base.product_id ";
@@ -57,7 +59,9 @@ class ModelCatalogProduct extends Model {
 				'date_added'       => $query->row['date_added'],
 				'date_modified'    => $query->row['date_modified'],
                 'minimum'          => 1,
-                'mib_logo'          => $query->row['mib_logo']
+                'mib_logo'          => $query->row['mib_logo'],
+                'is_bespoke'          => $query->row['is_bespoke'],
+                'template_id'       => $query->row['template_id'],
 			);
 		} else {
 			return false;
@@ -551,6 +555,15 @@ class ModelCatalogProduct extends Model {
 		}
 	}
 
+    public function getProductTemplate($product_id) {
+        $sql = "SELECT ". DB_PREFIX . "tsg_bespoke_templates.path FROM ";
+        $sql .= DB_PREFIX . "product INNER JOIN ". DB_PREFIX . "tsg_bespoke_templates ON ". DB_PREFIX . "product.template_id = ". DB_PREFIX . "tsg_bespoke_templates.id ";
+        $sql .= " WHERE ". DB_PREFIX . "product.product_id = '" . (int)$product_id . "'";
+        $query = $this->db->query($sql);
+
+        return $query->row['path'];
+    }
+
 	public function getCategories($product_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int)$product_id . "'");
 
@@ -596,6 +609,21 @@ class ModelCatalogProduct extends Model {
 			return 0;
 		}
 	}
+
+    public function getProductSymbols($product_id){
+        $sql = "SELECT " . DB_PREFIX . "tsg_product_symbols.symbol_id FROM " . DB_PREFIX . "tsg_product_symbols ";
+        $sql .= " WHERE " . DB_PREFIX . "tsg_product_symbols.product_id = '" . (int)$product_id . "'";
+        $query = $this->db->query($sql);
+        return $query->rows;
+    }
+
+    public function getProductBespokeTemplatePath($product_id){
+        $sql = "SELECT " . DB_PREFIX . "tsg_bespoke_templates.path FROM " . DB_PREFIX . "tsg_bespoke_templates ";
+        $sql .= " INNER JOIN " . DB_PREFIX . "product ON " . DB_PREFIX . "product.bespoke_template_id = " . DB_PREFIX . "tsg_bespoke_templates.id ";
+        $sql .= " WHERE " . DB_PREFIX . "product.product_id = '" . (int)$product_id . "'";
+        $query = $this->db->query($sql);
+        return $query->rows;
+    }
 
 
 }

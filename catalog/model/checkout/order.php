@@ -96,7 +96,13 @@ class ModelCheckoutOrder extends Model {
                 $sql_products .= " order_id = '" . (int)$order_id . "', ";
                 $sql_products .= " product_id = '" . (int)$product['product_id'] . "', ";
                 $sql_products .= " name = '" . $this->db->escape($product['name']) . "', ";
-                $sql_products .= " model = '" . $this->db->escape($product['model']) . "', ";
+                if($product['is_bespoke'])
+                {
+                    $sql_products .= " model = 'Bespoke', ";
+                }
+                else
+                    $sql_products .= " model = '" . $this->db->escape($product['model']) . "', ";
+                
                 $sql_products .= " quantity = '" . (int)$product['quantity'] . "', ";
                 $sql_products .= " price = '" . (float)$product['price'] . "', ";
                 $sql_products .= " total = '" . (float)$product['total'] . "', ";
@@ -109,7 +115,9 @@ class ModelCheckoutOrder extends Model {
                 $sql_products .= " single_unit_price = '" . (float)$product['single_unit_price'] . "', ";
                 $sql_products .= " base_unit_price = '" . (float)$product['single_unit_price'] . "', ";
                 $sql_products .= " width = '" . (float)$product['size_width'] . "', ";
-                $sql_products .= " height = '" . (float)$product['size_height'] . "'";
+                $sql_products .= " height = '" . (float)$product['size_height'] . "', ";
+                $sql_products .= " is_bespoke = '" . (int)$product['is_bespoke'] . "'";
+
 
 
 				$this->db->query($sql_products);
@@ -146,8 +154,22 @@ class ModelCheckoutOrder extends Model {
                   //  $sql_options .= " value = '" . $this->db->escape($option['value']) . "', ";
                  //   $sql_options .= " type = '" . $this->db->escape($option['type']) . "'";
                     $this->db->query($sql_options);
-				//	$this->db->query("INSERT INTO " . DB_PREFIX . "order_option SET order_id = '" . (int)$order_id . "', order_product_id = '" . (int)$order_product_id . "', product_option_id = '" . (int)$option['product_option_id'] . "', product_option_value_id = '" . (int)$option['product_option_value_id'] . "', name = '" . $this->db->escape($option['name']) . "', `value` = '" . $this->db->escape($option['value']) . "', `type` = '" . $this->db->escape($option['type']) . "'");
 				}
+
+                //Now add any items that are bespoke
+                if($product['is_bespoke'] )
+                {
+                    $sql_bespoke = "INSERT INTO oc_tsg_order_bespoke_image SET ";
+                    $sql_bespoke .= " order_product_id = '" . (int)$order_product_id . "', ";
+                    $sql_bespoke .=  "svg_export = '" .$this->db->escape(json_encode($product['svg_export'])) . "', ";
+                    $sql_bespoke .=  "svg_json = '" .$this->db->escape(json_encode($product['svg_json'])) . "', ";
+                    $sql_bespoke .=  "svg_images = '" .$this->db->escape(json_encode($product['svg_images'])) . "', ";
+                    $sql_bespoke .=  "svg_texts = '" .$this->db->escape(json_encode($product['svg_texts'])) . "', ";
+                    $sql_bespoke .=  "version = " . $product['bespoke_version'];
+
+
+                    $this->db->query($sql_bespoke);
+                }
 			}
 		}
 

@@ -85,6 +85,8 @@ class Cart {
             $sql .= "0 as length_class_id ";
 
 
+
+
             $sql .= "FROM ". DB_PREFIX . "product_to_store ";
             $sql .= "INNER JOIN ". DB_PREFIX . "product ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_store.product_id ";
             $sql .= "INNER JOIN ". DB_PREFIX . "product_to_category ON ". DB_PREFIX . "product.product_id = ". DB_PREFIX . "product_to_category.product_id ";
@@ -109,10 +111,6 @@ class Cart {
             //$sql .= " AND ". DB_PREFIX . "tsg_size_material_store_combs.store_id = ". (int)$this->config->get('config_store_id');
 
           //  echo $sql;
-
-
-
-
 
             $product_query = $this->db->query($sql);
 
@@ -392,6 +390,14 @@ class Cart {
                     'size_width'    => $product_query->row['size_width'],
                     'size_height'    => $product_query->row['size_height'],
                     'single_unit_price' => $product_query->row['var_price'],
+                    'is_bespoke' => $cart['is_bespoke'],
+
+                    'svg_raw' => $cart['svg_raw'] == null ? '': json_decode($cart['svg_raw']),
+                    'svg_json' => $cart['svg_json'] == null ? '': json_decode($cart['svg_json']),
+                    'svg_texts' => $cart['svg_texts'] == null ? '': json_decode($cart['svg_texts']),
+                    'svg_export' => $cart['svg_export'],
+                    'svg_images' => $cart['svg_images'],
+
 				);
 			} else {
 				$this->remove($cart['cart_id']);
@@ -401,7 +407,7 @@ class Cart {
 		return $product_data;
 	}
 
-	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0, $product_variant_id = 0, $tsg_option_array = [], $option_addon_price = 0) {
+	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0, $product_variant_id = 0, $tsg_option_array = [], $option_addon_price = 0, $is_bespoke = 0,  $svgRaw = null, $svgJSON = '', $svgExport = null, $svgImages = '', $svgTexts = null) {
 		//$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
         $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart ";
         $sql .= " WHERE " . DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' ";
@@ -413,6 +419,10 @@ class Cart {
         $sql .= " AND " . DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "'";
         $sql .= " AND " . DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id');
         $sql .= " AND " . DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "'";
+        if($svgJSON != '') {
+            $sql .= " AND " . DB_PREFIX . "cart.svg_json = '" .$this->db->escape(json_encode($svgJSON)) . "'";
+        }
+
 
 
         $query = $this->db->query($sql);
@@ -430,8 +440,23 @@ class Cart {
             $sql .= DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id') . ",";
             $sql .= DB_PREFIX . "cart.tsg_options = '".$this->db->escape(json_encode($tsg_option_array)) . "', ";
             $sql .= DB_PREFIX . "cart.admin_pin = '".$this->session->data['cart_pin']. "', ";
-            $sql .= DB_PREFIX . "cart.tsg_option_price = '". $option_addon_price. "'";
-
+            $sql .= DB_PREFIX . "cart.tsg_option_price = '". $option_addon_price. "', ";
+            $sql .= DB_PREFIX . "cart.is_bespoke = '". $is_bespoke. "'";
+            if($svgRaw != null) {
+                $sql .= ", ".DB_PREFIX . "cart.svg_raw = '" .$this->db->escape(json_encode($svgRaw)) . "'";
+            }
+            if($svgJSON != '') {
+                $sql .= ", ".DB_PREFIX . "cart.svg_json = '" .$this->db->escape(json_encode($svgJSON)) . "'";
+            }
+            if($svgExport != null) {
+                $sql .= ", ".DB_PREFIX . "cart.svg_export = '" .$this->db->escape($svgExport) . "'";
+            }
+            if($svgImages != '') {
+                $sql .= ", ".DB_PREFIX . "cart.svg_images = '" .$this->db->escape($svgImages) . "'";
+            }
+            if($svgTexts != null) {
+                $sql .= ", ".DB_PREFIX . "cart.svg_texts = '" .$this->db->escape($svgTexts) . "'";
+            }
 
 			$this->db->query($sql);
         } else {
@@ -445,7 +470,9 @@ class Cart {
             $sql .= " AND " . DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "'";
             $sql .= " AND " . DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id'). "";
             $sql .= " AND " . DB_PREFIX . "cart.tsg_options = '" . $this->db->escape(json_encode($tsg_option_array)) . "'";
-
+            if($svgJSON != '') {
+                $sql .= " AND " . DB_PREFIX . "cart.svg_json = '" .$this->db->escape(json_encode($svgJSON)) . "'";
+            }
             $this->db->query($sql);
     		}
 	}
@@ -778,6 +805,9 @@ class Cart {
         $row = $query->row;
         return $row['item_shipping'];
     }
+
+    /**** bespoke in here ****/
+    /**single bespoke panel**/
 
 }
 

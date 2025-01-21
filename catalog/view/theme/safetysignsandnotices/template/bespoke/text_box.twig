@@ -1,0 +1,27 @@
+<div class="row pb-2" id="textblock-{{ box_name }}">
+    <div class="col-md-12">
+        <div class="form-group row single-text-bar">
+            <div class="col-12 col-md-12">
+                <div class="btn-toolbar pb-2" role="toolbar">
+                    <div class="btn-group btn-group-sm me-2"  data-bs-toggle="buttons" role="group">
+                        <button class="btn btn-default" type="button" id="align-start-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="left" title="Align Left"><i class="icon-align-left"></i></button>
+                        <button class="btn btn-default" type="button" id="align-middle-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Align Middle"><i class="icon-align-center"></i></button>
+                        <button class="btn btn-default" type="button" id="align-end-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Align Right"><i class="icon-align-right"></i></button>
+                    </div>
+                    <div class="btn-group btn-group-sm me-2" role="group">
+                        <button class="btn btn-default" type="button" id="size-up-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Increase Text Size"><i class="icon-font-increase"></i></button>
+                        <button class="btn btn-default" type="button" id="size-down-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Decrease Text Size"><i class="icon-font-decrease"></i></button>
+                        <button class="btn btn-default" type="button" id="move-up-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Text Up"><i class="icon-text-move-up"></i></button>
+                        <button class="btn btn-default" type="button" id="move-down-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Text Down"><i class="icon-text-move-down"></i></button>
+                        <button class="btn btn-default" type="button" id="line-up-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Increase Line Spacing"><i class="icon-line_spacing_increase"></i></button>
+                        <button class="btn btn-default" type="button" id="line-down-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Decrease Line Spacing"><i class="icon-line_spacing_decrease"></i></button>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-warning" type="button" id="delete-textbox-{{ box_name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Text Block"><i class="icon-trash-empty"></i></button>
+                    </div>
+                </div>
+                <textarea class="form-control textAreaBespokeresize" id="textarea-{{ box_name }}" rows="3" placeholder="Type your custom text in here...">{{ initial_text }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>

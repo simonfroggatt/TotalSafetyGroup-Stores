@@ -389,6 +389,13 @@ class ControllerTsgCheckoutConfirm extends Controller {
                     'single_unit_price'     => $product['single_unit_price'],
                     'size_width'    => $product['size_width'],
                     'size_height'   => $product['size_height'],
+                    'is_bespoke'    => $product['is_bespoke'],
+                    'svg_raw'       => $product['svg_raw'],
+                    'svg_json'      => $product['svg_json'],
+                    'svg_export'    => $product['svg_export'],
+                    'svg_images'    => $product['svg_images'],
+                    'svg_texts'     => $product['svg_texts'],
+                    'bespoke_version'   => TSG_BESPOKE_VERSION
                 );
             }
 
@@ -485,6 +492,10 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $this->load->model('checkout/order');
 
             $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+
+            //now check if there are any bespoke items....if so, send to medusa
+            //MEDUSA_BESPOKE_CONVERT_URL
+            $this->doBespokeConvert($this->session->data['order_id']);
 
            /*
 
@@ -622,6 +633,27 @@ class ControllerTsgCheckoutConfirm extends Controller {
         else {
             return $this->load->view('checkout/confirm_shipping', $data);
         }
+
+    }
+
+    private function doBespokeConvert($order_id, $order_hash = ''){
+        //  $encrypted_order_num = $this->createOrderHash($order_id);
+//gAAAAABnH2idoHBk4DfCRpjDHJjt0recFVBClIm7Fjs6sIPysJYa-HQ92WmWfYHijc9cljBRcLExTHK026XWGfNLycX_86aC2A==
+        //$push_url = MEDUSA_ORDER_PUSH_URL .$order_id.'/'.$order_hash;
+        $push_url = MEDUSA_BESPOKE_CONVERT_URL .$order_id;
+        //do a curl post to the medusa api
+        $ch = curl_init($push_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); // Do not wait for a response
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1); // Timeout after 1ms
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+
+    private function pushToXeroViaMedusa($order_id, $order_hash)
+    {
 
     }
 

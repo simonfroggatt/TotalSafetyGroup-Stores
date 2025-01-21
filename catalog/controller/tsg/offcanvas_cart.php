@@ -4,6 +4,7 @@ class ControllerTsgOffcanvasCart extends Controller {
     {
 
         $data = $this->load->controller('tsg/cart_common');
+        //$data = $this->load->controller('checkout/cart');
 
         $data['cart_totals'] = $this->load->view('tsg/offcanvas_cart_totals', $data);
 

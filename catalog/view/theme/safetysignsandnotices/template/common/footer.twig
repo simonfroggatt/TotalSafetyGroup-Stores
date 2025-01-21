@@ -73,6 +73,14 @@
     <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button"><i
                 class="fas fa-chevron-up"></i></a>
 </footer>
+
+
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastStackDiv">
+    </div>
+</div>
+
+
 {% for style in styles %}
     <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}"/>
 {% endfor %}

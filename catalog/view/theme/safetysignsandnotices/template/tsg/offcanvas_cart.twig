@@ -17,10 +17,23 @@
             <tbody>
             {% for product in products %}
                 <tr id="row_cartid_{{ product.cart_id }}">
-                    <td class="text-center text-nowrap"><strong>{{ product.model }}</strong>{% if product.thumb %} <a
-                            href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"
-                                                           title="{{ product.name }}"
-                                                           class="mx-auto d-block pt-2 img-fluid"/></a> {% endif %}</td>
+                    <td class="text-center text-nowrap"><strong>{{ product.model }}</strong>
+                        {% if product.is_bespoke %}
+                            {% if product.svg_raw %}
+                                <div id="svgThumb">
+                                    <a href="{{ product.href }}">{{ product.svg_raw | raw }}</a>
+                                </div>
+                            {% else %}
+                                {% if product.thumb %}
+                                    <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" /></a>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if product.thumb %}
+                                <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" /></a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
                     <td>
                     <table class="table">
                         <tr>

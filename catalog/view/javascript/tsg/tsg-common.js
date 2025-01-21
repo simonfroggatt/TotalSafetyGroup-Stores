@@ -79,9 +79,37 @@ function InitVATToggle(){
     }
 }
 
-$(document).ready(function() {
+function showToast(header, message, type = 'success', autohide = true, delay = 2000) {
 
-    $("#input-confirm-account").on('keyup', function() {
+    var uniqueIDNumber = 'toast_' + new Date().getTime();
+    let new_toast = document.createElement('div')
+    let toast_string = '<div class="toast text-' + type + '" role="alert" aria-live="assertive" data-bs-autohide="' + autohide + '" aria-atomic="true" id="' + uniqueIDNumber + '" data-bs-delay="' + delay +'">';
+    if (header.length > 1) {
+        toast_string += '<div class="toast-header">';
+        toast_string += '<strong class="me-auto">';
+        toast_string += header;
+        toast_string += '</strong>';
+        toast_string += '<small class="text-body-secondary">just now</small>';
+        toast_string += '<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>';
+        toast_string += '</div>';
+    }
+    toast_string += '<div class="toast-body">';
+    toast_string += message;
+    toast_string += '</div>';
+    toast_string += '</div>';
+    new_toast.innerHTML = [toast_string].join('')
+
+    let toastStack = document.getElementById('toastStackDiv')
+    toastStack.append(new_toast)
+    let newtoast = document.getElementById(uniqueIDNumber)
+
+    const myToast = bootstrap.Toast.getOrCreateInstance(newtoast)
+    myToast.show()
+}
+
+$(document).ready(function () {
+
+    $("#input-confirm-account").on('keyup', function () {
         var password = $("#input-password-account").val();
         var confirmPassword = $("#input-confirm-account").val();
         if (password != confirmPassword)

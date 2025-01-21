@@ -1,0 +1,31 @@
+
+    <div class="row">
+        <div class="row mb-3">
+            <label for="single-symbolSize" class="col-sm-3 col-form-label">Symbol Size</label>
+            <div class="col-sm-9">
+                <input type="range" class="form-range" id="single-symbolSize" min="0" max="100">
+            </div>
+
+        </div>
+    </div>
+    <div class="row row-cols-4 row-cols-md-6 row-cols-lg-6 g-2 text-center g-2">
+        {% for symbol_info in symbols %}
+            <div class="col">
+                <div class="symbols-btn">
+                    <button type="button" data-symbols-id="{{ symbol_info.id }}"
+                    {% if selected_symbol_id == symbol_info.id %}
+                        class="btn btn-symbol-selected single-symbol-btn"
+                    {% else %}
+                        class="btn btn-outline-light single-symbol-btn"
+                    {% endif %}>
+                   <img src="{{image_path}}{{ symbol_info.svg_path }}" class=""
+                        alt="{{ symbol_info.referent }}" height="50px">
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        var imageArray = {{ symbols | json_encode | raw }};
+    </script>

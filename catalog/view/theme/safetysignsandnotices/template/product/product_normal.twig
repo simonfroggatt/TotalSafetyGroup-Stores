@@ -10,7 +10,8 @@
                                                                           alt="{{ heading_title }}"
                                                                           class="img-fluid {{ thumb_css }}"/></a>
             {% if has_bespoke %}
-                <a href="{{ bespoke_link }}"><img src="image/stores/images/bespoke-badge.svg" alt="bespoke badge" class="bespokebadge" data-bs-toggle="tooltip" data-bs-placement="right" title="Not the sign you wanted? Make it..."></a>
+                <a href="{{ bespoke_link }}">
+                    <img src="{{ image_path }}stores/images/bespoke-badge.svg" alt="bespoke badge" class="bespokebadge" data-bs-toggle="tooltip" data-bs-placement="right" title="Not the sign you wanted? Make it..."></a>
             {% endif %}
         </div>
         {% if images %}

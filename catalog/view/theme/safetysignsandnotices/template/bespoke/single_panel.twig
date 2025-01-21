@@ -1,0 +1,173 @@
+<!-- product image -->
+<div class="col-12 col-md-7 col-lg-7 text-center align-self-center">
+    <div  id="drawing"></div>
+    <div  id="thumbdrawing" ></div>
+</div>
+<!-- end product image -->
+<div class="col-12 col-md-5 col-lg-5" id="product-bespoke-controls">
+    <!-- build the accordion -->
+    <div class="row">
+        <div class="col-12">
+            <div class="accordion" id="accordionSingleBespoke">
+                <div class="accordion-item ">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#single-collapse_sizeMaterial" aria-expanded="true" aria-controls="single-collapse_sizeMaterial">
+                            Size & Material
+                        </button>
+                    </h4>
+                    <div id="single-collapse_sizeMaterial" class="accordion-collapse collapse show" data-bs-parent="#accordionSingleBespoke">
+                        <div class="accordion-body">
+                            {{ variants }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#single-collapse_symbols" aria-expanded="false" aria-controls="single-collapse_symbols">
+                            Symbols
+                        </button>
+                    </h4>
+                    <div id="single-collapse_symbols" class="accordion-collapse collapse" data-bs-parent="#accordionSingleBespoke">
+                        <div class="accordion-body">
+                            {{ symbol_layout }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#single-collapse_texts" aria-expanded="false" aria-controls="single-collapse_texts">
+                            Text
+                        </button>
+                    </h4>
+                    <div id="single-collapse_texts" class="accordion-collapse collapse" data-bs-parent="#accordionSingleBespoke">
+                        <div class="accordion-body">
+                            {{ bespoke_text_area }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end accordion -->
+
+    <!-- product price -->
+    <div class="row pt-2">
+        <div class="col-12 order-1 col-md-6 order-md-0">
+            <div class="product-price">£<span class="product-price" id="product-price"></span>
+                <span id="tax-type" class="product-tax-price">Incl Tax £</span><span
+                                class="product-tax-price" id="product-tax-price"></span>
+            </div>
+        </div>
+        <div class="col-12 order-0 col-md-6 order-md-1">
+            <div class="input-group input-group-sm">
+                <label class="input-group-text col-md-3" for="qtyDropdown">Qty</label>
+                <input type="number" name="qtyDropdown" value="1" min="1" size="2" id="qtyDropdown"
+                       class="form-control "/>
+                <button type="button" id="button-cart-bespoke" data-loading-text="{{ text_loading }}"
+                        class="btn btn-success btn-lg btn-block">{{ button_cart }}</button>
+            </div>
+        </div>
+    </div>
+    <!-- end product price -->
+
+    <!-- bulk table -->
+    <div class="row">
+        {{ option_bulk_table }}
+        <div class="form-group">
+            <input type="hidden" name="product_id" value="{{ product_id }}"/>
+            <input type="hidden" name="prod_variant_id" id="prod_variant_id" value=""/>
+            <input type="hidden" name="form_selected_option_values" id="form_selected_option_values" value=""/>
+            <input type="hidden" name="is_bespoke" id="is_bespoke" value="1"/>
+        </div>
+    </div>
+    <!-- end bulk table -->
+</div>
+
+
+<script>
+
+    var symbolInfoArray = {{ selected_symbol_info | json_encode | raw }};
+
+    //set the initial size to 200x300 - 2
+
+    /*
+    if(variant_sizes.length > 0)
+    {
+      var signWidth = variant_sizes[0].width
+      var signHeight = variant_sizes[0].height
+    }
+    */
+    var newSign = new bespokeSign('drawing', {
+        signWidth: 200,
+        signHeight: 300,
+        orientation: 0,
+
+        autoSize: true,
+        autoIgnore: {
+            borderSize: true,
+            symbolSizing: false,
+            marginSize: false,
+            textBlockMargin: false
+        },
+        hasSymbol: 1,
+
+        signBorder: {colour: 'none', borderSize: 0, borderRadius: 0},
+        signBackgroundColour: 'white',
+        signPanel: {colour: 'white', margin: {top: 0, right: 0, bottom: 0, left: 0} },
+
+        symbols: [
+            {symbolPath: symbolInfoArray['svg_path'], symbolWidth: 90, symbolHeight: 90},
+        ],
+
+        textContainerMargin: {top: 0, right: 0, bottom: 0, left: 0},
+        textPanelSpacer: 5,
+        textPanels: [
+            {
+                colour: 'rgb('+symbolInfoArray['default_colour_RGB']+')',
+                baseTextColour: symbolInfoArray['default_text_HEX'],
+                panelRadius: 5,
+                panelCorner: [0,0,0,0],
+                height: 100,
+                margin: {top: 0, right: 0, bottom: 0, left: 0},
+
+                textLines: [
+                    {
+                        text: '{{ initial_text }}',
+                        colour: symbolInfoArray['default_text_HEX'],
+                        weight: 'bold',
+                        size: 20,
+                        anchor: 'middle',
+                        id: 0,
+                        x: 100,
+                        y: 200,
+                        xOffset: 0,
+                        yOffset: 0,
+                        leading: 1.5,
+                    }]
+            }
+        ]
+
+
+    });
+
+    $(function () {
+        $('#posize').val({{ initial_size }});
+      //  $('#posize').change();
+
+        {% if has_svg_data == 1 %}
+            loadBespokeFromSVG({{ svg_data['svg_json'] | raw }});
+        {% else %}
+            //newSign.setSymbol(imageArray[0], 0, false);
+            newSign.setSymbol(symbolInfoArray, 0, false);
+            newSign.buildSign(true)
+        {% endif %}
+
+
+        console.log(imageArray[0]);
+        console.log(symbolInfoArray);
+    })
+
+
+
+
+</script>

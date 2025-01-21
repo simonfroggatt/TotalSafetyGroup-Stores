@@ -139,8 +139,10 @@ class ControllerCheckoutCart extends Controller {
 					}
 				}
 
-				$productURL = $this->makeProductLink($product['product_id'], $product['product_variant_id'], $product['tsg_options']);
-				$data['products'][] = array(
+
+				$productURL = $this->makeProductLink($product['product_id'], $product['product_variant_id'], $product['tsg_options'],$product['cart_id'], $product['is_bespoke'] );
+				//makeProductLink($product_id, $variant_id, $options = [], $cart_id, $is_bespoke = 0)
+                $data['products'][] = array(
 					'cart_id'   => $product['cart_id'],
 					'thumb'     => $image,
 					'name'      => $product['name'],
@@ -159,7 +161,13 @@ class ControllerCheckoutCart extends Controller {
                     'orientation_name' => $product['orientation_name'],
                     'material_name' => $product['material_name'],
                     'tsg_options'  => $product['tsg_options'],
-                    'discount'      => $discount
+                    'discount'      => $discount,
+                    'is_bespoke'    => $product['is_bespoke'],
+                    'svg_raw'				=> $product['svg_raw'],
+                    'svg_export'		=> $product['svg_export'],
+                    'svg_json'		=> $product['svg_json'],
+                    'svg_images'		=> $product['svg_images'],
+                    'svg_texts'		=> $product['svg_texts'],
 
 				);
 			}
@@ -309,8 +317,6 @@ class ControllerCheckoutCart extends Controller {
         }
 
 
-
-
 		$this->load->model('catalog/product');
 
 		$product_info = $this->model_catalog_product->getProduct($product_id);
@@ -360,9 +366,16 @@ class ControllerCheckoutCart extends Controller {
 
                 //$tsg_product_class_options = $this->TSGextractOPTS($this->request->post);
 
-				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $selected_option_values_frm, $option_addon_price);
+                if (isset($this->request->post['is_bespoke'])) {
+                    $isBespoke = ($this->request->post['is_bespoke']);
+                }
+                else {
+                    $isBespoke = 0;
+                }
+                $this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $selected_option_values_frm, $option_addon_price, $isBespoke, html_entity_decode($this->request->post['svg_raw']) ,html_entity_decode($this->request->post['svg_json']), html_entity_decode($this->request->post['svg_export']), html_entity_decode($this->request->post['svg_bespoke_images']), html_entity_decode($this->request->post['svg_bespoke_texts']));
 
-				//$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
+
+                //$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
 
 
 
@@ -567,7 +580,7 @@ class ControllerCheckoutCart extends Controller {
         return $result;
     }
 
-    private function makeProductLink($product_id, $variant_id, $options = []){
+    private function makeProductLink($product_id, $variant_id, $options = [], $cart_id = 0, $is_bespoke = 0){
         $urlstr = "";
         $urlstr .= 'product_id=' . $product_id;
         $urlstr .= '&pv_id='.$variant_id;
@@ -578,6 +591,9 @@ class ControllerCheckoutCart extends Controller {
                 $urlstr .= $option['class_id'] .','.$option['value_id'].":";
             }
             $urlstr = substr($urlstr, 0 , -1);
+        }
+        if($is_bespoke == 1){
+            $urlstr .= '&bespokeid='.$cart_id;
         }
 
         return $this->url->link('product/product', $urlstr);

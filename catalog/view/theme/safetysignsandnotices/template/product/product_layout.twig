@@ -1,0 +1,444 @@
+{{ header }}
+<div id="product-product" class="container">
+
+	<div class="d-none d-lg-block">
+		<ul class="breadcrumb ">
+			{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ (breadcrumb.text|length > 500 ? breadcrumb.text|slice(0, 500) ~ '…' : breadcrumb.text) }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="d-none d-md-block d-lg-none">
+		<ul class="breadcrumb ">
+			{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ (breadcrumb.text|length > 100 ? breadcrumb.text|slice(0, 100) ~ '…' : breadcrumb.text) }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="d-block d-md-none">
+		<ul class="breadcrumb ">
+			{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ (breadcrumb.text|length > 50 ? breadcrumb.text|slice(0, 50) ~ '…' : breadcrumb.text) }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+
+
+    <div id="cart-alert-dismissible"></div>
+  <div class="row">
+    <div id="content" class="col-sm-12">{{ content_top }}
+      <div class="row" id="product-contents-section">
+		{{ product_main_content }}
+      </div>
+        <!-- END PRODUCT DETAILS SECTION -->
+          {% if has_related == 1 %}
+          <div class="row ssan-tabs" id="product-extra-tabs">
+              <div class="col">
+                  <div class="col">
+                      <ul class="nav nav-tabs" id="extra-tabs" role="tablist">
+                          <li class="nav-item" role="presentation">
+                              <a class="nav-link active" id="related-tab" data-bs-toggle="tab" href="#related" role="tab" aria-controls="bulk" aria-selected="true">Related Products</a>
+                          </li>
+                      </ul>
+                      <div class="tab-content" id="related-tabs-content">
+                          <div class="tab-pane fade show active" id="related" role="tabpanel" aria-labelledby="related-tab">{{ related }}</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {% endif %}
+        <div class="row ssan-tabs" id="product-details-tabs">
+            <div class="col">
+                <ul class="nav nav-tabs" id="product-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="bulk-tab" data-bs-toggle="tab" href="#bulk" role="tab" aria-controls="bulk" aria-selected="true">Bulk Pricing</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " id="details-tab" data-bs-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Description</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="specification-tab" data-bs-toggle="tab" href="#variant-specification" role="tab" aria-controls="variant-specification" aria-selected="true">Specification</a>
+                     </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="materials-tab" data-bs-toggle="tab" href="#materials" role="tab" aria-controls="materials" aria-selected="true">Materials</a>
+                    </li>
+                    {% if extra_info %}
+                        {% for extras in extra_info %}
+                            {% if extras['type'] == 1 %}
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="extra_tab_{{ extras['id'] }}" data-bs-toggle="tab" href="#extra_info_{{ extras['id'] }}" role="tab" aria-selected="true">{{ extras['title'] }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+                <div class="tab-content" id="product-tabs-content">
+                    <div class="tab-pane fade show active" id="bulk" role="tabpanel" aria-labelledby="bulk-tab">{{ variants_table }}</div>
+                    <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">{{ long_description }}</div>
+                    <div class="tab-pane fade" id="variant-specification" role="tabpanel" aria-labelledby="specification-tab"></div>
+                    <div class="tab-pane fade" id="materials" role="tabpanel" aria-labelledby="materials-tab">
+                        <h4>Materials available for this product</h4>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                                {% for material_list in MaterialsDesc %}
+                                    <div class="col">
+                                            <div class="card h-100 material_cards" id="card_material_{{ material_list.material_id }}">
+                                                <div class="row g-0">
+                                                    <div class="col-4">
+                                                        <img class="img-fluid rounded-end" src="{{ image_path }}{{ material_list.image }}" height="100px"
+                                                             onerror="this.src='{{ image_path }}stores/no-image.png';" alt="{{ material_list.material_name }}" title="{{ material_list.material_name }}" />
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body">
+                                                            <h3 class="card-title">{{ material_list.material_name }}</h3>
+                                                                <dl class="row">
+                                                                    <dt>Description:</dt><dd>{{ material_list.material_desc_full }}</dd>
+                                                                <dt>Thickness:</dt><dd>{{ material_list.thickness_desc }}</dd>
+                                                                <dt>Fixing Options:</dt><dd>{{ material_list.fixing_desc }}</dd>
+                                                                </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                {% endfor %}
+                        </div>
+                        <p>*indicates your currently selected material</p>
+
+                    </div>
+                    {% if extra_info %}
+                        {% for extras in extra_info %}
+                            {% if extras['type'] == 1 %}
+                                <div class="tab-pane fade" id="extra_info_{{ extras['id'] }}" role="tabpanel">
+                                    {{ extras['html'] }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+  </div>
+</div>
+
+
+<script type="text/javascript"><!--
+$('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
+	$.ajax({
+		url: 'index.php?route=product/product/getRecurringDescription',
+		type: 'post',
+		data: $('input[name=\'product_id\'], input[name=\'quantity\'], select[name=\'recurring_id\']'),
+		dataType: 'json',
+		beforeSend: function() {
+			$('#recurring-description').html('');
+		},
+		success: function(json) {
+			$('.alert-dismissible, .text-danger').remove();
+
+			if (json['success']) {
+				$('#recurring-description').html(json['success']);
+			}
+		}
+	});
+});
+//--></script> 
+<script type="text/javascript"><!--
+$('#button-cart').on('click', function() {
+
+    let temp_data  = $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']');
+	$.ajax({
+		url: 'index.php?route=checkout/cart/add',
+		type: 'post',
+		data: temp_data,
+        dataType: 'json',
+		beforeSend: function() {
+			$('#button-cart').button('loading');
+		},
+		complete: function() {
+			$('#button-cart').button('reset');
+		},
+		success: function(json) {
+			$('.alert-dismissible, .text-danger').remove();
+			$('.form-group').removeClass('has-error');
+
+			if (json['error']) {
+				if (json['error']['option']) {
+					for (i in json['error']['option']) {
+						var element = $('#input-option' + i.replace('_', '-'));
+
+						if (element.parent().hasClass('input-group')) {
+							element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+						} else {
+							element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+						}
+					}
+				}
+
+				if (json['error']['recurring']) {
+					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+				}
+				// Highlight any found errors
+				$('.text-danger').parent().addClass('has-error');
+			}
+			if (json['success']) {
+				showToast('Added to Cart', json['success'], 'success');
+
+				let cart_menu_html = json['cart_menu']['xs'];
+				$('#cart_menu_top').html(cart_menu_html);
+				let cart_off_canvas = json['offcanvas_cart'];
+				$('#offcanvasCart').html(cart_off_canvas);
+
+			}
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			let error = thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText;
+			showToast('There was an error', error, 'warning');
+
+		}
+	});
+});
+
+	$('#button-cart-bespoke').on('click', function () {
+
+		//need to gather the svgimage and the svgJson to redraw
+		let thumbtemp = new bespokeSign('thumbdrawing');
+		let svgCode = thumbtemp.exportToSVGThumb(newSign);
+		let svgExport = thumbtemp.exportToSVG(newSign);
+		let svgJSONdata = newSign.exportToJSON();
+		let svgTexts = newSign.getTexts();
+		let svgImages = newSign.getImagesUsed();
+
+		let forminfo = $('#product-bespoke-controls input[type=\'text\'], #product-bespoke-controls input[type=\'hidden\'], #product-bespoke-controls input[type=\'radio\']:checked, #product-bespoke-controls input[type=\'checkbox\']:checked, ' +
+				'#product-bespoke-controls select, #product-bespoke-controls textarea, #product-bespoke-controls input[type=\'number\']').serializeArray();
+
+		//check that the bespoke form values are not ready set - this was a bug in the old version
+		//check that the bespoke form values are not ready set - this was a bug in the old version
+		let pos = indexOfObjectListByKeyValue(forminfo, 'name', 'svg_raw');
+		if (pos > -1) { forminfo[pos] = {name: "svg_raw", value: svgCode};}
+		else { forminfo.push({name: "svg_raw", value: svgCode});}
+
+		pos = indexOfObjectListByKeyValue(forminfo, 'name', 'svg_json');
+		if (pos > -1) { forminfo[pos] = {name: "svg_json", value: svgJSONdata};}
+		else { forminfo.push({name: "svg_json", value: svgJSONdata});}
+
+		pos = indexOfObjectListByKeyValue(forminfo, 'name', 'svg_export');
+		if (pos > -1) { forminfo[pos] = {name: "svg_export", value: svgExport};}
+		else { forminfo.push({name: "svg_export", value: svgExport});}
+
+		pos = indexOfObjectListByKeyValue(forminfo, 'name', 'svg_bespoke_texts');
+		if (pos > -1) { forminfo[pos] = {name: "svg_bespoke_texts", value: svgTexts};}
+		else { forminfo.push({name: "svg_bespoke_texts", value: svgTexts});}
+
+		pos = indexOfObjectListByKeyValue(forminfo, 'name', 'svg_bespoke_images');
+		if (pos > -1) { forminfo[pos] = {name: "svg_bespoke_images", value: svgImages};}
+		else { forminfo.push({name: "svg_bespoke_images", value: svgImages});}
+
+		let postURL = 'index.php?route=checkout/cart/add';
+
+		$.ajax({
+			url: postURL,
+			type: 'post',
+			data: forminfo,
+			dataType: 'json',
+			beforeSend: function () {
+				$('#button-cart-bespoke').button('loading');
+			},
+			complete: function () {
+				$('#button-cart-bespoke').button('reset');
+			},
+			success: function (json) {
+				$('.alert-dismissible, .text-danger').remove();
+				$('.form-group').removeClass('has-error');
+
+				if (json['error']) {
+					if (json['error']['option']) {
+						for (i in json['error']['option']) {
+							var element = $('#input-option' + i.replace('_', '-'));
+
+							if (element.parent().hasClass('input-group')) {
+								element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+							} else {
+								element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+							}
+						}
+					}
+
+					if (json['error']['recurring']) {
+						$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+					}
+
+					// Highlight any found errors
+					$('.text-danger').parent().addClass('has-error');
+				}
+
+				if (json['success']) {
+
+					showToast('Added to Cart', json['success'], 'success');
+
+					let cart_menu_html = json['cart_menu']['xs'];
+					$('#cart_menu_top').html(cart_menu_html);
+					let cart_off_canvas = json['offcanvas_cart'];
+					$('#offcanvasCart').html(cart_off_canvas);
+
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				let error = thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText;
+				showToast('There was an error', error, 'warning');
+
+			}
+		});
+
+
+	});
+
+
+
+//--></script> 
+<script type="text/javascript"><!--
+$('.date').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+
+$('.datetime').datetimepicker({
+	language: '{{ datepicker }}',
+	pickDate: true,
+	pickTime: true
+});
+
+$('.time').datetimepicker({
+	language: '{{ datepicker }}',
+	pickDate: false
+});
+
+$('button[id^=\'button-upload\']').on('click', function() {
+	var node = this;
+
+	$('#form-upload').remove();
+
+	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+	$('#form-upload input[name=\'file\']').trigger('click');
+
+	if (typeof timer != 'undefined') {
+    	clearInterval(timer);
+	}
+
+	timer = setInterval(function() {
+		if ($('#form-upload input[name=\'file\']').val() != '') {
+			clearInterval(timer);
+
+			$.ajax({
+				url: 'index.php?route=tool/upload',
+				type: 'post',
+				dataType: 'json',
+				data: new FormData($('#form-upload')[0]),
+				cache: false,
+				contentType: false,
+				processData: false,
+				beforeSend: function() {
+					$(node).button('loading');
+				},
+				complete: function() {
+					$(node).button('reset');
+				},
+				success: function(json) {
+					$('.text-danger').remove();
+
+					if (json['error']) {
+						$(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+					}
+
+					if (json['success']) {
+						showToast('Added to Cart', json['success'], 'success');
+						//alert(json['success']);
+
+						$(node).parent().find('input').val(json['code']);
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					let error = thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText;
+					showToast('There was an error', error, 'warning');
+					//alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	}, 500);
+});
+//--></script> 
+<script type="text/javascript"><!--
+$('#review').delegate('.pagination a', 'click', function(e) {
+    e.preventDefault();
+
+    $('#review').fadeOut('slow');
+
+    $('#review').load(this.href);
+
+    $('#review').fadeIn('slow');
+});
+
+$('#review').load('index.php?route=product/product/review&product_id={{ product_id }}');
+
+$('#button-review').on('click', function() {
+	$.ajax({
+		url: 'index.php?route=product/product/write&product_id={{ product_id }}',
+		type: 'post',
+		dataType: 'json',
+		data: $("#form-review").serialize(),
+		beforeSend: function() {
+			$('#button-review').button('loading');
+		},
+		complete: function() {
+			$('#button-review').button('reset');
+		},
+		success: function(json) {
+			$('.alert-dismissible').remove();
+
+			if (json['error']) {
+				$('#review').after('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+			}
+
+			if (json['success']) {
+				$('#review').after('<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> ' + json['success'] + '</div>');
+
+				$('input[name=\'name\']').val('');
+				$('textarea[name=\'text\']').val('');
+				$('input[name=\'rating\']:checked').prop('checked', false);
+			}
+		}
+	});
+});
+
+$(document).ready(function() {
+
+	/*$('.thumbnails').magnificPopup({
+		type:'image',
+		delegate: 'a',
+		gallery: {
+			enabled: true
+		}
+	});
+*/
+
+});
+    function ShowDetails()
+    {
+        $('.nav-tabs a[href="#details"]').tab('show')
+        return false;
+    }
+
+	function indexOfObjectListByKeyValue(list, key, value) {
+		for (let i = 0; i < list.length; i++) {
+			if (list[i][key] === value) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
+//--></script> 
+{{ footer }} 

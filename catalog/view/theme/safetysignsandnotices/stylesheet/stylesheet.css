@@ -1098,3 +1098,53 @@ span.product-variants  {
     width: calc(3rem + 0.75rem);
     border-radius: 4rem;
 }
+
+.accordion-button {
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+}
+
+.btn-symbol-selected {
+    color: #ffffff;
+    /*background-image: linear-gradient(to bottom, #62c462, #51a351); */
+    border-radius: 5px;
+    border: 2px solid #5cb85c;
+}
+
+.accordion {
+    --bs-accordion-btn-bg: #F2F2F2;
+}
+
+.accordion {
+    --bs-accordion-active-bg: #ffd011;
+    --bs-accordion-active-color: black;
+}
+
+div#thumbdrawing {
+    position: absolute;
+    left: -10000px;
+}
+
+div#drawing {
+    z-index: 9999;
+}
+
+.bespokebadge {
+    /*position the badge top right of the image*/
+   position: absolute;
+    width: 50px;
+   z-index: 100;
+    top: 0;
+    right: 0;
+}
+
+.bespokebadge:hover {
+    filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}
+
+
+.product-image-div {
+    position: relative;
+    border: none;
+}

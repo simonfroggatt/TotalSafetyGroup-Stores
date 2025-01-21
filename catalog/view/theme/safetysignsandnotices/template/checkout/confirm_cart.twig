@@ -14,7 +14,23 @@
             <tbody>
             {% for product in products %}
                 <tr>
-                    <td class="text-center">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" /> {% endif %}</td>
+                    <td class="text-center">
+                        {% if product.is_bespoke %}
+                            {% if product.svg_raw %}
+                                <div id="svgThumb">
+                                    <a href="{{ product.href }}">{{ product.svg_raw | raw }}</a>
+                                </div>
+                            {% else %}
+                                {% if product.thumb %}
+                                    <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" />
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if product.thumb %}
+                                <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" />
+                            {% endif %}
+                        {% endif %}
+                    </td>
                     <td class="text-start">{{ product.name }} {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
                         <br><span class="product-variants">Model : <strong>{{ product.model }}</strong></span>
                         <br><span class="product-variants">{{ product.size_name }} ( <strong>{{ product.orientation_name}}*</strong> ) - {{ product.material_name }}</span>

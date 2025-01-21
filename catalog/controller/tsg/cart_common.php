@@ -62,7 +62,7 @@ class ControllerTsgCartCommon extends Controller
             }
 
 
-            $productURL = $this->makeProductLink($product['product_id'], $product['product_variant_id'], $product['tsg_options']);
+            $productURL = $this->makeProductLink($product['product_id'], $product['product_variant_id'], $product['tsg_options'], $product['cart_id'], $product['is_bespoke']);
             $data['products'][] = array(
                 'cart_id'   => $product['cart_id'],
                 'thumb'     => $image,
@@ -80,7 +80,13 @@ class ControllerTsgCartCommon extends Controller
                 'size_name' => $product['size_name'],
                 'orientation_name' => $product['orientation_name'],
                 'material_name' => $product['material_name'],
-                'tsg_options'  => $product['tsg_options']
+                'tsg_options'  => $product['tsg_options'],
+                'is_bespoke'    => $product['is_bespoke'],
+                'svg_raw'				=> $product['svg_raw'],
+                'svg_export'		=> $product['svg_export'],
+                'svg_json'		=> $product['svg_json'],
+                'svg_images'		=> $product['svg_images'],
+                'svg_texts'		=> $product['svg_texts'],
             );
         }
 
@@ -154,7 +160,7 @@ class ControllerTsgCartCommon extends Controller
 
     }
 
-    private function makeProductLink($product_id, $variant_id, $options = []){
+    private function makeProductLink($product_id, $variant_id, $options = [], $cart_id = 0, $is_bespoke = 0){
         $urlstr = "";
         $urlstr .= 'product_id=' . $product_id;
         $urlstr .= '&pv_id='.$variant_id;
@@ -166,7 +172,12 @@ class ControllerTsgCartCommon extends Controller
             }
             $urlstr = substr($urlstr, 0 , -1);
         }
+        if($is_bespoke == 1){
+            $urlstr .= '&bespokeid=' . $cart_id;
+            $urlstr .= '&makebespoke=1';
+        }
 
         return $this->url->link('product/product', $urlstr);
     }
+
 }

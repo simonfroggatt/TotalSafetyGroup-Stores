@@ -482,6 +482,7 @@ class ControllerProductProduct extends Controller {
 
 			$this->model_catalog_product->updateViewed($this->request->get['product_id']);
 
+
             //TSG - load in the variants for this product
 
             $variant_data = $this->load->controller('tsg/product_variants');
@@ -498,6 +499,117 @@ class ControllerProductProduct extends Controller {
             $data['MaterialsDesc'] = array();
             $data['MaterialsDesc'] =  $this->model_tsg_product_variants->getMaterialDescriptions($this->request->get['product_id']);
 
+            $template_name = $this->model_catalog_product->getProductTemplate($this->request->get['product_id']);
+            $data['is_bespoke'] = 0;
+            $data_bespoke['selected_symbol_id'] = 0;
+
+
+            $product_symbol =  $this->model_catalog_product->getProductSymbols($this->request->get['product_id']);
+            if(sizeof($product_symbol) === 1) {
+                $data['has_bespoke'] = 1;
+                $bespokelink = $this->url->link('product/product', 'product_id=' . $this->request->get['product_id'] . '&makebespoke=1');
+                $data['bespoke_link'] = $bespokelink;
+            }
+
+
+            //testing
+            //$data['has_bespoke'] = 1;
+
+
+
+
+
+            if(isset($this->request->get['makebespoke'])) {
+                //get  symbols for this product
+                if (sizeof($product_symbol) == 1) {
+                    $data['is_bespoke'] = 1;
+                    //$template_name = $template_name = $this->model_catalog_product->getProductBespokeTemplate($this->request->get['product_id']);
+                    $product_template_row = $this->model_catalog_product->getProductBespokeTemplatePath($this->request->get['product_id']);
+                    if($product_template_row) {
+                        $template_name = $product_template_row[0]['path'];
+                    }
+                    else
+                    {
+                        $template_name = 'bespoke/single_panel';
+                    }
+
+                }
+            }
+
+            if($product_info['is_bespoke'] || $data['is_bespoke'])
+            {
+                //load the model
+                $this->load->model('bespoke/bespoke');
+
+                $this->document->addScript('catalog/view/javascript/bespoke/interface.js');
+                $this->document->addScript('catalog/view/javascript/bespoke/bespoke.js');
+                $this->document->addScript('catalog/view/javascript/bespoke/bespoke.construct.js');
+                $this->document->addScript('catalog/view/javascript/bespoke/bespoke.draw.js');
+                $this->document->addScript('catalog/view/javascript/bespoke/svg.js');
+                $this->document->addScript('catalog/view/javascript/bespoke/svg.filter.js');
+                $this->document->addScript('catalog/view/javascript/bespoke/svg.screenbbox.js');
+                $this->document->addStyle('catalog/view/javascript/bespoke/bespoke-text-font/css/bespoke-text.css' );
+
+                $data_bespoke = array();
+                $data_bespoke['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
+                $data_bespoke['initial_text'] = 'Change Me';
+
+
+                //see of we are loading a bespoke product from the cart
+                if (isset($this->request->get['bespokeid'])) {
+                    $cartid  = $this->request->get['bespokeid'];
+                    $data['bespokeid'] = $cartid;
+                    $bespoke_data = $this->model_bespoke_bespoke->getBespokeInfoFromCartId($cartid);
+                    $data['has_svg_data'] = 1;
+                    $data['svg_data'] = [];
+                    $data['svg_data']['svg_raw'] = $bespoke_data['svg_raw'];
+                    $data['svg_data']['svg_json'] = json_decode($bespoke_data['svg_json']);
+                    $data['svg_data']['svg_export'] = $bespoke_data['svg_export'];
+                    $data['svg_data']['svg_images'] = $bespoke_data['svg_images'];
+                    $data['svg_data']['svg_texts'] = $bespoke_data['svg_texts'];
+                }
+                else {
+                    $data['has_svg_data'] = 0;
+                    $data['svg_data'] = null;
+                }
+
+                $data_bespoke['selected_symbol_id'] = $product_symbol[0]['symbol_id'];
+                if($product_info['is_bespoke'])
+                {
+                    //get the category for this products symbol
+                    $data_bespoke['symbol_category'] =  $this->model_bespoke_bespoke->getSymbolCategoryTypeByProduct($this->request->get['product_id']);
+                    $symbol_category_id = $data_bespoke['symbol_category']['category_type_id'];
+                }
+                else
+                {
+                    //get the category for this products symbol
+                    $data_bespoke['symbol_category'] =  $this->model_bespoke_bespoke->getSymbolCategoryTypeBySymbolId($data_bespoke['selected_symbol_id']);
+                    $symbol_category_id = $data_bespoke['symbol_category']['category_type_id'];
+                }
+
+                //get the symbols for this category
+
+                $data_bespoke['symbols'] = $this->model_bespoke_bespoke->getSymbolsByCategoryType($symbol_category_id);
+                $data['selected_symbol_info'] = $this->model_bespoke_bespoke->getSymbolInfoBySymbolId($data_bespoke['selected_symbol_id']);
+
+
+                //load the template
+                $symbol_layout = $this->load->view('bespoke/symbol_single', $data_bespoke);
+                $data['symbol_layout'] = $symbol_layout;
+
+
+                //now do the textareas
+                $data['bespoke_text_area'] = $this->load->Controller('bespoke/text_area');
+
+
+
+                $data['initial_size'] = 2;
+                $data['initial_text'] = $data_bespoke['initial_text'];
+
+            }
+
+            $data['product_main_content'] = $this->load->view($template_name, $data);
+
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
@@ -507,7 +619,7 @@ class ControllerProductProduct extends Controller {
 
 
 
-			$this->response->setOutput($this->load->view('product/product', $data));
+			$this->response->setOutput($this->load->view('product/product_layout', $data));
 		} else {
 			$url = '';
 

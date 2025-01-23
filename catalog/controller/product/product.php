@@ -548,6 +548,7 @@ class ControllerProductProduct extends Controller {
                 $this->document->addScript('catalog/view/javascript/bespoke/svg.js');
                 $this->document->addScript('catalog/view/javascript/bespoke/svg.filter.js');
                 $this->document->addScript('catalog/view/javascript/bespoke/svg.screenbbox.js');
+                $this->document->addScript('catalog/view/javascript/tsg/bootstrap-detect-breakpoint.js');
                 $this->document->addStyle('catalog/view/javascript/bespoke/bespoke-text-font/css/bespoke-text.css' );
 
                 $data_bespoke = array();
@@ -573,34 +574,43 @@ class ControllerProductProduct extends Controller {
                     $data['svg_data'] = null;
                 }
 
-                $data_bespoke['selected_symbol_id'] = $product_symbol[0]['symbol_id'];
-                if($product_info['is_bespoke'])
-                {
-                    //get the category for this products symbol
-                    $data_bespoke['symbol_category'] =  $this->model_bespoke_bespoke->getSymbolCategoryTypeByProduct($this->request->get['product_id']);
-                    $symbol_category_id = $data_bespoke['symbol_category']['category_type_id'];
+                if($product_symbol){
+                    $data_bespoke['selected_symbol_id'] = $product_symbol[0]['symbol_id'];
+                    if($product_info['is_bespoke'])
+                    {
+                        //get the category for this products symbol
+                        $data_bespoke['symbol_category'] =  $this->model_bespoke_bespoke->getSymbolCategoryTypeByProduct($this->request->get['product_id']);
+                        $symbol_category_id = $data_bespoke['symbol_category']['category_type_id'];
+                    }
+                    else
+                    {
+                        //get the category for this products symbol
+                        $data_bespoke['symbol_category'] =  $this->model_bespoke_bespoke->getSymbolCategoryTypeBySymbolId($data_bespoke['selected_symbol_id']);
+                        $symbol_category_id = $data_bespoke['symbol_category']['category_type_id'];
+                    }
+                    //get the symbols for this category
+                    $data_bespoke['symbols'] = $this->model_bespoke_bespoke->getSymbolsByCategoryType($symbol_category_id);
+                    $data['selected_symbol_info'] = $this->model_bespoke_bespoke->getSymbolInfoBySymbolId($data_bespoke['selected_symbol_id']);
+
+
+                    //load the template
+                    $symbol_layout = $this->load->view('bespoke/symbol_single', $data_bespoke);
+                    $data['symbol_layout'] = $symbol_layout;
                 }
-                else
-                {
-                    //get the category for this products symbol
-                    $data_bespoke['symbol_category'] =  $this->model_bespoke_bespoke->getSymbolCategoryTypeBySymbolId($data_bespoke['selected_symbol_id']);
-                    $symbol_category_id = $data_bespoke['symbol_category']['category_type_id'];
-                }
-
-                //get the symbols for this category
-
-                $data_bespoke['symbols'] = $this->model_bespoke_bespoke->getSymbolsByCategoryType($symbol_category_id);
-                $data['selected_symbol_info'] = $this->model_bespoke_bespoke->getSymbolInfoBySymbolId($data_bespoke['selected_symbol_id']);
-
-
-                //load the template
-                $symbol_layout = $this->load->view('bespoke/symbol_single', $data_bespoke);
-                $data['symbol_layout'] = $symbol_layout;
-
 
                 //now do the textareas
                 $data['bespoke_text_area'] = $this->load->Controller('bespoke/text_area');
 
+                //create the colour pancels
+                $data_bespoke['colours'] = TSG_BESPOKE_SINGLE_COLOUR;
+                $data_bespoke['init_colour'] = 0;
+                $data_bespoke['borders'] = TSG_BESPOKE_SINGLE_TEXTONLY_BORDERS;
+                $data_bespoke['init_border'] = 0;
+
+                $data['colours'] = TSG_BESPOKE_SINGLE_COLOUR;
+                $data['borders'] = TSG_BESPOKE_SINGLE_TEXTONLY_BORDERS;
+
+                $data['colour_layout'] =  $this->load->view('bespoke/colour_single', $data_bespoke);
 
 
                 $data['initial_size'] = 2;

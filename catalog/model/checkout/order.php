@@ -167,8 +167,11 @@ class ModelCheckoutOrder extends Model {
                     $sql_bespoke .=  "svg_texts = '" .$this->db->escape(json_encode($product['svg_texts'])) . "', ";
                     $sql_bespoke .=  "version = " . $product['bespoke_version'];
 
-
                     $this->db->query($sql_bespoke);
+                    //now update the model for this product_line to that of the bespoke filename
+                    $bespoke_product_id = $this->db->getLastId();
+                    $filename = $order_id .'-'. $bespoke_product_id;
+                    $this->db->query("UPDATE " . DB_PREFIX . "order_product SET model = '".$filename."' WHERE order_product_id = '" . (int)$order_product_id . "'");
                 }
 			}
 		}

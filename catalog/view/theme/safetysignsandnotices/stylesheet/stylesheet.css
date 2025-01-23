@@ -1148,3 +1148,26 @@ div#drawing {
     position: relative;
     border: none;
 }
+
+.color-thumb, .color-border{
+    border: 1px solid #ddd;
+    margin-bottom: 0px;
+    overflow: hidden;
+    -webkit-border-radius: 04px 04px 04px 04px;
+    -moz-border-radius: 04px 04px 04px 04px;
+    border-radius: 04px 04px 04px 04px;
+    text-align: center;
+    height: 30px;
+    width: 20%;
+
+
+}
+
+.color-thumb, .color-border:hover {
+    cursor:pointer;
+}
+
+.colour-selected {
+    border-radius: 5px;
+    border: 2px solid #5cb85c;
+}

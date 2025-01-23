@@ -93,6 +93,12 @@ var bespokeDrawer = function(drawObject, options) {
     vars.drawIgnore = {};
   }
 
+  this.setDrawingSize = function(width, height) {
+    this.drawSVG.size(width, height);
+    vars.drawingWidth = width;
+    vars.drawingHeight = height;
+  }
+
   this.drawSign = function(options, clear) {
 
     $.extend(vars, options);

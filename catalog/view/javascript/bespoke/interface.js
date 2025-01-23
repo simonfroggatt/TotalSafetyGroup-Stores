@@ -82,11 +82,6 @@ $(function () {
         newSign.setSymbolScale(Math.round(slider_value));
     });
 
-    $('#posize').on('change', function () {
-        var sizeIndex = $(this).val();
-        reDrawForSizeChange(sizeIndex);
-        _redrawSlider();
-    });
 
     $('#newTextBlock').on('click', function () {
         $(this).tooltip('hide');
@@ -110,6 +105,32 @@ $(function () {
             //newSign.buildSign(true);
         }
 
+    });
+
+    $('.color-thumb').on('click', function () {
+      //get the id
+        let color_id = $(this).data('color-id');
+        let colour_info = blankSignColours[color_id];
+        newSign.setSignColor(colour_info['colour']);
+        newSign.setSignTextColor(colour_info['text_colour'], 0);
+        newSign.buildSign(true);
+
+        $('.color-thumb').removeClass('colour-selected');
+        $(this).addClass('colour-selected');
+
+    })
+
+    $('.color-border').click(function() {
+        let border_id = $(this).data('border-id');
+        let border_info = blankSignBorders[border_id];
+        var color = border_info['border_colour']
+        var hasBorder = border_info['border']
+
+        newSign.setSignBorder(hasBorder, color);
+        newSign.buildSign(true);
+
+        $('.color-border').removeClass('colour-selected');
+        $(this).addClass('colour-selected');
     });
 
 
@@ -159,44 +180,9 @@ $(function () {
     }
 
     /***** - something has changed on the interface - redraw the sign ***/
-    function reDrawForSizeChange(sizeIndex) {
-        var variant_size_materials = prod_variants[sizeIndex];
-        var result = Object.keys(variant_size_materials).map((key) => [variant_size_materials[key]]);
-        var dims = result[0];
-        var panelID,
-            blockID,
-            blockText,
-            textpanelRef,
-            textBlockArr,
-            userCustomText,
-            i;
 
-        panelID = 0;
 
-        textpanelRef = 'textarea-' + panelID + '-';
-        var userCustomText = $('[id*="' + textpanelRef + '"]');
 
-        textBlockArr = [];
-
-        if (userCustomText.length > 0) {
-            i = 0;
-            while (i < userCustomText.length) {
-                textBlockArr.push(userCustomText[i].value);
-                i++;
-            }
-            newSign.changeSignSize(dims[0].size_width, dims[0].size_height, dims[0].symbol_default_location, panelID, textBlockArr);  //function(width, height, orientation = -1, panelID, textBlocks)
-        }
-    }
-
-    function _redrawSlider() {
-        if("#single-symbolSize") {
-            var symbolBounds = newSign.getSymbolFrameDefs();
-            let slider = document.getElementById('single-symbolSize');
-            slider.setAttribute('min', symbolBounds['minValue']);
-            slider.setAttribute('max', symbolBounds['maxValue']);
-            slider.setAttribute('value', symbolBounds['currentValue']);
-        }
-    }
 
 
 
@@ -209,6 +195,16 @@ $(function () {
 
 
 });
+
+function _redrawSlider() {
+    if("#single-symbolSize") {
+        var symbolBounds = newSign.getSymbolFrameDefs();
+        let slider = document.getElementById('single-symbolSize');
+        slider.setAttribute('min', symbolBounds['minValue']);
+        slider.setAttribute('max', symbolBounds['maxValue']);
+        slider.setAttribute('value', symbolBounds['currentValue']);
+    }
+}
 
 function loadBespokeFromSVG(bespokeJSON) {
     newSign.loadFromJSON(bespokeJSON);
@@ -253,4 +249,33 @@ function loadBespokeFromSVG(bespokeJSON) {
 function setNewTextBox(data) {
     var $panels = $('#textpanel-0');
     $panels.append(data);
+}
+
+function reDrawForSizeChange(sizeIndex) {
+    var variant_size_materials = prod_variants[sizeIndex];
+    var result = Object.keys(variant_size_materials).map((key) => [variant_size_materials[key]]);
+    var dims = result[0];
+    var panelID,
+        blockID,
+        blockText,
+        textpanelRef,
+        textBlockArr,
+        userCustomText,
+        i;
+
+    panelID = 0;
+
+    textpanelRef = 'textarea-' + panelID + '-';
+    var userCustomText = $('[id*="' + textpanelRef + '"]');
+
+    textBlockArr = [];
+
+    if (userCustomText.length > 0) {
+        i = 0;
+        while (i < userCustomText.length) {
+            textBlockArr.push(userCustomText[i].value);
+            i++;
+        }
+        newSign.changeSignSize(dims[0].size_width, dims[0].size_height, dims[0].symbol_default_location, panelID, textBlockArr);  //function(width, height, orientation = -1, panelID, textBlocks)
+    }
 }

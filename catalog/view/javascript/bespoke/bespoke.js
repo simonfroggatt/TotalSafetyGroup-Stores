@@ -1,4 +1,4 @@
-var bespokeSign = function(drawObject, options) {
+var bespokeSign = function(drawObject, options, drawing_width = 750, drawing_height = 750) {
   /*
    * Variables accessible
    * in the class
@@ -59,7 +59,7 @@ var bespokeSign = function(drawObject, options) {
   /*
    * Constructor
    */
-  this.construct = function(drawObject, options) {
+  this.construct = function(drawObject, options, drawing_width, drawing_height) {
     // alert('here')
     //   this.svgContainer = drawObject
     $.extend(vars, options);
@@ -68,10 +68,17 @@ var bespokeSign = function(drawObject, options) {
 
     bespokeConstructor = new bespokeConstruct(vars);
     svgDrawObj = new bespokeDrawer(drawObject, {
-      drawingWidth: DRAWING_WIDTH,
-      drawingHeight: DRAWING_HEIGHT,
+      drawingWidth: drawing_width,
+      drawingHeight: drawing_height,
     });
   };
+
+    this.resizeDrawingPanel = function(new_width, new_height) {
+        svgDrawObj.setDrawingSize(new_width, new_height);
+        this.buildSign(true, '', false);
+    }
+
+
   /*     bespokeConstructor.createSign()
 
        var signSizing = bespokeConstructor.getSignDimensions()
@@ -510,5 +517,5 @@ rtnVal['maxValue'] = maxSymbolWidth;
 
 
 
-  this.construct(drawObject, options);
+  this.construct(drawObject, options, drawing_width, drawing_height);
 };

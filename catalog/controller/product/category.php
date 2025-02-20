@@ -44,7 +44,8 @@ class ControllerProductCategory extends Controller {
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
+			//'text' => $this->language->get('text_home'),
+            'text' => 'Safety Signs',
 			'href' => $this->url->link('common/home')
 		);
 
@@ -396,6 +397,20 @@ class ControllerProductCategory extends Controller {
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 
+            $this->load->model('setting/store');
+            $store_info = $this->model_setting_store->getStoreInfo((int)$this->config->get('config_store_id') );
+            $data['store_info'] = $store_info;
+
+            $data['category_info'] = $category_info;
+            if($category_info['clean_url'] != ''){
+                $data['category_info']['markup_href'] = $category_info['clean_url'];
+            } else {
+                $data['category_info']['markup_href'] = $this->url->link('product/category', 'path=' . $this->request->get['path']);
+            }
+            $data['markup_url'] = $this->url->link('product/category', 'path=' . $this->request->get['path']);
+            $data['breadcrumb_markup'] = $this->load->view('tsg/breadcrumb_markup', $data);
+            $data['category_markup'] = $this->load->view('tsg/category_markup', $data);
+
 			$this->response->setOutput($this->load->view('product/category', $data));
 		} else {
 			$url = '';
@@ -441,6 +456,8 @@ class ControllerProductCategory extends Controller {
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
+
+            $data['breadcrumb_markup'] = $this->load->view('tsg/breadcrumb_markup', $data);
 
 			$this->response->setOutput($this->load->view('error/not_found', $data));
 		}

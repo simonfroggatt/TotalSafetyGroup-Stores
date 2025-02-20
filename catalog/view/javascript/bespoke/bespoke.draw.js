@@ -7,7 +7,7 @@ var bespokeDrawer = function(drawObject, options) {
   MEASUREMENT_OFFSET = 10;
   MEASURELINE_END = 20;
 
-  DEFAULT_FONT = 'Arial-BoldMT';
+  DEFAULT_FONT = 'Arial-BoldMT, Arial, sans-serif';
   DEFAULT_FONT_WEIGHT = 'bold';
   DEFAULT_FONT_HEIGHT_RATIO = 0.1;
   MIN_FONT_SIZE = 10;

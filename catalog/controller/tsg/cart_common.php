@@ -163,7 +163,7 @@ class ControllerTsgCartCommon extends Controller
     private function makeProductLink($product_id, $variant_id, $options = [], $cart_id = 0, $is_bespoke = 0){
         $urlstr = "";
         $urlstr .= 'product_id=' . $product_id;
-        $urlstr .= '&pv_id='.$variant_id;
+        $urlstr .= '&variantid='.$variant_id;
 
         if($options != []){
             $urlstr .= '&ops=';

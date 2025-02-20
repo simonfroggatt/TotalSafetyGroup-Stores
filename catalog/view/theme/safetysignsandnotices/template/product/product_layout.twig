@@ -412,6 +412,10 @@ $('#button-review').on('click', function() {
 	});
 });
 
+
+
+
+
 $(document).ready(function() {
 
 	/*$('.thumbnails').magnificPopup({
@@ -440,5 +444,13 @@ $(document).ready(function() {
 	}
 
 
-//--></script> 
+//--></script>
+
+//include the JSON-LD breadcrumb script
+{{ breadcrumb_markup }}
+
+{{ product_markup }}
+
+//now for the product
+
 {{ footer }} 

@@ -14,10 +14,9 @@
                 {% for blog in blog_list %}
                     <div class="col">
                         <div class="card h-100" style="width: 19rem;">
-                            <img src="{{ blog.image }}" class="card-img-top" alt="">
+                            <img src="{{ image_path }}{{ blog.image }}" class="card-img-top" alt="">
                             <div class="card-body">
-                                <h5 class="card-title">{{ blog.title }}</h5>
-                                <p class="card-text">{{ blog.sub_title }}</p>
+                                <h2 class="card-text">{{ blog.sub_title }}</h2>
                                 <a href="index.php?route=blog/blog&blog_id={{ blog.id }}" class="btn btn-primary">Read More</a>
                             </div>
                             <div class="card-footer text-end">

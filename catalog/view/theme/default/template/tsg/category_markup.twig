@@ -1,0 +1,25 @@
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "CollectionPage",
+        "name": "{{  category_info.name }}",
+        "description": "{{  category_info.description }}",
+        "url": "{{ markup_url }}",
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+    {% for breadcrumb in breadcrumbs %}
+		{
+			"@type": "ListItem",
+			"position": {{ loop.index }},
+			"item": {
+			"@id": "{{ breadcrumb.href }}",
+			"name": "{{ breadcrumb.text }}"
+		}
+		}{% if not loop.last %},{% endif %}
+    {% endfor %}
+            ]
+        }
+    }}
+</script>

@@ -9,8 +9,9 @@ class ControllerProductProduct extends Controller {
 
 		$data['breadcrumbs'] = array();
 
+        $home_text = $this->language->get('text_home') . ' Safety Signs';
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
+			'text' => 'Safety Signs',
 			'href' => $this->url->link('common/home')
 		);
 
@@ -215,6 +216,7 @@ class ControllerProductProduct extends Controller {
 				'text' => $product_info['name'],
 				'href' => $this->url->link('product/product', $url . '&product_id=' . $this->request->get['product_id'])
 			);
+
 
 			$this->document->setTitle($product_info['meta_title']);
 			$this->document->setDescription($product_info['meta_description']);
@@ -487,11 +489,15 @@ class ControllerProductProduct extends Controller {
 
             $variant_data = $this->load->controller('tsg/product_variants');
 
+
             $data['variants'] = $variant_data['options_section'];
             $data['variants_table'] = $variant_data['variants_table'];
             $data['option_bulk_table'] = $variant_data['option_bulk_table'];
 
             $data['extra_info'] = $this->load->controller('tsg/extra_info');
+
+            $data['product_markup'] =$this->load->controller('tsg/product_variant_markup');
+
 
 
 
@@ -626,6 +632,8 @@ class ControllerProductProduct extends Controller {
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
+
+            $data['breadcrumb_markup'] = $this->load->view('tsg/breadcrumb_markup', $data);
 
 
 

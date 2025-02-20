@@ -17,7 +17,7 @@ class ControllerTsgOffcanvasCart extends Controller {
     private function makeProductLink($product_id, $variant_id, $options = []){
         $urlstr = "";
         $urlstr .= 'product_id=' . $product_id;
-        $urlstr .= '&pv_id='.$variant_id;
+        $urlstr .= '&variantid='.$variant_id;
 
         if($options != []){
             $urlstr .= '&ops=';

@@ -11,12 +11,6 @@ class ControllerTsgProductVariants extends Controller {
 
         $data = [];
 
-        if (isset($this->request->get['pv_id'])) {
-            $data['variant_id_selected'] = $this->request->get['pv_id'];
-        }
-        else {
-            $data['variant_id_selected'] = -1;
-        }
 
         if (isset($this->request->get['ops'])) {
             $options_string = $this->request->get['ops'];
@@ -64,6 +58,13 @@ class ControllerTsgProductVariants extends Controller {
 
         $allVariants = $this->model_tsg_product_variants->getProductVariantList($product_id);
         $bulkgroupdata = $this->model_tsg_product_bulk_discounts->GetDiscountPriceGroup($product_id);
+        $cheapest_variant = $allVariants[0];
+        if (isset($this->request->get['variantid'])) {
+            $data['variant_id_selected'] = $this->request->get['variantid'];
+        }
+        else {
+            $data['variant_id_selected'] = $cheapest_variant['prod_variant_id'];
+        }
 
         $variants_with_bulk_array = $this->CreateVariantBulkArray($allVariants, $bulkgroupdata);
 
@@ -77,6 +78,7 @@ class ControllerTsgProductVariants extends Controller {
         $rtn_data['variants_table'] = $this->load->view('tsg/product_variant_table', $data);
 
         $rtn_data['option_bulk_table'] = $this->load->view('tsg/product_option_bulk', $data);
+
 
         return $rtn_data;
 

@@ -39,10 +39,61 @@ class ControllerTsgDynamicSearch extends Controller
         $data['products'] = $productDynData;
         $data['symbols'] = $symbolDynData;
         $data['type'] = $filter_type;
+        $data['searchStringIn'] = $query;
 
-        $this->response->setOutput($this->load->view('tsg/dynamic_search', $data));
+        $this->response->setOutput($this->load->view('tsg/dynamic_search_listed', $data));
+    }
 
-       // return $this->load->view('tsg/dynamic_search', $data);
+    public function test()
+    {
+        $this->load->model('tsg/dynamic_search');
+
+        $query = (!empty($_GET['q'])) ? strtolower($_GET['q']) : null;
+
+        if (!isset($query)) {
+            die('Invalid query.');
+        }
+
+        $filter_type = (!empty($_GET['type'])) ? strtolower($_GET['type']) : 'all';
+
+        if (!isset($query)) {
+            die('Invalid query.');
+        }
+
+        $categoryDynData = [];
+        $symbolDynData = [];
+        $productDynData = [];
+
+        switch ($filter_type){
+            case 'category' : $categoryDynData = $this->getCategories($query); break;
+            case 'product' : $productDynData = $this->getProducts($query); break;
+            case 'symbols' : $symbolDynData = $this->getSymbol($query); break;
+            case 'all' :    $productDynData = $this->getProducts($query);
+                $categoryDynData = $this->getCategories($query);
+                $symbolDynData = $this->getSymbol($query);
+                break;
+
+        }
+
+        $data = [];
+        $data['category'] = $categoryDynData;
+        $data['products'] = $productDynData;
+        $data['symbols'] = $symbolDynData;
+        $data['type'] = $filter_type;
+
+        // $this->response->setOutput($this->load->view('tsg/dynamic_search', $data));
+
+
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['column_right'] = $this->load->controller('common/column_right');
+        $data['content_top'] = $this->load->controller('common/content_top');
+        $data['content_bottom'] = $this->load->controller('common/content_bottom');
+        $data['footer'] = $this->load->controller('common/footer');
+        $data['header'] = $this->load->controller('common/header');
+        $data['testing'] = true;
+        $data['searchStringIn'] = $query;
+
+        $this->response->setOutput($this->load->view('tsg/dynamic_search_listed', $data));
     }
 
     private function getCategories($query){
@@ -74,9 +125,11 @@ class ControllerTsgDynamicSearch extends Controller
         $productDynData = [];
         foreach ($productData as $rawProduct) {
             $tempProductData = [];
-            $tempProductData['title'] = mb_strimwidth($rawProduct['title'],0,70,"...") ;
+            //$tempProductData['title'] = mb_strimwidth($rawProduct['title'],0,70,"...") ;
+            $tempProductData['title'] = $rawProduct['title'];
             $tempProductData['href']        = $this->url->link('product/product', 'product_id=' . $rawProduct['product_id'] );
             $tempProductData['path'] = $rawProduct['product_id'];
+            $tempProductData['price_from'] = $rawProduct['price_from'];
 
             if( pathinfo($rawProduct['image'], PATHINFO_EXTENSION) == 'svg') {
                 $thumb_css = 'product-card-svg-border';

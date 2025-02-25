@@ -88,3 +88,83 @@
 .header_text {
     font-family: 'Open Sans', sans-serif;
 }
+
+
+
+.dynamic_search_container{
+    width: 100%;
+    margin-bottom: 20px;
+    color: black;
+    background-color: white;
+}
+
+.dynamic_search_container h4 {
+    color: black;
+    background-color: #ffd011;
+    padding : 10px
+}
+
+.search_result_section {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.search_result_section > li {
+    padding-top: 0px;
+    border-top: solid 1px #ccc;
+}
+
+.search_result_section > li:first-child {
+    border-top: none;
+}
+
+.search_result_section :hover {
+    background-color: #ccc;
+}
+
+.search_result_section .img_dyn_search {
+    height: 50px;
+    width: auto;
+    margin-right: 0px;
+}
+
+
+.search_result_list {
+    display: flex;
+    flex-direction: column; /* Stack image and text vertically */
+    align-items: center; /* Center items horizontally */
+    gap: 10px; /* Add spacing between image and text */
+}
+
+.search_result_list > a {
+    display: block; /* Ensure <a> elements behave as blocks */
+    padding: 0.5rem 0.75rem;
+    color: #333;
+    text-decoration: none;
+    text-align: center; /* Center text */
+}
+
+.search_result_list img {
+    max-width: 100%; /* Ensure the image is responsive */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Styles for larger screens (min-width: 768px) */
+@media (min-width: 768px) {
+    .search_result_list {
+        flex-direction: row; /* Align image and text horizontally */
+        align-items: center; /* Vertically center items */
+    }
+
+    .search_result_list > a {
+        display: inline-flex; /* Make <a> elements inline-flex for better alignment */
+        align-items: center; /* Vertically center content inside <a> */
+        text-align: left; /* Align text to the left */
+    }
+}
+
+.search_results_cols {
+    padding: 0px;
+    margin: 0px;
+}

@@ -105,11 +105,10 @@ class ControllerTsgDynamicSearch extends Controller
             $tempCatData = [];
             $tempCatData['title'] = $rawCat['cat_name'];
             $tempCatData['image'] = $this->model_tool_image->resize($rawCat['image'], 75, 75); //"image/".$rawCat['image'];
-            $tempCatData['path'] = $rawCat['category_store_id'];
+            $tempCatData['path'] =  $this->url->link('product/category', 'path=' .  $rawCat['category_store_id']);
             if($rawCat['parent_id'] > 0)
             {
-                $tempCatData['path'] = $rawCat['parent_id'] . '_'.$rawCat['category_store_id'];
-                //  $tempCatData['path'] .= '_'.$rawCat['parent_id'];
+                $tempCatData['path'] = $this->url->link('product/category', 'path=' .  $rawCat['parent_id'] . '_'.$rawCat['category_store_id']);
             }
             $categoryDynData[] = $tempCatData;
         }

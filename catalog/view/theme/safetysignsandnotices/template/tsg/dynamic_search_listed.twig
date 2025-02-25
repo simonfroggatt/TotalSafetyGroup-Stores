@@ -1,0 +1,249 @@
+{% if testing %}
+{{ header }}
+{% endif %}
+{% set maxLength = 100 %}
+{% set searchString = searchStringIn %}
+
+<div class="row dynamic_search_container">
+    {% if category|length > 0 or symbols|length > 0 %}
+        <div class="col-12 col-md-6 order-1 order-md-0 search_results_cols">
+            {% if category|length > 0 %}
+                <h4>Categories</h4>
+                <ul class="search_result_section">
+                    {% for cat in category %}
+                        {% set truncated = cat.title %}
+                        {% if truncated|length > maxLength %}
+                            {% set truncated = truncated|slice(0, maxLength) %}
+                            {% if truncated|slice(-1) != ' ' %}
+                                {% set truncated = truncated|split(' ')|slice(0, -1)|join(' ') ~ '...' %}
+                            {% else %}
+                                {% set truncated = truncated ~ '...' %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% set text = truncated|lower %}
+                        {% set searchWords = searchString|lower|split(' ')|filter(v => v is not empty) %}
+
+                        {% if text is not empty and searchWords|length > 0 %}
+                            {% set words = text|split(' ') %} {# Split the text into words #}
+                            {% for word in words %}
+                                {% set modifiedWord = word %}
+                                {% for searchWord in searchWords %}
+                                    {% if modifiedWord == searchWord %} {# Check for exact match #}
+                                        {% set modifiedWord = '<strong>' ~ word ~ '</strong>' %} {# Highlight the match #}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if modifiedWord != word %} {# Only replace if modifiedWord has changed #}
+                                    {% set text = text|replace({ (word): modifiedWord }) %} {# Rebuild the text with highlights #}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <li class="search_result_list">
+                            <a href="{{ cat.href }}">
+                                <img src="{{ cat.image }}" alt="{{ cat.title }}" title="{{ cat.title }}" class="img img_dyn_search" />
+                            </a>
+                            <a href="{{ cat.href }}">
+                                    <span class="search_result_text">{{ text|raw }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if symbols|length > 0 %}
+                <h4>Symbols</h4>
+                <ul class="search_result_section">
+                    {% for symbol_info in symbols%}
+                        {% set stringCompare = symbol_info.code ~ '<br>' ~ symbol_info.referent %}
+                        {% set truncated = stringCompare %}
+                        {% if truncated|length > maxLength %}
+                            {% set truncated = truncated|slice(0, maxLength) %}
+                            {% if truncated|slice(-1) != ' ' %}
+                                {% set truncated = truncated|split(' ')|slice(0, -1)|join(' ') ~ '...' %}
+                            {% else %}
+                                {% set truncated = truncated ~ '...' %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% set text = truncated|lower %}
+                        {% set searchWords = searchString|lower|split(' ')|filter(v => v is not empty) %}
+
+                        {% if text is not empty and searchWords|length > 0 %}
+                            {% set words = text|split(' ') %} {# Split the text into words #}
+                            {% for word in words %}
+                                {% set modifiedWord = word %}
+                                {% for searchWord in searchWords %}
+                                    {% if modifiedWord == searchWord %} {# Check for exact match #}
+                                        {% set modifiedWord = '<strong>' ~ word ~ '</strong>' %} {# Highlight the match #}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if modifiedWord != word %} {# Only replace if modifiedWord has changed #}
+                                    {% set text = text|replace({ (word): modifiedWord }) %} {# Rebuild the text with highlights #}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <li class="search_result_list">
+                            <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ symbol_info.image }}" class="img img_dyn_search"
+                                                                                                         alt="{{ symbol_info.referent }}" height="50px"></a>
+                            <a href="{{ cat.href }}">
+                                <span class="search_result_text">{{ text|raw }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <div class="col-12 col-md-6 order-0 order-md-1 search_results_cols">
+            {% if products|length > 0 %}
+                <h4>Products</h4>
+                        <ul class="search_result_section">
+                            {% for product in products %}
+                                {% set truncated = product.title %}
+                                {% if truncated|length > maxLength %}
+                                    {% set truncated = truncated|slice(0, maxLength) %}
+                                    {% if truncated|slice(-1) != ' ' %}
+                                        {% set truncated = truncated|split(' ')|slice(0, -1)|join(' ') ~ '...' %}
+                                    {% else %}
+                                        {% set truncated = truncated ~ '...' %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% set text = truncated|lower %}
+                                {% set searchWords = searchString|lower|split(' ')|filter(v => v is not empty) %}
+
+                                {% if text is not empty and searchWords|length > 0 %}
+                                    {% set words = text|split(' ') %} {# Split the text into words #}
+                                    {% for word in words %}
+                                        {% set modifiedWord = word %}
+                                        {% for searchWord in searchWords %}
+                                            {% if modifiedWord == searchWord %} {# Check for exact match #}
+                                                {% set modifiedWord = '<strong>' ~ word ~ '</strong>' %} {# Highlight the match #}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if modifiedWord != word %} {# Only replace if modifiedWord has changed #}
+                                            {% set text = text|replace({ (word): modifiedWord }) %} {# Rebuild the text with highlights #}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                <li class="search_result_list">
+                                    <a href="{{ product.href }}">
+                                        <img src="{{ product.image }}" alt="{{ product.image }}" title="{{ product.title }}" class="img img_dyn_search {{ product.thumb_css }}" />
+                                    </a>
+                                    <a href="{{ product.href }}">
+                                    <span class="search_result_text">{{ text|raw }}<br>
+                                        Prices from £{{ product.price_from }}
+                                    </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+            {% endif %}
+        </div>
+    {% else %}
+        {% if products|length > 0 %}
+            <h4>Products</h4>
+            {% set midpoint = (products|length / 2)|round(0, 'ceil') %}
+            <div class="col-12 col-md-6">
+                    <div>
+                        <ul class="search_result_section">
+                            {% for product in products|slice(0, midpoint) %}
+                                {% set truncated = product.title %}
+                                {% if truncated|length > maxLength %}
+                                    {% set truncated = truncated|slice(0, maxLength) %}
+                                    {% if truncated|slice(-1) != ' ' %}
+                                        {% set truncated = truncated|split(' ')|slice(0, -1)|join(' ') ~ '...' %}
+                                    {% else %}
+                                        {% set truncated = truncated ~ '...' %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% set text = truncated|lower %}
+                                {% set searchWords = searchString|lower|split(' ')|filter(v => v is not empty) %}
+
+                                {% if text is not empty and searchWords|length > 0 %}
+                                    {% set words = text|split(' ') %} {# Split the text into words #}
+                                    {% for word in words %}
+                                        {% set modifiedWord = word %}
+                                        {% for searchWord in searchWords %}
+                                            {% if modifiedWord == searchWord %} {# Check for exact match #}
+                                                {% set modifiedWord = '<strong>' ~ word ~ '</strong>' %} {# Highlight the match #}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if modifiedWord != word %} {# Only replace if modifiedWord has changed #}
+                                            {% set text = text|replace({ (word): modifiedWord }) %} {# Rebuild the text with highlights #}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                <li class="search_result_list">
+                                    <a href="{{ product.href }}">
+                                        <img src="{{ product.image }}" alt="{{ product.image }}" title="{{ product.title }}" class="img img_dyn_search {{ product.thumb_css }}" />
+                                    </a>
+                                    <a href="{{ product.href }}">
+                                    <span class="search_result_text">{{ text|raw }}<br>
+                                        Prices from £{{ product.price_from }}
+                                    </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+            </div>
+            <div class="col-6 col-md-6">
+                    <div>
+                    <ul class="search_result_section">
+                        {% set maxLength = 100 %}
+                        {% set searchString = searchStringIn %}
+                        {% for product in products|slice(midpoint) %}
+                            {% set truncated = product.title %}
+                            {% if truncated|length > maxLength %}
+                                {% set truncated = truncated|slice(0, maxLength) %}
+                                {% if truncated|slice(-1) != ' ' %}
+                                    {% set truncated = truncated|split(' ')|slice(0, -1)|join(' ') ~ '...' %}
+                                {% else %}
+                                    {% set truncated = truncated ~ '...' %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% set text = truncated|lower %}
+                            {% set searchWords = searchString|lower|split(' ')|filter(v => v is not empty) %}
+
+                            {% if text is not empty and searchWords|length > 0 %}
+                                {% set words = text|split(' ') %} {# Split the text into words #}
+                                {% for word in words %}
+                                    {% set modifiedWord = word %}
+                                    {% for searchWord in searchWords %}
+                                        {% if modifiedWord == searchWord %} {# Check for exact match #}
+                                            {% set modifiedWord = '<strong>' ~ word ~ '</strong>' %} {# Highlight the match #}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if modifiedWord != word %} {# Only replace if modifiedWord has changed #}
+                                        {% set text = text|replace({ (word): modifiedWord }) %} {# Rebuild the text with highlights #}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            <li class="search_result_list">
+                                <a href="{{ product.href }}">
+                                    <img src="{{ product.image }}" alt="{{ product.image }}" title="{{ product.title }}" class="img img_dyn_search {{ product.thumb_css }}" />
+                                </a>
+                                <a href="{{ product.href }}">
+                                    <span class="search_result_text">{{ text|raw }}<br>
+                                        Prices from £{{ product.price_from }}
+                                    </span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+</div>
+
+{% if testing %}
+    {{ footer }}
+{% endif %}

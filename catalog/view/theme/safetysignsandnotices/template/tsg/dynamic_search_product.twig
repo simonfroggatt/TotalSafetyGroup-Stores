@@ -1,0 +1,19 @@
+<h3>Products</h3>
+<div class="row row-cols-1 row-cols-md-2 g-2 text-center seach_result_section">
+        {% for product in products %}
+
+            <div class="col text-center">
+
+                <div class="card h-100">
+                        <div class="prod_image_gallery">
+                            <a href="{{ product.href }}"><img src="{{ product.image }}" alt="{{ product.title }}" title="{{ product.title }}" class="img img-fluid {{ product.thumb_css }} full-width" /></a>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <a href="index.php?route=product/product&product_id={{ product.path }}">
+                                    {{ (product.title|length > 50 ? product.title|slice(0, 50) ~ '…' : product.title)  }}</p>
+                        </div>
+                    </div>
+            </div>
+        {% endfor %}
+</div>

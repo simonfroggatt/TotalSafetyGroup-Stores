@@ -160,7 +160,13 @@ class ControllerTsgDynamicSearch extends Controller
             $tempSymbolData = [];
             $tempSymbolData['id'] =  $rawSymbol['id'];
             $tempSymbolData['title'] = mb_strimwidth($rawSymbol['referent'],0,70,"...") . ' - '.$rawSymbol['refenceno'];
-            $tempSymbolData['image'] =  '/image/'.$rawSymbol['svg_path'];
+
+            if(USE_CDN) {
+                $tempSymbolData['image'] = TSG_CDN_URL . $rawSymbol['svg_path'];
+            } else {
+                $tempSymbolData['image'] = '/image/' . $rawSymbol['svg_path'];
+            }
+            //$tempSymbolData['image'] =  '/image/'.$rawSymbol['svg_path'];
             // $tempProductData['category_path'] = $rawProduct['category_id'];
             $tempSymbolData['code'] = $rawSymbol['refenceno'];
             $tempSymbolData['referent'] = $rawSymbol['referent'];

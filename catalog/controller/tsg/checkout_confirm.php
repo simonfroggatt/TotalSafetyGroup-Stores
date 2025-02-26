@@ -600,6 +600,19 @@ class ControllerTsgCheckoutConfirm extends Controller {
       //  $json['payment_paypal_html'] = $this->load->view('checkout/payment', $data);
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
+/*
+        }
+        else {
+            $json['redirect'] = $redirect;
+        }
+
+        if (!isset($this->session->data['order_id'])) {
+            $json['error'] = 'error whilst creating order';
+        }
+
+
+            $this->response->addHeader('Content-Type: application/json');
+            $this->response->setOutput(json_encode($json));
 */
         }
         else {
@@ -694,6 +707,19 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $response .= fgets($fp, 128);
             }
             $this->log->write('send_async_request: response - '.$response);
+
+            // Check for HTTP status code
+            $status_line = explode("\r\n", $response)[0];
+            $status_code = intval(substr($status_line, 9, 3));
+
+            if ($status_code === 301) {
+                preg_match('/Location: (.+)/', $response, $matches);
+                if (isset($matches[1])) {
+                    $new_url = trim($matches[1]);
+                    $this->log->write('send_async_request: redirecting to - '.$new_url);
+                    return $this->send_async_request($new_url, $data);
+                }
+            }
 
             fclose($fp); // Close immediately, not waiting for response
         }

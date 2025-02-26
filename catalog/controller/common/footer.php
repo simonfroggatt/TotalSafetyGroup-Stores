@@ -74,7 +74,6 @@ class ControllerCommonFooter extends Controller {
         $data['footer_security_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/comodo-security.svg' : 'image/3rdpartylogo/comodo-security.svg';
         $data['footer_fsb_logo'] = USE_CDN ? TSG_CDN_URL.'stores/3rdpartylogo/fsb.svg' : 'image/3rdpartylogo/fsb.svg';
 
-		
 		return $this->load->view('common/footer', $data);
 	}
 }

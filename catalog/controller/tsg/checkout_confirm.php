@@ -495,6 +495,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
 
             //now check if there are any bespoke items....if so, send to medusa
             //MEDUSA_BESPOKE_CONVERT_URL
+            $this->log->write('CART CONFIRM: going to call - doAjaxBespokeConvert');
             $this->doAjaxBespokeConvert($this->session->data['order_id']);
 
            /*
@@ -659,10 +660,14 @@ class ControllerTsgCheckoutConfirm extends Controller {
     }
 
     private function send_async_request($url, $data = []) {
+        $this->log->write('send_async_request');
+
         $parts = parse_url($url);
         $host = $parts['host'];
         $port = isset($parts['port']) ? $parts['port'] : 80;
         $path = isset($parts['path']) ? $parts['path'] : '/';
+
+        $this->log->write('send_async_request: path='.$path);
 
         $query = http_build_query($data);
         $content = "POST $path HTTP/1.1\r\n";
@@ -672,10 +677,18 @@ class ControllerTsgCheckoutConfirm extends Controller {
         $content .= "Connection: Close\r\n\r\n";
         $content .= $query;
 
+        $this->log->write('send_async_request: content='.$content);
+
+        $this->log->write('send_async_request: calling - fsockopen');
         $fp = fsockopen($host, $port, $errno, $errstr, 30);
         if ($fp) {
+            $this->log->write('send_async_request: $fp - TRUE');
             fwrite($fp, $content);
             fclose($fp); // Close immediately, not waiting for response
+        }
+        else
+        {
+            $this->log->write('send_async_request: $fp - FALSE');
         }
     }
 

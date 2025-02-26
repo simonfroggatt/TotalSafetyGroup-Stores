@@ -672,8 +672,15 @@ class ControllerTsgCheckoutConfirm extends Controller {
         $this->send_async_request(MEDUSA_BESPOKE_CONVERT_URL . $order_id, ["order_id" => $order_id]);
     }
 
-    private function send_async_request($url, $data = []) {
+    private function send_async_request($url, $data = [], $redirect_count = 0) {
         $this->log->write('send_async_request');
+
+        // Limit the number of redirects
+        $max_redirects = 2;
+        if ($redirect_count >= $max_redirects) {
+            $this->log->write('send_async_request: exceeded maximum redirects');
+            return;
+        }
 
         $parts = parse_url($url);
         $host = $parts['host'];
@@ -717,14 +724,13 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 if (isset($matches[1])) {
                     $new_url = trim($matches[1]);
                     $this->log->write('send_async_request: redirecting to - '.$new_url);
-                    return $this->send_async_request($new_url, $data);
+                    return $this->send_async_request($new_url, $data, $redirect_count + 1);
                 }
             }
 
             fclose($fp); // Close immediately, not waiting for response
         }
-        else
-        {
+        else {
             $this->log->write('send_async_request: $fp - FALSE');
             $this->log->write('send_async_request: errno - '.$errno);
             $this->log->write('send_async_request: errstr - '.$errstr);

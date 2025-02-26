@@ -682,64 +682,36 @@ class ControllerTsgCheckoutConfirm extends Controller {
             return;
         }
 
-        $parts = parse_url($url);
-        $host = $parts['host'];
-        $port = isset($parts['port']) ? $parts['port'] : 80;
-        $path = isset($parts['path']) ? $parts['path'] : '/';
-
-        $this->log->write('send_async_request: path='.$path);
-
-        $query = http_build_query($data);
-        $content = "POST $path HTTP/1.1\r\n";
-        $content .= "Host: $host\r\n";
-        $content .= "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\n";
-        $content .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $content .= "Content-Length: " . strlen($query) . "\r\n";
-        $content .= "Connection: Close\r\n\r\n";
-        $content .= $query;
-
-        $this->log->write('send_async_request: content='.$content);
-
-        $this->log->write('send_async_request: calling - fsockopen');
         $this->log->write('send_async_request: original url='.$url);
 
-        $fp = fsockopen($host, $port, $errno, $errstr, 30);
-        if ($fp) {
-            $this->log->write('send_async_request: $fp - TRUE');
-            $writen = fwrite($fp, $content);
-            $this->log->write('send_async_request: writen - '.$writen);
+        // Initialize cURL
+        $ch = curl_init();
 
-            // Read response
-            $response = '';
-            while (!feof($fp)) {
-                $response .= fgets($fp, 128);
-            }
-            $this->log->write('send_async_request: response - '.$response);
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
 
-            // Check for HTTP status code
-            $status_line = explode("\r\n", $response)[0];
-            $status_code = intval(substr($status_line, 9, 3));
+        // Execute the request
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-            if ($status_code === 301) {
-                preg_match('/Location: (.+)/', $response, $matches);
-                if (isset($matches[1])) {
-                    $new_url = trim($matches[1]);
-                    $this->log->write('send_async_request: redirecting to - '.$new_url);
-                    return $this->send_async_request($new_url, $data, $redirect_count + 1);
-                }
-            }
+        $this->log->write('send_async_request: response - '.$response);
+        $this->log->write('send_async_request: HTTP code - '.$http_code);
 
-            fclose($fp); // Close immediately, not waiting for response
+        if ($http_code === 301) {
+            // Handle redirect
+            $new_url = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
+            $this->log->write('send_async_request: redirecting to - '.$new_url);
+            return $this->send_async_request($new_url, $data, $redirect_count + 1);
         }
-        else {
-            $this->log->write('send_async_request: $fp - FALSE');
-            $this->log->write('send_async_request: errno - '.$errno);
-            $this->log->write('send_async_request: errstr - '.$errstr);
-        }
+
+        // Close cURL session
+        curl_close($ch);
     }
-
-
-
 
     private function pushToXeroViaMedusa($order_id, $order_hash)
     {

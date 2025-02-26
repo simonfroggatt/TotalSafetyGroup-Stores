@@ -676,7 +676,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
         $this->log->write('send_async_request');
 
         // Limit the number of redirects
-        $max_redirects = 2;
+        $max_redirects = 3;
         if ($redirect_count >= $max_redirects) {
             $this->log->write('send_async_request: exceeded maximum redirects');
             return;
@@ -692,6 +692,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
         $query = http_build_query($data);
         $content = "POST $path HTTP/1.1\r\n";
         $content .= "Host: $host\r\n";
+        $content .= "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\n";
         $content .= "Content-Type: application/x-www-form-urlencoded\r\n";
         $content .= "Content-Length: " . strlen($query) . "\r\n";
         $content .= "Connection: Close\r\n\r\n";

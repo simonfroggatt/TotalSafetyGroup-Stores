@@ -683,7 +683,8 @@ class ControllerTsgCheckoutConfirm extends Controller {
         $fp = fsockopen($host, $port, $errno, $errstr, 30);
         if ($fp) {
             $this->log->write('send_async_request: $fp - TRUE');
-            fwrite($fp, $content);
+            $writen = fwrite($fp, $content);
+            $this->log->write('send_async_request: writen - '.$writen);
             fclose($fp); // Close immediately, not waiting for response
         }
         else

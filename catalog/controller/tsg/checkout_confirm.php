@@ -495,7 +495,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
 
             //now check if there are any bespoke items....if so, send to medusa
             //MEDUSA_BESPOKE_CONVERT_URL
-            $this->doBespokeConvert($this->session->data['order_id']);
+            $this->doAjaxBespokeConvert($this->session->data['order_id']);
 
            /*
 
@@ -652,9 +652,43 @@ class ControllerTsgCheckoutConfirm extends Controller {
         curl_close($ch);
     }
 
+    private function doAjaxBespokeConvert($order_id, $order_hash = '')
+    {
+        // Call the function
+        $this->send_async_request(MEDUSA_BESPOKE_CONVERT_URL . $order_id, ["order_id" => $order_id]);
+    }
+
+    private function send_async_request($url, $data = []) {
+        $parts = parse_url($url);
+        $host = $parts['host'];
+        $port = isset($parts['port']) ? $parts['port'] : 80;
+        $path = isset($parts['path']) ? $parts['path'] : '/';
+
+        $query = http_build_query($data);
+        $content = "POST $path HTTP/1.1\r\n";
+        $content .= "Host: $host\r\n";
+        $content .= "Content-Type: application/x-www-form-urlencoded\r\n";
+        $content .= "Content-Length: " . strlen($query) . "\r\n";
+        $content .= "Connection: Close\r\n\r\n";
+        $content .= $query;
+
+        $fp = fsockopen($host, $port, $errno, $errstr, 30);
+        if ($fp) {
+            fwrite($fp, $content);
+            fclose($fp); // Close immediately, not waiting for response
+        }
+    }
+
+
+
+
     private function pushToXeroViaMedusa($order_id, $order_hash)
     {
 
     }
+
+
+
+
 
 }

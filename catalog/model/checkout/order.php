@@ -653,6 +653,20 @@ class ModelCheckoutOrder extends Model {
         $this->db->query($sql);
     }
 
+    public function setOrderReceiptUrl($order_id, $receipt_url){
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " receipt_url = '" . $this->db->escape($receipt_url) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+    }
+
+    public function setPaymentIntent($order_id, $payment_intent){
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " payment_intent = '" . $this->db->escape($payment_intent) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+    }
+
     public function getOrderNumber($order_id){
         $sql = "SELECT invoice_prefix from " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'";
         $query = $this->db->query($sql);

@@ -110,7 +110,7 @@ class ControllerCheckoutSuccess extends Controller {
     private function createOrderHash($order_id)
     {
 
-        $key = substr(hash('sha256', XERO_TOKEN_HASH, true), 0, 32);
+        $key = substr(hash('sha256', $_ENV['XERO_TOKEN_HASH'], true), 0, 32);
         $iv = openssl_random_pseudo_bytes(16); // AES-256-CBC uses a 16-byte IV
         $encrypted = openssl_encrypt($order_id, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
 

@@ -1,0 +1,346 @@
+{{ header }}
+<div id="content">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="mb-4">
+          <h1 class="h3">Secure Payment</h1>
+          <p class="text-muted">Please complete your payment details below</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger mb-4">
+          {{ error }}
+        </div>
+        {% endif %}
+
+        {% if not error %}
+        <!-- Payment Methods -->
+        <div class="row g-4">
+          <!-- Quick Payment Methods -->
+          <div class="col-12" id="quick-payment-section" style="display: none;">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white">
+                <h3 class="h5 mb-0">Quick Payment</h3>
+              </div>
+              <div class="card-body">
+                <div id="payment-request-button">
+                  <!-- A Stripe Payment Request Button will be inserted here. -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Payment -->
+          <div class="col-12">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white">
+                <h3 class="h5 mb-0">Card Payment</h3>
+              </div>
+              <div class="card-body">
+                <form id="payment-form">
+                  <div class="mb-3">
+                    <div id="card-element" class="stripe-element"></div>
+                    <div id="card-errors" class="invalid-feedback" style="display: none;"></div>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100" id="submit-button">
+                    <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    Pay {{ total|number_format(2, '.', ',') }} GBP
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="text-center mt-4">
+          <p class="text-muted small mb-0">
+            <i class="fas fa-lock me-2"></i>
+            Secured by Stripe. We never store your card details.
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if not error %}
+<script type="text/javascript">
+// Create a Stripe client
+var stripe = Stripe('{{ stripe_publishable_key }}');
+
+// Define appearance and options
+const appearance = {
+  theme: 'stripe',
+  variables: {
+    colorPrimary: '#0d6efd',
+    colorBackground: '#ffffff',
+    colorText: '#32325d',
+    colorDanger: '#dc3545',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    borderRadius: '6px'
+  }
+};
+
+const options = {
+  layout: {
+    type: 'accordian',
+    defaultCollapsed: false
+  }
+};
+
+// Create an instance of Elements with appearance and options
+var elements = stripe.elements({
+  locale: 'en-GB',
+  appearance: appearance,
+  ...options
+});
+
+// Custom styling for the card Element
+var style = {
+  base: {
+    fontSize: '16px',
+    color: '#32325d',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    '::placeholder': {
+      color: '#aab7c4'
+    },
+    ':-webkit-autofill': {
+      color: '#32325d'
+    }
+  },
+  invalid: {
+    color: '#dc3545',
+    iconColor: '#dc3545'
+  }
+};
+
+// Create a card Element and mount it
+var card = elements.create('card', {
+  style: style,
+  hidePostalCode: true,
+  classes: {
+    base: 'stripe-element',
+    focus: 'stripe-element--focus',
+    invalid: 'stripe-element--invalid'
+  }
+});
+card.mount('#card-element');
+
+// Handle form submission
+var form = document.getElementById('payment-form');
+var submitButton = document.getElementById('submit-button');
+var spinner = document.getElementById('spinner');
+var loading = false;
+
+function setLoading(isLoading) {
+  loading = isLoading;
+  if (isLoading) {
+    submitButton.disabled = true;
+    spinner.classList.remove('d-none');
+  } else {
+    submitButton.disabled = false;
+    spinner.classList.add('d-none');
+  }
+}
+
+form.addEventListener('submit', async function(event) {
+  event.preventDefault();
+  setLoading(true);
+
+  const {error: stripeError, paymentMethod} = await stripe.createPaymentMethod({
+    type: 'card',
+    card: card,
+  });
+
+  if (stripeError) {
+    handlePaymentError({
+      type: 'card_error',
+      message: stripeError.message,
+      code: stripeError.code,
+      payment_method: null,
+      payment_intent_id: null
+    });
+    setLoading(false);
+    return;
+  }
+
+  const {error} = await stripe.confirmCardPayment('{{ client_secret }}', {
+    payment_method: paymentMethod.id
+  });
+
+  if (error) {
+    handlePaymentError({
+      type: error.type,
+      message: error.message,
+      code: error.code,
+      payment_method: paymentMethod,
+      payment_intent_id: '{{ payment_intent_id }}'
+    });
+    setLoading(false);
+  } else {
+    // Payment successful, handle confirmation
+    handlePaymentSuccess();
+  }
+});
+
+async function handlePaymentError(errorData) {
+  // Show error to customer
+  showError(errorData.message);
+  
+  // Send to backend
+  try {
+    const response = await fetch('index.php?route=extension/payment/tsg_stripe/paymentFailed', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        error: {
+          type: errorData.type,
+          message: errorData.message,
+          code: errorData.code
+        },
+        payment_method: errorData.payment_method,
+        payment_intent_id: errorData.payment_intent_id,
+        order_id: '{{ order_id }}'
+      })
+    });
+    const result = await response.json();
+    console.log('Error logged:', result);
+  } catch (e) {
+    console.error('Failed to log error:', e);
+  }
+}
+
+function showError(message) {
+  const errorDiv = document.getElementById('card-errors');
+  errorDiv.textContent = message;
+  errorDiv.style.display = 'block';
+}
+
+function handlePaymentSuccess() {
+  $.ajax({
+    url: 'index.php?route=extension/payment/tsg_stripe/confirm',
+    type: 'POST',
+    data: {
+      payment_intent_id: '{{ payment_intent_id }}'
+    },
+    dataType: 'json',
+    success: function(json) {
+      if (json.success) {
+        window.location.href = '{{ success_url }}';
+      } else {
+        alert(json.error);
+        setLoading(false);
+      }
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      setLoading(false);
+    }
+  });
+}
+
+// Handle card Element changes
+card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Quick Payment (Apple Pay / Google Pay) Integration
+var paymentRequest = stripe.paymentRequest({
+  country: 'GB',
+  currency: 'gbp',
+  total: {
+    label: 'Total Safety Group',
+    amount: {{ total|json_encode|raw }} * 100, // Amount in pence
+  },
+  requestPayerEmail: true
+});
+
+// Create the payment request button
+var prButton = elements.create('paymentRequestButton', {
+  paymentRequest: paymentRequest,
+  style: {
+    paymentRequestButton: {
+      type: 'default', // 'default' | 'donate' | 'buy'
+      theme: 'dark',   // 'dark' | 'light' | 'light-outline'
+      height: '48px'
+    }
+  }
+});
+
+// Check if the payment request is supported
+paymentRequest.canMakePayment().then(function(result) {
+  if (result) {
+    // Show the quick payment section if Apple Pay or Google Pay is available
+    document.getElementById('quick-payment-section').style.display = 'block';
+    prButton.mount('#payment-request-button');
+  }
+});
+
+// Handle the payment request button payment
+paymentRequest.on('paymentmethod', function(event) {
+  stripe.confirmCardPayment(
+    '{{ client_secret }}',
+    {
+      payment_method: event.paymentMethod.id
+    }
+  ).then(function(result) {
+    if (result.error) {
+      event.complete('fail');
+      alert(result.error.message);
+    } else {
+      event.complete('success');
+      window.location.href = '{{ success_url }}';
+    }
+  });
+});
+</script>
+{% endif %}
+
+<style>
+#payment-request-button {
+  width: 100%;
+}
+
+#card-element {
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+#card-element.StripeElement--focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+  padding: 12px 20px;
+  font-weight: 500;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,.05);
+  padding: 1rem 1.25rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+</style>
+
+{{ footer }}

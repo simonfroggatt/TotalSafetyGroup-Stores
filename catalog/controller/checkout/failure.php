@@ -1,59 +1,110 @@
 <?php
 class ControllerCheckoutFailure extends Controller {
-	public function index() {
-		$this->load->language('checkout/failure');
-
-		$this->document->setTitle($this->language->get('heading_title'));
-
-		$data['breadcrumbs'] = array();
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/home')
-		);
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_basket'),
-			'href' => $this->url->link('checkout/cart')
-		);
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_checkout'),
-			'href' => $this->url->link('checkout/checkout', '', true)
-		);
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_failure'),
-			'href' => $this->url->link('checkout/failure')
-		);
-
-		$data['text_message'] = sprintf($this->language->get('text_message'), $this->url->link('information/contact'));
-
-		$data['continue'] = $this->url->link('common/home');
-
-		$data['column_left'] = $this->load->controller('common/column_left');
-		$data['column_right'] = $this->load->controller('common/column_right');
-		$data['content_top'] = $this->load->controller('common/content_top');
-		$data['content_bottom'] = $this->load->controller('common/content_bottom');
-		$data['footer'] = $this->load->controller('common/footer');
-		$data['header'] = $this->load->controller('common/header');
-
-        //see which payment method was used and record it
-        //get the pmid from the url
-        //check if the pmid is set
-        if(isset($this->request->get['pm_id']))
-        {
-            $pmid = $this->request->get['pm_id'];
-            $this->load->model('checkout/order');
-
-            $order_id = $this->session->data['order_id'];
-            $this->model_checkout_order->setPaymentProvider($order_id, $pmid);
-            //add to the payment history
-            $this->model_checkout_order->addPaymentHistory($order_id, $pmid, 1,'user cancelled the payment');  //$order_id, $payment_method_id, $payment_status_id, $comment
+    public function index() {
+        $this->load->language('checkout/failure');
+        
+        if (isset($this->request->get['order_id'])) {
+            $order_id = $this->request->get['order_id'];
+        } else {
+            $order_id = 0;
         }
+        
+        $this->load->model('checkout/order');
+        $order_info = $this->model_checkout_order->getOrder($order_id);
+        
+        if ($order_info) {
+            $this->document->setTitle($this->language->get('heading_title'));
+            
+            $data['heading_title'] = $this->language->get('heading_title');
+            
+            $data['order_id'] = $order_id;
+            $data['order_info'] = $order_info;
+            
+            // Load payment methods
+            $data['payment_methods'] = [];
 
-
-
-		$this->response->setOutput($this->load->view('common/success', $data));
-	}
+           //$tmp =  $settings[$settings['transaction_mode'] . '_publishable_key'];
+            
+            // Add Stripe payment option
+            if ($this->config->get('payment_stripe_status')) {
+                $this->load->model('extension/payment/stripe');
+                
+                $stripe_data = [
+                    'order_id' => $order_id,
+                    'amount' => $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false) * 100, // Convert to cents
+                    'currency' => strtolower($order_info['currency_code']),
+                    'description' => sprintf('Order #%s', $order_id),
+                    'public_key' => $this->config->get('payment_stripe_test_public')
+                ];
+                
+                $data['payment_methods'][] = [
+                    'code' => 'stripe',
+                    'title' => 'Pay with Card (Stripe)',
+                    'action' => $this->url->link('extension/payment/stripe/createPaymentIntent', '', true),
+                    'success_url' => $this->url->link('checkout/success', '', true),
+                    'data' => $stripe_data
+                ];
+            }
+            
+            // Add PayPal payment option
+           /* if ($this->config->get('payment_paypal_status')) {
+                $this->load->model('extension/payment/paypal');
+                
+                $_config = new Config();
+                $_config->load('paypal');
+                $config_setting = $_config->get('paypal_setting');
+                $setting = array_replace_recursive((array)$config_setting, (array)$this->config->get('payment_paypal_setting'));
+                
+                $data['client_id'] = $this->config->get('payment_paypal_client_id');
+                $data['merchant_id'] = $this->config->get('payment_paypal_merchant_id');
+                $data['environment'] = $this->config->get('payment_paypal_environment');
+                $data['partner_id'] = $setting['partner'][$data['environment']]['partner_id'];
+                $data['partner_attribution_id'] = $setting['partner'][$data['environment']]['partner_attribution_id'];
+                $data['transaction_method'] = $setting['general']['transaction_method'];
+                
+                $paypal_data = [
+                    'order_id' => $order_id,
+                    'amount' => $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false),
+                    'currency' => $order_info['currency_code'],
+                    'description' => sprintf('Order #%s', $order_id)
+                ];
+                
+                $data['payment_methods'][] = [
+                    'code' => 'paypal',
+                    'title' => 'Pay with PayPal',
+                    'action' => $this->url->link('extension/payment/paypal/checkout', 'order_id=' . $order_id),
+                    'data' => $paypal_data
+                ];
+                
+                $data['powerby_logos'] = 'image/stores/3rdpartylogo/paypal_poweredby_large.svg';
+            }*/
+            
+            $data['column_left'] = $this->load->controller('common/column_left');
+            $data['column_right'] = $this->load->controller('common/column_right');
+            $data['content_top'] = $this->load->controller('common/content_top');
+            $data['content_bottom'] = $this->load->controller('common/content_bottom');
+            $data['footer'] = $this->load->controller('common/footer');
+            $data['header'] = $this->load->controller('common/header');
+            
+            $this->response->setOutput($this->load->view('checkout/failed_order', $data));
+        } else {
+            $this->load->language('error/not_found');
+            
+            $this->document->setTitle($this->language->get('heading_title'));
+            
+            $data['heading_title'] = $this->language->get('heading_title');
+            $data['text_error'] = $this->language->get('text_error');
+            
+            $this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
+            
+            $data['column_left'] = $this->load->controller('common/column_left');
+            $data['column_right'] = $this->load->controller('common/column_right');
+            $data['content_top'] = $this->load->controller('common/content_top');
+            $data['content_bottom'] = $this->load->controller('common/content_bottom');
+            $data['footer'] = $this->load->controller('common/footer');
+            $data['header'] = $this->load->controller('common/header');
+            
+            $this->response->setOutput($this->load->view('error/not_found', $data));
+        }
+    }
 }

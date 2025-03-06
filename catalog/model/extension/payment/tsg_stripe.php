@@ -7,8 +7,8 @@ class ModelExtensionPaymentTsgStripe extends Model {
         
         // Initialize Stripe
         require_once(DIR_SYSTEM . 'library/stripe/init.php');
-        \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
-        $this->stripe = new \Stripe\StripeClient(STRIPE_SECRET_KEY);
+        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        $this->stripe = new \Stripe\StripeClient($_ENV['STRIPE_SECRET_KEY']);
     }
     
     public function createPaymentIntent($amount, $currency = 'GBP', $metadata = [], $customer_email = '') {

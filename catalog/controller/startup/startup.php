@@ -33,7 +33,11 @@ class ControllerStartupStartup extends Controller {
 			$this->config->set('config_url', HTTP_SERVER);
 			$this->config->set('config_ssl', HTTPS_SERVER);
 		}
-		
+
+
+        loadEnv(DIR_SYSTEM . '../.env', $this->config->get('config_store_id'));
+
+
 		// Settings
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
 		

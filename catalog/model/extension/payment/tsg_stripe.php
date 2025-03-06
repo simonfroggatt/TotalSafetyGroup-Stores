@@ -74,11 +74,79 @@ class ModelExtensionPaymentTsgStripe extends Model {
     
     public function retrievePaymentIntent($payment_intent_id) {
         try {
+            // Expand all necessary payment details in a single API call
+            $intent = $this->stripe->paymentIntents->retrieve(
+                $payment_intent_id,
+                [
+                    'expand' => [
+                        'charges.data.payment_method_details',
+                        'charges.data.outcome',  // Get detailed outcome info for failed charges
+                        'last_payment_error',    // Get detailed error information
+                        'payment_method',
+                        'payment_method.card',
+                        'payment_method.card.wallet',
+                        'payment_method.paypal',
+                        'latest_charge'
+                    ]
+                ]
+            );
+            
+            $this->log->write('Stripe Debug: Retrieved payment intent ' . $payment_intent_id);
+            
+            // Extract payment method details
+            $payment_details = [];
+            if ($intent->payment_method) {
+                $payment_details['payment_method'] = $intent->payment_method;
+                if (isset($intent->payment_method->card)) {
+                    $payment_details['card'] = $intent->payment_method->card;
+                    $payment_details['wallet'] = $intent->payment_method->card->wallet ?? null;
+                }
+                if (isset($intent->payment_method->paypal)) {
+                    $payment_details['paypal'] = $intent->payment_method->paypal;
+                }
+            }
+            
+            // Extract failure details if payment failed
+            if ($intent->status === 'requires_payment_method' || 
+                $intent->status === 'canceled' || 
+                $intent->last_payment_error) {
+                
+                $payment_details['failure'] = [
+                    'status' => $intent->status,
+                    'error_type' => $intent->last_payment_error->type ?? null,
+                    'error_code' => $intent->last_payment_error->code ?? null,
+                    'error_message' => $intent->last_payment_error->message ?? null,
+                    'decline_code' => $intent->last_payment_error->decline_code ?? null,
+                ];
+                
+                // Get failure details from the latest charge if available
+                if ($intent->latest_charge && $intent->latest_charge->outcome) {
+                    $payment_details['failure'] += [
+                        'network_status' => $intent->latest_charge->outcome->network_status ?? null,
+                        'reason' => $intent->latest_charge->outcome->reason ?? null,
+                        'risk_level' => $intent->latest_charge->outcome->risk_level ?? null,
+                        'seller_message' => $intent->latest_charge->outcome->seller_message ?? null,
+                        'payment_method_type' => $intent->latest_charge->payment_method_details->type ?? null
+                    ];
+                }
+                
+                $this->log->write('Stripe Debug: Payment failure details - Status: ' . $intent->status . 
+                    ', Error: ' . ($payment_details['failure']['error_message'] ?? 'Unknown error'));
+            }
+            
+            // Log payment method information for debugging
+            if (!empty($payment_details['payment_method'])) {
+                $this->log->write('Stripe Debug: Payment method details retrieved - Type: ' . 
+                    ($payment_details['payment_method']->type ?? 'unknown'));
+            }
+            
             return [
                 'success' => true,
-                'intent' => $this->stripe->paymentIntents->retrieve($payment_intent_id)
+                'intent' => $intent,
+                'payment_details' => $payment_details
             ];
         } catch (\Stripe\Exception\ApiErrorException $e) {
+            $this->log->write('Stripe Error: Failed to retrieve payment intent - ' . $e->getMessage());
             return [
                 'success' => false,
                 'error' => $e->getMessage()

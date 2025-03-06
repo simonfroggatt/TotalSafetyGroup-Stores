@@ -2,7 +2,7 @@
 
 class ControllerTsgCheckoutPayments extends Controller
 {
-    public function index()
+    public function index_old()
     {
         //save form data into a session
        // $this->session->data['payment_address'] = $this->request->post['payment_address'];
@@ -55,6 +55,16 @@ class ControllerTsgCheckoutPayments extends Controller
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
 
+    }
+
+    public function index()
+    {
+        $payment_method_arr[] = $this->load->controller('extension/payment/tsg_stripe');
+        $data['payment_methods'] = $this->load->controller('extension/payment/tsg_stripe');
+
+        $json['payment_methods_html'] =  $this->load->view('checkout/confirm_payment', $data);
+
+        $this->response->setOutput($this->load->view('checkout/confirm_payment', $data));
     }
 
     private function loadPaymentMethods(){

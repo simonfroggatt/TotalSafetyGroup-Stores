@@ -490,7 +490,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
             }
 
             $this->load->model('checkout/order');
-
+            $this->log->write('Order Data: ' . print_r($order_data, true));
             $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
 
             //now check if there are any bespoke items....if so, send to medusa

@@ -59,12 +59,15 @@ class ControllerTsgCheckoutPayments extends Controller
 
     public function index()
     {
+        $payment_method_arr[] = $this->load->controller('extension/payment/purchaseorder');
         $payment_method_arr[] = $this->load->controller('extension/payment/tsg_stripe');
-        $data['payment_methods'] = $this->load->controller('extension/payment/tsg_stripe');
+
+        $data['payment_methods'] = $payment_method_arr;
 
         $json['payment_methods_html'] =  $this->load->view('checkout/confirm_payment', $data);
 
-        $this->response->setOutput($this->load->view('checkout/confirm_payment', $data));
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 
     private function loadPaymentMethods(){

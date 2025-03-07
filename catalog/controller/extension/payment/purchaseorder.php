@@ -1,6 +1,9 @@
 <?php
 class ControllerExtensionPaymentPurchaseOrder extends Controller {
 	public function index() {
+
+        return $this->load->view('extension/payment/purchaseorder');
+
         //get the the customer has PO account setup
         $this->load->model('account/customer');
         if ($this->customer->isLogged()){

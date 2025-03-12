@@ -6,7 +6,7 @@ $(document).ready(function () {
     
     //* Form js
 
-    function setFormSetup(initial_step = 0, first_step = 0) {
+    function setFormSetup(initial_step = 0) {
         //jQuery time
         var current_fs, next_fs, previous_fs; //fieldsets
         var left, opacity, scale; //fieldset properties which we will animate
@@ -19,29 +19,20 @@ $(document).ready(function () {
         var blNextStep = false;
 
         let bsOverlay = new bootstrap.Modal('#overlayCheckout');
-        const progressbarItems = $("#progressbar li"); // Cache the list items
 
         if (initial_step > 0) {
-            current_fs = $('#' + sections[initial_step - 1]);
-            next_fs = $('#' + sections[initial_step]);
+            current_fs = $('#' + sections[sectionactive - 1]);
+            next_fs = $('#' + sections[sectionactive]);
 
             //activate next step on progressbar using the index of next_fs
-            //activate each setp upto next_fs
-            let i = 1;
-            while (i <= initial_step && i <= sections.length) {
-                progressbarItems.eq(i - 1).addClass("active"); // Use `i - 1` because `.eq()` is zero-based
-                i++;
-            }
-
-            $("#msform section").removeClass("active");
-            let section_name = sections[initial_step-1];
-            next_fs = $('#' + section_name);
-            next_fs.addClass("active");
-            sectionactive = initial_step;
+            $("#progressbar li").eq($("section").index(next_fs)).addClass("active");
+            //show the next fieldset
+            next_fs.show();
+            current_fs.hide();
         }
 
         $(document).ajaxStart(function(){
-           blNextStep = false;
+            blNextStep = false;
         });
 
         $(document).ajaxComplete(function(){
@@ -664,10 +655,10 @@ $(document).ready(function () {
 
     function checkAccountType() {
         if(is_logged === 1){
-            return 2;
+            return 1;
         }
         else {
-            return 1;
+            return 0;
         }
     }
 

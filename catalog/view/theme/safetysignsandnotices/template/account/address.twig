@@ -20,24 +20,27 @@
             {% set class = 'col-sm-12' %}
         {% endif %}
         <div id="content" class="{{ class }}">{{ content_top }}
-            <h2>{{ text_address_add }}</h2>
+            <h2>{{ text_address_header }}</h2>
             <form id="address_form" method="post">
                 <input type="hidden" id="addressID" name="addressID" value="{{ address_id }}">
                 <input type="hidden" id="customerID" name="customerID" value="{{ customer_id }}">
                 <div class="row g-2">
                     <div class="form-floating col-12 col-sm-6 col-md-6">
-                        <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Fullname" required {% if address.fullname %} value="{{ address.fullname }}" {% endif %}>
+                        <input type="text" class="form-control" autocomplete="name" id="fullname" name="fullname" placeholder="Fullname" required {% if address.fullname %} value="{{ address.fullname }}" {% endif %}>
                         <label for="fullname">Fullname (required)</label>
 
                     </div>
                     <div class="form-floating col-12 col-sm-6 col-md-6">
-                        <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="0123 345 6789" required {% if address.telephone %} value="{{ address.telephone }}" {% endif %}>
+                        <input type="tel" class="form-control" autocomplete="tel" id="telephone" name="telephone" placeholder="0123 345 6789" required {% if address.telephone %} value="{{ address.telephone }}" {% endif %}>
                         <label for="telephone">Contact Number (required)</label>
                     </div>
                     <div class="form-floating col-12">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="someone@example.com" required {% if address.email %} value="{{ address.email }}" {% endif %}>
+                        <input type="email" autocomplete="email" class="form-control" id="email"
+                               name="email" placeholder="someone@example.com" required {% if address.email %} value="{{ address.email }}" {% endif %}>
                         <label for="email">Email (required)</label>
+                        <div id="email_error" class="invalid-feedback"></div>
                     </div>
+
                     {% if address_id > 0 %}
                         {% set classSearch = 'd-none' %}
                         {% set classFull = '' %}
@@ -58,7 +61,7 @@
                         </div>
                         <div class="form-floating col-12">
                             <textarea class="form-control" placeholder="Address" id="address" name="address" style="height: 100px" required>{% if address.address_1 %}{{ address.address_1 }}{% endif %}</textarea>
-                            <label for="address">Address - just start typing</label>
+                            <label for="address">Address</label>
                         </div>
                         <div class="form-floating col-6 col-lg-6">
                             <input type="text" class="form-control" id="city" name="city" placeholder="Town / City" required {% if address.city %} value="{{ address.city }}" {% endif %}>
@@ -101,7 +104,7 @@
                     <div>
                         <a href="{{ back }}" type="button" class="btn previous_button btn-block">Cancel</a>
                         {% if address_id > 0 %}
-                            <button type="submit" class="btn  btn-success" id="btnUpdate" >Update</button>
+                            <button type="submit" class="btn btn-success" id="btnUpdate" >Update</button>
                         {% else %}
                             <button type="submit" class="btn btn-success" id="btnAdd" >Add New</button>
                         {% endif %}
@@ -128,7 +131,7 @@
             'CountryIsoNumber': 'country_id'
         }
 
-        let inputFields = ['#addressLookup'];//,'#company', '#address']
+        let inputFields = ['#addressLookup', '#address'];//,'#company', '#address']
         let lookupTest = new TSGAddressLookup(inputFields, '', fieldMatch, '#js-fulladdress')
 
 
@@ -181,6 +184,7 @@
 
             event.preventDefault();
             event.stopPropagation();
+
             let form = $("#address_form");
             if (!form[0].checkValidity() === false) {
                 var form_data = form.serializeArray();
@@ -226,6 +230,25 @@
         $('#'+divName).removeClass('d-none');
         $('#'+searchName).attr('required', false);
     }
+
+    document.getElementById('email').addEventListener('input', function (e) {
+        const email = e.target.value;
+        const emailPattern = /^[\w+-.%]+@[\w-]+\.[A-Za-z]{2,}$/;
+
+        let allValid = true;
+        let isvalid = email && emailPattern.test(email);
+
+        if (isvalid) {
+            e.target.classList.remove('is-invalid');
+            e.target.classList.add('is-valid');
+            //test_new_email(email, e, '#accountemail_error');
+
+        } else {
+            e.target.classList.remove('is-valid');
+            e.target.classList.add('is-invalid');
+            $('#email_error').text('Please enter valid email addresses')
+        }
+    });
 
 </script>
 {{ footer }}

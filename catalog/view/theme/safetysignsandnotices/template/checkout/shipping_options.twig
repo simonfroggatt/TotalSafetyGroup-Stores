@@ -1,8 +1,4 @@
-{% if shipping_options|length > 2 %}
-    {% set class = 'row-cols-md-3' %}
-{% else %}
-    {% set class = 'row-cols-md-2' %}
-{% endif %}
+{% set class = 'row-cols-md-'~shipping_options|length %}
 
 <div class="row row-cols-1 {{ class }} g-4">
 {% for shipping in shipping_options %}

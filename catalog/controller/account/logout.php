@@ -17,7 +17,7 @@ class ControllerAccountLogout extends Controller {
 			unset($this->session->data['voucher']);
 			unset($this->session->data['vouchers']);
 
-			$this->response->redirect($this->url->link('account/logout', '', true));
+			$this->response->redirect($this->url->link('common/home', '', true));
 		}
 
 		$this->load->language('account/logout');

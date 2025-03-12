@@ -209,3 +209,11 @@
   color: white;
 
 }
+
+.multi_step_form #msform section {
+  display: none;
+}
+
+.multi_step_form #msform section.active {
+  display: block;
+}

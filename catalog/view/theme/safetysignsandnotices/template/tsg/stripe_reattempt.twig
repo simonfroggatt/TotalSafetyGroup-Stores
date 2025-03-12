@@ -1,0 +1,340 @@
+{{ header }}
+<div id="content">
+  <div class="container">
+    <div class="row">
+      {{ column_left }}
+      {% if column_left and column_right %}
+      {% set class = 'col-sm-6' %}
+      {% elseif column_left or column_right %}
+      {% set class = 'col-sm-9' %}
+      {% else %}
+      {% set class = 'col-sm-12' %}
+      {% endif %}
+      <div id="content" class="{{ class }}">
+        <br>
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif  %}
+        <div class="card">
+          <div class="card-header">
+            <h1>Failed Order Details</h1>
+          </div>
+          <div class="card-body">
+            <div class="row mb-4">
+              <div class="col-12 col-md-4">
+                <h4>Order Information:</h4>
+                <dl class="inline-dl">
+                  <dt>Order ID:</dt>
+                  <dd>#{{ order_info['invoice_prefix'] }}-{{ order_info.order_id }}</dd>
+                  <dt>Date Added:</dt>
+                  <dd>{{ order_info.date_added }}</dd>
+                  <dt>Name:</dt>
+                  <dd>{{ order_info.firstname }} {{ order_info.lastname }}</dd>
+                  <dt>Email:</dt>
+                  <dd>#{{ order_info.email }}</dd>
+                </dl>
+              </div>
+              <div class="col-6 col-md-4">
+                <h4>Billing Address:</h4>
+                <address>
+                    {{ order_info.payment_address_1 }}<br>
+                  {% if order_info.payment_address_1|trim %}
+                    {{ order_info.payment_address_1 }}<br>
+                  {% endif %}
+                    {{ order_info.payment_city }}<br>
+                    {{ order_info.payment_postcode }}<br>
+                    {{ order_info.payment_country }}
+                </address>
+              </div>
+              <div class="col-6 col-md-4">
+                <h4>Shipping Address:</h4>
+                <address>
+                    {{ order_info.shipping_address_1 }}<br>
+                  {% if order_info.payment_address_2|trim %}
+                    {{ order_info.payment_address_2 }}<br>
+                  {% endif %}
+                    {{ order_info.shipping_city }}<br>
+                    {{ order_info.shipping_postcode }}<br>
+                    {{ order_info.shipping_country }}
+                </address>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-12">
+                <table class="table table-bordered table-responsive">
+                  <thead>
+                  <tr>
+                    <td class="text-center col-1">{{ column_image }}</td>
+                    <td class="text-start col-8">{{ column_name }}</td>
+                    <td class="text-start col-1">Qty</td>
+                    <td class="text-end col-1 text-nowrap">{{ column_price }}</td>
+                    <td class="text-end col-1 text-nowrap">{{ column_total }}</td>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for product in product_data %}
+                    <tr>
+                      <td class="text-center">
+                        {% if product.is_bespoke %}
+                          {% if product.svg_raw %}
+                            <div id="svgThumb">
+                              <a href="{{ product.href }}">{{ product.svg_raw | raw }}</a>
+                            </div>
+                          {% else %}
+                            {% if product.thumb %}
+                              <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" />
+                            {% endif %}
+                          {% endif %}
+                        {% else %}
+                          {% if product.thumb %}
+                            <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="mx-auto d-block img-fluid" />
+                          {% endif %}
+                        {% endif %}
+                      </td>
+                      <td class="text-start">{{ product.name }}
+                        <br><span class="product-variants">Model : <strong>{{ product.model }}</strong></span>
+                        <br><span class="product-variants">{{ product.size_name }}
+                          {% if product.orientation_name %}( <strong>{{ product.orientation_name}}*</strong> ) {% endif %}
+                          - {{ product.material_name }}</span>
+                        {% if product.tsg_options %}
+                          {% for tsg_option in product.tsg_options %}
+                            {% if tsg_option.show_at_checkout == 1 %} <br />
+                              <span class="product-variants">{{ tsg_option.label }}: {{ tsg_option.value }}</span>
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                        {% if product.option %}
+                          {% for option in product.option %} <br />
+                            <small>{{ option.name }}: {{ option.value }}</small> {% endfor %}
+                        {% endif %}
+                        {% if product.tsg_options %}
+                          {% for tsg_option in product.tsg_options %}
+                            {% if tsg_option.show_at_checkout == 0 %} <br />
+                              <span class="product-variants">{{ tsg_option.class_label }}: <strong>{{ tsg_option.value_label }}</strong></span>
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                       </td>
+
+
+                      <td class="text-center text-md-start col-2">{{ product.quantity }}</td>
+                      <td class="text-end col-1">{{ product.price }}</td>
+                      <td class="text-end col-1">{{ product.total }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+                <div class="text-end"><p>* Image shown may not always represent the finished sign</p></div>
+              </div>
+              <div class="col-12 text-end">
+                <table class="ms-auto">
+                  {% for total in totals %}
+                    <tr {% if loop.last %}class="fs-5 fw-bold"{% endif %}>
+                      <td colspan="4" class="text-end pe-4">{{ total['title'] }}</td>
+                      <td class="text-end">{{ total['text'] }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div>
+
+
+
+
+
+              </div>
+            </div>
+
+          </div>
+
+
+        {% if error %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+        {% else %}
+
+          <div class="row text-center justify-content-center">
+            <div class="col-12 mb-2">
+              <img src="https://cdn.totalsafetygroup.com/stores/3rdpartylogo/stripe_poweredby_large.svg" alt="Stripe" title="Stripe" class="img-fluid" style="max-width: 600px"/>
+            </div>
+            <div class="col-12 mb-2">
+              <form id="payment-form">
+                <div id="payment-element"></div>
+                <div id="payment-message" class="alert alert-danger mt-3" style="display: none;"></div>
+                <button id="submit" class="btn btn-success btn-lg w-100 mt-3">
+                  <div class="spinner" id="spinner" style="display: none;"></div>
+                  <span id="button-text">Checkout and Pay £{{ total }}</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      </div>
+      {{ column_right }}
+    </div>
+  </div>
+</div>
+{{ footer }}
+
+
+
+
+<style>
+  #payment-message {
+    display: none;
+  }
+  .spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  (function() {
+    const stripe = Stripe('{{ stripe_publishable_key }}');
+    const clientSecret = '{{ client_secret }}';
+    const paymentIntentId = '{{ payment_intent_id }}';
+    const orderId = '{{ order_id }}';
+    const successUrl = '{{ success_url }}';
+
+    let elements;
+    let paymentElement;
+
+    async function initialize() {
+      elements = stripe.elements({
+        clientSecret: clientSecret
+      });
+
+      paymentElement = elements.create("payment");
+      await paymentElement.mount("#payment-element");
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      setLoading(true);
+
+      try {
+        try {
+          const paymentType = document.querySelector('.p-PaymentMethodSelector');
+          console.log(paymentType);
+
+          const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
+
+          await fetch('index.php?route=extension/payment/tsg_stripe/paymentStarted', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'payment_intent_id=' + encodeURIComponent(paymentIntentId) +
+                    '&payment_type=' + encodeURIComponent(paymentType) +
+                    '&status=initiated'
+          });
+        } catch (e) {
+          console.error('Error logging payment initiation:', e);
+        }
+
+        const {error} = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: successUrl
+          },
+          redirect: 'always'
+        });
+
+        if (error) {
+          showMessage(error.message);
+          await handlePaymentFailure(error);
+        } else {
+          const result = await confirmPayment();
+          if (result.success) {
+            showMessage('Payment successful!', 'success');
+            window.location.href = successUrl;
+          } else {
+            showMessage(result.error || 'Payment failed');
+          }
+        }
+      } catch (e) {
+        showMessage("An unexpected error occurred.");
+        console.error('Payment error:', e);
+      }
+
+      setLoading(false);
+    }
+
+    async function confirmPayment() {
+      try {
+        const response = await fetch('index.php?route=extension/payment/tsg_stripe/confirm', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'payment_intent_id=' + encodeURIComponent(paymentIntentId)
+        });
+
+        return await response.json();
+      } catch (e) {
+        return {
+          success: false,
+          error: 'Failed to confirm payment'
+        };
+      }
+    }
+
+    async function handlePaymentFailure(error) {
+      try {
+        await fetch('index.php?route=extension/payment/tsg_stripe/paymentFailed', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            payment_intent_id: paymentIntentId,
+            order_id: orderId,
+            error: {
+              type: error.type,
+              code: error.code,
+              message: error.message
+            },
+            payment_method: error.payment_method
+          })
+        });
+      } catch (e) {
+        console.error('Failed to log payment failure:', e);
+      }
+    }
+
+    function showMessage(messageText, type = 'error') {
+      const messageContainer = document.querySelector("#payment-message");
+      messageContainer.classList.remove('alert-danger', 'alert-success');
+      messageContainer.classList.add(type === 'error' ? 'alert-danger' : 'alert-success');
+      messageContainer.textContent = messageText;
+      messageContainer.style.display = "block";
+    }
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        document.querySelector("#submit").disabled = true;
+        document.querySelector("#spinner").style.display = "inline-block";
+        document.querySelector("#button-text").style.display = "none";
+      } else {
+        document.querySelector("#submit").disabled = false;
+        document.querySelector("#spinner").style.display = "none";
+        document.querySelector("#button-text").style.display = "inline";
+      }
+    }
+
+    initialize();
+    document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+  })();
+</script>

@@ -109,6 +109,7 @@ class ControllerAccountAddressbook extends Controller
         $data['content_bottom'] = $this->load->controller('common/content_bottom');
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
+        $data['text_address_header'] = $this->language->get('text_address_add');
 
         $this->load->model('localisation/country');
 
@@ -155,7 +156,7 @@ class ControllerAccountAddressbook extends Controller
         $data['back'] = $this->url->link('account/addressbook', '', true);
 
         $data['customer_id'] = $this->customer->getID();
-
+        $data['text_address_header'] = $this->language->get('text_address_edit');
 
         $this->document->setTitle($this->language->get('heading_title'));
 
@@ -174,6 +175,7 @@ class ControllerAccountAddressbook extends Controller
         $this->load->model('localisation/country');
 
         $data['countries'] = $this->model_localisation_country->TSGgetCountries();
+
 
         $this->response->setOutput($this->load->view('account/address', $data));
 

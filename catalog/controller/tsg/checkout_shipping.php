@@ -78,7 +78,7 @@ class ControllerTsgCheckoutShipping extends Controller {
 
             $iso_id = $this->session->data['shipping_address']['country_id'];
             $shipping_methods = $this->model_tsg_shipping_methods->getISOShippingMethods($iso_id);
-            $data['shipping_options'] = $shipping_options = $this->filterShippingMethods($shipping_methods);
+            $data['shipping_options'] = $this->filterShippingMethods($shipping_methods);
             $json['shipping_options_html'] = $this->load->view('checkout/shipping_options', $data);
         }
 

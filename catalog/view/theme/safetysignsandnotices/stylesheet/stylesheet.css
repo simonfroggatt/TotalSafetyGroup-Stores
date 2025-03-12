@@ -1172,3 +1172,38 @@ div#drawing {
     border-radius: 5px;
     border: 2px solid #5cb85c;
 }
+
+
+#user-login .form-floating input.form-control {
+    height: calc(3.5rem + 2px); /* Default height for Bootstrap form-floating inputs */
+}
+
+/* Adjust the button height to match */
+#user-login .input-group .btn {
+    height: calc(3.5rem + 2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inline-dl > dt {
+    float: left;
+    clear: left;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.inline-dl > dd {
+    margin-left: 15px;
+}
+
+@media (max-width: 600px) {
+    .inline-dl > dt {
+        float: none;
+        clear: none;
+        margin-right: 0;
+    }
+    .inline-dl dd {
+        margin-left: 16px; /* Add indentation for descriptions */
+    }
+}

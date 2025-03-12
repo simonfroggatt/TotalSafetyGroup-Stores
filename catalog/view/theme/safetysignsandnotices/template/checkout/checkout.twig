@@ -8,6 +8,17 @@
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
+    {% if payment_error %}
+        <div class="alert alert-danger" role="alert" id="checkout_payment_error">
+            {{ payment_error }}
+        </div>
+    {%  endif %}
+    <div class="d-none mt-2" aria-hidden="true" id="checkout_alert" role="alert">
+        <div id="checkout_alert_contents">
+        </div>
+        <button type="button" class="btn-close" id="alert_close_btn" aria-label="Close" data-dismiss="alert"></button>
+    </div>
+
   <div class="row">{{ column_left }}
     <div id="content" class="col-sm-12">{{ content_top }}
         <h2 class="d-none d-md-block">Checkout</h2>
@@ -21,12 +32,9 @@
                     <li>Check Order</li>
                     <li>Payment</li>
                 </ul>
-                <div class="d-none mt-2" aria-hidden="true" id="checkout_alert" role="alert">
-                    <div id="checkout_alert_contents"></div>
-                    <button type="button" class="btn-close" id="alert_close_btn" aria-label="Close"></button>
-                </div>
+
                 <!-- sections -->
-                <section id="account">
+                <section id="account" class="active">
                     {{ section_account }}
                 </section>
                 <section id="address">

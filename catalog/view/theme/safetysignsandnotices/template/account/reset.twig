@@ -1,19 +1,18 @@
 {{ header }}
-<div id="account-password" class="container">
+<div id="account-reset" class="container">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
-      <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
   <div class="row">{{ column_left }}
     {% if column_left and column_right %}
-      {% set class = 'col-sm-6' %}
+    {% set class = 'col-sm-6' %}
     {% elseif column_left or column_right %}
-      {% set class = 'col-sm-9' %}
+    {% set class = 'col-sm-9' %}
     {% else %}
-      {% set class = 'col-sm-12' %}
+    {% set class = 'col-sm-12' %}
     {% endif %}
-
 
     <div id="content" class="{{ class }}">{{ content_top }}
       <div class="row justify-content-center">
@@ -45,12 +44,9 @@
                 lowercase letter, and 1 number. Special characters are allowed.
               </div>
             </div>
-            <div class="row align-content-between">
-              <div class="col-6 col-lg-3 pt-2 d-grid">
-                <a href="index.php?route=account/account" role="button" class="btn previous_button btn-block">Cancel</a>
-              </div>
-              <div class="col-6 col-lg-9 pt-2 d-grid">
-                <button type="submit" value="Update" class="btn btn-success btn-block">Update</button>
+            <div class="row pt-2">
+              <div class="col-12">
+                <button type="submit" value="Update" class="btn btn-success btn-block w-100">Update</button>
               </div>
             </div>
           </form>

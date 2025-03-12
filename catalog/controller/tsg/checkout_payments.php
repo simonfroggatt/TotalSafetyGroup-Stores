@@ -12,6 +12,8 @@ class ControllerTsgCheckoutPayments extends Controller
         $method_data = array();
         $total = 0;
 
+
+
         $this->load->model('setting/extension');
 
         $results = $this->model_setting_extension->getExtensions('payment');
@@ -59,7 +61,16 @@ class ControllerTsgCheckoutPayments extends Controller
 
     public function index()
     {
-        $payment_method_arr[] = $this->load->controller('extension/payment/purchaseorder');
+
+        if ($this->customer->isLogged()) {
+
+            $data['logged'] = $this->customer->isLogged();
+        } else {
+            $data['logged'] = 0;
+        }
+
+        //if the customer has an account then allow for purchase order
+        $payment_method_arr[] = $this->load->controller('extension/payment/tsg_purchaseorder');
         $payment_method_arr[] = $this->load->controller('extension/payment/tsg_stripe');
 
         $data['payment_methods'] = $payment_method_arr;

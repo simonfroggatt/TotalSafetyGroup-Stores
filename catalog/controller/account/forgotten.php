@@ -11,7 +11,8 @@ class ControllerAccountForgotten extends Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('account/customer');
+		/*$this->load->model('account/customer');
+        $return_data = $this->load->controller('account/account/', $this->request->post['email']);
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->model_account_customer->editCode($this->request->post['email'], token(40));
@@ -19,7 +20,7 @@ class ControllerAccountForgotten extends Controller {
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$this->response->redirect($this->url->link('account/login', '', true));
-		}
+		}*/
 
 		$data['breadcrumbs'] = array();
 
@@ -47,6 +48,7 @@ class ControllerAccountForgotten extends Controller {
 		$data['action'] = $this->url->link('account/forgotten', '', true);
 
 		$data['back'] = $this->url->link('account/login', '', true);
+
 
 		if (isset($this->request->post['email'])) {
 			$data['email'] = $this->request->post['email'];

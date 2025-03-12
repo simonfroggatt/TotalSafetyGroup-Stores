@@ -41,7 +41,7 @@ class ModelAccountAddress extends Model {
 				//$iso_code_3 = $country_query->row['iso_code_3'];
                 $iso_code_2 = $country_query->row['iso2'];
 				$iso_code_3 = $country_query->row['iso3'];
-				$address_format = $country_query->row['address_format'];
+				$address_format = '';
 			} else {
 				$country = '';
 				$iso_code_2 = '';

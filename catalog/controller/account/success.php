@@ -23,17 +23,16 @@ class ControllerAccountSuccess extends Controller {
 		);
 
 		if ($this->customer->isLogged()) {
+            $data['customer_firstname'] = $this->customer->getFirstName();
 			$data['text_message'] = sprintf($this->language->get('text_message'), $this->url->link('information/contact'));
 		} else {
+            $this->response->redirect($this->url->link('common/home'));
+            $data['customer_firstname'] = '';
 			$data['text_message'] = sprintf($this->language->get('text_approval'), $this->config->get('config_name'), $this->url->link('information/contact'));
 		}
 
-		if ($this->cart->hasProducts()) {
-			$data['continue'] = $this->url->link('checkout/cart');
-		} else {
-			$data['continue'] = $this->url->link('account/account', '', true);
-		}
 
+        $data['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
 		$data['content_top'] = $this->load->controller('common/content_top');
@@ -41,6 +40,6 @@ class ControllerAccountSuccess extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
-		$this->response->setOutput($this->load->view('common/success', $data));
+		$this->response->setOutput($this->load->view('account/success', $data));
 	}
 }

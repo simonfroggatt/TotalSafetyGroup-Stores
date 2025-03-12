@@ -52,10 +52,11 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
             $customer_email = $this->session->data['guest']['email'];
         }
 
-        $result = $this->model_extension_payment_tsg_stripe->createPaymentIntent($total, 'GBP', [
+        $currency = $order_info['currency_code'];
+
+        $result = $this->model_extension_payment_tsg_stripe->createPaymentIntent($total, $currency, [
             'order_id' => $order_id,
-            'test_order' => $description,
-            'description' => 'Test payment',
+            'description' => $description,
             'products' => json_encode($line_desc)
         ], $customer_email);
 
@@ -71,7 +72,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
         $data['products'] = $line_items;
         $data['total'] = number_format($total, 2, '.', '');
         // Add success URL with order_id parameter
-        $data['success_url'] = $this->url->link('tsg/stripe_test/success', 'order_id=' . $order_id, true);
+        $data['success_url'] = $this->url->link('extension/payment/tsg_stripe/success', 'order_id=' . $order_id, true);
 
         $tmp = $this->load->view('extension/payment/tsg_stripe', $data);
         return $this->load->view('extension/payment/tsg_stripe', $data);
@@ -158,6 +159,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
         $redirect_status = $this->request->get['redirect_status'] ?? null;
 
         if ($payment_intent_id) {
+            $url = $this->url->link('checkout/checkout', '&payment_error=true&'.$payment_intent_id);
             $result = $this->model_extension_payment_tsg_stripe->retrievePaymentIntent($payment_intent_id);
 
             if ($result['success']) {
@@ -215,8 +217,9 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
                             }
                         }
 
+                        //this one triggers the email to be sent
                         $this->_setPaymentHistory($intent->metadata->order_id, $history_string, TSG_PAYMENT_STATUS_PAID, $data['payment_details']['payment_method_type'], $payment_method['id']);
-
+                        $url = $this->url->link('checkout/success');
                         break;
 
                     case 'processing':
@@ -269,6 +272,8 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
 
                         $data['message'] = 'The payment was not successful. ' .
                             ($error_message ? 'Reason: ' . $error_message : 'Status: ' . $intent->status);
+
+                        $url = $this->url->link('checkout/checkout', '&payment_error=true&payment_intent_id='.$payment_intent_id);
                         break;
 
                     default:
@@ -284,16 +289,10 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
         } else {
             $data['heading_title'] = 'Payment Status Unknown';
             $data['message'] = 'Unable to determine payment status. Please contact support.';
+            $url = $this->url->link('checkout/checkout', '&payment_error=true');
         }
 
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['column_right'] = $this->load->controller('common/column_right');
-        $data['content_top'] = $this->load->controller('common/content_top');
-        $data['content_bottom'] = $this->load->controller('common/content_bottom');
-        $data['footer'] = $this->load->controller('common/footer');
-        $data['header'] = $this->load->controller('common/header');
-
-        $this->response->setOutput($this->load->view('tsg/stripe_success', $data));
+        $this->response->redirect($url);
     }
 
     public function cancel() {
@@ -313,94 +312,152 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
     }
 
     public function paymentFailed() {
-        $json = array();
+        //http://safetysigns/index.php?route=extension/payment/tsg_stripe/paymentfailed&order_id=97189&order_hash=eb6e005a7f96c3ac26123dd11d5f101a
+        $this->load->model('extension/payment/tsg_stripe');
+        $this->load->model('checkout/order');
+        $this->document->addScript('https://js.stripe.com/v3/');
 
-        // Get the error data from POST
-        $input = json_decode(file_get_contents('php://input'), true);
+        $data['stripe_publishable_key'] = $_ENV['STRIPE_PUBLISHABLE_KEY'];
 
-        if ($input) {
-            // Load the Stripe model
-            $this->load->model('extension/payment/tsg_stripe');
+        $data['heading_title'] = 'Failed payment - reattempt';
+        $data['status'] = true;
 
-            $payment_intent_id = $input['payment_intent_id'] ?? null;
+        // Column
+        $data['column_image']             = 'Image';
+        $data['column_name']              = 'Product Name';
+        $data['column_model']             = 'Model';
+        $data['column_quantity']          = 'Quantity';
+        $data['column_price']             = 'Unit Price';
+        $data['column_discount']          = 'Unit Discount';
+        $data['column_total']             = 'Line Total';
 
-            if ($payment_intent_id) {
-                $result = $this->model_extension_payment_tsg_stripe->retrievePaymentIntent($payment_intent_id);
+// Error
+        $data['error_stock']              = 'Products marked with *** are not available in the desired quantity or not in stock!';
+        $data['error_minimum']            = 'Minimum order amount for %s is %s!';
+        $data['error_required']           = '%s required!';
+        $data['error_product']            = 'Warning: There are no products in your cart!';
+        $data['error_recurring_required'] = 'Please select a payment recurring!';
 
-                if ($result['success']) {
-                    $intent = $result['intent'];
-                    $payment_details = $result['payment_details'];
-                    $failure_details = $payment_details['failure'] ?? [];
-                    $payment_method = $payment_details['payment_method'] ?? null;
+        $data['status'] = true;
+        $data['error'] = '';
 
-                    // Add error details
-                    if (!empty($failure_details)) {
-                        // Build history string with detailed failure information
-                        $history_string = 'Stripe Payment Failed';
-                        $history_string .= ' - Payment Method: ' . strtoupper($failure_details['payment_method_type']);
-                        if ($intent->amount) {
-                            $history_string .= ' - Amount: ' . ($intent->amount / 100);
-                        }
+        if (isset($this->request->get['order_id']) && isset($this->request->get['order_hash'])) {
+            $order_id = $this->request->get['order_id'];
+            $passed_hash = $this->request->get['order_hash'];
+            $order_hash = $this->model_checkout_order->getOrderHash($order_id);
+            if ($passed_hash === $order_hash) {
+                $order_info = $this->model_checkout_order->getOrder($order_id);
+                if (!$order_info) {
+                    $data['status'] = false;
+                    $data['error'] = 'Order does not exist';
+                    $this->response->redirect($this->url->link('error/no_order', '', true));
+                }
 
-                        if ($failure_details['error_message']) {
-                            $history_string .= ' - Error: ' . $failure_details['error_message'];
-                        }
-                        if ($failure_details['decline_code']) {
-                            $history_string .= ' (Code: ' . $failure_details['decline_code'] . ')';
-                        }
-                        if ($failure_details['seller_message']) {
-                            $history_string .= ' - ' . $failure_details['seller_message'];
-                        }
-                        // Update payment history
-                        $this->_setPaymentHistory(
-                            $intent->metadata->order_id ?? 'unknown',
-                            $history_string,
-                            TSG_PAYMENT_STATUS_FAILED,
-                            $failure_details['payment_method_type']
+                $products = $this->model_checkout_order->getOrderProducts($order_id);
+                $this->session->data['order_id'] = $order_id;
+                foreach ($products as $order_product) {
+                    $option_data = array();
+
+                    $order_options = $this->model_checkout_order->getOrderOptions($order_info['order_id'], $order_product['order_product_id']);
+
+                    foreach ($order_options as $order_option) {
+                        $value = $order_option['value'];
+                        $option_data[] = array(
+                            'name'  => $order_option['name'],
+                            'value' => (utf8_strlen($value) > 20 ? utf8_substr($value, 0, 20) . '..' : $value)
                         );
-
-                        $this->load->model('checkout/order');
-                        $this->model_checkout_order->setPaymentIntent($intent->metadata->order_id, $payment_intent_id);
-
                     }
 
+                    $data['product_data'][] = array(
+                        'name'     => $order_product['name'],
+                        'model'    => $order_product['model'],
+                        'quantity' => $order_product['quantity'],
+                        'option'   => $option_data,
+                        'size_name'      =>    $order_product['size_name'],
+                        'material_name'=> $order_product['material_name'],
+                        'price'     => $this->currency->format($order_product['price'], $order_info['currency_code'], $order_info['currency_value']),
+                        'total'     => $this->currency->format($order_product['total'], $order_info['currency_code'], $order_info['currency_value']),
+                    );
 
-
-                    // Log the failure with expanded details
-                    $this->model_extension_payment_tsg_stripe->logError([
-                        'type' => 'payment_failed',
-                        'payment_intent_id' => $payment_intent_id,
-                        'error_type' => $failure_details['error_type'] ?? 'unknown',
-                        'error_message' => $failure_details['error_message'] ?? 'Unknown error',
-                        'error_code' => $failure_details['error_code'] ?? 'unknown',
-                        'decline_code' => $failure_details['decline_code'] ?? null,
-                        'network_status' => $failure_details['network_status'] ?? null,
-                        'risk_level' => $failure_details['risk_level'] ?? null,
-                        'payment_method' => $payment_method ? $payment_method->type : null,
-                        'order_id' => $intent->metadata->order_id ?? 'unknown'
-                    ]);
-                } else {
-                    // Fallback to input data if payment intent retrieval fails
-                    $this->model_extension_payment_tsg_stripe->logError([
-                        'type' => 'payment_failed',
-                        'payment_intent_id' => $payment_intent_id,
-                        'error_type' => $input['error']['type'] ?? 'unknown',
-                        'error_message' => $input['error']['message'] ?? 'Unknown error',
-                        'error_code' => $input['error']['code'] ?? 'unknown',
-                        'payment_method' => $input['payment_method'] ?? null,
-                        'order_id' => $input['order_id'] ?? 'unknown'
-                    ]);
                 }
-            }
 
-            $json['success'] = true;
-            $json['message'] = 'Payment failure logged';
+                // Order Totals
+                $data['totals'] = array();
+
+                $order_totals = $this->model_checkout_order->getOrderTotals($order_info['order_id']);
+
+                foreach ($order_totals as $order_total) {
+                    $data['totals'][] = array(
+                        'title' => $order_total['title'],
+                        'text'  => $this->currency->format($order_total['value'], $order_info['currency_code'], $order_info['currency_value']),
+                    );
+                }
+
+
+                if ((int)$order_info['payment_status_id'] === TSG_PAYMENT_STATUS_PAID) {
+                    $data['status'] = false;
+                    $data['error'] = 'Order has already been paid';
+                } else {
+                    //check it's not been paid already
+                    $data['order_info'] = $order_info;
+                    $total = $order_info['total'];
+                    $line_items = [];
+
+                    foreach ($products as $product) {
+                        $item_total = $product['price'] * $product['quantity'];
+                        $line_items[] = [
+                            'label' => $product['name'],
+                            'amount' => number_format($item_total, 2, '.', '')
+                        ];
+                        $line_desc[] = $product['name'] . ' ' . $product['size_name'] . '-' . $product['material_name'] . ' x ' . $product['quantity'];
+                    }
+
+                    // Create payment intent
+
+                    $description = $order_info['store_name'] . ' order #' . $order_info['invoice_prefix'] . '-' . $order_id;
+                    // Get customer email from the session
+                    $customer_email = $order_info['email'];
+                    $currency = $order_info['currency_code'];
+
+                    $result = $this->model_extension_payment_tsg_stripe->createPaymentIntent($total, $currency, [
+                        'order_id' => $order_id,
+                        'description' => $description,
+                        'products' => json_encode($line_desc)
+                    ], $customer_email);
+
+                    if ($result['success']) {
+                        $data['client_secret'] = $result['client_secret'];
+                        $data['payment_intent_id'] = $result['intent_id'];
+                        $data['order_id'] = $order_id;
+                    } else {
+                        $data['error'] = $result['error'];
+                    }
+
+                    // Add data for Apple Pay
+                    $data['products'] = $line_items;
+                    $data['total'] = number_format($total, 2, '.', '');
+                    // Add success URL with order_id parameter
+                    $data['success_url'] = $this->url->link('extension/payment/tsg_stripe/success', 'order_id=' . $order_id, true);
+
+                }
+                // Load the common parts
+                $data['column_left'] = $this->load->controller('common/column_left');
+                $data['column_right'] = $this->load->controller('common/column_right');
+                $data['content_top'] = $this->load->controller('common/content_top');
+                $data['content_bottom'] = $this->load->controller('common/content_bottom');
+                $data['footer'] = $this->load->controller('common/footer');
+                $data['header'] = $this->load->controller('common/header');
+
+                // Load the reattempt template
+                $this->response->setOutput($this->load->view('tsg/stripe_reattempt', $data));
+                return;
+            }
         } else {
-            $json['error'] = 'No data received';
+            $this->response->redirect($this->url->link('error/not_found', '', true));
         }
 
-        $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($json));
+// Handle error
+        $this->response->redirect($this->url->link('error/not_found', '', true));
     }
 
     public function webhook() {
@@ -578,7 +635,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
             'currency' => $paymentIntent->currency,
             'payment_method' => $paymentIntent->payment_method_types[0] ?? 'unknown',
             'needs_reattempt_email' => true,
-            'reattempt_url' => $this->url->link('tsg/stripe_test/reattempt', 'payment_intent=' . $paymentIntent->id, true)
+            'reattempt_url' => $this->url->link('extension/payment/tsg_stripe/reattempt', 'payment_intent=' . $paymentIntent->id, true)
         ];
 
         $this->model_extension_payment_tsg_stripe->logError($data);
@@ -641,8 +698,8 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
                         $data['currency'] = $intent->currency;
 
                         // URLs
-                        $data['action'] = $this->url->link('tsg/stripe_test/confirm', '', true);
-                        $data['success_url'] = $this->url->link('tsg/stripe_test/success', '', true);
+                        $data['action'] = $this->url->link('extension/payment/tsg_stripe/confirm', '', true);
+                        $data['success_url'] = $this->url->link('extension/payment/tsg_stripe/success', '', true);
 
                         // Load the common parts
                         $data['column_left'] = $this->load->controller('common/column_left');
@@ -760,7 +817,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
         $data['products'] = $line_items;
         $data['total'] = number_format($total, 2, '.', '');
         // Add success URL with order_id parameter
-        $data['success_url'] = $this->url->link('tsg/stripe_test/success', 'order_id=' . $order_id, true);
+        $data['success_url'] = $this->url->link('extension/payment/tsg_stripe/success', 'order_id=' . $order_id, true);
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
@@ -771,7 +828,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
 
 
 
-        $this->response->setOutput($this->load->view('tsg/stripe_test', $data));
+        $this->response->setOutput($this->load->view('extension/payment', $data));
     }
 
 }

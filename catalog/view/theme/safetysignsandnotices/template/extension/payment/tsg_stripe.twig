@@ -12,7 +12,7 @@
       <div id="payment-message" class="alert alert-danger mt-3" style="display: none;"></div>
       <button id="submit" class="btn btn-success btn-lg w-100 mt-3">
         <div class="spinner" id="spinner" style="display: none;"></div>
-        <span id="button-text">Checkout and Par £{{ total }}</span>
+        <span id="button-text">Checkout and Pay £{{ total }}</span>
       </button>
     </form>
   </div>
@@ -71,7 +71,7 @@
 
         const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
 
-        await fetch('index.php?route=tsg/stripe_test/paymentStarted', {
+        await fetch('index.php?route=extension/payment/tsg_stripe/paymentStarted', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -114,7 +114,7 @@
 
   async function confirmPayment() {
     try {
-      const response = await fetch('index.php?route=tsg/stripe_test/confirm', {
+      const response = await fetch('index.php?route=extension/payment/tsg_stripe/confirm', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -133,7 +133,7 @@
 
   async function handlePaymentFailure(error) {
     try {
-      await fetch('index.php?route=tsg/stripe_test/paymentFailed', {
+      await fetch('index.php?route=extension/payment/tsg_stripe/paymentFailed', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

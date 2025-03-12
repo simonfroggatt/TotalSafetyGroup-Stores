@@ -42,10 +42,14 @@ class ControllerCheckoutCheckout extends Controller {
 
         $this->document->addScript('catalog/view/javascript/jquery/validate/jquery.validate.min.js');
 
+
 		// Required by klarna
 		if ($this->config->get('payment_klarna_account') || $this->config->get('payment_klarna_invoice')) {
 			$this->document->addScript('http://cdn.klarna.com/public/kitt/toc/v1.0/js/klarna.terms.min.js');
 		}
+
+        $data['login_url'] = $this->url->link('account/login', '', true);
+        $data['reset_url'] = $this->url->link('account/forgotten', '', true);
 
 		$data['breadcrumbs'] = array();
 
@@ -95,8 +99,6 @@ class ControllerCheckoutCheckout extends Controller {
 			$data['error_warning'] = '';
 		}
 
-		$data['logged'] = $this->customer->isLogged();
-
         if($this->customer->isLogged())
         {
             $data['logged'] = 1;
@@ -110,6 +112,37 @@ class ControllerCheckoutCheckout extends Controller {
 		} else {
 			$data['account'] = '';
 		}
+
+        $data['payment_error'] = '';
+        if ( isset($this->request->get['payment_error']) ) {
+            //then we have a failed payment - probably paypal
+
+            $this->document->addScript('https://js.stripe.com/v3/');
+            $data['stripe_publishable_key'] = $_ENV['STRIPE_PUBLISHABLE_KEY'];
+            if (isset($this->request->get['payment_intent_id'])) {
+                $payment_intent_id = $this->request->get['payment_intent_id'] ?? null;
+                if ($payment_intent_id) {
+                    $this->load->model('extension/payment/tsg_stripe');
+                    $result = $this->model_extension_payment_tsg_stripe->retrievePaymentIntent($payment_intent_id);
+
+                    if ($result['success']) {
+                        $intent = $result['intent'];
+                        switch ($intent->status) {
+                            case 'canceled':
+                                $data['payment_error'] = 'Payment not successful. Please try again.';
+                                break;
+                            case 'requires_payment_method':
+                                $data['payment_error'] = 'Payment not successful. Please try again.';
+                                break;
+                            default:
+                                $data['payment_error'] = 'Payment not successful. Please try again.';
+                                break;
+
+                        }
+                    }
+                }
+            }
+        }
 
 		$data['shipping_required'] = $this->cart->hasShipping();
 

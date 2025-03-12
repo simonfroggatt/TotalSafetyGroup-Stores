@@ -16,17 +16,17 @@
                 <form id="checkout-account" method="post">
                     <div class="row g-2">
                         <div class="form-floating col-12 col-lg-6">
-                            <input type="text" autocomplete="firstname" class="form-control" id="accountFirstname"
+                            <input type="text" autocomplete="given-name" class="form-control" id="accountFirstname"
                                    name="accountFirstname" placeholder="Firstname" required>
                             <label for="accountFirstname">Firstname (required)</label>
                         </div>
                         <div class="form-floating col-12 col-lg-6">
-                            <input type="text" autocomplete="lastname" class="form-control" id="accountLastname"
+                            <input type="text" autocomplete="family-name" class="form-control" id="accountLastname"
                                    name="accountLastname" placeholder="Lastname" required>
                             <label for="accountLastname">Lastname (required)</label>
                         </div>
                         <div class="form-floating col-12">
-                            <input type="text" autocomplete="company" class="form-control" id="accountCompany"
+                            <input type="text" autocomplete="organization" class="form-control" id="accountCompany"
                                    name="accountCompany" placeholder="Company">
                             <label for="accountCompany">Company</label>
                         </div>
@@ -34,6 +34,9 @@
                             <input type="email" autocomplete="email" class="form-control" id="accountEmail"
                                    name="accountEmail" placeholder="someone@example.com" required>
                             <label for="accountEmail">Email (required)</label>
+                            <div id="accountemail_error" class="invalid-feedback" >
+
+                            </div>
                         </div>
                         <div class="form-floating col-12">
                             <input type="tel" class="form-control" id="accountPhone" placeholder="0123 345 6789"
@@ -91,7 +94,7 @@
                             <label for="accountForename">Fullname (required)</label>
                         </div>
                         <div class="form-floating col-12">
-                            <input type="text" autocomplete="company" class="form-control" id="guestCompany"
+                            <input type="text" autocomplete="organization" class="form-control" id="guestCompany"
                                    name="guestCompany"
                                    placeholder="Company"
                                    value="{{ guest['company'] }}">
@@ -103,6 +106,9 @@
                                    placeholder="someone@example.com" required
                                    value="{{ guest['email'] }}">
                             <label for="accountEmail">Email (required)</label>
+                            <div id="guestemail_error" class="invalid-feedback" >
+
+                            </div>
                         </div>
                         <div class="form-floating col-12">
                             <input type="tel" class="form-control" id="guestPhone"
@@ -130,24 +136,32 @@
                 <form id="form-checkout-login" method="post">
                     <div class="row g-2 mb-2">
                         <div class="form-floating ">
-                            <input type="email" class="form-control" id="input-email" placeholder="name@example.com"
-                                   name="email" required>
-                            <label for="input-email">Email address</label>
+                            <input type="email" class="form-control" id="signin-email" placeholder="name@example.com"
+                                   name="signin-email" autocomplete="username" required>
+                            <label for="signin-email">Email address</label>
                         </div>
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="input-password" placeholder="Password"
-                                   name="password" required>
+                            <input type="password" class="form-control" id="signin-password" placeholder="Password"
+                                   name="signin-password" autocomplete="current-password" required>
                             <label for="input-password">Password</label>
                         </div>
-                        <div class="checkbox">
-                            <p><a href="{{ forgotten }}">Forgot</a> your password?</p>
-                        </div>
+
                         <div class="alert alert-danger" role="alert" aria-hidden="true" id="login-error"
-                             style="display:none;"></div>
+                             style="display:none;">
+                        </div>
                     </div>
-                    <button class="w-100 btn btn-lg btn-primary mb-2" id="checkout-login"
+                    <button class="w-100 btn btn-lg btn-success mb-2" id="checkout-login"
                             data-loading-text="Checking details..." type="submit">Sign in
                     </button>
+                    <button class="d-none w-100 btn btn-lg btn-primary mb-2" id="checkout-reset"
+                            data-loading-text="Checking details..." type="button">Send Password Reset
+                    </button>
+                    <div class="alert alert-success" role="alert" aria-hidden="true" id="login-success"
+                         style="display:none;">
+                    </div>
+                    <div class="checkbox">
+                        <p><a href="{{ forgotten }}">Forgot</a> your password?</p>
+                    </div>
                 </form>
 
             </div>

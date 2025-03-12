@@ -5,38 +5,41 @@
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  {% if error_warning %}
-  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
-  {% endif %}
-  <div class="row">
-    <div id="content">{{ content_top }}
+	<div class="row justify-content-center">
+		<div id="content" class="col-12 col-md-6">{{ content_top }}
       <h1>{{ heading_title }}</h1>
       <p>{{ text_account_already }}</p>
 
-<main class="col-12 col-lg-6">
 	<form id="checkout-account" method="post" >
+		<input type="hidden" id="country_id" name="country_id" value="222">
 		<div class="row g-2">
 			<div class="form-floating col-12 col-lg-6">
-				<input type="text" autocomplete="name" class="form-control" id="accountFirstname"
+				<input type="text" autocomplete="given-name" class="form-control" id="accountFirstname"
 					   name="accountFirstname" placeholder="Firstname" required>
 				<label for="accountFirstname">Firstname (required)</label>
 			</div>
 			<div class="form-floating col-12 col-lg-6">
-				<input type="text" autocomplete="name" class="form-control" id="accountLastname"
+				<input type="text" autocomplete="family-name" class="form-control" id="accountLastname"
 					   name="accountLastname" placeholder="Lastname" required>
 				<label for="accountLastname">Lastname (required)</label>
+			</div>
+			<div class="form-floating col-12">
+				<input type="text" autocomplete="organization" class="form-control" id="accountCompany"
+					   name="accountCompany" placeholder="Company">
+				<label for="accountCompany">Company Name (optional)</label>
 			</div>
 			<div class="form-floating col-12">
 				<input type="email" autocomplete="email" class="form-control" id="accountEmail"
 					   name="accountEmail" placeholder="someone@example.com" required>
 				<label for="accountEmail">Email (required)</label>
+				<div id="accountemail_error" class="invalid-feedback"></div>
 			</div>
 			<div class="form-floating col-12">
 				<input type="tel" class="form-control" id="accountPhone" placeholder="0123 345 6789"
-					   name="accountPhone" required>
+					   name="accountPhone" autocomplete="tel" required>
 				<label for="accountPhone">Contact Number (required)</label>
 			</div>
-			<div class="form-floating col-6">
+			<div class="form-floating col-12 col-md-6">
 				<input type="password" class="form-control tsg-validate" id="input-password-account" name="password"
 					   placeholder="password" required oninput="checkInputPassword(this.value)">
 				<label for="input-password">Password (required)</label>
@@ -47,7 +50,7 @@
 					Not strong enough yet...
 				</div>
 			</div>
-			<div class="form-floating col-6">
+			<div class="form-floating col-12 col-md-6">
 				<input type="password" class="form-control tsg-validate" id="input-confirm-account" name="confirm"
 					   placeholder="confirm password" required oninput="checkPasswordsMatch()">
 				<label for="input-confirm">Confirm Password (required)</label>
@@ -64,45 +67,25 @@
 				</label>
 			</div>
 			<div class="col-4 text-end">
-				<button type="submit" id="checkout-register" class="btn btn-success btn-lg" >Register</button>
+				<button type="submit" id="checkout-register-btn" class="btn btn-success btn-lg w-100" >Register</button>
 			</div>
-
-		</div>
-		<input type="hidden" id="country_id" name="country_id" value="222">
-
+			</div>
 	</form>
-</main>
 
       </div>
     </div>
 </div>
+	{{ footer }}
 
-<script>
-	$('#checkout-register').on("click", function(event) {
+	<script>
+		$('#checkout-account').on("submit", function (event) {
 
-		event.preventDefault();
-		event.stopPropagation();
+			event.preventDefault();
+			event.stopPropagation();
 
-		let register_form = $(this).parents('form').attr('id');
-		let form = $("#"+register_form);
-		let skip_elements = document.getElementsByClassName("tsg-validate");
-		let passwords_valid = register_password_check();
-
-		if ( (form[0].checkValidity() === false) || (passwords_valid === false) ) {
-			let form_elements = form[0];
-
-			for (var i = 0; i < form_elements.length; i++) {
-				let parentDiv = form_elements[i].parentElement;
-				parentDiv.classList.add('was-validated');
-			}
-			for (var i = 0; i < skip_elements.length; i++) {
-				let parentDiv = skip_elements[i].parentElement;
-				parentDiv.classList.remove('was-validated');
-			}
-		}
-		else {
+			var form = $(this);
 			var form_data = form.serializeArray();
-			let btn = $(this);
+			let btn = $('#checkout-register-btn');
 
 
 			$.ajax({
@@ -110,15 +93,15 @@
 				type: 'post',
 				data: form_data,
 				dataType: 'json',
-				beforeSend: function() {
+				beforeSend: function () {
 					let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
-					btn.data('original-text',  btn.html());
+					btn.data('original-text', btn.html());
 					btn.html(loadingText);
 				},
-				complete: function() {
+				complete: function () {
 					btn.html(btn.data('original-text'));
 				},
-				success: function(json) {
+				success: function (json) {
 
 					if (json['redirect']) {
 
@@ -130,31 +113,79 @@
 						error_div.show();
 					}
 				},
-				error: function(xhr, ajaxOptions, thrownError) {
+				error: function (xhr, ajaxOptions, thrownError) {
 					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 				}
 			});
-		}
-		form.addClass('was-validated');
-		return true
+			form.addClass('was-validated');
+			return true
 
-	});
+		});
 
-	function register_password_check(){
-		var password = $("#input-password-account").val();
-		var confirmPassword = $("#input-confirm-account").val();
+		document.getElementById('accountEmail').addEventListener('input', function (e) {
+			const email = e.target.value;
+			const emailPattern = /^[\w+-.%]+@[\w-]+\.[A-Za-z]{2,}$/;
 
-		let isValid = checkPasswordValid(password);
-		let isequal = (password == confirmPassword);
+			let allValid = true;
+			let isvalid = email && emailPattern.test(email);
 
-		if(isequal === false){
-			var error = "An invalid input message.";
-			let tmp = document.getElementById("input-confirm-account");
-			tmp.setCustomValidity(error);
-		}
-		return isValid && isequal;
+			if (isvalid) {
+				e.target.classList.remove('is-invalid');
+				e.target.classList.add('is-valid');
+				test_new_email(email, e, '#accountemail_error');
+
+			} else {
+				e.target.classList.remove('is-valid');
+				e.target.classList.add('is-invalid');
+				$('#accountemail_error').text('Please enter valid email addresses')
+			}
+		});
+
+	function test_new_email(email_address, e, error_id){
+		//do an ajx call to see if the email has been used
+		$.ajax({
+			url: 'index.php?route=account/register/checkuniqueemail',
+			type: 'post',
+			data: {'email': email_address},
+			dataType: 'json',
+			beforeSend: function() {
+				//let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
+				// btn.data('original-text',  btn.html());
+				//btn.html(loadingText);
+			},
+			success: function(json) {
+				if(json['error'])
+				{
+					e.target.classList.remove('is-valid');
+					e.target.classList.add('is-invalid');
+					$(error_id).text('Oops....something went wrong')
+				}
+				else{
+					if(json['unique'])
+					{
+						e.target.classList.remove('is-invalid');
+						e.target.classList.add('is-valid');
+						$('#signin-email').val('');
+						$('#signin-email').removeClass('is-valid');
+					}
+					else{
+						error_str = 'Sorry...that email address has been used. Please <a href="{{ login_url }}">login</a> or request a password <a href="{{ reset_url }}">reset</a>';
+						e.target.classList.remove('is-valid');
+						e.target.classList.add('is-invalid');
+						$(error_id).html(error_str)
+						$('#signin-email').val(email_address);
+						$('#signin-email').addClass('is-valid')
+					}
+				}
+
+
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
 	}
+
 </script>
 
 
-{{ footer }} 

@@ -146,17 +146,17 @@ class ControllerAccountRegister extends Controller {
 
 		// Custom Fields
 		$data['custom_fields'] = array();
-		
+
 		$this->load->model('account/custom_field');
-		
+
 		$custom_fields = $this->model_account_custom_field->getCustomFields();
-		
+
 		foreach ($custom_fields as $custom_field) {
 			if ($custom_field['location'] == 'account') {
 				$data['custom_fields'][] = $custom_field;
 			}
 		}
-		
+
 		if (isset($this->request->post['custom_field']['account'])) {
 			$data['register_custom_field'] = $this->request->post['custom_field']['account'];
 		} else {
@@ -208,6 +208,9 @@ class ControllerAccountRegister extends Controller {
 			$data['agree'] = false;
 		}
 
+        $data['login_url'] = $this->url->link('account/login', '', true);
+        $data['reset_url'] = $this->url->link('account/forgotten', '', true);
+
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
 		$data['content_top'] = $this->load->controller('common/content_top');
@@ -247,20 +250,6 @@ class ControllerAccountRegister extends Controller {
 			$customer_group_id = $this->config->get('config_customer_group_id');
 		}
 
-		// Custom field validation
-		$this->load->model('account/custom_field');
-
-		$custom_fields = $this->model_account_custom_field->getCustomFields($customer_group_id);
-
-		foreach ($custom_fields as $custom_field) {
-			if ($custom_field['location'] == 'account') {
-				if ($custom_field['required'] && empty($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
-					$this->error['custom_field'][$custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
-				} elseif (($custom_field['type'] == 'text') && !empty($custom_field['validation']) && !filter_var($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))) {
-					$this->error['custom_field'][$custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
-				}
-			}
-		}
 
 		if ((utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) < 4) || (utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) > 40)) {
 			$this->error['password'] = $this->language->get('error_password');
@@ -289,7 +278,7 @@ class ControllerAccountRegister extends Controller {
 				$this->error['warning'] = sprintf($this->language->get('error_agree'), $information_info['title']);
 			}
 		}
-		
+
 		return !$this->error;
 	}
 
@@ -326,27 +315,156 @@ class ControllerAccountRegister extends Controller {
         $this->document->setTitle($this->language->get('heading_title'));
 
         $this->load->model('account/customer');
+        try {
 
-        if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+
+        if ($this->request->server['REQUEST_METHOD'] == 'POST') {
             $customer_id = $this->model_account_customer->addCustomer($this->request->post);
 
             // Clear any previous login attempts for unregistered accounts.
             $this->model_account_customer->deleteLoginAttempts($this->request->post['accountEmail']);
 
             $this->customer->login($this->request->post['accountEmail'], $this->request->post['password']);
-
             unset($this->session->data['guest']);
             $this->session->data['checkout_register'] = true;
-
-
             $json['redirect'] = ($this->url->link('account/success'));
+            $json['cart_url'] = ($this->url->link('checkout/checkout', '', true));
+
+            $return_val = $this->sendRegistrationEmail($customer_id);
+            if($return_val['success'])
+            {
+                $json['success'] = true;
+                $json['message'] = $return_val['message'];
+            }
+            else
+            {
+                $json['success'] = false;
+                $json['message'] = $return_val['message'];
+            }
         }
         else
         {
             $json['error'] = $this->error;
+            $json['success'] = false;
+        }
+        } catch (Exception $e) {
+            $json['success'] = false;
+            $json['error'] = $e->getMessage();
         }
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
     }
+
+    public function checkuniqueemail()
+    {
+        $json = array();
+        if(isset($this->request->post['email']))
+        {
+            $json['error'] = false;
+            $email_address = $this->request->post['email'];
+
+            $this->load->model('account/customer');
+            $customer_info = $this->model_account_customer->getCustomerByEmail($email_address);
+            if($customer_info)
+            {
+                $json['unique'] = false;
+            }
+            else
+            {
+                $json['unique'] = true;
+            }
+        }
+        else
+        {
+            $json['error'] = true;
+        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
+
+    private function sendRegistrationEmail($customer_id)
+    {
+        $this->load->model('account/customer');
+        $customer_info = $this->model_account_customer->getCustomer($customer_id);
+        $json = array();
+
+            if ($customer_info) {
+                $this->load->model('setting/store');
+                $store_info = $this->model_setting_store->getStoreInfo($customer_info['store_id']);
+                $email_from = 'noreply@'.$store_info['base_email'];
+                $email_footer_text_raw = $store_info['email_footer_text'];
+
+                $subject = 'Welcome to '.$store_info['company_name'];
+
+                $data = [
+                    'firstname'=> $customer_info['firstname'],
+                    'store_name' => $store_info['name'],
+                    'store_address' => $store_info['address'],
+                    'store_telephone' => $store_info['telephone'],
+                    'store_email' => $store_info['email_address'],
+                    'sales_email' => $store_info['email_address'],
+                    'store_website' => $store_info['url'],
+                    'company_name' => $store_info['company_name'],
+                ];
+
+                foreach ($data as $placeholder => $value) {
+                    // Replace all occurrences of the placeholder with the value
+                    //we need to add the brackets first
+                    $placeholder = '{{' . $placeholder . '}}';
+                    $email_footer_text_raw = str_replace($placeholder, (string)$value, $email_footer_text_raw);
+                }
+
+                $data['store_email_footer'] = $email_footer_text_raw;
+
+                $message = $this->load->view('mail/customer_registration', $data);
+
+                if ($this->config->get('config_mail_engine')) {
+                    $mail_option = [
+                        'parameter'     => $this->config->get('config_mail_parameter'),
+                        'smtp_hostname' => $this->config->get('config_mail_smtp_hostname'),
+                        'smtp_username' => $this->config->get('config_mail_smtp_username'),
+                        'smtp_password' => html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8'),
+                        'smtp_port'     => $this->config->get('config_mail_smtp_port'),
+                        'smtp_timeout'  => $this->config->get('config_mail_smtp_timeout')
+                    ];
+
+                    $mail = new \Mail($this->config->get('config_mail_engine'), $mail_option);
+
+                    $mail->setTo($customer_info['email']);
+                    $mail->setFrom($email_from);
+                    $mail->setSender(html_entity_decode($store_info['company_name'], ENT_QUOTES, 'UTF-8'));
+                    $mail->setSubject(html_entity_decode($subject), ENT_QUOTES, 'UTF-8');
+                    $mail->setHtml($message);
+                    $bl_return = $mail->send();
+                    if($bl_return)
+                    {
+                        $json['success'] = true;
+                        $json['message'] = "Your account has been created successfully";
+                    }
+                    else
+                    {
+                        $json['success'] = false;
+                        $json['message'] = 'There was a problem send your confirmation email';
+                    }
+                }
+                else
+                {
+                    $json['success'] = false;
+                    $json['message'] = 'There was a problem send your confirmation mail';
+                }
+            }
+            else
+            {
+                $json['success'] = false;
+                $json['message'] = "There was an issue creating your account";
+            }
+
+        return $json;
+    }
+
+
+
+
+
 }

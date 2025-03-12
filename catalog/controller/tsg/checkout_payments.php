@@ -2,7 +2,7 @@
 
 class ControllerTsgCheckoutPayments extends Controller
 {
-    public function index()
+    public function index_old()
     {
         //save form data into a session
        // $this->session->data['payment_address'] = $this->request->post['payment_address'];
@@ -11,6 +11,8 @@ class ControllerTsgCheckoutPayments extends Controller
         // Payment Methods
         $method_data = array();
         $total = 0;
+
+
 
         $this->load->model('setting/extension');
 
@@ -55,6 +57,28 @@ class ControllerTsgCheckoutPayments extends Controller
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
 
+    }
+
+    public function index()
+    {
+
+        if ($this->customer->isLogged()) {
+
+            $data['logged'] = $this->customer->isLogged();
+        } else {
+            $data['logged'] = 0;
+        }
+
+        //if the customer has an account then allow for purchase order
+        $payment_method_arr[] = $this->load->controller('extension/payment/tsg_purchaseorder');
+        $payment_method_arr[] = $this->load->controller('extension/payment/tsg_stripe');
+
+        $data['payment_methods'] = $payment_method_arr;
+
+        $json['payment_methods_html'] =  $this->load->view('checkout/confirm_payment', $data);
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 
     private function loadPaymentMethods(){

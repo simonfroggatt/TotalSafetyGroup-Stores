@@ -2,6 +2,8 @@
 // Registry
 $registry = new Registry();
 
+loadEnv(DIR_SYSTEM . '../.env');
+
 // Config
 $config = new Config();
 $config->load('default');
@@ -77,7 +79,13 @@ $registry->set('response', $response);
 
 // Database
 if ($config->get('db_autostart')) {
-	$db = new DB($config->get('db_engine'), $config->get('db_hostname'), $config->get('db_username'), $config->get('db_password'), $config->get('db_database'), $config->get('db_port'));
+    $db_hostname = $_ENV['DB_HOSTNAME'];
+    $db_username = $_ENV['DB_USERNAME'];
+    $db_password = $_ENV['DB_PASSWORD'];
+    $db_database = $_ENV['DB_DATABASE'];
+    $db_port = (int)$_ENV['DB_PORT'];
+
+	$db = new DB($config->get('db_engine'), $db_hostname, $db_username, $db_password, $db_database, $db_port);
 	$registry->set('db', $db);
 
 	// Sync PHP and DB time zones
@@ -133,6 +141,7 @@ if ($config->has('config_autoload')) {
 		$loader->config($value);
 	}
 }
+
 
 // Language Autoload
 if ($config->has('language_autoload')) {

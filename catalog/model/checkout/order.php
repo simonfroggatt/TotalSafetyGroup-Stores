@@ -13,7 +13,7 @@ class ModelCheckoutOrder extends Model {
             $sql .= "customer_id = '" . (int)$data['customer_id'] . "', ";
         }
 
-        $sql .= "customer_group_id = '" . (int)$data['customer_group_id'] . "', ";
+       // $sql .= "customer_group_id = '" . (int)$data['customer_group_id'] . "', ";
         $sql .= "firstname = '" . $this->db->escape($data['firstname']) . "', ";
         $sql .= "lastname = '" . $this->db->escape($data['lastname']) . "', ";
         $sql .= "fullname = '" . $this->db->escape($data['fullname']) . "', ";
@@ -343,7 +343,7 @@ class ModelCheckoutOrder extends Model {
 				'lastname'                => $order_query->row['lastname'],
 				'email'                   => $order_query->row['email'],
 				'telephone'               => $order_query->row['telephone'],
-				'custom_field'            => json_decode($order_query->row['custom_field'], true),
+				'custom_field'            => json_decode($order_query->row['custom_field']??'', true),
                 'payment_fullname'       => $order_query->row['payment_fullname'],
 				'payment_firstname'       => $order_query->row['payment_firstname'],
 				'payment_lastname'        => $order_query->row['payment_lastname'],
@@ -361,8 +361,7 @@ class ModelCheckoutOrder extends Model {
 				'payment_iso_code_2'      => $payment_iso_code_2,
 				'payment_iso_code_3'      => $payment_iso_code_3,
 				'payment_address_format'  => $order_query->row['payment_address_format'],
-				'payment_custom_field'    => json_decode($order_query->row['payment_custom_field'], true),
-
+				'payment_custom_field'    => json_decode($order_query->row['payment_custom_field']??'', true),
 				'payment_method'          => $order_query->row['payment_method_name'],
 				'payment_code'            => $order_query->row['payment_code'],
                 'shipping_fullname'      => $order_query->row['shipping_fullname'],
@@ -382,7 +381,7 @@ class ModelCheckoutOrder extends Model {
 				'shipping_iso_code_2'     => $shipping_iso_code_2,
 				'shipping_iso_code_3'     => $shipping_iso_code_3,
 				'shipping_address_format' => $order_query->row['shipping_address_format'],
-				'shipping_custom_field'   => json_decode($order_query->row['shipping_custom_field'], true),
+				'shipping_custom_field'   => json_decode($order_query->row['shipping_custom_field']??'', true),
 				'shipping_method'         => $order_query->row['shipping_method'],
 				'shipping_code'           => $order_query->row['shipping_code'],
 				'comment'                 => $order_query->row['comment'],
@@ -409,7 +408,7 @@ class ModelCheckoutOrder extends Model {
 				'payment_telephone'           => $order_query->row['payment_telephone'],
                 'shipping_email'           => $order_query->row['shipping_email'],
                 'shipping_telephone'           => $order_query->row['shipping_telephone'],
-                'customer_order_ref'           => $order_query->row['customer_order_ref']
+                'customer_order_ref'           => $order_query->row['customer_order_ref'],
 			);
 		} else {
 			return false;
@@ -649,6 +648,20 @@ class ModelCheckoutOrder extends Model {
     public function setCustomerRef($order_id, $customer_ref){
         $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
         $sql .= " customer_order_ref = '" . $this->db->escape($customer_ref) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+    }
+
+    public function setOrderReceiptUrl($order_id, $receipt_url){
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " receipt_url = '" . $this->db->escape($receipt_url) . "'";
+        $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
+        $this->db->query($sql);
+    }
+
+    public function setPaymentIntent($order_id, $payment_intent){
+        $sql = "UPDATE `" . DB_PREFIX . "order` SET ";
+        $sql .= " payment_intent = '" . $this->db->escape($payment_intent) . "'";
         $sql .= ", date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'";
         $this->db->query($sql);
     }

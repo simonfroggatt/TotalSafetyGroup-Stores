@@ -1,0 +1,180 @@
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% else %}
+
+<div class="row text-center justify-content-center">
+  <div class="col-12 mb-2">
+    <img src="https://cdn.totalsafetygroup.com/stores/3rdpartylogo/stripe_poweredby_large.svg" alt="Stripe" title="Stripe" class="img-fluid" />
+  </div>
+  <div class="col-12 mb-2">
+    <form id="payment-form">
+      <div id="payment-element"></div>
+      <div id="payment-message" class="alert alert-danger mt-3" style="display: none;"></div>
+      <button id="submit" class="btn btn-success btn-lg w-100 mt-3">
+        <div class="spinner" id="spinner" style="display: none;"></div>
+        <span id="button-text">Checkout and Pay £{{ total }}</span>
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+
+<style>
+  #payment-message {
+    display: none;
+  }
+  .spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+(function() {
+  const stripe = Stripe('{{ stripe_publishable_key }}');
+  const clientSecret = '{{ client_secret }}';
+  const paymentIntentId = '{{ payment_intent_id }}';
+  const orderId = '{{ order_id }}';
+  const successUrl = '{{ success_url }}';
+
+  let elements;
+  let paymentElement;
+
+  async function initialize() {
+    elements = stripe.elements({
+      clientSecret: clientSecret
+    });
+
+    paymentElement = elements.create("payment");
+    await paymentElement.mount("#payment-element");
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      try {
+        const paymentType = document.querySelector('.p-PaymentMethodSelector');
+        console.log(paymentType);
+
+        const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
+
+        await fetch('index.php?route=extension/payment/tsg_stripe/paymentStarted', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'payment_intent_id=' + encodeURIComponent(paymentIntentId) +
+                  '&payment_type=' + encodeURIComponent(paymentType) +
+                  '&status=initiated'
+        });
+      } catch (e) {
+        console.error('Error logging payment initiation:', e);
+      }
+
+      const {error} = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: successUrl
+        },
+        redirect: 'always'
+      });
+
+      if (error) {
+        showMessage(error.message);
+        await handlePaymentFailure(error);
+      } else {
+        const result = await confirmPayment();
+        if (result.success) {
+          showMessage('Payment successful!', 'success');
+          window.location.href = successUrl;
+        } else {
+          showMessage(result.error || 'Payment failed');
+        }
+      }
+    } catch (e) {
+      showMessage("An unexpected error occurred.");
+      console.error('Payment error:', e);
+    }
+
+    setLoading(false);
+  }
+
+  async function confirmPayment() {
+    try {
+      const response = await fetch('index.php?route=extension/payment/tsg_stripe/confirm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'payment_intent_id=' + encodeURIComponent(paymentIntentId)
+      });
+
+      return await response.json();
+    } catch (e) {
+      return {
+        success: false,
+        error: 'Failed to confirm payment'
+      };
+    }
+  }
+
+  async function handlePaymentFailure(error) {
+    try {
+      await fetch('index.php?route=extension/payment/tsg_stripe/paymentFailed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payment_intent_id: paymentIntentId,
+          order_id: orderId,
+          error: {
+            type: error.type,
+            code: error.code,
+            message: error.message
+          },
+          payment_method: error.payment_method
+        })
+      });
+    } catch (e) {
+      console.error('Failed to log payment failure:', e);
+    }
+  }
+
+  function showMessage(messageText, type = 'error') {
+    const messageContainer = document.querySelector("#payment-message");
+    messageContainer.classList.remove('alert-danger', 'alert-success');
+    messageContainer.classList.add(type === 'error' ? 'alert-danger' : 'alert-success');
+    messageContainer.textContent = messageText;
+    messageContainer.style.display = "block";
+  }
+
+  function setLoading(isLoading) {
+    if (isLoading) {
+      document.querySelector("#submit").disabled = true;
+      document.querySelector("#spinner").style.display = "inline-block";
+      document.querySelector("#button-text").style.display = "none";
+    } else {
+      document.querySelector("#submit").disabled = false;
+      document.querySelector("#spinner").style.display = "none";
+      document.querySelector("#button-text").style.display = "inline";
+    }
+  }
+
+  initialize();
+  document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+})();
+</script>

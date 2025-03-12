@@ -5,7 +5,7 @@ class ControllerCheckoutSuccess extends Controller {
 
         $order_hash = '';
         $order_id = '';
-        $data['order_number'] = '';
+       // $data['order_number'] = '33455';
 
         //fake testing
        // $this->session->data['order_id'] = 219;
@@ -14,7 +14,6 @@ class ControllerCheckoutSuccess extends Controller {
 			$this->cart->clear();
 
             $data['order_id'] = $this->session->data['order_id'];
-
 
 
 			unset($this->session->data['shipping_method']);
@@ -32,11 +31,13 @@ class ControllerCheckoutSuccess extends Controller {
 			unset($this->session->data['vouchers']);
 			unset($this->session->data['totals']);
 
+
             //get the order has from the database
             $this->load->model('checkout/order');
             $order_hash = $this->model_checkout_order->getOrderHash($data['order_id']);
             $order_number = $this->model_checkout_order->getOrderNumber($data['order_id']);
             $data['order_number'] = $order_number;
+
             $this->pushToXeroViaMedusa($data['order_id'], $order_hash);
             $data['invoice_pdf'] = TSG_MEDUSA_URL . 'paperwork/webstore_pdf/' .  $data['order_id'] . '/'. $order_hash;
 		}
@@ -93,24 +94,59 @@ class ControllerCheckoutSuccess extends Controller {
 
     private function pushToXeroViaMedusa($order_id, $order_hash)
     {
-      //  $encrypted_order_num = $this->createOrderHash($order_id);
-//gAAAAABnH2idoHBk4DfCRpjDHJjt0recFVBClIm7Fjs6sIPysJYa-HQ92WmWfYHijc9cljBRcLExTHK026XWGfNLycX_86aC2A==
-        $push_url = MEDUSA_ORDER_PUSH_URL .$order_id.'/'.$order_hash;
-        //do a curl post to the medusa api
-        $ch = curl_init($push_url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); // Do not wait for a response
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1); // Timeout after 1ms
-        curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1);
-        curl_exec($ch);
+
+        $this->send_async_request(MEDUSA_ORDER_PUSH_URL .$order_id.'/'.$order_hash);
+    }
+
+    private function send_async_request($url, $data = [], $redirect_count = 0) {
+        $this->log->write('send_async_request - XERO');
+
+        // Limit the number of redirects
+        $max_redirects = 3;
+        if ($redirect_count >= $max_redirects) {
+            $this->log->write('send_async_request: exceeded maximum redirects- XERO');
+            return;
+        }
+
+        $this->log->write('send_async_request: original url='.$url);
+
+        // Initialize cURL
+        $ch = curl_init();
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
+
+        // Execute the request
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        $this->log->write('send_async_request- XERO: response - '.$response);
+        $this->log->write('send_async_request- XERO: HTTP code - '.$http_code);
+
+        if ($http_code === 301) {
+            // Handle redirect
+            $new_url = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
+            $this->log->write('send_async_request- XERO: redirecting to - '.$new_url);
+            return $this->send_async_request($new_url, $data, $redirect_count + 1);
+        }
+
+        // Close cURL session
         curl_close($ch);
     }
+
+
+
+
 
     private function createOrderHash($order_id)
     {
 
-        $key = substr(hash('sha256', XERO_TOKEN_HASH, true), 0, 32);
+        $key = substr(hash('sha256', $_ENV['XERO_TOKEN_HASH'], true), 0, 32);
         $iv = openssl_random_pseudo_bytes(16); // AES-256-CBC uses a 16-byte IV
         $encrypted = openssl_encrypt($order_id, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
 

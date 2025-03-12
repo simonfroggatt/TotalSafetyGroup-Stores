@@ -8,7 +8,6 @@ if (is_file('config.php')) {
 }
 
 require_once(DIR_SYSTEM . 'helper/env.php');
-//require_once(DIR_BASE . 'env.php');
 
 // Install
 if (!defined('DIR_APPLICATION')) {

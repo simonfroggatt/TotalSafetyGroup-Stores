@@ -30,6 +30,13 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $redirect = $this->url->link('checkout/cart');
         }
 
+        if ($this->customer->isLogged()) {
+
+            $data['logged'] = $this->customer->isLogged();
+        } else {
+            $data['logged'] = 0;
+        }
+
         $data_cart = $this->load->controller('tsg/cart_common');
         $data_cart['cart_totals'] = $this->load->view('checkout/confirm_cart_totals', $data_cart);
         $data_payment = [];
@@ -60,6 +67,13 @@ class ControllerTsgCheckoutConfirm extends Controller {
             'taxes'  => &$taxes,
             'total'  => &$total
         );
+
+        if ($this->customer->isLogged()) {
+
+            $data['logged'] = $this->customer->isLogged();
+        } else {
+            $data['logged'] = 0;
+        }
 
         // Display prices
         if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
@@ -245,6 +259,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['email'] = $customer_info['email'];
                 $order_data['telephone'] = $customer_info['telephone'];
                 $order_data['custom_field'] = json_decode($customer_info['custom_field'], true);
+                $order_data['newsletter'] = $customer_info['newsletter'];
             } elseif (isset($this->session->data['guest'])) {
                 $order_data['customer_id'] = 0;
                 $order_data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
@@ -490,7 +505,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
             }
 
             $this->load->model('checkout/order');
-
+            $this->log->write('Order Data: ' . print_r($order_data, true));
             $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
 
             //now check if there are any bespoke items....if so, send to medusa
@@ -630,6 +645,14 @@ class ControllerTsgCheckoutConfirm extends Controller {
 
     public function loadaddress($asJSON = true){
         $data= [];
+
+        if ($this->customer->isLogged()) {
+
+            $data['logged'] = $this->customer->isLogged();
+        } else {
+            $data['logged'] = 0;
+        }
+
         if(isset($this->session->data['shipping_address'])){
             $data['shipping_address'] = $this->session->data['shipping_address'];
         }

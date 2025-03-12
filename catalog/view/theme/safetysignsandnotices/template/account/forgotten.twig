@@ -5,24 +5,69 @@
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  {% if error_warning %}
-  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
-  {% endif %}
-  <div class="row">
-    <div id="content" class="col-12">{{ content_top }}
+  <div class="row justify-content-center">
+    <div id="content" class="col-12 col-md-6">{{ content_top }}
       <h1>{{ heading_title }}</h1>
-
-      <main class="form-signin">
+      <p>No problem, enter your registered email and we will send you a reset link straight over</p>
+      <div class="alert alert-danger" role="alert" aria-hidden="true" id="login-error"
+           style="display:none;">
+      </div>
+      <div class="alert alert-success" role="alert" aria-hidden="true" id="login-success"
+           style="display:none;">
+      </div>
         <form action="{{ action }}" method="post" enctype="multipart/form-data">
           <div class="form-floating">
-            <input type="email" class="form-control" id="input-email" placeholder="name@example.com" name="email">
-            <label for="input-email">Email address</label>
+            <input type="email" class="form-control" id="signin-email" placeholder="name@example.com" name="signin-email">
+            <label for="signin-email">Email address</label>
           </div>
-          <button class="w-100 btn btn-lg btn-primary mb-2" type="submit" value="{{ button_continue }}">Send Reset</button>
+          <button class="w-100 btn btn-lg btn-success mb-2" id="password-reset" type="button" value="{{ button_continue }}">Send Reset</button>
         </form>
-      </main>
-
       </div>
     </div>
 </div>
+
+<script>
+  $('#password-reset').on('click', function(){
+    let email_address = $('#signin-email').val()
+    let btn = $(this);
+    $.ajax({
+      url: 'index.php?route=account/account/resetpassword',
+      type: 'post',
+      data: {'email': email_address},
+      dataType: 'json',
+      beforeSend: function() {
+        let loadingText = "<i class='fa fa-spinner fa-spin '></i> sending link...";
+        btn.data('original-text',  btn.html());
+        btn.html(loadingText);
+      },
+      complete: function() {
+        btn.html(btn.data('original-text'));
+      },
+      success: function(json) {
+        if(json['success'])
+        {
+          let message_div = $('#login-success');
+          message_div.html(json['message']);
+          message_div.show();
+          let error_div = $('#login-error');
+          error_div.hide();
+        }
+        else{
+          let error_div = $('#login-error');
+          error_div.html(json['message']);
+          error_div.show();
+        }
+
+
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+
+
+
+  })
+
+</script>
 {{ footer }}

@@ -9,11 +9,11 @@ $_['url_autostart']      = false;
 // Database
 $_['db_autostart']       = true;
 $_['db_engine']          = DB_DRIVER; // mpdo, mysqli or pgsql
-$_['db_hostname']        = DB_HOSTNAME;
-$_['db_username']        = DB_USERNAME;
-$_['db_password']        = DB_PASSWORD;
-$_['db_database']        = DB_DATABASE;
-$_['db_port']            = DB_PORT;
+$_['db_hostname']        = $_ENV['DB_HOSTNAME'];
+$_['db_username']        = $_ENV['DB_USERNAME'];
+$_['db_password']        = $_ENV['DB_PASSWORD'];
+$_['db_database']        = $_ENV['DB_DATABASE'];
+$_['db_port']            = (int)$_ENV['DB_PORT'];
 
 // Session
 $_['session_autostart']  = false;

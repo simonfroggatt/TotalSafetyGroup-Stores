@@ -118,4 +118,106 @@ class ControllerAccountAccount extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+    public function resetpassword()
+    {
+        $json = array();
+        if(isset($this->request->post['email']))
+        {
+            $this->load->model('account/customer');
+            $this->load->language('account/forgotten');
+
+
+
+            $email = $this->request->post['email'];
+            $customer_info = $this->model_account_customer->getCustomerByEmail($email);
+
+            if ($customer_info) {
+                $this->load->model('setting/store');
+                $store_info = $this->model_setting_store->getStoreInfo($customer_info['store_id']);
+                $email_from = 'noreply@'.$store_info['base_email'];
+                $email_footer_text_raw = $store_info['email_footer_text'];
+
+                $subject = 'Password reset request';
+
+                $code = token(40);
+                $this->model_account_customer->editCode($email, $code);
+
+                $reset_link = $this->url->link('account/reset', 'code=' . $code, true);
+
+                $data = [
+                    'reset_link' => $reset_link,
+                    'store_name' => $store_info['name'],
+                    'store_address' => $store_info['address'],
+                    'store_telephone' => $store_info['telephone'],
+                    'store_email' => $store_info['email_address'],
+                    'sales_email' => $store_info['email_address'],
+                    'store_website' => $store_info['url'],
+                    'company_name' => $store_info['company_name'],
+                ];
+
+                foreach ($data as $placeholder => $value) {
+                    // Replace all occurrences of the placeholder with the value
+                    //we need to add the brackets first
+                    $placeholder = '{{' . $placeholder . '}}';
+                    $email_footer_text_raw = str_replace($placeholder, (string)$value, $email_footer_text_raw);
+                }
+
+                $data['store_email_footer'] = $email_footer_text_raw;
+
+                $message = $this->load->view('mail/password_reset', $data);
+
+                if ($this->config->get('config_mail_engine')) {
+                    $mail_option = [
+                        'parameter'     => $this->config->get('config_mail_parameter'),
+                        'smtp_hostname' => $this->config->get('config_mail_smtp_hostname'),
+                        'smtp_username' => $this->config->get('config_mail_smtp_username'),
+                        'smtp_password' => html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8'),
+                        'smtp_port'     => $this->config->get('config_mail_smtp_port'),
+                        'smtp_timeout'  => $this->config->get('config_mail_smtp_timeout')
+                    ];
+
+                    $mail = new \Mail($this->config->get('config_mail_engine'), $mail_option);
+
+                    $mail->setTo($email);
+                    $mail->setFrom($email_from);
+                    $mail->setSender(html_entity_decode($store_info['company_name'], ENT_QUOTES, 'UTF-8'));
+                    $mail->setSubject(html_entity_decode($subject), ENT_QUOTES, 'UTF-8');
+                    $mail->setHtml($message);
+                    $bl_return = $mail->send();
+                    if($bl_return)
+                    {
+                        $json['success'] = true;
+                        $json['message'] = "If your email address exists you will receive a reset link shortly";
+                    }
+                    else
+                    {
+                        $json['success'] = false;
+                        $json['message'] = 'There was a problem send your email';
+                    }
+                }
+                else
+                {
+                    $json['success'] = false;
+                    $json['message'] = 'There was a problem send your email';
+                }
+            }
+            else
+            {
+                $json['success'] = false;
+                $json['message'] = "Your email address couldn't be found";
+            }
+        }
+        else
+        {
+            $json['success'] = false;
+            $json['message'] = 'There was a problem send your email';
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
+
+
+
 }

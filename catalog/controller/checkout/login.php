@@ -25,34 +25,44 @@ class ControllerCheckoutLogin extends Controller {
 			$json['redirect'] = $this->url->link('checkout/checkout', '', true);
 		}
 
-		if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
+		/*if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
 			$json['redirect'] = $this->url->link('checkout/cart');
-		}
+		}*/
 
 		if (!$json) {
 			$this->load->model('account/customer');
+            $email= $this->request->post['signin-email'];
+            $password = $this->request->post['signin-password'];
 
 			// Check how many login attempts have been made.
-			$login_info = $this->model_account_customer->getLoginAttempts($this->request->post['email']);
+			$login_info = $this->model_account_customer->getLoginAttempts($email);
 
 			if ($login_info && ($login_info['total'] >= $this->config->get('config_login_attempts')) && strtotime('-1 hour') < strtotime($login_info['date_modified'])) {
 				$json['error']['warning'] = $this->language->get('error_attempts');
 			}
 
 			// Check if customer has been approved.
-			$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['email']);
-
-			if ($customer_info && !$customer_info['status']) {
-				$json['error']['warning'] = $this->language->get('error_approved');
+			$customer_info = $this->model_account_customer->getCustomerByEmail($email);
+            $json['is_wrong_password'] = false;
+			if ($customer_info) {
+                $json['is_valid_user'] = true;
+                if(!$customer_info['status']) {
+                    $json['error']['warning'] = $this->language->get('error_approved');
+                }
 			}
+            else {
+                $json['is_valid_user'] = false;
+                $json['error']['warning'] = "Your email address couldn't be found";
+            }
 
 			if (!isset($json['error'])) {
-				if (!$this->customer->login($this->request->post['email'], $this->request->post['password'])) {
-					$json['error']['warning'] = $this->language->get('error_login');
+				if (!$this->customer->login($email, $password)) {
+					$json['error']['warning'] = 'Your password was incorrect';
+                    $json['is_wrong_password'] = true;
 
-					$this->model_account_customer->addLoginAttempt($this->request->post['email']);
+					$this->model_account_customer->addLoginAttempt($email);
 				} else {
-					$this->model_account_customer->deleteLoginAttempts($this->request->post['email']);
+					$this->model_account_customer->deleteLoginAttempts($email);
 				}
 			}
 		}

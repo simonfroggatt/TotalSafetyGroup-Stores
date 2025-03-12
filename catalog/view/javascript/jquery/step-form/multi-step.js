@@ -6,7 +6,7 @@ $(document).ready(function () {
     
     //* Form js
 
-    function setFormSetup(initial_step = 0) {
+    function setFormSetup(initial_step = 0, first_step = 0) {
         //jQuery time
         var current_fs, next_fs, previous_fs; //fieldsets
         var left, opacity, scale; //fieldset properties which we will animate
@@ -19,16 +19,25 @@ $(document).ready(function () {
         var blNextStep = false;
 
         let bsOverlay = new bootstrap.Modal('#overlayCheckout');
+        const progressbarItems = $("#progressbar li"); // Cache the list items
 
         if (initial_step > 0) {
-            current_fs = $('#' + sections[sectionactive - 1]);
-            next_fs = $('#' + sections[sectionactive]);
+            current_fs = $('#' + sections[initial_step - 1]);
+            next_fs = $('#' + sections[initial_step]);
 
             //activate next step on progressbar using the index of next_fs
-            $("#progressbar li").eq($("section").index(next_fs)).addClass("active");
-            //show the next fieldset
-            next_fs.show();
-            current_fs.hide();
+            //activate each setp upto next_fs
+            let i = 1;
+            while (i <= initial_step && i <= sections.length) {
+                progressbarItems.eq(i - 1).addClass("active"); // Use `i - 1` because `.eq()` is zero-based
+                i++;
+            }
+
+            $("#msform section").removeClass("active");
+            let section_name = sections[initial_step-1];
+            next_fs = $('#' + section_name);
+            next_fs.addClass("active");
+            sectionactive = initial_step;
         }
 
         $(document).ajaxStart(function(){
@@ -43,7 +52,18 @@ $(document).ready(function () {
         });
 
 
+        function lastStep()
+        {
+            let sections = 5;
+            current_fs = $('#'+sections[sectionactive]);
+            //current_fs = $(this).parent();
+            next_fs = $('#'+sections[sectionactive + 1]);
+            //next_fs = $(this).parent().next();
+        }
+
+
         function nextStep() {
+
             if (animating) return false;
             animating = true;
 
@@ -299,6 +319,9 @@ $(document).ready(function () {
         }
 
         function getPaymentMethods(){
+            //Hide the error form if it's there
+            $('#checkout_payment_error').alert('close')
+
 
             let target = 'tsg/checkout_payments';
             //do a sychro call to get the shipping options based on county_iso and then populate the div
@@ -484,66 +507,46 @@ $(document).ready(function () {
             }
         });
 
-        $('#checkout-register').on("click", function(event) {
+        $('#checkout-register').on("click", function (event) {
 
             event.preventDefault();
             event.stopPropagation();
 
             let register_form = $(this).parents('form').attr('id');
-            let form = $("#"+register_form);
-            let skip_elements = document.getElementsByClassName("tsg-validate");
-            let passwords_valid = register_password_check();
+            let form = $("#" + register_form);
+            var form_data = form.serializeArray();
+            let btn = $(this);
 
-            if ( (form[0].checkValidity() === false) || (passwords_valid === false) ) {
-                let form_elements = form[0];
+            $.ajax({
+                url: 'index.php?route=account/register/create',
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                beforeSend: function () {
+                    let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
+                    btn.data('original-text', btn.html());
+                    btn.html(loadingText);
+                },
+                complete: function () {
+                    btn.html(btn.data('original-text'));
+                },
+                success: function (json) {
+                    if (json['success']) {
+                        window.location.assign(json['cart_url'])
 
-                for (var i = 0; i < form_elements.length; i++) {
-                    let parentDiv = form_elements[i].parentElement;
-                    parentDiv.classList.add('was-validated');
-                }
-                for (var i = 0; i < skip_elements.length; i++) {
-                    let parentDiv = skip_elements[i].parentElement;
-                    parentDiv.classList.remove('was-validated');
-                }
-            }
-            else {
-                var form_data = form.serializeArray();
-                let btn = $(this);
-
-
-                $.ajax({
-                    url: 'index.php?route=checkout/register/create',
-                    type: 'post',
-                    data: form_data,
-                    dataType: 'json',
-                    beforeSend: function() {
-                        let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
-                        btn.data('original-text',  btn.html());
-                        btn.html(loadingText);
-                    },
-                    complete: function() {
-                        btn.html(btn.data('original-text'));
-                    },
-                    success: function(json) {
-
-                        if (json['redirect']) {
-
-                            location = json['redirect'];
-                            window.location.assign(location)
-                        } else if (json['error']) {
-                            let error_div = $('#register-error');
-                            error_div.html(json['error']['warning']);
-                            error_div.show();
-                        }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
                     }
-                });
-            }
+                    else {
+                        let error_div = $('#register-error');
+                        error_div.html(json['error']['warning']);
+                        error_div.show();
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
             form.addClass('was-validated');
-            return true
-
+            return true;
         });
 
         $('#checkout-login').on("click", function(event) {
@@ -580,13 +583,32 @@ $(document).ready(function () {
                          $('.form-group').removeClass('has-error');
      */
                         if (json['redirect']) {
-
                             location = json['redirect'];
                             window.location.assign(location)
-                        } else if (json['error']) {
-                            let error_div = $('#login-error');
-                            error_div.html(json['error']['warning']);
-                            error_div.show();
+                        }
+                        else {
+                            if(json['is_valid_user'])
+                            {
+                                if(json['error'])
+                                {
+                                    let error_div = $('#login-error');
+                                    error_div.html(json['error']['warning']);
+                                    error_div.show();
+                                }
+                                if(json['is_wrong_password'])
+                                {
+                                    $('#checkout-reset').removeClass('d-none')
+                                }
+                                else
+                                {
+                                    $('#checkout-reset').addClass('d-none')
+                                }
+                            }
+                            else {
+                                let error_div = $('#login-error');
+                                error_div.html(json['error']['warning']);
+                                error_div.show();
+                            }
                         }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
@@ -635,20 +657,17 @@ $(document).ready(function () {
 
 
     let first_step = checkAccountType();
+
     let testobj = setFormSetup(first_step);
     addressLookup();
 
 
-
-
-
-
     function checkAccountType() {
         if(is_logged === 1){
-            return 1;
+            return 2;
         }
         else {
-            return 0;
+            return 1;
         }
     }
 
@@ -729,6 +748,137 @@ $(document).ready(function () {
 
 
     });
+
+    document.getElementById('guestEmail').addEventListener('input', function(e) {
+        const email = e.target.value;
+        const emailPattern = /^[\w+-.%]+@[\w-]+\.[A-Za-z]{2,}$/;
+
+        let allValid = true;
+        let isvalid = email && emailPattern.test(email);
+
+        if (isvalid) {
+            e.target.classList.remove('is-invalid');
+            e.target.classList.add('is-valid');
+
+           // test_new_email(email,e, '#guestemail_error');
+
+        } else {
+            e.target.classList.remove('is-valid');
+            e.target.classList.add('is-invalid');
+            $('#guestemail_error').text('Please enter valid email addresses')
+        }
+    });
+
+
+    document.getElementById('accountEmail').addEventListener('input', function(e) {
+        const email = e.target.value;
+        const emailPattern = /^[\w+-.%]+@[\w-]+\.[A-Za-z]{2,}$/;
+
+        let allValid = true;
+        let isvalid = email && emailPattern.test(email);
+
+        if (isvalid) {
+            e.target.classList.remove('is-invalid');
+            e.target.classList.add('is-valid');
+            test_new_email(email,e, '#accountemail_error');
+
+        } else {
+            e.target.classList.remove('is-valid');
+            e.target.classList.add('is-invalid');
+            $('#accountemail_error').text('Please enter valid email addresses')
+        }
+    });
+
+   function test_new_email(email_address, e, error_id, email_field_id){
+        //do an ajx call to see if the email has been used
+       $.ajax({
+           url: 'index.php?route=account/register/checkuniqueemail',
+           type: 'post',
+           data: {'email': email_address},
+           dataType: 'json',
+           beforeSend: function() {
+               //let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
+              // btn.data('original-text',  btn.html());
+               //btn.html(loadingText);
+           },
+           success: function(json) {
+               if(json['error'])
+               {
+                   e.target.classList.remove('is-valid');
+                   e.target.classList.add('is-invalid');
+                   $(error_id).text('Oops....something went wrong')
+               }
+               else{
+                   if(json['unique'])
+                   {
+                       e.target.classList.remove('is-invalid');
+                       e.target.classList.add('is-valid');
+                       $('#signin-email').val('');
+                       $('#signin-email').removeClass('is-valid');
+                   }
+                   else{
+                       e.target.classList.remove('is-valid');
+                       e.target.classList.add('is-invalid');
+                       $(error_id).text('Sorry...that email address has been used. Please login or request a password reset')
+                        $('#signin-email').val(email_address);
+                       $('#signin-email').addClass('is-valid')
+                   }
+               }
+
+
+           },
+           error: function(xhr, ajaxOptions, thrownError) {
+               alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+           }
+       });
+   }
+
+
+   $('#checkout-reset').on('click', function(){
+       let email_address = $('#signin-email').val()
+       let btn = $(this);
+       $.ajax({
+           url: 'index.php?route=account/account/resetpassword',
+           type: 'post',
+           data: {'email': email_address},
+           dataType: 'json',
+           beforeSend: function() {
+               let loadingText = "<i class='fa fa-spinner fa-spin '></i> sending link...";
+                btn.data('original-text',  btn.html());
+                btn.html(loadingText);
+           },
+           complete: function() {
+               btn.html(btn.data('original-text'));
+           },
+           success: function(json) {
+               if(json['success'])
+               {
+                   let message_div = $('#login-success');
+                   message_div.html(json['message']);
+                   message_div.show();
+                   let error_div = $('#login-error');
+                   error_div.hide();
+               }
+               else{
+                   let error_div = $('#login-error');
+                   error_div.html(json['message']);
+                   error_div.show();
+               }
+
+
+           },
+           error: function(xhr, ajaxOptions, thrownError) {
+               alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+           }
+       });
+
+
+
+   })
+   function sendPasswordReset()
+   {
+
+   }
 
 });
 

@@ -29,14 +29,14 @@
                         {% for symbol_info in category_symbols[0]%}
                             <div class="col ">
                                 <div class="card h-100 symbols">
-                                    <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{image_path}}{{ symbol_info.svg_path }}" class="card-img-top mt-2"
+                                    <a href="/index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{image_path}}{{ symbol_info.svg_path }}" class="card-img-top mt-2"
                                                     alt="{{ symbol_info.referent }}" height="50px"></a>
                                     <div class="card-body">
                                         <p class="card-text"><b>{{ symbol_info.refenceno }}</b>
                                             : {{ symbol_info.referent }}</p>
                                     </div>
                                     <div class="card-footer">
-                                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><small class="text-muted">Click to search by symbol</small></a>
+                                        <a href="/index.php?route=product/search&symbol_id={{ symbol_info.id }}"><small class="text-muted">Click to search by symbol</small></a>
                                     </div>
                                 </div>
 
@@ -78,7 +78,7 @@
                                         {% for symbol_info in cat_info.symbols %}
                                             <div class="col ">
                                                 <div class="card h-100 symbols">
-                                                    <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{image_path}}{{ symbol_info.svg_path }}"
+                                                    <a href="/index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{image_path}}{{ symbol_info.svg_path }}"
                                                                     class="card-img-top mt-2"
                                                                     alt="{{ symbol_info.referent }}" height="50px"></a>
                                                     <div class="card-body">
@@ -86,7 +86,7 @@
                                                             : {{ symbol_info.referent }}</p>
                                                     </div>
                                                     <div class="card-footer">
-                                                        <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><small class="text-muted">Click to search by
+                                                        <a href="/index.php?route=product/search&symbol_id={{ symbol_info.id }}"><small class="text-muted">Click to search by
                                                                 symbol</small></a>
                                                     </div>
                                                 </div>

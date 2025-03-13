@@ -13,10 +13,14 @@ function getURLVar(key) {
 				value[data[0]] = data[1];
 			}
 		}
-
+		console.log(value);
 		if (value[key]) {
+			console.log('getURLVar');
+			console.log(value);
+			console.log(value[key]);
 			return value[key];
 		} else {
+			console.log('return empty string');
 			return '';
 		}
 	}

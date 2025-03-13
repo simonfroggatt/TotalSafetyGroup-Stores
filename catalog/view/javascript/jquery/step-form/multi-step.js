@@ -184,7 +184,7 @@ $(document).ready(function () {
                 var functionCall = form.data('action-function');
 
                 $.ajax({
-                    url: 'index.php?route='+target,
+                    url: '/index.php?route='+target,
                     type: 'post',
                     data: form_data,
                     dataType: 'json',
@@ -218,7 +218,7 @@ $(document).ready(function () {
             let target = 'tsg/checkout_shipping/load';
             //do a sychro call to get the shipping options based on county_iso and then populate the div
             $.ajax({
-                url: 'index.php?route='+target,
+                url: '/index.php?route='+target,
                 type: 'post',
                 data: [],
                 dataType: 'json',
@@ -250,7 +250,7 @@ $(document).ready(function () {
 
             let target = 'tsg/checkout_confirm/loadaddress';
             $.ajax({
-                url: 'index.php?route='+target,
+                url: '/index.php?route='+target,
                 type: 'post',
                 data: [],
                 dataType: 'json',
@@ -282,7 +282,7 @@ $(document).ready(function () {
             let target = 'tsg/checkout_confirm/totals';
             //do a sychro call to get the shipping options based on county_iso and then populate the div
             $.ajax({
-                url: 'index.php?route='+target,
+                url: '/index.php?route='+target,
                 type: 'post',
                 data: [],
                 dataType: 'json',
@@ -317,7 +317,7 @@ $(document).ready(function () {
             let target = 'tsg/checkout_payments';
             //do a sychro call to get the shipping options based on county_iso and then populate the div
             $.ajax({
-                url: 'index.php?route='+target,
+                url: '/index.php?route='+target,
                 type: 'post',
                 data: [],
                 dataType: 'json',
@@ -379,7 +379,7 @@ $(document).ready(function () {
                 var form_data = form.serializeArray();
                 var target = form.data('action-url');
                 $.ajax({
-                    url: 'index.php?route='+target,
+                    url: '/index.php?route='+target,
                     type: 'post',
                     data: form_data,
                     dataType: 'json',
@@ -421,7 +421,7 @@ $(document).ready(function () {
                 var form_data = form.serializeArray();
                 var target = form.data('action-url');
                 $.ajax({
-                    url: 'index.php?route='+target,
+                    url: '/index.php?route='+target,
                     type: 'post',
                     data: form_data,
                     dataType: 'json',
@@ -467,7 +467,7 @@ $(document).ready(function () {
               //  bsOverlay.show();
 
                 $.ajax({
-                    url: 'index.php?route='+target,
+                    url: '/index.php?route='+target,
                     type: 'post',
                     data: form_data,
                     dataType: 'json',
@@ -509,7 +509,7 @@ $(document).ready(function () {
             let btn = $(this);
 
             $.ajax({
-                url: 'index.php?route=account/register/create',
+                url: '/index.php?route=account/register/create',
                 type: 'post',
                 data: form_data,
                 dataType: 'json',
@@ -557,7 +557,7 @@ $(document).ready(function () {
 
 
                 $.ajax({
-                    url: 'index.php?route=checkout/login/save',
+                    url: '/index.php?route=checkout/login/save',
                     type: 'post',
                     data: form_data,
                     dataType: 'json',
@@ -783,7 +783,7 @@ $(document).ready(function () {
    function test_new_email(email_address, e, error_id, email_field_id){
         //do an ajx call to see if the email has been used
        $.ajax({
-           url: 'index.php?route=account/register/checkuniqueemail',
+           url: '/index.php?route=account/register/checkuniqueemail',
            type: 'post',
            data: {'email': email_address},
            dataType: 'json',
@@ -829,7 +829,7 @@ $(document).ready(function () {
        let email_address = $('#signin-email').val()
        let btn = $(this);
        $.ajax({
-           url: 'index.php?route=account/account/resetpassword',
+           url: '/index.php?route=account/account/resetpassword',
            type: 'post',
            data: {'email': email_address},
            dataType: 'json',

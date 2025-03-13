@@ -157,7 +157,7 @@ class ControllerExtensionCards extends Controller {
 			if ($settings['manage_subscriptions'] == 'customer_portal') {
 				$curl_data = array(
 					'customer'		=> $stripe_customer_id,
-					'return_url'	=> $this->config->get('config_url') . 'index.php?route=account/account',
+					'return_url'	=> $this->config->get('config_url') . '/index.php?route=account/account',
 				);
 					
 				$portal_response = $this->curlRequest('POST', 'billing_portal/sessions', $curl_data);

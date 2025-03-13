@@ -483,6 +483,12 @@ class ControllerTsgCheckoutConfirm extends Controller {
             $order_data['payment_status_id'] = '6'; //cart - no payment tried yet
             $order_data['order_status_id'] = '1';   //Open
 
+            $this->load->model('checkout/order');
+
+            $due_date = $this->model_checkout_order->createDueDate($_ENV['DEFAULT_CARD_DUE_DAYS'], $_ENV['DEFAULT_CARD_DUE_SHORTCODE']);
+            //$this->model_checkout_order->setDueDate($order_id, $due_date);
+            $order_data['date_due'] = $due_date;   //Open
+
 
             if (!empty($this->request->server['HTTP_X_FORWARDED_FOR'])) {
                 $order_data['forwarded_ip'] = $this->request->server['HTTP_X_FORWARDED_FOR'];
@@ -504,7 +510,7 @@ class ControllerTsgCheckoutConfirm extends Controller {
                 $order_data['accept_language'] = '';
             }
 
-            $this->load->model('checkout/order');
+
             $this->log->write('Order Data: ' . print_r($order_data, true));
             $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
 

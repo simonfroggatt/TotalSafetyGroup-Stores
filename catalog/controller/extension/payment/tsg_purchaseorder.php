@@ -54,7 +54,7 @@ class ControllerExtensionPaymentTsgPurchaseOrder extends Controller {
             $this->load->model('account/customer');
             $company_account_details = $this->model_account_customer->getCompanyAccountDetails($customer_id);
 
-            $due_date = $this->createDueDate($company_account_details['payment_days'], $company_account_details['shortcode']);
+            $due_date = $this->model_checkout_order->createDueDate($company_account_details['payment_days'], $company_account_details['shortcode']);
 
 			$this->model_checkout_order->addOrderHistory($order_id, $order_status, false, false);
             $this->model_checkout_order->setDueDate($order_id, $due_date);
@@ -66,24 +66,7 @@ class ControllerExtensionPaymentTsgPurchaseOrder extends Controller {
 		$this->response->setOutput(json_encode($json));		
 	}
 
-    private function createDueDate($days, $type)
-    {
-        $date = new DateTime();
-        //either from today ot end of month
-        switch ($type) {
-            case 'DAYSAFTERBILLDATE':
-                $date->modify('+'.$days.' day');
-                break;
-            case 'DAYSAFTERBILLMONTH':
-                $date->modify('last day of this month');
-                $date->modify('+'.$days.' day');
-                break;
-            default:
-                break;
-        }
 
-        return $date->format('Y-m-d');
-    }
 
     public function testemail()
     {

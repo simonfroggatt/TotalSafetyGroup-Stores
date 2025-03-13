@@ -106,7 +106,7 @@ $(document).on('change', 'input[name=\'account\']', function() {
 {% if not logged %}
 $(document).ready(function() {
     $.ajax({
-        url: 'index.php?route=checkout/login',
+        url: '/index.php?route=checkout/login',
         dataType: 'html',
         success: function(html) {
            $('#collapse-checkout-option .panel-body').html(html);
@@ -123,7 +123,7 @@ $(document).ready(function() {
 {% else %}
 $(document).ready(function() {
     $.ajax({
-        url: 'index.php?route=checkout/payment_address',
+        url: '/index.php?route=checkout/payment_address',
         dataType: 'html',
         success: function(html) {
             $('#collapse-payment-address .panel-body').html(html);

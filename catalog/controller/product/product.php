@@ -222,10 +222,10 @@ class ControllerProductProduct extends Controller {
 			$this->document->setDescription($product_info['meta_description']);
 			$this->document->setKeywords($product_info['meta_keyword']);
 			$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
-			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
-			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
-			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
-			$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
+			$this->document->addScript('/catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
+			$this->document->addScript('/catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
+			$this->document->addScript('/catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
+			$this->document->addStyle('/catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
 
 			$data['heading_title'] = $product_info['title'];
@@ -547,15 +547,15 @@ class ControllerProductProduct extends Controller {
                 //load the model
                 $this->load->model('bespoke/bespoke');
 
-                $this->document->addScript('catalog/view/javascript/bespoke/interface.js');
-                $this->document->addScript('catalog/view/javascript/bespoke/bespoke.js');
-                $this->document->addScript('catalog/view/javascript/bespoke/bespoke.construct.js');
-                $this->document->addScript('catalog/view/javascript/bespoke/bespoke.draw.js');
-                $this->document->addScript('catalog/view/javascript/bespoke/svg.js');
-                $this->document->addScript('catalog/view/javascript/bespoke/svg.filter.js');
-                $this->document->addScript('catalog/view/javascript/bespoke/svg.screenbbox.js');
-                $this->document->addScript('catalog/view/javascript/tsg/bootstrap-detect-breakpoint.js');
-                $this->document->addStyle('catalog/view/javascript/bespoke/bespoke-text-font/css/bespoke-text.css' );
+                $this->document->addScript('/catalog/view/javascript/bespoke/interface.js');
+                $this->document->addScript('/catalog/view/javascript/bespoke/bespoke.js');
+                $this->document->addScript('/catalog/view/javascript/bespoke/bespoke.construct.js');
+                $this->document->addScript('/catalog/view/javascript/bespoke/bespoke.draw.js');
+                $this->document->addScript('/catalog/view/javascript/bespoke/svg.js');
+                $this->document->addScript('/catalog/view/javascript/bespoke/svg.filter.js');
+                $this->document->addScript('/catalog/view/javascript/bespoke/svg.screenbbox.js');
+                $this->document->addScript('/catalog/view/javascript/tsg/bootstrap-detect-breakpoint.js');
+                $this->document->addStyle('/catalog/view/javascript/bespoke/bespoke-text-font/css/bespoke-text.css' );
 
                 $data_bespoke = array();
                 $data_bespoke['image_path'] = USE_CDN ? TSG_CDN_URL : 'image/';

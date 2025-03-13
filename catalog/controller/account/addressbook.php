@@ -101,7 +101,7 @@ class ControllerAccountAddressbook extends Controller
 
         $this->load->model('account/address');
 
-        $this->document->addScript('catalog/view/javascript/tsg/address-lookup.js');
+        $this->document->addScript('/catalog/view/javascript/tsg/address-lookup.js');
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
@@ -163,7 +163,7 @@ class ControllerAccountAddressbook extends Controller
         $this->load->model('account/address');
         $data['address'] = $this->model_account_address->getAddress($data['address_id']);
 
-        $this->document->addScript('catalog/view/javascript/tsg/address-lookup.js');
+        $this->document->addScript('/catalog/view/javascript/tsg/address-lookup.js');
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');

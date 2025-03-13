@@ -74,6 +74,10 @@ class ModelCheckoutOrder extends Model {
         $sql .= " user_agent = '" . $this->db->escape($data['user_agent']) . "',";
         $sql .= " accept_language = '" . $this->db->escape($data['accept_language']) . "', ";
         $sql .= "date_added = NOW(), date_modified = NOW(),";
+        if(isset($data['date_due']))
+            $sql .= "date_due = '" . $this->db->escape($data['date_due']) . "',";
+        else
+            $sql .= "date_due = NOW(),";
         $sql .= "payment_method_id = '" . (int)$data['payment_method_id'] . "', ";
         $sql .= "order_type_id = '" . (int)$data['order_type_id'] . "', ";
         $sql .= "payment_status_id = '" . (int)$data['payment_status_id'] . "', ";
@@ -671,5 +675,26 @@ class ModelCheckoutOrder extends Model {
         $query = $this->db->query($sql);
         return $query->row['invoice_prefix'] . '-'.$order_id;
     }
+
+    public function createDueDate($days, $type)
+    {
+        $date = new DateTime();
+        //either from today ot end of month
+        switch ($type) {
+            case 'DAYSAFTERBILLDATE':
+                $date->modify('+'.$days.' day');
+                break;
+            case 'DAYSAFTERBILLMONTH':
+                $date->modify('last day of this month');
+                $date->modify('+'.$days.' day');
+                break;
+            default:
+                break;
+        }
+
+        return $date->format('Y-m-d');
+    }
+
+
 
 }

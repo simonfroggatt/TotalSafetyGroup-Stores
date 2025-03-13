@@ -594,7 +594,7 @@ class ControllerMailOrder extends Controller {
         $data['download'] = '';
 
         $data['date_added'] = date($language->get('date_format_short'), strtotime($order_info['date_added']));
-        $data['date_due'] = date($language->get('date_format_short'),$order_info['date_due']);
+        //$data['date_due'] = date($language->get('date_format_short'),$order_info['date_due']);
 
         $data['payment_method'] =  $this->model_checkout_order->GetPaymentMethodByID($order_info['payment_method_id']);
 

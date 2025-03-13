@@ -313,6 +313,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
 
     public function paymentFailed() {
         //http://safetysigns/index.php?route=extension/payment/tsg_stripe/paymentfailed&order_id=97189&order_hash=eb6e005a7f96c3ac26123dd11d5f101a
+        //safetysigns/index.php?route=extension/payment/tsg_stripe/paymentfailed&order_id=97048&order_hash=a0d24b4d99b5101551ee711db900002b
         $this->load->model('extension/payment/tsg_stripe');
         $this->load->model('checkout/order');
         $this->document->addScript('https://js.stripe.com/v3/');

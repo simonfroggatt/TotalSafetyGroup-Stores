@@ -756,7 +756,7 @@ class ControllerExtensionPaymentTsgStripe extends Controller {
 
         // Add Stripe.js
         $this->document->addScript('https://js.stripe.com/v3/');
-        $this->document->addScript('catalog/view/javascript/tsg_stripe.js');
+        $this->document->addScript('/catalog/view/javascript/tsg_stripe.js');
 
         $data['stripe_publishable_key'] = $_ENV['STRIPE_PUBLISHABLE_KEY'];
 

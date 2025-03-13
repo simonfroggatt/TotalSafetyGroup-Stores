@@ -149,7 +149,7 @@ $('#button-cart').on('click', function() {
 
     let temp_data  = $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select:visible, #product textarea, #product input[type=\'number\']');
 	$.ajax({
-		url: 'index.php?route=checkout/cart/add',
+		url: '/index.php?route=checkout/cart/add',
 		type: 'post',
 		data: temp_data,
         dataType: 'json',
@@ -235,7 +235,7 @@ $('#button-cart').on('click', function() {
 		if (pos > -1) { forminfo[pos] = {name: "svg_bespoke_images", value: svgImages};}
 		else { forminfo.push({name: "svg_bespoke_images", value: svgImages});}
 
-		let postURL = 'index.php?route=checkout/cart/add';
+		let postURL = '/index.php?route=checkout/cart/add';
 
 		$.ajax({
 			url: postURL,

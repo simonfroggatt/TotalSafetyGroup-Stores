@@ -69,7 +69,7 @@ class ControllerTsgProductVariants extends Controller {
         $variants_with_bulk_array = $this->CreateVariantBulkArray($allVariants, $bulkgroupdata);
 
         $data['bulk_discount_group'] = $bulkgroupdata;
-        $this->document->addScript("catalog/view/javascript/tsg/product-variants.js", 'footer');
+        $this->document->addScript("/catalog/view/javascript/tsg/product-variants.js", 'footer');
 
         $rtn_data['options_section'] = $this->load->view('tsg/product_variants', $data);
 

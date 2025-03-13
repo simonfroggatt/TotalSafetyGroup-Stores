@@ -269,7 +269,7 @@ var bespokeConstruct = function(options) {
         $.ajax({
             async: false,
             type: 'GET',
-            url: 'index.php?route=ssan/bespoke/load_svg',
+            url: '/index.php?route=ssan/bespoke/load_svg',
             data: {'symbolNumID' : symbolInfo.id},
             dataType: 'json',
             success: function (data) {

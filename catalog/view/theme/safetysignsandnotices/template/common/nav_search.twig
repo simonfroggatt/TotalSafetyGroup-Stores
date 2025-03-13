@@ -42,7 +42,7 @@
                let searchType = $('#topnav_search_type').val();
                //route=tsg/dynamic_search&q=smoking&type=product
                $.ajax({
-                   url: 'index.php?route=tsg/dynamic_search',
+                   url: '/index.php?route=tsg/dynamic_search',
                    type: 'get',
                    data: { q: dInput, type: searchType },
                    dataType: 'html',
@@ -58,7 +58,7 @@
            }, 500);
 
        $( "#nav-search" ).submit(function( event ) {
-           var url = $('base').attr('href') + 'index.php?route=product/search';
+           var url = $('base').attr('href') + '/index.php?route=product/search';
 
            var value = $('#topnav_search_field').val();
 

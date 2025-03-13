@@ -99,7 +99,7 @@ $(function () {
         } else {
             numTextBlocks++;
             textBlockID++;
-            $.get('index.php?route=bespoke/bespoke/new_text_area&panel=0&box=' + textBlockID, setNewTextBox);
+            $.get('/index.php?route=bespoke/bespoke/new_text_area&panel=0&box=' + textBlockID, setNewTextBox);
             $defaultText = 'I am new';
             newSign.addNewTextBlack(0, textBlockID, $defaultText);
             //newSign.buildSign(true);
@@ -230,7 +230,7 @@ function loadBespokeFromSVG(bespokeJSON) {
                   //need to add this to the DOM
                   //  $.get('index.php?route=ssan/bespoke/text_areas_ajax&panel=0&box='+textBlockIndex, setNewTextBox)
 
-                  $.get('index.php?route=bespoke/bespoke/new_text_area&panel=0&box=' + textBlockIndex)
+                  $.get('/index.php?route=bespoke/bespoke/new_text_area&panel=0&box=' + textBlockIndex)
                       .done(function(data) {
                           setNewTextBox(data);
                           $(textblockID).val(textBlackInfo['text']);

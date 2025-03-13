@@ -45,8 +45,8 @@ class ControllerBlogBlog extends Controller
             $data['blog_image']= $data['image_path']. $blog_data['image'];
             $data['blog_title'] =$blog_data['title'];
             $data['blog_subtitle'] =$blog_data['sub_title'];
-            $data['blog_more'] = "index.php?route=blog/blog&blog_id=1";
-            $data['blog_back'] = "index.php?route=blog/blog";
+            $data['blog_more'] = "/index.php?route=blog/blog&blog_id=1";
+            $data['blog_back'] = "/index.php?route=blog/blog";
 
             $data['column_left'] = $this->load->controller('common/column_left');
             $data['column_right'] = $this->load->controller('common/column_right');

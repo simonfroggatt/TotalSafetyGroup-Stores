@@ -11,7 +11,7 @@
                         </div>
                         <div class="card-body">
                             <p class="card-text">
-                                <a href="index.php?route=product/product&product_id={{ product.path }}">
+                                <a href="/index.php?route=product/product&product_id={{ product.path }}">
                                     {{ product.title }}</a></p>
                         </div>
                     </div>
@@ -25,11 +25,11 @@
         {% for cat in category %}
             <div class="col ">
                 <div class="card h-100">
-                    <a href="index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-fluid mt-2"
+                    <a href="/index.php?route=product/category&path={{ cat.path }}"><img src="{{ cat.image }}" class="img-fluid mt-2"
                                                                                                alt="{{ cat.title }}" height="75" width="75"></a>
                     <div class="card-body">
                         <p class="card-text">
-                            <a href="index.php?route=product/category&path={{ cat.path }}">{{ cat.title }}</a>
+                            <a href="/index.php?route=product/category&path={{ cat.path }}">{{ cat.title }}</a>
                         </p>
                     </div>
                 </div>
@@ -45,11 +45,11 @@
         {% for symbol_info in symbols %}
             <div class="col ">
                 <div class="card h-100 symbols">
-                    <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ symbol_info.image }}" class="card-img-top mt-2"
+                    <a href="/index.php?route=product/search&symbol_id={{ symbol_info.id }}"><img src="{{ symbol_info.image }}" class="card-img-top mt-2"
                                                                                                  alt="{{ symbol_info.referent }}" height="50px"></a>
                     <div class="card-body">
                         <p class="card-text">
-                            <a href="index.php?route=product/search&symbol_id={{ symbol_info.id }}">
+                            <a href="/index.php?route=product/search&symbol_id={{ symbol_info.id }}">
                                 <b>{{ symbol_info.refenceno }}</b>{{ symbol_info.referent }}
                             </a>
                         </p>

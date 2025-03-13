@@ -498,7 +498,7 @@ $(document).ready(function () {
             }
         });
 
-        $('#checkout-register').on("click", function (event) {
+        $('#checkout-register-old').on("click", function (event) {
 
             event.preventDefault();
             event.stopPropagation();
@@ -522,11 +522,11 @@ $(document).ready(function () {
                     btn.html(btn.data('original-text'));
                 },
                 success: function (json) {
-                    if (json['success']) {
-                        window.location.assign(json['cart_url'])
 
-                    }
-                    else {
+                    if (json['redirect']) {
+                        location = json['redirect'];
+                        window.location.assign(location)
+                    } else if (json['error']) {
                         let error_div = $('#register-error');
                         error_div.html(json['error']['warning']);
                         error_div.show();
@@ -863,9 +863,56 @@ $(document).ready(function () {
            }
        });
 
-
-
    })
+
+    $('#checkout-account').on("submit", function (event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var form = $(this);
+        var form_data = form.serializeArray();
+        let btn = $('#checkout-register-btn');
+
+
+        $.ajax({
+            url: '/index.php?route=account/register/create',
+            type: 'post',
+            data: form_data,
+            dataType: 'json',
+            beforeSend: function () {
+                let loadingText = "<i class='fa fa-spinner fa-spin '></i> Creating account...";
+                btn.data('original-text', btn.html());
+                btn.html(loadingText);
+            },
+            complete: function () {
+                btn.html(btn.data('original-text'));
+            },
+            success: function (json) {
+
+                if(json['cart_url'])
+                {
+                    location = json['cart_url'];
+                    window.location.assign(location)
+                }
+                if (json['redirect']) {
+                    location = json['redirect'];
+                    window.location.assign(location)
+                } else if (json['error']) {
+                    let error_div = $('#register-error');
+                    error_div.html(json['error']['warning']);
+                    error_div.show();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+        form.addClass('was-validated');
+        return true
+
+    });
+
    function sendPasswordReset()
    {
 

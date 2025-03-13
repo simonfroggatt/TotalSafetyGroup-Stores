@@ -39,7 +39,7 @@ class ControllerCommonHeader extends Controller {
 
 		$data['name'] = $this->config->get('config_name');
 
-		$data['theme_css'] = 'catalog/view/theme/'. $this->config->get('theme_default_directory'). '/stylesheet/stylesheet.css';
+		$data['theme_css'] = '/catalog/view/theme/'. $this->config->get('theme_default_directory'). '/stylesheet/stylesheet.css';
 
         $tmp =  DIR_IMAGE . $store_info['logo'];
         if (USE_CDN) {

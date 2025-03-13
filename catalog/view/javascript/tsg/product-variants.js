@@ -552,7 +552,7 @@ function set_selected_option(form_name = '', option_extra_class_name = '', bl_be
 
 function loadVariantSpec(variant_id) {
 
-    $("#variant-specification").load("index.php?route=tsg/product_spec&variant_id=" + variant_id);
+    $("#variant-specification").load("/index.php?route=tsg/product_spec&variant_id=" + variant_id);
 }
 
 

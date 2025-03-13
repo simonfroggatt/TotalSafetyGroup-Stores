@@ -64,7 +64,7 @@
         function deleteFromCart(cart_id){
             //ajax call in here,but needs to synchronous just incase it doesn't work
             $.ajax({
-                url: 'index.php?route=checkout/cart/remove',
+                url: '/index.php?route=checkout/cart/remove',
                 type: 'post',
                 data: 'key=' + cart_id,
                 dataType: 'json',

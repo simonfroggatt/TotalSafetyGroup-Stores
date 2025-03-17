@@ -559,10 +559,12 @@ class ControllerCheckoutCart extends Controller {
 				array_multisort($sort_order, SORT_ASC, $totals);
 			}
 
-			$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
-            $json['TSG_totals'] = $data['totals'];
+            $data = $this->load->controller('tsg/cart_common');
+            $json['cart_totals'] = $this->load->view('tsg/offcanvas_cart_totals', $data);
             $json['offcanvas_cart'] = $this->load->controller('tsg/offcanvas_cart');
+            $json['cart_menu'] = $this->load->controller('tsg/cart_menu');
 		}
+
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
@@ -608,5 +610,61 @@ class ControllerCheckoutCart extends Controller {
         }
 
         return $this->url->link('product/product', $urlstr);
+    }
+
+    //TSG
+    public function merge()
+    {
+        $customer_id = $this->session->data['tmp_customer_id'];
+        //see if we are merging or not
+        $this->load->model('account/customer');
+        $customer_info = $this->model_account_customer->getCustomer($customer_id);
+        $password = $this->session->data['tmp_merge_data'];
+        $json['redirect'] = $this->url->link('checkout/cart');
+
+        isset($this->request->post['merge']) ? $merge = $this->request->post['merge'] : $merge = 0;
+        isset($this->request->post['redirect']) ? $redirect = $this->request->post['redirect'] : $redirect = 'cart';
+        switch($redirect){
+            case 'cart':
+                $json['redirect'] = $this->url->link('checkout/cart');
+                break;
+            case 'account':
+                $json['redirect'] = $this->url->link('account/account');
+                break;
+            case 'checkout':
+                $json['redirect'] = $this->url->link('checkout/checkout');
+                break;
+        }
+
+        if ($merge == 1) {
+            try {
+                //get the customer id
+                $this->customer->login($customer_info['email'], $password);
+                $this->cart->mergeCarts($customer_id);
+                $json['success'] = true;
+            }
+            catch (Exception $e) {
+                $this->log->write($e->getMessage());
+                $json['error'] = $e->getMessage();
+                $json['success'] = false;
+            }
+
+        }
+        else{
+            //clear the session cart
+            try {
+                $this->customer->login($customer_info['email'], $password, false, true);
+                $this->cart->setCurrentCartToCustomer($customer_id);
+                $json['success'] = true;
+            }
+            catch (Exception $e) {
+                $this->log->write($e->getMessage());
+                $json['error'] = $e->getMessage();
+                $json['success'] = false;
+            }
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        return $this->response->setOutput(json_encode($json));
     }
 }

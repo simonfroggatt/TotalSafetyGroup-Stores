@@ -13,14 +13,11 @@ function getURLVar(key) {
 				value[data[0]] = data[1];
 			}
 		}
-		console.log(value);
+
 		if (value[key]) {
-			console.log('getURLVar');
-			console.log(value);
-			console.log(value[key]);
+
 			return value[key];
 		} else {
-			console.log('return empty string');
 			return '';
 		}
 	}
@@ -267,7 +264,7 @@ var cart = {
 				}, 100);
 
 				if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
-				//	location = '/index.php?route=checkout/cart';
+					location = '/index.php?route=checkout/cart';
 				} else {
 					$('#cart > ul').load('/index.php?route=common/cart/info ul li');
 				}

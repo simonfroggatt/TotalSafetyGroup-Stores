@@ -20,7 +20,7 @@ class Cart {
 		// Remove all the expired carts with no customer ID
 		$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE (api_id > '0' OR customer_id = '0') AND date_added < DATE_SUB(NOW(), INTERVAL 24 HOUR)");
 
-		if ($this->customer->getId()) {
+		/*if ($this->customer->getId()) {
 			// We want to change the session ID on all the old items in the customers cart
 			$this->db->query("UPDATE " . DB_PREFIX . "cart SET session_id = '" . $this->db->escape($this->session->getId()) . "' WHERE api_id = '0' AND customer_id = '" . (int)$this->customer->getId() . "'");
 			$this->db->query("UPDATE " . DB_PREFIX . "cart SET admin_pin = '" . $this->db->escape($this->session->getPIN()) . "' WHERE api_id = '0' AND customer_id = '" . (int)$this->customer->getId() . "'");
@@ -32,10 +32,30 @@ class Cart {
 				$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE cart_id = '" . (int)$cart['cart_id'] . "'");
 
 				// The advantage of using $this->add is that it will check if the products already exist and increaser the quantity if necessary.
-				$this->add($cart['product_id'], $cart['quantity'], json_decode($cart['option']), $cart['recurring_id'], $cart['product_variant_id'], json_decode($cart['tsg_options']));
+                //$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $selected_option_values_frm, $option_addon_price, $isBespoke, html_entity_decode($this->request->post['svg_raw']) ,html_entity_decode($this->request->post['svg_json']), html_entity_decode($this->request->post['svg_export']), html_entity_decode($this->request->post['svg_bespoke_images']), html_entity_decode($this->request->post['svg_bespoke_texts']));
+                //
+				$this->add(
+                    $cart['product_id'],
+                    $cart['quantity'],
+                    json_decode($cart['option']),
+                    $cart['recurring_id'],
+                    $cart['product_variant_id'],
+                    json_decode($cart['tsg_options']),
+                    $cart['tsg_option_price'],
+                    $cart['is_bespoke'],
+                    json_decode($cart['svg_raw']??''),
+                    json_decode($cart['svg_json']??''),
+                    json_decode($cart['svg_export']??''),
+                    $cart['svg_images'],
+                    $cart['svg_texts']);
 			}
-		}
+		}*/
 	}
+
+    public function customer_has_cart($customer_id){
+        $cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE customer_id = '" . (int)$customer_id . "'");
+        return $cart_query->num_rows;
+    }
 
 	public function getProducts() {
 		$product_data = array();
@@ -387,11 +407,11 @@ class Cart {
                     'size_height'    => $product_query->row['size_height'],
                     'single_unit_price' => $product_query->row['var_price'],
                     'is_bespoke' => $cart['is_bespoke'],
-                    'svg_raw' => $cart['svg_raw'] == null ? '': json_decode($cart['svg_raw']),
+                    'svg_raw' => $cart['svg_raw'] == null ? '': ($cart['svg_raw']),
                     'svg_json' => $cart['svg_json'] == null ? '': json_decode($cart['svg_json']),
-                    'svg_texts' => $cart['svg_texts'] == null ? '': json_decode($cart['svg_texts']),
-                    'svg_export' => $cart['svg_export'],
-                    'svg_images' => $cart['svg_images'],
+                    'svg_texts' => $cart['svg_texts'] == null ? '': ($cart['svg_texts']),
+                    'svg_export' => $cart['svg_export'] == null ? '': ($cart['svg_export']),
+                    'svg_images' => $cart['svg_images'] == null ? '': json_decode($cart['svg_images']),
 
 				);
 			} else {
@@ -402,7 +422,20 @@ class Cart {
 		return $product_data;
 	}
 
-	public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0, $product_variant_id = 0, $tsg_option_array = [], $option_addon_price = 0, $is_bespoke = 0,  $svgRaw = null, $svgJSON = '', $svgExport = null, $svgImages = '', $svgTexts = null) {
+	public function add(
+                        $product_id,
+                        $quantity = 1,
+                        $option = array(),
+                        $recurring_id = 0,
+                        $product_variant_id = 0,
+                        $tsg_option_array = [],
+                        $option_addon_price = 0,
+                        $is_bespoke = 0,
+                        $svgRaw = '',
+                        $svgJSON = '',
+                        $svgExport = '',
+                        $svgImages = '',
+                        $svgTexts = '') {
 		//$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
         $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart ";
         $sql .= " WHERE " . DB_PREFIX . "cart.api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' ";
@@ -437,24 +470,25 @@ class Cart {
             $sql .= DB_PREFIX . "cart.admin_pin = '".$this->session->data['cart_pin']. "', ";
             $sql .= DB_PREFIX . "cart.tsg_option_price = '". $option_addon_price. "' ";
 
-            if($svgRaw != null) {
-                $sql .= ", ".DB_PREFIX . "cart.svg_raw = '" .$this->db->escape(json_encode($svgRaw)) . "'";
+            if($svgRaw != '') {
+                $sql .= ", ".DB_PREFIX . "cart.svg_raw = '" .$this->db->escape($svgRaw) . "'";
                 $is_bespoke = 1;
             }
             if($svgJSON != '') {
                 $sql .= ", ".DB_PREFIX . "cart.svg_json = '" .$this->db->escape(json_encode($svgJSON)) . "'";
                 $is_bespoke = 1;
             }
-            if($svgExport != null) {
+            if($svgExport != '') {
                 $sql .= ", ".DB_PREFIX . "cart.svg_export = '" .$this->db->escape($svgExport) . "'";
                 $is_bespoke = 1;
             }
             if($svgImages != '') {
-                $sql .= ", ".DB_PREFIX . "cart.svg_images = '" .$this->db->escape($svgImages) . "'";
+                $sql .= ", ".DB_PREFIX . "cart.svg_images = '" .$this->db->escape(json_encode($svgImages)) . "'";
                 $is_bespoke = 1;
             }
             if($svgTexts != null) {
-                $sql .= ", ".DB_PREFIX . "cart.svg_texts = '" .$this->db->escape($svgTexts) . "'";
+                $tmp = json_encode($svgTexts);
+                $sql .= ", ".DB_PREFIX . "cart.svg_texts = '" .$this->db->escape(($svgTexts)) . "'";
                 $is_bespoke = 1;
             }
 
@@ -472,9 +506,27 @@ class Cart {
             $sql .= " AND " . DB_PREFIX . "cart.product_variant_id = '" . $product_variant_id . "'";
             $sql .= " AND " . DB_PREFIX . "cart.store_id = ".(int)$this->config->get('config_store_id'). "";
             $sql .= " AND " . DB_PREFIX . "cart.tsg_options = '" . $this->db->escape(json_encode($tsg_option_array)) . "'";
-            if($svgJSON != '') {
-                $sql .= " AND " . DB_PREFIX . "cart.svg_json = '" .$this->db->escape(json_encode($svgJSON)) . "'";
+            if($svgRaw != null) {
+                $sql .= " AND ".DB_PREFIX . "cart.svg_raw = '" .$this->db->escape($svgRaw) . "'";
+                $is_bespoke = 1;
             }
+            if($svgJSON != '') {
+                $sql .= " AND ".DB_PREFIX . "cart.svg_json = '" .$this->db->escape(json_encode($svgJSON)) . "'";
+                $is_bespoke = 1;
+            }
+            if($svgExport != null) {
+                $sql .= " AND ".DB_PREFIX . "cart.svg_export = '" .$this->db->escape($svgExport) . "'";
+                $is_bespoke = 1;
+            }
+            if($svgImages != '') {
+                $sql .= " AND ".DB_PREFIX . "cart.svg_images = '" .$this->db->escape(json_encode($svgImages)) . "'";
+                $is_bespoke = 1;
+            }
+            if($svgTexts != null) {
+                $sql .= "  ".DB_PREFIX . "cart.svg_texts = '" .$this->db->escape(($svgTexts)) . "'";
+                $is_bespoke = 1;
+            }
+
             $this->db->query($sql);
     		}
 	}
@@ -625,6 +677,43 @@ class Cart {
         }
 
         return $product_size;
+    }
+
+    public function mergeCarts($customer_id){
+            //$customer_id = (int)$this->customer->getId();
+			// We want to change the session ID on all the old items in the customers cart
+			$this->db->query("UPDATE " . DB_PREFIX . "cart SET session_id = '" . $this->db->escape($this->session->getId()) . "' WHERE api_id = '0' AND customer_id = '" . (int)$customer_id. "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "cart SET admin_pin = '" . $this->db->escape($this->session->getPIN()) . "' WHERE api_id = '0' AND customer_id = '" . (int)$customer_id . "'");
+
+			// Once the customer is logged in we want to update the customers cart
+			$cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE api_id = '0' AND customer_id = '0' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
+
+			foreach ($cart_query->rows as $cart) {
+				$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE cart_id = '" . (int)$cart['cart_id'] . "'");
+
+				// The advantage of using $this->add is that it will check if the products already exist and increaser the quantity if necessary.
+                //$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id, $product_variant_id, $selected_option_values_frm, $option_addon_price, $isBespoke, html_entity_decode($this->request->post['svg_raw']) ,html_entity_decode($this->request->post['svg_json']), html_entity_decode($this->request->post['svg_export']), html_entity_decode($this->request->post['svg_bespoke_images']), html_entity_decode($this->request->post['svg_bespoke_texts']));
+                //
+				$this->add(
+                    $cart['product_id'],
+                    $cart['quantity'],
+                    json_decode($cart['option']),
+                    $cart['recurring_id'],
+                    $cart['product_variant_id'],
+                    json_decode($cart['tsg_options']),
+                    $cart['tsg_option_price'],
+                    $cart['is_bespoke'],
+                    $cart['svg_raw']??'',
+                    json_decode($cart['svg_json']??''),
+                    $cart['svg_export']??'',
+                    json_decode($cart['svg_images']??''),
+                    ($cart['svg_texts'])??'');
+			}
+    }
+
+    public function setCurrentCartToCustomer($customer_id){
+        $this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE customer_id = '" . (int)$customer_id . "'");
+        $this->db->query("UPDATE " . DB_PREFIX . "cart SET customer_id = '" . (int)$customer_id . "' WHERE api_id = '0' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
     }
 
 	private function getTSGOptionData($class_id, $value_id, $variant_id, $variant_base_price){

@@ -165,10 +165,10 @@ class ModelCheckoutOrder extends Model {
                 {
                     $sql_bespoke = "INSERT INTO oc_tsg_order_bespoke_image SET ";
                     $sql_bespoke .= " order_product_id = '" . (int)$order_product_id . "', ";
-                    $sql_bespoke .=  "svg_export = '" .$this->db->escape(json_encode($product['svg_export'])) . "', ";
+                    $sql_bespoke .=  "svg_export = '" .$this->db->escape($product['svg_export']) . "', ";
                     $sql_bespoke .=  "svg_json = '" .$this->db->escape(json_encode($product['svg_json'])) . "', ";
                     $sql_bespoke .=  "svg_images = '" .$this->db->escape(json_encode($product['svg_images'])) . "', ";
-                    $sql_bespoke .=  "svg_texts = '" .$this->db->escape(json_encode($product['svg_texts'])) . "', ";
+                    $sql_bespoke .=  "svg_texts = '" .$this->db->escape(($product['svg_texts'])) . "', ";
                     $sql_bespoke .=  "version = " . $product['bespoke_version'];
 
                     $this->db->query($sql_bespoke);

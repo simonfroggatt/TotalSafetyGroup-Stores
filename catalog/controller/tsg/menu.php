@@ -40,7 +40,11 @@ class ControllerTsgMenu extends Controller {
 		}
 
        // $data['cart_menu'] = $this->load->controller('tsg/cart_menu');
+        //this is the right hand side
         $data['offcanvas_cart'] = $this->load->controller('tsg/offcanvas_cart');
+
+
+        //this is left hand side one
 		$data['offcanvas_menu'] = $this->load->controller('tsg/offcanvas_menu');
 
 		$data['shopping_cart'] = $this->url->link('checkout/cart');

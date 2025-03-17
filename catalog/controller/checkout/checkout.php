@@ -152,6 +152,8 @@ class ControllerCheckoutCheckout extends Controller {
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
+        $data['merge_dialog'] = $this->load->view('tsg/dialog_cart_merge');
+        $data['no_merge_url'] = $this->url->link('checkout/checkout', '', true);
 
         //check is cancel has neen passed as a url variable
         if(isset($this->request->get['cancel'])){

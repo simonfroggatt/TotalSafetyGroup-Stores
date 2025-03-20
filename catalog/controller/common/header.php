@@ -48,6 +48,7 @@ class ControllerCommonHeader extends Controller {
             $data['logo'] = $server . 'image/' . $store_info['logo'];
         }
         $data['store_name'] = $store_info['name'];
+        $data['GTM'] = $_ENV['GTM'];
 
 		$this->load->language('common/header');
 

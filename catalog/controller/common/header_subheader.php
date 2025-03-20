@@ -17,6 +17,7 @@ class ControllerCommonHeaderSubheader extends Controller {
             $data['logo'] = $server . 'image/' . $store_info['logo'];
         }
         $data['store_name'] = $store_info['name'];
+        $data['GTM'] = $_ENV['GTM'];
 
 		$this->load->language('common/header');
 
@@ -56,6 +57,8 @@ class ControllerCommonHeaderSubheader extends Controller {
         $data['menu_tsg'] = $this->load->controller('tsg/menu');
         $data['header_links'] = $this->load->controller('tsg/header_links');
 		$data['customer_name'] = $this->customer->getFirstName();
+
+        //$data['notifications'] = $this->load->controller('tsg/notifications');
 
 		return $this->load->view('common/header_subheader', $data);
 	}

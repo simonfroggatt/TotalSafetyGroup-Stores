@@ -1,12 +1,11 @@
 {% if dismissible %}
-<div class="alert {{ value }} alert-dismissible fade show" role="alert">
+<div class="alert {{ value }} alert-dismissible fade show mb-0" role="alert" data-notification-id="{{ id }}">
     {{ notification }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="dismissNotification(this)"></button>
 </div>
 {% else %}
-<div class="alert {{ value }}" role="alert">
+<div class="alert {{ value }} mb-0" role="alert">
     {{ notification }}
 </div>
 {% endif %}
-
 

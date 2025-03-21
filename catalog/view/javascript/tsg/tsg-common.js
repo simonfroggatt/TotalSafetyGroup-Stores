@@ -132,133 +132,149 @@ $(document).ready(function () {
 
 $(function() {
 
-    //add the event handeler here
+        //add the event handeler here
 
 
-    $(document).on('click', '.btnRemove-offcanvas', function(event){
-        let cart_id = $(this).data('cartid');
-        deleteFromCart(cart_id);
-    });
-
-    function deleteFromCart(cart_id){
-        //ajax call in here,but needs to synchronous just incase it doesn't work
-        $.ajax({
-            url: 'index.php?route=checkout/cart/remove',
-            type: 'post',
-            data: 'key=' + cart_id,
-            dataType: 'json',
-            async: false,
-            beforeSend: function() {
-
-            },
-            complete: function() {
-
-            },
-            success: function(json) {
-                updateSide(cart_id)
-                if(json['cart_menu']){
-                    $('#cart_menu_top').html(json['cart_menu']['xs']);
-                }
-                if(json['cart_totals']){
-                    $('#offcanvas_totals').html(json['cart_totals']);
-                }
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            }
+        $(document).on('click', '.btnRemove-offcanvas', function (event) {
+            let cart_id = $(this).data('cartid');
+            deleteFromCart(cart_id);
         });
 
-    }
+        function deleteFromCart(cart_id) {
+            //ajax call in here,but needs to synchronous just incase it doesn't work
+            $.ajax({
+                url: 'index.php?route=checkout/cart/remove',
+                type: 'post',
+                data: 'key=' + cart_id,
+                dataType: 'json',
+                async: false,
+                beforeSend: function () {
 
-    //$('#offcanvasCart').load('/index.php?route=tsg/offcanvas_cart_ajax');
+                },
+                complete: function () {
 
-    function updateSide(cart_id){
-        //update the total
-
-        //remove the row
-        let row_hide = $('#row_cartid_'+cart_id);
-        row_hide.fadeOut( 1000 );
-    }
-    
-    $(document).on('click', '#cartMergerMerge', function() {
-        //ajax call to merge the carts
-        $redirect = $('#frm-merge #redirect-merge').val();
-        doMerger(1, $redirect);
-    })
-
-    $(document).on('click', '#cartMergerKeep', function() {
-        //ajax call to merge the carts
-        $redirect = $('#frm-merge #redirect-merge').val();
-        doMerger(0, $redirect);
-    })
-
-    function doMerger($bl_merge, $redirect){
-
-        $.ajax({
-            url: 'index.php?route=checkout/cart/merge',
-            type: 'post',
-            data: 'merge=' + $bl_merge + '&redirect=' + $redirect,
-            dataType: 'json',
-            beforeSend: function() {
-
-            },
-            complete: function() {
-
-            },
-            success: function(json) {
-                if(json['error']){
-                    showToast('Error', json['error'], 'danger');
-                }
-                else{
-                    if(json['redirect']){
-                        window.location.href = json['redirect'];
+                },
+                success: function (json) {
+                    updateSide(cart_id)
+                    if (json['cart_menu']) {
+                        $('#cart_menu_top').html(json['cart_menu']['xs']);
                     }
+                    if (json['cart_totals']) {
+                        $('#offcanvas_totals').html(json['cart_totals']);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
                 }
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            }
-        });
+            });
+
+        }
+
+        //$('#offcanvasCart').load('/index.php?route=tsg/offcanvas_cart_ajax');
+
+        function updateSide(cart_id) {
+            //update the total
+
+            //remove the row
+            let row_hide = $('#row_cartid_' + cart_id);
+            row_hide.fadeOut(1000);
+        }
+
+        $(document).on('click', '#cartMergerMerge', function () {
+            //ajax call to merge the carts
+            $redirect = $('#frm-merge #redirect-merge').val();
+            doMerger(1, $redirect);
+        })
+
+        $(document).on('click', '#cartMergerKeep', function () {
+            //ajax call to merge the carts
+            $redirect = $('#frm-merge #redirect-merge').val();
+            doMerger(0, $redirect);
+        })
+
+        function doMerger($bl_merge, $redirect) {
+
+            $.ajax({
+                url: 'index.php?route=checkout/cart/merge',
+                type: 'post',
+                data: 'merge=' + $bl_merge + '&redirect=' + $redirect,
+                dataType: 'json',
+                beforeSend: function () {
+
+                },
+                complete: function () {
+
+                },
+                success: function (json) {
+                    if (json['error']) {
+                        showToast('Error', json['error'], 'danger');
+                    } else {
+                        if (json['redirect']) {
+                            window.location.href = json['redirect'];
+                        }
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+
+        }
+
+        $(document).on('submit', '#form-user-login', function (event) {
+            //we need to run the login function to see if the user is valid, if so, so if there is an existing cart to merge.
+            //If there is a cart, then show the dialog to merge, if there is no cart to merge, log in the user.
+            event.preventDefault();
+            $form = $(this);
+            let formData = $form.serialize();
+            $.ajax({
+                url: 'index.php?route=account/login/checkmerge',
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#login_alert').removeClass('show');
+                },
+                complete: function () {
+
+                },
+                success: function (json) {
+                    if (json['error']) {
+                        $('#login_alert #alert_message').html(json['error']);
+                        $('#login_alert').addClass('show');
+                    } else {
+                        if (json['need_merge']) {
+                            $('#redirect-merge').val('cart')
+                            $('#cartMergerModal').modal('show');
+                        } else {
+                            window.location.href = json['redirect'];
+                        }
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        })
+
+
 
     }
-
-    $(document).on('submit', '#form-user-login', function(event){
-        //we need to run the login function to see if the user is valid, if so, so if there is an existing cart to merge.
-        //If there is a cart, then show the dialog to merge, if there is no cart to merge, log in the user.
-        event.preventDefault();
-        $form = $(this);
-        let formData = $form.serialize();
-        $.ajax({
-            url: 'index.php?route=account/login/checkmerge',
-            type: 'post',
-            data: formData,
-            dataType: 'json',
-            beforeSend: function() {
-                $('#login_alert').removeClass('show');
-            },
-            complete: function() {
-
-            },
-            success: function(json) {
-                if(json['error']){
-                    $('#login_alert #alert_message').html(json['error']);
-                    $('#login_alert').addClass('show');
-                }
-                else{
-                    if(json['need_merge']){
-                        $('#redirect-merge').val('cart')
-                        $('#cartMergerModal').modal('show');
-                    }
-                    else{
-                        window.location.href = json['redirect'];
-                    }
-                }
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            }
-        });
-    })
-
-}
 )
+
+function dismissNotification(button) {
+    var alert = button.closest('.alert');
+    var notificationId = alert.getAttribute('data-notification-id');
+
+    $.ajax({
+        url: 'index.php?route=tsg/notifications/dismiss',
+        type: 'POST',
+        data: {notification_id: notificationId},
+        dataType: 'json',
+        success: function (json) {
+            if (json.success) {
+                // Bootstrap will handle the alert removal
+            }
+        }
+    });
+}

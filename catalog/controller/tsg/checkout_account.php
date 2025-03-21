@@ -23,6 +23,8 @@ class ControllerTsgCheckoutAccount extends Controller {
             $data['account'] = '';
         }
 
+        $data['dialog'] = $this->load->view('tsg/dialog_cart_merge', $data);
+
         //check if we have come from a cancelled checkout
     /*    if (isset($this->session->data['payment_cancel'])) {
             $payment_cancelled = $this->session->data['payment_cancel'];

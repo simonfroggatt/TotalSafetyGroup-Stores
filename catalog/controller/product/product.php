@@ -572,8 +572,10 @@ class ControllerProductProduct extends Controller {
                     $data['svg_data']['svg_raw'] = $bespoke_data['svg_raw'];
                     $data['svg_data']['svg_json'] = json_decode($bespoke_data['svg_json']);
                     $data['svg_data']['svg_export'] = $bespoke_data['svg_export'];
-                    $data['svg_data']['svg_images'] = $bespoke_data['svg_images'];
-                    $data['svg_data']['svg_texts'] = $bespoke_data['svg_texts'];
+                    $data['svg_data']['svg_images'] = json_decode($bespoke_data['svg_images']);
+                    //$data['svg_data']['svg_export'] = $bespoke_data['svg_export'];
+                    //$data['svg_data']['svg_images'] = $bespoke_data['svg_images'];
+                    $data['svg_data']['svg_texts'] = ($bespoke_data['svg_texts']);
                 }
                 else {
                     $data['has_svg_data'] = 0;

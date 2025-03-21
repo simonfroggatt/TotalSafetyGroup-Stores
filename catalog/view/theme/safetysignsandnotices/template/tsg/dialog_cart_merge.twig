@@ -1,0 +1,26 @@
+<div class="modal fade" id="cartMergerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cartMergerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">You have a saved cart</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Whilst logging you in we noticed that you have a saved cart. Would you like to merge it with your current cart or just keep the new cart?</p>
+            </div>
+            <div class="modal-footer d-flex flex-column flex-sm-row gap-2 p-1 w-100">
+                <button type="button" id="cartMergerMerge" class="btn btn-info flex-fill d-flex flex-column align-items-center py-3">
+                    <i class="fa fa-shuffle fa-2x mb-2"></i>
+                    <span>Merge my carts</span>
+                </button>
+                <button type="button" id="cartMergerKeep" class="btn btn-success flex-fill d-flex flex-column align-items-center py-3">
+                    <i class="fa fa-cart-shopping fa-2x mb-2"></i>
+                    <span>Keep new cart</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <form id="frm-merge">
+        <input type=hidden id="redirect-merge" value="cart" />
+    </form>
+</div>

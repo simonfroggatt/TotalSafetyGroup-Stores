@@ -5,6 +5,7 @@ class ModelTsgNotifications extends Model{
     public function getNotifications()
     {
         $sql = "SELECT ";
+	    $sql .= "oc_tsg_notifications.id, ";
 	    $sql .= "oc_tsg_notifications.title, ";
 	    $sql .= "oc_tsg_notifications.notification, ";
 	    $sql .= "oc_tsg_notifications.dismissible,  ";

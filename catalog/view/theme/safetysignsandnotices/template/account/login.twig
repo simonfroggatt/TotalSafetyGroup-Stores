@@ -5,6 +5,13 @@
       <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
+  <div class="d-none" ><i class="fa fa-exclamation-circle"></i><span id="alert_message"></span></div>
+
+  <div class="alert alert-danger fade" role="alert" id="login_alert">
+    <i class="fa fa-exclamation-circle"></i><span class="ps-2" id="alert_message"></span>
+  </div>
+
+
   {% if error_warning %}
     <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
   {% endif %}
@@ -13,7 +20,7 @@
   {% endif %}
 <div class="row justify-content-center">
   <div class="col-12 col-md-6">
-    <form action="{{ action }}" method="post" enctype="multipart/form-data" id="user-login">
+    <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-user-login">
       <h1 class="h3 mb-3 ">Please sign in</h1>
       <div class="form-floating pb-2">
         <input type="email" class="form-control" id="input-email" placeholder="name@example.com" name="email">
@@ -35,6 +42,9 @@
 </div>
 
 </div>
+
+{{ dialog }}
+
 {{ footer }}
 
 

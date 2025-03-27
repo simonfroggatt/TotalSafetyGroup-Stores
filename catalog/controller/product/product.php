@@ -67,6 +67,7 @@ class ControllerProductProduct extends Controller {
 					'text' => $category_info['name'],
 					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url)
 				);
+
 			}
 		}
 

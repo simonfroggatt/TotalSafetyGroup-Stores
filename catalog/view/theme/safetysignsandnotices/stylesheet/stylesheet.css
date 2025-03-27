@@ -1207,3 +1207,9 @@ div#drawing {
         margin-left: 16px; /* Add indentation for descriptions */
     }
 }
+
+#lead-time {
+    font-size: 12px;
+    color: red;
+    font-weight: bold;
+}

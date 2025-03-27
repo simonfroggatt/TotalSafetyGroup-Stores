@@ -11,12 +11,16 @@ class ModelTsgProductVariants extends Model{
         //$sql .= DB_PREFIX . "tsg_size_material_store_combs.price,";
         $sql .= " IF( " . DB_PREFIX . "tsg_size_material_store_combs.price > 0, " . DB_PREFIX . "tsg_size_material_store_combs.price, " . DB_PREFIX . "tsg_size_material_comb.price) as price,";
 	    $sql .= DB_PREFIX . "tsg_product_variants.*,";
+        $sql .= DB_PREFIX . "tsg_product_variant_core.pack_count,";
         $sql .= DB_PREFIX . "tsg_product_sizes.*,";
 	    $sql .= DB_PREFIX . "tsg_product_material.*,";
 	    $sql .= DB_PREFIX . "product.tax_class_id,";
 	    $sql .= DB_PREFIX . "tsg_orientation.orientation_name, ";
 
         $sql .= " " ."IF( LENGTH( " . DB_PREFIX . "tsg_product_variants.alt_image ) > 1, " . DB_PREFIX . "tsg_product_variants.alt_image,  IF ( LENGTH(" . DB_PREFIX . "tsg_product_variant_core.variant_image) > 1, " . DB_PREFIX . "tsg_product_variant_core.variant_image, IF ( LENGTH(" . DB_PREFIX . "product_to_store.image) > 1, " . DB_PREFIX . "product_to_store.image, " . DB_PREFIX . "product.image ) )) AS alternative_image";
+        $sql .= " , IF( " . DB_PREFIX . "tsg_product_variant_core.lead_time_override, " . DB_PREFIX . "tsg_product_variant_core.lead_time_override, IF(" . DB_PREFIX . "supplier.lead_time, " . DB_PREFIX . "supplier.lead_time,0) ) as item_lead_time ";
+
+
         //$sql .= " " ."IF( " . DB_PREFIX . "tsg_product_variants.alt_image > '' , " . DB_PREFIX . "tsg_product_variants.alt_image, IF( " . DB_PREFIX . "tsg_product_variant_core.variant_image > '', " . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image)) as alternative_image";
         //$sql .= " IFNULL(" . DB_PREFIX . "tsg_product_variants.alt_image, IFNULL(" . DB_PREFIX . "tsg_product_variant_core.variant_image, " . DB_PREFIX . "product.image) ) as alternative_image";
         $sql .= " FROM " . DB_PREFIX . "product";
@@ -29,6 +33,7 @@ class ModelTsgProductVariants extends Model{
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_product_material ON " . DB_PREFIX . "tsg_size_material_comb.product_material_id = " . DB_PREFIX . "tsg_product_material.material_id";
 	    $sql .= " INNER JOIN " . DB_PREFIX . "tsg_orientation ON " . DB_PREFIX . "tsg_product_sizes.orientation_id = " . DB_PREFIX . "tsg_orientation.orientation_id ";
         $sql .= " LEFT JOIN " . DB_PREFIX . "product_to_store ON " . DB_PREFIX . "product_to_store.product_id = " . DB_PREFIX . "tsg_product_variant_core.product_id ";
+        $sql .= " LEFT JOIN " . DB_PREFIX . "supplier ON " . DB_PREFIX . "tsg_product_variant_core.supplier_id = " . DB_PREFIX . "supplier.id ";
         $sql .= " WHERE ";
 	    $sql .= DB_PREFIX . "tsg_product_variant_core.product_id = '" . (int)$product_id . "'";
         $sql .= " AND " . DB_PREFIX . "tsg_product_variant_core.bl_live = 1";

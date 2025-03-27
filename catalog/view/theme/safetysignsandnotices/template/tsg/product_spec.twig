@@ -17,6 +17,9 @@
                 <dt class="col-sm-2">Height</dt>
                 <dd class="col-sm-10">{{ variant_data.size_height }} {{ variant_data.size_units }}</dd>
 
+                <dt class="col-sm-2">Pack Count</dt>
+                <dd class="col-sm-10">{{ variant_data.pack_count }}</dd>
+
                 <dt class="col-sm-2">Orientation</dt>
                 <dd class="col-sm-10">{{ variant_data.orientation_name }}</dd>
 
@@ -26,10 +29,12 @@
                 {% endif %}
 
                 <dt class="col-sm-2">Sign Type</dt>
-                <dd class="col-sm-10">{{ category_data.title }}</dd>
+                <dd class="col-sm-10">
+                    {% for product_category in category_data %}
+                        <a href="{{ product_category.href }}">{{ product_category.text }}</a>{% if not loop.last %} > {% endif %}
+                    {% endfor %}
+                </dd>
 
-                <dt class="col-sm-2">Sign Type Description</dt>
-                <dd class="col-sm-10">{{ category_data.description }}</dd>
 
                 {% if variant_data.gtin %}
                     <dt class="col-sm-2">GTIN</dt>

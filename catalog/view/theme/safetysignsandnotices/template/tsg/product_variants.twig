@@ -49,6 +49,9 @@
 
     <script type="text/javascript">
 var prod_variants = {{ variants | json_encode | raw }};
+console.log('prod_variants')
+console.log(prod_variants)
+
 
 var variant_classes_tsg = {{ selectOptions | json_encode | raw }};
 
@@ -77,13 +80,13 @@ var init_variant_id = {{ variant_id_selected }};
 
 var init_tsg_options = {{ options_selected | json_encode | raw}};
 
-console.log('variant_to_class')
-console.log(variant_to_class)
+//console.log('variant_to_class')
+//console.log(variant_to_class)
 
-console.log('variant_classes_tsg')
-console.log(variant_classes_tsg)
+//console.log('variant_classes_tsg')
+//console.log(variant_classes_tsg)
 
-console.log('product_size_mat_classes_tsg')
-console.log(product_size_mat_classes_tsg)
+//console.log('product_size_mat_classes_tsg')
+//console.log(product_size_mat_classes_tsg)
 
     </script>

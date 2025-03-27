@@ -112,6 +112,19 @@ function updateProductDetails(fullupdate = false) {
     $('#dd-model-material').html(ssan_var_info.material_name);
     $('#dd-model-size').html(ssan_var_info.size_name);
     $('#dd-model-orientation').html(ssan_var_info.orientation_name);
+    $('#dd-model-pack').html(ssan_var_info.pack_count);
+
+    lead_time = parseInt(ssan_var_info.item_lead_time);
+    if(lead_time > 0) {
+        lead_time_str = "The lead time for this product is currently " + lead_time + " working days";
+        $('#lead-time').html(lead_time_str);
+        $('#lead-time').removeClass('d-none');
+        $('#lead-time').addClass('d-block');
+    }
+    else {
+        $('#lead-time').removeClass('d-block');
+        $('#lead-time').addClass('d-none');
+    }
 
     loadVariantSpec(ssan_var_info.prod_variant_id);
     setMaterialTableHighlight();

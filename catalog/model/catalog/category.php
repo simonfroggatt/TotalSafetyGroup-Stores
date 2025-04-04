@@ -6,8 +6,6 @@ class ModelCatalogCategory extends Model {
         $sql .= "" . DB_PREFIX . "category.category_id, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.parent_id, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.sort_order, ";
-        $sql .= "" . DB_PREFIX . "tsg_category_store_parent.path, ";
-        $sql .= "" . DB_PREFIX . "tsg_category_store_parent.`level`, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.top, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.homepage, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.is_base, ";
@@ -34,13 +32,11 @@ class ModelCatalogCategory extends Model {
 
     public function getCategories($parent_id = 0) {
 
-
+        //do some override here as getting zero (0) for the partent cat id is not good
         $sql = "SELECT " . DB_PREFIX . "category_to_store.category_store_id, ";
         $sql .= "" . DB_PREFIX . "category.category_id, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.parent_id, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.sort_order, ";
-        $sql .= "" . DB_PREFIX . "tsg_category_store_parent.path, ";
-        $sql .= "" . DB_PREFIX . "tsg_category_store_parent.`level`, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.top, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.homepage, ";
         $sql .= "" . DB_PREFIX . "tsg_category_store_parent.is_base, ";
@@ -57,7 +53,11 @@ class ModelCatalogCategory extends Model {
         $sql .= "INNER JOIN " . DB_PREFIX . "category_description_base ON " . DB_PREFIX . "category.category_id = " . DB_PREFIX . "category_description_base.category_id ";
         $sql .= "INNER JOIN " . DB_PREFIX . "tsg_category_store_parent ON " . DB_PREFIX . "category_to_store.category_store_id = " . DB_PREFIX . "tsg_category_store_parent.category_store_id ";
         $sql .= "WHERE ";
-        $sql .= "" . DB_PREFIX . "tsg_category_store_parent.parent_id = " . (int)$parent_id;
+        if($parent_id == 0) {
+            $sql .= "" . DB_PREFIX . "tsg_category_store_parent.is_base = 1";
+        } else {
+            $sql .= "" . DB_PREFIX . "tsg_category_store_parent.parent_id = " . (int)$parent_id;
+        }
         $sql .= " AND " . DB_PREFIX . "tsg_category_store_parent.`status` = 1 ";
         $sql .= "AND " . DB_PREFIX . "category_to_store.store_id = ".(int)$this->config->get('config_store_id');
         $sql .= " ORDER BY  " . DB_PREFIX . "tsg_category_store_parent.sort_order ASC";

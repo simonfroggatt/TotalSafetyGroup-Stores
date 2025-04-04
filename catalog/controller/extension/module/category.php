@@ -27,7 +27,17 @@ class ControllerExtensionModuleCategory extends Controller {
 
 		$data['categories'] = array();
 
-		$categories = $this->model_catalog_category->getCategories(0);
+        //TSG - hack the categories
+		$base_category = $this->model_catalog_category->getCategories(0);
+
+        //this gets us the base category for this store.
+        //now treat this like the base category id
+        $categories = array();
+        foreach($base_category as $base) {
+            $child_cats = $this->model_catalog_category->getCategories($base['category_store_id']);
+            $categories = array_merge($categories, $child_cats);
+         }
+        //$categories = $this->model_catalog_category->getCategories($base_category['category_store_id']);
 
 		foreach ($categories as $category) {
 			$children_data = array();
@@ -36,12 +46,10 @@ class ControllerExtensionModuleCategory extends Controller {
 				$children = $this->model_catalog_category->getCategories($category['category_store_id']);
 
 				foreach($children as $child) {
-					$filter_data = array('filter_category_id' => $child['category_store_id'], 'filter_sub_category' => true);
-
 					$children_data[] = array(
 						'category_id' => $child['category_store_id'],
 						'name' => $child['name'],// . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-						'href' => $this->url->link('product/category', 'path=' . $category['category_store_id'] . '_' . $child['category_store_id'])
+						'href' => $this->url->link('product/category', 'path=' . $category['category_store_id'] . '_' . $child['category_store_id']),
 					);
 				}
 		//	}
@@ -55,7 +63,8 @@ class ControllerExtensionModuleCategory extends Controller {
 				'category_id' => $category['category_store_id'],
 				'name'        => $category['name'], // . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
 				'children'    => $children_data,
-				'href'        => $this->url->link('product/category', 'path=' . $category['category_store_id'])
+				'href'        => $this->url->link('product/category', 'path=' . $category['category_store_id']),
+                'is_base' => $category['is_base']
 			);
 		}
 

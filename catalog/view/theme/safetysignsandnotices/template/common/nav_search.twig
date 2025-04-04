@@ -4,7 +4,7 @@
             <select class="form-select form-select-lg shadow-none bg-light border-0" id="topnav_search_type" name="topnav_search_type">
                 <option value="all">All</option>
                 <option value="product">Products</option>
-                <option vlaue="symbols">Symbols</option>
+                <option value="symbols">Symbols</option>
                 <option value="category">Categories</option>
             </select>
         </div>
@@ -13,7 +13,7 @@
     </div>
 </form>
 
-
+<div class="search-overlay"></div>
 
 <script>
 
@@ -21,9 +21,11 @@
    $(document).ready(function(){
        $('#topnav_search_field').focus(function(){
            $('.search_results_container').fadeIn(100);
+           $('.search-overlay').fadeIn(100);
            $('#topnav_search_field').keyup();
        }).focusout(function(){
            $('.search_results_container').fadeOut(1000);
+           $('.search-overlay').fadeOut(1000);
        });
 
        $.fn.delayKeyup = function(callback, ms){

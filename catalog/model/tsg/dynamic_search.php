@@ -5,12 +5,11 @@ class ModelTsgDynamicSearch extends Model{
     public function GetCategorySearch($queryStr)
     {
         $sql = "SELECT ";
-        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_description.`name` ), ". DB_PREFIX . "category_description_base.`name`, ". DB_PREFIX . "category_description.`name` ) AS cat_name, ";
-        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_description.image ), ". DB_PREFIX . "category_description_base.image, ". DB_PREFIX . "category_description.image ) AS image,  ";
+        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_to_store.`name` ), ". DB_PREFIX . "category_description_base.`name`, ". DB_PREFIX . "category_to_store.`name` ) AS cat_name, ";
+        $sql .= "IF( ISNULL(" . DB_PREFIX . "category_to_store.image) OR ( " . DB_PREFIX . "category_to_store.image = '' ), " . DB_PREFIX . "category_description_base.image, " . DB_PREFIX . "category_to_store.image) AS image, ";
         $sql .= " ". DB_PREFIX . "tsg_category_store_parent.parent_id, ";
         $sql .= " ". DB_PREFIX . "category_to_store.category_store_id ";
         $sql .= " FROM ". DB_PREFIX . "category ";
-	    $sql .= " LEFT JOIN ". DB_PREFIX . "category_description ON ". DB_PREFIX . "category.category_id = ". DB_PREFIX . "category_description.category_id ";
 	    $sql .= " INNER JOIN ". DB_PREFIX . "category_description_base ON ". DB_PREFIX . "category.category_id = ". DB_PREFIX . "category_description_base.category_id ";
 	    $sql .= " INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "category.category_id = ". DB_PREFIX . "category_to_store.category_id ";
 	    $sql .= " INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id  ";
@@ -25,8 +24,8 @@ class ModelTsgDynamicSearch extends Model{
         foreach ($words as $word) {
             $implodeNameBase[] = DB_PREFIX . "category_description_base.name LIKE '%" . $this->db->escape($word) . "%'";
             $implodeTitleBase[] = DB_PREFIX . "category_description_base.title LIKE '%" . $this->db->escape($word) . "%'";
-            $implodeName[] = DB_PREFIX . "category_description.name LIKE '%" . $this->db->escape($word) . "%'";
-            $implodeTitle[] = DB_PREFIX . "category_description.title LIKE '%" . $this->db->escape($word) . "%'";
+            $implodeName[] = DB_PREFIX . "category_to_store.name LIKE '%" . $this->db->escape($word) . "%'";
+            $implodeTitle[] = DB_PREFIX . "category_to_store.title LIKE '%" . $this->db->escape($word) . "%'";
         }
         $sqlcond = '';
         if ($implodeNameBase) {
@@ -49,10 +48,12 @@ class ModelTsgDynamicSearch extends Model{
             $sqlcond .= " (" . implode(" AND ", $implodeTitle) . " )";
             $nextcondition = " OR ";
         }
-        $sqlcond .= $nextcondition . " (" . DB_PREFIX . "category_description.description LIKE '%" .$this->db->escape($phrase) . "%' ) OR ";
+        $sqlcond .= $nextcondition . " (" . DB_PREFIX . "category_to_store.description LIKE '%" .$this->db->escape($phrase) . "%' ) OR ";
         $sqlcond .= " (" . DB_PREFIX . "category_description_base.description LIKE '%" .$this->db->escape($phrase) . "%' ) ";
 
         $sql .= " AND ( " . $sqlcond . " ) )";
+        $sql .= " AND ". DB_PREFIX . "category_to_store.store_id = '" . (int)$this->config->get('config_store_id') . "' ";
+        $sql .= " AND ". DB_PREFIX . "tsg_category_store_parent.is_base = 0";
 
     //    echo $sql;
         $query = $this->db->query($sql);

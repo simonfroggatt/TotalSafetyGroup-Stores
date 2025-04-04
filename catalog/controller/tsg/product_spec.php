@@ -23,7 +23,7 @@ class ControllerTsgProductSpec extends Controller
             'text' => $category_info['cat_name'],
             'href' => $this->url->link('product/category', 'path=' . $category_info['category_store_id'])
         );
-        while($category_info['parent_id'] != 0){
+        while(!$category_info['is_base']){
             $category_info = $this->model_tsg_product_spec->GetCatergoryPath($category_info['parent_id']);
             $category_path[] = array(
                 'text' => $category_info['cat_name'],

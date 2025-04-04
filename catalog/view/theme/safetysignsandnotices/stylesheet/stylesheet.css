@@ -748,11 +748,22 @@ span.product-variants  {
     background-color: rgba(0,0,0, 0.5);
     position: absolute;
     display: none;
-    z-index: 1000;
+    z-index: 2000;
     width: 100%;
     left: 0;
-    height: 100%;
+    height: 100vh;
 
+}
+
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: none;
 }
 
 #search_results_grid h2, h3 {

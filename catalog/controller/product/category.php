@@ -45,7 +45,7 @@ class ControllerProductCategory extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			//'text' => $this->language->get('text_home'),
-            'text' => 'Safety Signs',
+            'text' => $_ENV['BASE_BREADCRUMB'],
 			'href' => $this->url->link('common/home')
 		);
 
@@ -93,6 +93,12 @@ class ControllerProductCategory extends Controller {
 		$category_info = $this->model_catalog_category->getCategory($category_id);
 
 		if ($category_info) {
+            //see if it's the base category
+            if($category_info['is_base']){
+                //then redirect to the home page
+                $this->response->redirect($this->url->link('common/home'));
+            }
+
 			$this->document->setTitle($category_info['meta_title']);
 			$this->document->setDescription($category_info['meta_description']);
 			$this->document->setKeywords($category_info['meta_keyword']);

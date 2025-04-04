@@ -22,8 +22,8 @@
         {% endif %}
 
         <div class="form-group">
-            <label for="select-google-product-category" class="col-xs-12 control-label control-label-left"><span data-toggle="tooltip" title="{{ help_google_product_category }}">{{ entry_google_product_category }}</span></label>
-            <div class="col-xs-12">
+            <label for="select-google-product-category" class="col-12 control-label control-label-left"><span data-toggle="tooltip" title="{{ help_google_product_category }}">{{ entry_google_product_category }}</span></label>
+            <div class="col-12">
                 <select name="google_product_category" id="select-google-product-category" class="form-control">
                     {% for id, name in google_product_categories %}
                         <option value="{{ id }}" {{ id == google_product_category ? 'selected' }}>{{ name }}</option>
@@ -36,8 +36,8 @@
         </div>
 
         <div class="form-group">
-            <label for="select-color" class="col-xs-12 control-label control-label-left"><span data-toggle="tooltip" title="{{ help_color }}">{{ entry_color }}</span></label>
-            <div class="col-xs-12">
+            <label for="select-color" class="col-12 control-label control-label-left"><span data-toggle="tooltip" title="{{ help_color }}">{{ entry_color }}</span></label>
+            <div class="col-12">
                 <select id="select-color" name="color" class="form-control">
                     {% for id, name in options %}
                         <option value="{{ id }}" {{ id == color ? 'selected' }}>{{ name }}</option>
@@ -50,7 +50,7 @@
         </div>
 
         <div class="form-group">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="row">
                     <div class="col-sm-4 margin-top-10">
                         <label for="select-size-system" class="control-label control-label-left"><span data-toggle="tooltip" title="{{ help_size_system }}">{{ entry_size_system }}</span></label>

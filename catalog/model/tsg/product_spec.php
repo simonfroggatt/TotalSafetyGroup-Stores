@@ -61,12 +61,13 @@ class ModelTsgProductSpec extends Model
 
     public function GetCatergoryPath($category_id){
         $sql = "SELECT ";
-        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_description.`name` ), ". DB_PREFIX . "category_description_base.`name`, ". DB_PREFIX . "category_description.`name` ) AS cat_name, ";
-        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_description.image ), ". DB_PREFIX . "category_description_base.image, ". DB_PREFIX . "category_description.image ) AS image,  ";
+        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_to_store.`name` ), ". DB_PREFIX . "category_description_base.`name`, ". DB_PREFIX . "category_to_store.`name` ) AS cat_name, ";
+        $sql .= " IF ( ISNULL( ". DB_PREFIX . "category_to_store.image ), ". DB_PREFIX . "category_description_base.image, ". DB_PREFIX . "category_to_store.image ) AS image,  ";
         $sql .= " ". DB_PREFIX . "tsg_category_store_parent.parent_id, ";
-        $sql .= " ". DB_PREFIX . "category_to_store.category_store_id ";
+        $sql .= " ". DB_PREFIX . "category_to_store.category_store_id, ";
+        $sql .= " ". DB_PREFIX . "tsg_category_store_parent.is_base ";
+
         $sql .= " FROM ". DB_PREFIX . "category ";
-        $sql .= " LEFT JOIN ". DB_PREFIX . "category_description ON ". DB_PREFIX . "category.category_id = ". DB_PREFIX . "category_description.category_id ";
         $sql .= " INNER JOIN ". DB_PREFIX . "category_description_base ON ". DB_PREFIX . "category.category_id = ". DB_PREFIX . "category_description_base.category_id ";
         $sql .= " INNER JOIN ". DB_PREFIX . "category_to_store ON ". DB_PREFIX . "category.category_id = ". DB_PREFIX . "category_to_store.category_id ";
         $sql .= " INNER JOIN ". DB_PREFIX . "tsg_category_store_parent ON ". DB_PREFIX . "category_to_store.category_store_id = ". DB_PREFIX . "tsg_category_store_parent.category_store_id  ";

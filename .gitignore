@@ -7,3 +7,17 @@
 /system/storage_php7/
 /image/
 /image_old/
+
+# Error logs
+system/storage/logs/error.log
+system/storage/logs/*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo

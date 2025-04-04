@@ -105,7 +105,8 @@ function updateProductDetails(fullupdate = false) {
 
     switchImage();
 
-    var model_code = ssan_var_info.variant_code /*+$('#product_id').val() + ' ' + ssan_var_info.size_code */ + ' ' + ssan_var_info.code;
+   // var model_code = ssan_var_info.variant_code /*+$('#product_id').val() + ' ' + ssan_var_info.size_code */ + ' ' + ssan_var_info.code;
+    var model_code = ssan_var_info.variant_code;
     $('#dd-model-code').html(model_code);
     //$('#pcode').html(model_code);
     // $('#pcode_top').html(model_code);

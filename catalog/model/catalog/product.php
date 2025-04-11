@@ -20,7 +20,7 @@ class ModelCatalogProduct extends Model {
         $sql .= "". DB_PREFIX . "product_to_store.price_from, ";
         $sql .= "". DB_PREFIX . "product.date_added, ";
         $sql .= "". DB_PREFIX . "product.date_modified, ";
-        $sql .= "". DB_PREFIX . "product.model,  ";
+        //$sql .= "". DB_PREFIX . "product.model,  ";
         $sql .= "". DB_PREFIX . "product.product_id,  ";
         $sql .= "". DB_PREFIX . "product.mib_logo,  ";
         $sql .= "". DB_PREFIX . "product.tax_class_id,  ";
@@ -49,7 +49,8 @@ class ModelCatalogProduct extends Model {
 				'meta_description' => $query->row['meta_description'],
 				'meta_keyword'     => $query->row['meta_keyword'],
 				'tag'              => $query->row['tag'],
-				'model'            => $query->row['model'],
+				//'model'            => $query->row['model'],
+				'model'            => '',
 				'image'            => $query->row['image'],
 				'manufacturer_id'  => 1, // $query->row['manufacturer_id'],
 				'manufacturer'     => '',//$query->row['manufacturer'],

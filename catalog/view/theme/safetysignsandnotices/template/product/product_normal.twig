@@ -1,17 +1,23 @@
 <!-- product image -->
-<div class="col-12 col-md-5 col-lg-5 text-center align-self-center">
+<div class="col-12 col-md-5 col-lg-5 align-self-center">
     <h2 class="d-block d-sm-none">{{ heading_title }}</h2>
-    <div class="row align-middle product-image-div">
+    <div class="row align-middle product-image-div position-relative">
+        {% if has_bespoke %}
+            <div class="position-absolute" style="top: 0; left: 0; z-index: 1;">
+                <a href="{{ bespoke_link }}">
+                    <img src="{{ image_path }}stores/images/bespoke-badge.svg" alt="bespoke badge" class="bespokebadge" data-bs-toggle="tooltip" data-bs-placement="right" title="Not the sign you wanted? Make it...">
+                </a>
+            </div>
+        {% endif %}
 
-        <div class="col-12">
+        <div class="col-12 text-center">
             <a class="thumbnail" href="{{ popup }}" id="main-image-href" title="{{ heading_title }}"
                data-toggle="lightbox" data-gallery="product-gallery"><img id="main-image" src="{{ thumb }}"
                                                                           title="{{ heading_title }}"
                                                                           alt="{{ heading_title }}"
                                                                           class="img-fluid {{ thumb_css }}"/></a>
             {% if has_bespoke %}
-                <a href="{{ bespoke_link }}">
-                    <img src="{{ image_path }}stores/images/bespoke-badge.svg" alt="bespoke badge" class="bespokebadge" data-bs-toggle="tooltip" data-bs-placement="right" title="Not the sign you wanted? Make it..."></a>
+                <!-- Removed the bespoke badge from here -->
             {% endif %}
         </div>
         {% if images %}

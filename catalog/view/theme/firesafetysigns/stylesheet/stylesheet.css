@@ -678,7 +678,7 @@ span.product-variants  {
 
 #logo {
     height: 50px;
-    margin-bottom: 0; !important;
+    margin-bottom: 0 !important;
 }
 
 
@@ -692,17 +692,17 @@ span.product-variants  {
 #nav-search .btn-search {
     font-size: 17px;
     background-color: #ffd011;
-    border: none; !important;
+    border: none !important;
 }
 
 .text-ssan-yellow
 {
-    color:  #ffd011; !important;
+    color:  #ffd011 !important;
 }
 
 .text-ssan-yellow li a
 {
-    color:  #ffd011; !important;
+    color:  #ffd011 !important;
 }
 
 
@@ -994,7 +994,7 @@ span.product-variants  {
 .product-search .btn-search {
     font-size: 17px;
     background-color: #ffd011;
-    border: none; !important;
+    border: none !important;
 }
 
 .img-svg-border {

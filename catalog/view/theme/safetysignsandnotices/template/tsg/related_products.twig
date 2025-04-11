@@ -1,3 +1,27 @@
+<style>
+    #related_swiper .swiper-button-next,
+    #related_swiper .swiper-button-prev {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        color: #666;
+        width: 40px;
+        height: 40px;
+    }
+
+    #related_swiper .swiper-button-next:after,
+    #related_swiper .swiper-button-prev:after {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    #related_swiper .swiper-button-next:hover,
+    #related_swiper .swiper-button-prev:hover {
+        background-color: #fff;
+        color: #333;
+    }
+</style>
 <div class="swiper" id="related_swiper">
         <!-- Additional required wrapper -->
         <div class="swiper-wrapper">
@@ -5,8 +29,12 @@
 
                 {% for product in products %}
                 <div class="swiper-slide">
-                        <div class="card m-1 p-1">
-                                <a href="{{ product.href }}" ><img class="" height="100px" alt="{{ product.title }}" src="{{ product.thumb }}"></a>
+                        <div class="card m-1">
+                                <div class="card-body p-1" style="aspect-ratio: 1; height: 100px;">
+                                        <a href="{{ product.href }}" class="d-block h-100">
+                                                <img class="img-fluid h-100 w-100 object-fit-contain" alt="{{ product.title }}" src="{{ product.thumb }}">
+                                        </a>
+                                </div>
                         </div>
 
                 </div>
@@ -20,9 +48,6 @@
         <!-- If we need navigation buttons -->
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
-
-        <!-- If we need scrollbar -->
-        <div class="swiper-scrollbar"></div>
 </div>
 
 <script>
@@ -44,9 +69,6 @@
                                 nextEl: '.swiper-button-next',
                                 prevEl: '.swiper-button-prev',
                         },
-
-                        // And if we need scrollbar
-                        scrollbar: false,
                 });
         });
 </script>

@@ -511,12 +511,12 @@ class ControllerTsgCheckoutConfirm extends Controller {
             }
 
 
-            $this->log->write('Order Data: ' . print_r($order_data, true));
+            $this->debug_log->write('Order Data: ' . print_r($order_data, true));
             $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
 
             //now check if there are any bespoke items....if so, send to medusa
             //MEDUSA_BESPOKE_CONVERT_URL
-            $this->log->write('CART CONFIRM: going to call - doAjaxBespokeConvert');
+            $this->debug_log->write('CART CONFIRM: going to call - doAjaxBespokeConvert');
             $this->doAjaxBespokeConvert($this->session->data['order_id']);
 
            /*
@@ -702,16 +702,16 @@ class ControllerTsgCheckoutConfirm extends Controller {
     }
 
     private function send_async_request($url, $data = [], $redirect_count = 0) {
-        $this->log->write('send_async_request');
+        $this->debug_log->write('send_async_request');
 
         // Limit the number of redirects
         $max_redirects = 3;
         if ($redirect_count >= $max_redirects) {
-            $this->log->write('send_async_request: exceeded maximum redirects');
+            $this->debug_log->write('send_async_request: exceeded maximum redirects');
             return;
         }
 
-        $this->log->write('send_async_request: original url='.$url);
+        $this->debug_log->write('send_async_request: original url='.$url);
 
         // Initialize cURL
         $ch = curl_init();
@@ -728,13 +728,13 @@ class ControllerTsgCheckoutConfirm extends Controller {
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        $this->log->write('send_async_request: response - '.$response);
-        $this->log->write('send_async_request: HTTP code - '.$http_code);
+        $this->debug_log->write('send_async_request: response - '.$response);
+        $this->debug_log->write('send_async_request: HTTP code - '.$http_code);
 
         if ($http_code === 301) {
             // Handle redirect
             $new_url = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
-            $this->log->write('send_async_request: redirecting to - '.$new_url);
+            $this->debug_log->write('send_async_request: redirecting to - '.$new_url);
             return $this->send_async_request($new_url, $data, $redirect_count + 1);
         }
 

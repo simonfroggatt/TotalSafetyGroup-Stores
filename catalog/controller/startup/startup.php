@@ -34,20 +34,30 @@ class ControllerStartupStartup extends Controller {
 			$this->config->set('config_ssl', HTTPS_SERVER);
 		}
 
-
         loadEnv(DIR_SYSTEM . '../.env', $this->config->get('config_store_id'));
 
 
-		// Settings
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
-		
-		foreach ($query->rows as $result) {
+        //this is where we should load our json configs
+        require_once(DIR_SYSTEM . 'library/config/jsonloader.php');
+        $store_id = $this->config->get('config_store_id') ?? 0;
+        $jsonLoader = new ConfigJsonLoader();
+        $jsonLoader->load($this->config, $store_id);
+
+        if($this->config->get('config_debug_log')) {
+            $debug_log = new Log($this->config->get('config_debug_filename'));
+            $this->registry->set('debug_log', $debug_log);
+        }
+
+
+        // Settings
+        //$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "setting` WHERE store_id = '0' OR store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY store_id ASC");
+		/*foreach ($query->rows as $result) {
 			if (!$result['serialized']) {
 				$this->config->set($result['key'], $result['value']);
 			} else {
 				$this->config->set($result['key'], json_decode($result['value'], true));
 			}
-		}
+		}*/
 
 		// Set time zone
 		if ($this->config->get('config_timezone')) {

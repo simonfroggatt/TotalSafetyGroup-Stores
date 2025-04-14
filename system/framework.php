@@ -177,5 +177,9 @@ if ($config->has('action_pre_action')) {
 // Dispatch
 $route->dispatch(new Action($config->get('action_router')), new Action($config->get('action_error')));
 
+/*
+$debug_log = $registry->get('debug_log');
+$debug_log->write('debug test');*/
+
 // Output
 $response->output();

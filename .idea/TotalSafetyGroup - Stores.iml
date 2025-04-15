@@ -5,6 +5,9 @@
       <sourceFolder url="file://$MODULE_DIR$/system/library" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/system/library/stripe-php-7.46.1/lib" isTestSource="false" packagePrefix="Stripe" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/image_old" />
+      <excludeFolder url="file://$MODULE_DIR$/system/storage/cache/template" />
+      <excludeFolder url="file://$MODULE_DIR$/system/storage_php7" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

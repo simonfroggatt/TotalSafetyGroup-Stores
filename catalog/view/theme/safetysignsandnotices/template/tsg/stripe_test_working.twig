@@ -1,0 +1,211 @@
+{{ header }}
+<div id="content">
+  <div class="container">
+    <div class="row">
+      {{ column_left }}
+      {% if column_left and column_right %}
+      {% set class = 'col-sm-6' %}
+      {% elseif column_left or column_right %}
+      {% set class = 'col-sm-9' %}
+      {% else %}
+      {% set class = 'col-sm-12' %}
+      {% endif %}
+      <div id="content" class="{{ class }}">
+        {{ content_top }}
+        <h1>{{ heading_title }}</h1>
+        
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% else %}
+        
+        <div class="row">
+
+          
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h3>Payment Details</h3>
+                <form id="payment-form">
+                  <div id="payment-element"></div>
+                  <div id="payment-message" class="alert alert-danger mt-3" style="display: none;"></div>
+                  <button id="submit" class="btn btn-primary btn-lg btn-block mt-3">
+                    <div class="spinner" id="spinner" style="display: none;"></div>
+                    <span id="button-text">Pay £{{ total }}</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {% endif %}
+        {{ content_bottom }}
+      </div>
+      {{ column_right }}
+    </div>
+  </div>
+</div>
+
+<style>
+#payment-message {
+  display: none;
+}
+.spinner {
+  display: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+const stripe = Stripe('{{ stripe_publishable_key }}');
+const clientSecret = '{{ client_secret }}';
+const paymentIntentId = '{{ payment_intent_id }}';
+const orderId = '{{ order_id }}';
+const successUrl = '{{ success_url }}';
+
+let elements;
+let paymentElement;
+
+async function initialize() {
+  elements = stripe.elements({
+    clientSecret: clientSecret
+  });
+
+  paymentElement = elements.create("payment");
+  await paymentElement.mount("#payment-element");
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  setLoading(true);
+
+
+  try {
+    // Log payment initiation
+    try {
+      await elements.submit();
+      
+      const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+        elements,
+      });
+      const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
+      const paymentType = paymentIntent.paymentIntent.payment_method_types[0] || 'unknown';
+      
+      await fetch('index.php?route=tsg/stripe_test/paymentStarted', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'payment_intent_id=' + encodeURIComponent(paymentIntentId) + 
+              '&payment_type=' + encodeURIComponent(paymentType) +
+              '&status=initiated'
+      });
+    } catch (e) {
+      console.error('Error logging payment initiation:', e);
+    }
+
+    const {error} = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Always use the payment_intent parameter for consistency with Stripe's default behavior
+        return_url: successUrl
+      },
+      redirect: 'always'
+    });
+
+    if (error) {
+      showMessage(error.message);
+      await handlePaymentFailure(error);
+    } else {
+      const result = await confirmPayment();
+      if (result.success) {
+        showMessage('Payment successful!', 'success');
+        window.location.href = successUrl;
+      } else {
+        showMessage(result.error || 'Payment failed');
+      }
+    }
+  } catch (e) {
+    showMessage("An unexpected error occurred.");
+    console.error('Payment error:', e);
+  }
+
+  setLoading(false);
+}
+
+async function confirmPayment() {
+  try {
+    const response = await fetch('index.php?route=tsg/stripe_test/confirm', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'payment_intent_id=' + encodeURIComponent(paymentIntentId)
+    });
+    
+    return await response.json();
+  } catch (e) {
+    return {
+      success: false,
+      error: 'Failed to confirm payment'
+    };
+  }
+}
+
+async function handlePaymentFailure(error) {
+  try {
+    await fetch('index.php?route=tsg/stripe_test/paymentFailed', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        payment_intent_id: paymentIntentId,
+        order_id: orderId,
+        error: {
+          type: error.type,
+          code: error.code,
+          message: error.message
+        },
+        payment_method: error.payment_method
+      })
+    });
+  } catch (e) {
+    console.error('Failed to log payment failure:', e);
+  }
+}
+
+function showMessage(messageText, type = 'error') {
+  const messageContainer = document.querySelector("#payment-message");
+  messageContainer.classList.remove('alert-danger', 'alert-success');
+  messageContainer.classList.add(type === 'error' ? 'alert-danger' : 'alert-success');
+  messageContainer.textContent = messageText;
+  messageContainer.style.display = "block";
+}
+
+function setLoading(isLoading) {
+  if (isLoading) {
+    document.querySelector("#submit").disabled = true;
+    document.querySelector("#spinner").style.display = "inline-block";
+    document.querySelector("#button-text").style.display = "none";
+  } else {
+    document.querySelector("#submit").disabled = false;
+    document.querySelector("#spinner").style.display = "none";
+    document.querySelector("#button-text").style.display = "inline";
+  }
+}
+
+initialize();
+document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+</script>
+{{ footer }}

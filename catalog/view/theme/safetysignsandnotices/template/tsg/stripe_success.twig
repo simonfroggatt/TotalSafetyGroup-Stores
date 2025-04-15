@@ -1,0 +1,56 @@
+{{ header }}
+<div id="content">
+  <div class="container">
+    <div class="row">
+      {{ column_left }}
+      {% if column_left and column_right %}
+      {% set class = 'col-sm-6' %}
+      {% elseif column_left or column_right %}
+      {% set class = 'col-sm-9' %}
+      {% else %}
+      {% set class = 'col-sm-12' %}
+      {% endif %}
+      <div id="content" class="{{ class }}">
+        {{ content_top }}
+        <div class="card">
+          <div class="card-body text-center">
+            {% set status_class = {
+                'Payment Failed': 'text-danger',
+                'Payment Processing': 'text-warning',
+                'Payment Successful': 'text-success'
+            } %}
+            <h1 class="{{ status_class[heading_title] ?? 'text-primary' }}">
+              {{ heading_title }}
+            </h1>
+            <p class="lead">{{ message }}</p>
+            
+            {% if heading_title == 'Payment Successful' and receipt_url %}
+              <p class="mt-3">
+                <a href="{{ receipt_url }}" target="_blank" class="btn btn-info">
+                  <i class="fa fa-receipt"></i> View Receipt
+                </a>
+              </p>
+            {% endif %}
+            
+            {% if heading_title == 'Payment Processing' %}
+              <p class="text-muted mt-3">
+                <i class="fa fa-info-circle"></i>
+                Your payment is being processed. We'll send you an email confirmation once complete.
+                This usually takes just a few moments.
+              </p>
+            {% endif %}
+            
+            <div class="mt-4">
+              <a href="{{ base }}" class="btn btn-primary">
+                <i class="fa fa-home"></i> Return to Store
+              </a>
+            </div>
+          </div>
+        </div>
+        {{ content_bottom }}
+      </div>
+      {{ column_right }}
+    </div>
+  </div>
+</div>
+{{ footer }}

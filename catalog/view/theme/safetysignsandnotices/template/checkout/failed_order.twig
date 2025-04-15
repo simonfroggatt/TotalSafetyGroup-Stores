@@ -1,0 +1,268 @@
+{{ header }}
+<div id="checkout-failed" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">
+    <div id="content" class="col-sm-12">
+      <h1>{{ heading_title }}</h1>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Order #{{ order_id }}</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <h4>{{ text_order_details }}</h4>
+              <p><strong>Date Added:</strong> {{ order_info.date_added }}</p>
+              <p><strong>Order Status:</strong> {{ order_info.order_status }}</p>
+              <p><strong>Total:</strong> {{ order_info.total }}</p>
+            </div>
+          </div>
+          
+          <div class="payment-methods">
+            <h4>{{ text_payment_methods }}</h4>
+            <p>{{ text_choose_payment }}</p>
+            
+            {% if payment_methods %}
+              <div class="row">
+                {% for payment_method in payment_methods %}
+                  <div class="col-sm-6">
+                    <div class="well payment-method-container">
+                      {% if payment_method.code == 'stripe' %}
+                        <div class="payment-form-wrapper">
+                          <form id="payment-form">
+                            <div id="payment-element">
+                              <!-- Stripe Elements will create form elements here -->
+                            </div>
+                            <button id="stripe-submit" class="btn btn-primary btn-block mt-3">
+                              <div class="spinner hidden" id="spinner"></div>
+                              <span id="button-text">Pay now</span>
+                            </button>
+                            <div id="payment-message" class="hidden"></div>
+                          </form>
+                        </div>
+
+                        <style>
+                          #payment-message {
+                            color: rgb(105, 115, 134);
+                            font-size: 16px;
+                            line-height: 20px;
+                            padding-top: 12px;
+                            text-align: center;
+                          }
+
+                          #payment-element {
+                            margin-bottom: 24px;
+                          }
+
+                          /* Buttons and links */
+                          #stripe-submit {
+                            background: #5469d4;
+                            color: #ffffff;
+                            border-radius: 4px;
+                            border: 0;
+                            padding: 12px 16px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            display: block;
+                            transition: all 0.2s ease;
+                            box-shadow: 0px 4px 5.5px 0px rgba(0, 0, 0, 0.07);
+                            width: 100%;
+                          }
+
+                          #stripe-submit:hover {
+                            filter: contrast(115%);
+                          }
+
+                          #stripe-submit:disabled {
+                            opacity: 0.5;
+                            cursor: default;
+                          }
+
+                          /* spinner/processing state, errors */
+                          .spinner,
+                          .spinner:before,
+                          .spinner:after {
+                            border-radius: 50%;
+                          }
+
+                          .spinner {
+                            color: #ffffff;
+                            font-size: 22px;
+                            text-indent: -99999px;
+                            margin: 0px auto;
+                            position: relative;
+                            width: 20px;
+                            height: 20px;
+                            box-shadow: inset 0 0 0 2px;
+                            -webkit-transform: translateZ(0);
+                            -ms-transform: translateZ(0);
+                            transform: translateZ(0);
+                          }
+
+                          .spinner:before,
+                          .spinner:after {
+                            position: absolute;
+                            content: "";
+                          }
+
+                          .spinner:before {
+                            width: 10.4px;
+                            height: 20.4px;
+                            background: #5469d4;
+                            border-radius: 20.4px 0 0 20.4px;
+                            top: -0.2px;
+                            left: -0.2px;
+                            -webkit-transform-origin: 10.4px 10.2px;
+                            transform-origin: 10.4px 10.2px;
+                            -webkit-animation: loading 2s infinite ease 1.5s;
+                            animation: loading 2s infinite ease 1.5s;
+                          }
+
+                          .spinner:after {
+                            width: 10.4px;
+                            height: 10.2px;
+                            background: #5469d4;
+                            border-radius: 0 10.2px 10.2px 0;
+                            top: -0.1px;
+                            left: 10.2px;
+                            -webkit-transform-origin: 0px 10.2px;
+                            transform-origin: 0px 10.2px;
+                            -webkit-animation: loading 2s infinite ease;
+                            animation: loading 2s infinite ease;
+                          }
+
+                          @keyframes loading {
+                            0% {
+                              -webkit-transform: rotate(0deg);
+                              transform: rotate(0deg);
+                            }
+                            100% {
+                              -webkit-transform: rotate(360deg);
+                              transform: rotate(360deg);
+                            }
+                          }
+
+                          .hidden {
+                            display: none;
+                          }
+                        </style>
+                      {% elseif payment_method.code == 'paypal' %}
+                        <div id="paypal_form">
+                          <div class="row text-center justify-content-center">
+                            <div class="col-10 mb-2">
+                              <div id="paypal_button" class="paypal-button clearfix">
+                                <div id="paypal_button_container" class="paypal-button-container paypal-spinner"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="paypal_card" class="paypal-card">
+                            <div id="paypal_card_container" class="paypal-card-container">
+                              <div id="paypal_card_form" class="paypal-card-form well">
+                                <div class="row text-center justify-content-center">
+                                  <div class="col-10 mb-2">
+                                    <img src="{{ powerby_logos }}" alt="powered by paypal" title="powered by paypal" class="img-fluid" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="alert alert-warning">{{ text_no_payment }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if payment_methods %}
+<script type="text/javascript">
+{% for payment_method in payment_methods %}
+  {% if payment_method.code == 'stripe' %}
+    let stripe = null;
+    let elements = null;
+
+    const initialize = async () => {
+      if (!stripe) {
+        stripe = Stripe('{{ payment_method.data.public_key }}');
+      }
+
+      const { clientSecret } = await fetch('{{ payment_method.action }}', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: '{{ order_id }}' })
+      }).then((r) => r.json());
+
+      elements = stripe.elements({ clientSecret });
+
+      const paymentElement = elements.create("payment");
+      paymentElement.mount("#payment-element");
+    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setLoading(true);
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: '{{ payment_method.success_url }}',
+        },
+      });
+
+      if (error) {
+        const messageContainer = document.querySelector("#payment-message");
+        messageContainer.textContent = error.message;
+        messageContainer.classList.remove("hidden");
+        setLoading(false);
+      }
+    };
+
+    const setLoading = (isLoading) => {
+      if (isLoading) {
+        document.querySelector("#stripe-submit").disabled = true;
+        document.querySelector("#spinner").classList.remove("hidden");
+        document.querySelector("#button-text").classList.add("hidden");
+      } else {
+        document.querySelector("#stripe-submit").disabled = false;
+        document.querySelector("#spinner").classList.add("hidden");
+        document.querySelector("#button-text").classList.remove("hidden");
+      }
+    };
+
+    // Load Stripe.js
+    if (!window.Stripe) {
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.onload = initialize;
+      document.head.appendChild(script);
+    } else {
+      initialize();
+    }
+
+    document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+  {% endif %}
+  
+  {% if payment_method.code == 'paypal' %}
+    if (typeof PayPalAPI !== 'undefined') {
+      PayPalAPI.init();
+    }
+  {% endif %}
+{% endfor %}
+</script>
+{% endif %}
+
+{{ footer }}

@@ -1,0 +1,132 @@
+<?php
+//==============================================================================
+// Stripe Payment Gateway Pro v2024-6-24
+// 
+// Author: Clear Thinking, LLC
+// E-mail: johnathan@getclearthinking.com
+// Website: http://www.getclearthinking.com
+// 
+// All code within this file is copyright Clear Thinking, LLC.
+// You may not copy or reuse code within this file without written permission.
+//==============================================================================
+?>
+
+<?php if (empty($settings['transaction_mode']) || empty($settings[$settings['transaction_mode'] . '_publishable_key'])) { ?>
+	<div id="payment">
+		<div class="lead well well-sm text-info"><small>Create a Charge</small></div>
+		<div class="well text-danger" style="font-size: 15px">You can use this feature once you connect the extension to Stripe.</div>
+	</div>
+<?php } else { ?>
+	<style type="text/css">
+		#charge-orderid { width: 60px !important; }
+		#charge-statement_descriptor { width: 200px !important; }
+		#charge-amount { width: 60px !important; }
+	</style>
+
+	<div id="payment">
+		<div class="text-info text-center"><?php echo $data['help_charge_info']; ?></div>
+		
+		<div class="lead well well-sm text-info"><small><?php echo $data['heading_charge_info']; ?></small></div>
+		
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_order_id']; ?></label>
+			<div class="col-sm-8">
+				<input type="text" id="charge-orderid" class="form-control" autocomplete="off" value="" />
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_order_status']; ?></label>
+			<div class="col-sm-8">
+				<select id="charge-orderstatus" class="form-control form-select">
+					<?php foreach ($data['order_status_array'] as $key => $value) { ?>
+						<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_description']; ?></label>
+			<div class="col-sm-8">
+				<input type="text" id="charge-description" class="form-control" autocomplete="off" value="" />
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_statement_descriptor']; ?></label>
+			<div class="col-sm-8">
+				<input type="text" id="charge-statement_descriptor" class="form-control" autocomplete="off" value="" maxlength="22" />
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_cancel_url']; ?></label>
+			<div class="col-sm-8">
+				<input type="text" id="charge-cancel_url" name="cancel_url" class="form-control long" autocomplete="off" value="<?php if (!empty($settings['cancel_url'])) echo $settings['cancel_url']; ?>" />
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_success_url']; ?></label>
+			<div class="col-sm-8">
+				<input type="text" id="charge-success_url" name="success_url" class="form-control long" autocomplete="off" value="<?php if (!empty($settings['success_url'])) echo $settings['success_url']; ?>" />
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"><?php echo $data['entry_amount']; ?></label>
+			<div class="col-sm-8">
+				<input type="text" id="charge-amount" class="form-control" autocomplete="off" value="" />
+				<select id="charge-currency" class="form-control form-select">
+					<?php foreach ($data['currency_array'] as $key => $value) { ?>
+						<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row mb-3">
+			<label class="col-sm-4 control-label"></label>
+			<div class="col-sm-8">
+				<a class="btn btn-primary" onclick="stripeCheckout($(this))"><?php echo $data['button_create_charge']; ?></a>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		var stripe;
+		
+		$.getScript('https://js.stripe.com/v3', function(data) {
+			stripe = Stripe('<?php echo $settings[$settings['transaction_mode'] . '_publishable_key']; ?>', {stripeAccount: '<?php echo $settings['account_id']; ?>'});
+		});
+		
+		function stripeCheckout(element) {
+			$.ajax({
+				type: 'POST',
+				url: 'index.php?route=<?php echo $data['extension_route']; ?>/stripeCheckout&token=<?php echo $data['token']; ?>',
+				data: {
+					order_id: $('#charge-orderid').val(),
+					order_status: $('#charge-orderstatus').val(),
+					description: $('#charge-description').val(),
+					statement_descriptor: $('#charge-statement_descriptor').val(),
+					cancel_url: $('#charge-cancel_url').val(),
+					success_url: $('#charge-success_url').val(),
+					amount: $('#charge-amount').val(),
+					currency: $('#charge-currency').val(),
+				},
+				beforeSend: function() {
+					element.html('<?php echo $data['standard_please_wait']; ?>').attr('disabled', 'disabled');
+				},
+				success: function(data) {
+					if (data.indexOf('success:') === 0) {
+						stripe.redirectToCheckout({
+							sessionId: data.replace('success:', ''),
+						}).then(function(result) {
+							alert(result.error.message);
+						});
+					} else {
+						console.log(data);
+						alert(data);
+					}
+				},
+				error: function(xhr, status, error) {
+					alert(xhr.responseText ? xhr.responseText : error);
+				}
+			});
+		}
+	</script>
+<?php } ?>

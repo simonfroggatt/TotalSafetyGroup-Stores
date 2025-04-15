@@ -76,7 +76,7 @@ class ControllerExtensionPaymentPPExpress extends Controller {
 			'ALLOWNOTE'          => $this->config->get('payment_pp_express_allow_note'),
 			'LOCALECODE'         => 'EN',
 			'LANDINGPAGE'        => 'Login',
-			'HDRIMG'             => $this->model_tool_image->resize($this->config->get('payment_pp_express_logo'), 750, 90),
+			'HDRIMG'             => $this->model_tool_image->getImage($this->config->get('payment_pp_express_logo')),
 			'PAYFLOWCOLOR'       => $this->config->get('payment_pp_express_colour'),
 			'CHANNELTYPE'        => 'Merchant'
 		);
@@ -440,7 +440,7 @@ class ControllerExtensionPaymentPPExpress extends Controller {
 			}
 
 			if ($product['image']) {
-				$image = $this->model_tool_image->resize($product['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_height'));
+				$image = $this->model_tool_image->getImage($product['image']);
 			} else {
 				$image = '';
 			}
@@ -1315,7 +1315,7 @@ class ControllerExtensionPaymentPPExpress extends Controller {
 			'NOSHIPPING'         => $shipping,
 			'LOCALECODE'         => 'EN',
 			'LANDINGPAGE'        => 'Login',
-			'HDRIMG'             => $this->model_tool_image->resize($this->config->get('payment_pp_express_logo'), 750, 90),
+			'HDRIMG'             => $this->model_tool_image->getImage($this->config->get('payment_pp_express_logo')),
 			'PAYFLOWCOLOR'       => $this->config->get('payment_pp_express_colour'),
 			'CHANNELTYPE'        => 'Merchant',
 			'ALLOWNOTE'          => $this->config->get('payment_pp_express_allow_note')

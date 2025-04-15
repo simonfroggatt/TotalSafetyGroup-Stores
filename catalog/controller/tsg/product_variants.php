@@ -28,8 +28,7 @@ class ControllerTsgProductVariants extends Controller {
         $variant_data = $this->model_tsg_product_variants->getProductVariants($product_id);
         $product_variant_data = [];
         foreach ($variant_data as $key => $value) {
-            $value['product_image'] = $this->model_tool_image->resize($value['alternative_image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
-           // $value['product_image'] = "image/". $value['alternative_image']; //$this->model_tool_image->resize($value['alternative_image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+            $value['product_image'] = $this->model_tool_image->getImage($value['alternative_image']);
             $product_variant_data[(int)$value['size_id']][(int)$value['material_id']] = $value;
         }
       //  $data['variants'] = array();

@@ -21,6 +21,11 @@
         background-color: #fff;
         color: #333;
     }
+
+    .related-product-card {
+        aspect-ratio: 1;
+        height: 100px;
+    }
 </style>
 <div class="swiper" id="related_swiper">
         <!-- Additional required wrapper -->
@@ -30,7 +35,7 @@
                 {% for product in products %}
                 <div class="swiper-slide">
                         <div class="card m-1">
-                                <div class="card-body p-1" style="aspect-ratio: 1; height: 100px;">
+                                <div class="card-body p-1 thumb-product-card">
                                         <a href="{{ product.href }}" class="d-block h-100">
                                                 <img class="img-fluid h-100 w-100 object-fit-contain" alt="{{ product.title }}" src="{{ product.thumb }}">
                                         </a>

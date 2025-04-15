@@ -14,9 +14,9 @@ class ControllerExtensionModuleBestSeller extends Controller {
 		if ($results) {
 			foreach ($results as $result) {
 				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+					$image = $this->model_tool_image->getImage($result['image']);
 				} else {
-					$image = $this->model_tool_image->resize('stores/no-image.png', $setting['width'], $setting['height']);
+					$image = $this->model_tool_image->getImage('stores/no-image.png');
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {

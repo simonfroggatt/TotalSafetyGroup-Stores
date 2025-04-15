@@ -7,7 +7,7 @@ function setupConfigFromJson($registry) {
     // Manually include your DB driver
     require_once(DIR_SYSTEM . 'library/db/' . DB_DRIVER . '.php');
     require_once(DIR_SYSTEM . 'helper/env.php');
-    loadEnv(DIR_SYSTEM . '../.env');
+    loadEnv(DIR_SYSTEM . '.env');
 
     $dbclass = 'DB\\' . ucfirst(DB_DRIVER);
     $db_hostname = $_ENV['DB_HOSTNAME'];

@@ -104,7 +104,7 @@ class ControllerTsgDynamicSearch extends Controller
         foreach ($categoryData as $rawCat) {
             $tempCatData = [];
             $tempCatData['title'] = $rawCat['cat_name'];
-            $tempCatData['image'] = $this->model_tool_image->resize($rawCat['image'], 75, 75); //"image/".$rawCat['image'];
+            $tempCatData['image'] = $this->model_tool_image->getImage($rawCat['image']); //"image/".$rawCat['image'];
             $tempCatData['path'] =  $this->url->link('product/category', 'path=' .  $rawCat['category_store_id']);
             if($rawCat['parent_id'] > 0)
             {
@@ -139,7 +139,7 @@ class ControllerTsgDynamicSearch extends Controller
             $tempProductData['thumb_css'] = $thumb_css;
 
 
-            $tempProductData['image'] = $this->model_tool_image->resize($rawProduct['image'], 75, 75);
+            $tempProductData['image'] = $this->model_tool_image->getImage($rawProduct['image']);
 
            // $tempProductData['image'] =  '/image/'.$rawProduct['image'];
            // $tempProductData['code'] = $rawProduct['variant_code'];

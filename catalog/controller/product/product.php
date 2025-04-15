@@ -272,7 +272,7 @@ class ControllerProductProduct extends Controller {
 			$this->load->model('tool/image');
 
 			if ($product_info['image']) {
-				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+				$data['popup'] = $this->model_tool_image->getImage($product_info['image']);
                 if( pathinfo($product_info['image'], PATHINFO_EXTENSION) == 'svg')
                 {
                     $data['thumb_css'] = 'img-svg-border';
@@ -282,7 +282,7 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if ($product_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height'));
+				$data['thumb'] = $this->model_tool_image->getImage($product_info['image']);
 			} else {
 				$data['thumb'] = '';
 			}
@@ -295,9 +295,8 @@ class ControllerProductProduct extends Controller {
                 if( pathinfo($result['image'], PATHINFO_EXTENSION) == 'svg')
                     $additional_css = 'img-svg-border';
 				$data['images'][] = array(
-					'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
-					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')),
-				    'alt_text' => $result['alt_text'],
+					'popup' => $this->model_tool_image->getImage($result['image']),
+					'thumb' => $this->model_tool_image->getImage($result['image']),
                     'additional_images_css' => $additional_css
                 );
 			}
@@ -353,7 +352,7 @@ class ControllerProductProduct extends Controller {
 							'product_option_value_id' => $option_value['product_option_value_id'],
 							'option_value_id'         => $option_value['option_value_id'],
 							'name'                    => $option_value['name'],
-							'image'                   => $this->model_tool_image->resize($option_value['image'], 50, 50),
+							'image'                   => $this->model_tool_image->getImage($option_value['image']),
 							'price'                   => $price,
 							'price_prefix'            => $option_value['price_prefix']
 						);
@@ -411,9 +410,9 @@ class ControllerProductProduct extends Controller {
 
 			foreach ($results as $result) {
 				if ($result['image']) {
-					$image =  $this->model_tool_image->resize($result['image'], 500,500 );// $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
+					$image =  $this->model_tool_image->getImage($result['image']);
 				} else {
-					$image = $this->model_tool_image->resize('stores/no-image.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height'));
+					$image = $this->model_tool_image->getImage('stores/no-image.png');
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {

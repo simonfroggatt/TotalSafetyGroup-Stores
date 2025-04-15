@@ -114,7 +114,7 @@ class ControllerProductCategory extends Controller {
 			);
 
 			if ($category_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+				$data['thumb'] = $this->model_tool_image->getImage($category_info['image']);
 			} else {
 				$data['thumb'] = '';
 			}
@@ -178,24 +178,20 @@ class ControllerProductCategory extends Controller {
                     if( pathinfo($result['image'], PATHINFO_EXTENSION) == 'svg')
                     {
                         $thumb_css = 'product-card-svg-border';
-                       // $image = $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
-
                         if(USE_CDN){
                             $image = TSG_CDN_URL. $result['image'];
                         } else {
                             $image = 'image/'. $result['image'];
-                        }
-                       // $image = $this->model_tool_image->category_list_svg($result['image']);
-                    }
+                        }}
                     else
                     {
                         $thumb_css = '';
-                        $image = $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+                        $image = $this->model_tool_image->getImage($result['image']);
                     }
 
 				} else {
                     $thumb_css = '';
-					$image = $this->model_tool_image->resize('stores/no-image.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+					$image = $this->model_tool_image->getImage('stores/no-image.png');
 				}
 
                 $price = $this->currency->format($result['price'], $this->session->data['currency']);

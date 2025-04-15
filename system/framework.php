@@ -2,7 +2,7 @@
 // Registry
 $registry = new Registry();
 
-loadEnv(DIR_SYSTEM . '../.env');
+loadEnv(DIR_SYSTEM . '.env');
 
 // Config
 $config = new Config();

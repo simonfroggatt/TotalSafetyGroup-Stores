@@ -34,7 +34,7 @@ class ControllerStartupStartup extends Controller {
 			$this->config->set('config_ssl', HTTPS_SERVER);
 		}
 
-        loadEnv(DIR_SYSTEM . '../.env', $this->config->get('config_store_id'));
+        loadEnv(DIR_SYSTEM . '.env', $this->config->get('config_store_id'));
 
 
         //this is where we should load our json configs

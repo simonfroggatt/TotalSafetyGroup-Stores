@@ -37,18 +37,13 @@ class ControllerTsgRecentlyViewed extends Controller {
                     if( pathinfo($product_info['image'], PATHINFO_EXTENSION) == 'svg')
                     {
                         $thumb_css = 'product-card-svg-border';
-                         $image = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
-                       // $image = $this->model_tool_image->category_list_svg($product_info['image']);
+                         $image = $this->model_tool_image->getImage($product_info['image']);
                     }
                     else{
-                        $image = $this->model_tool_image->resize($product_info['image'], $width, $height);
+                        $image = $this->model_tool_image->getImage($product_info['image']);
                     }
-
-
-
-
                 } else {
-                    $image = $this->model_tool_image->resize('stores/no-image.png', $width, $height);
+                    $image = $this->model_tool_image->getImage('stores/no-image.png');
                 }
 
                 if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {

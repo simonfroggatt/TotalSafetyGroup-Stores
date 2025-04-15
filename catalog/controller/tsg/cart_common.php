@@ -18,9 +18,9 @@ class ControllerTsgCartCommon extends Controller
         foreach ($this->cart->getProducts() as $product) {
 
             if ($product['image']) {
-                $image = $this->model_tool_image->resize($product['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_height'));
+                $image = $this->model_tool_image->getImage($product['image']);
             } else {
-                $image = $this->model_tool_image->resize('stores/no-image.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_height'));
+                $image = $this->model_tool_image->getImage('stores/no-image.png');
             }
 
             $option_data = array();

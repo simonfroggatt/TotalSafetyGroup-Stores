@@ -1,7 +1,21 @@
 <?php
 class ModelToolImage extends Model
 {
-    public function resize($filename, $width, $height)
+
+
+
+    public function getImage($filename)
+    {
+        if (USE_CDN) {
+            $image = TSG_CDN_URL . $filename;
+        } else {
+            $image = 'image/' . $filename;
+        }
+
+        return $image;
+    }
+
+    public function resize_old($filename, $width, $height)
     {
         //$test1 = is_file(DIR_IMAGE . $filename);
        // $test2 = substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE));

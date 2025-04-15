@@ -7,6 +7,7 @@
 /system/storage_php7/
 /image/
 /image_old/
+image_backup/
 
 # Error logs
 system/storage/logs/error.log
@@ -21,3 +22,6 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Added system/export_json_config.php to .gitignore to prevent committing sensitive credentials
+system/export_json_config.php
